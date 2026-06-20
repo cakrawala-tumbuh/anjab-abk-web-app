@@ -1,4 +1,8 @@
 # Image RUNTIME Next.js — standalone, non-root, + HEALTHCHECK.
+#
+# NEXT_PUBLIC_* dibangun dengan nilai placeholder "__NEXT_PUBLIC_API_BASE_URL__"
+# agar dapat diganti di runtime lewat env var NEXT_PUBLIC_API_BASE_URL.
+# Penggantian dilakukan oleh docker-entrypoint.sh sebelum Node.js dijalankan.
 
 # 1) deps
 FROM node:20-slim AS deps
@@ -11,8 +15,8 @@ FROM node:20-slim AS build
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-# NEXT_PUBLIC_* vars are inlined at build time — must be passed as build args
-ARG NEXT_PUBLIC_API_BASE_URL
+# Gunakan placeholder — nilai nyata diisi di runtime oleh entrypoint.
+ARG NEXT_PUBLIC_API_BASE_URL=__NEXT_PUBLIC_API_BASE_URL__
 ENV NEXT_PUBLIC_API_BASE_URL=${NEXT_PUBLIC_API_BASE_URL}
 RUN npm run build
 
@@ -27,8 +31,11 @@ RUN addgroup --system --gid 1001 nodejs \
 COPY --from=build --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=build --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=build --chown=nextjs:nodejs /app/public ./public
+COPY --chown=nextjs:nodejs docker-entrypoint.sh /app/docker-entrypoint.sh
+RUN chmod +x /app/docker-entrypoint.sh
 USER nextjs
 EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=3s --start-period=20s --retries=3 \
   CMD node -e "fetch('http://127.0.0.1:'+(process.env.PORT||3000)+'/').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
+ENTRYPOINT ["/app/docker-entrypoint.sh"]
 CMD ["node", "server.js"]
