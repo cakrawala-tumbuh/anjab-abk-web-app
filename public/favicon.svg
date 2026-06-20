@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <rect width="32" height="32" rx="6" fill="#1d4ed8"/>
+  <!-- Top node -->
+  <rect x="11" y="4" width="10" height="6" rx="1" fill="white"/>
+  <!-- Connector vertical -->
+  <rect x="15.5" y="10" width="1" height="3" fill="rgba(255,255,255,0.6)"/>
+  <!-- Connector horizontal -->
+  <rect x="7" y="12.5" width="18" height="1" fill="rgba(255,255,255,0.6)"/>
+  <!-- Left vertical -->
+  <rect x="7" y="12.5" width="1" height="3" fill="rgba(255,255,255,0.6)"/>
+  <!-- Center vertical -->
+  <rect x="15.5" y="12.5" width="1" height="3" fill="rgba(255,255,255,0.6)"/>
+  <!-- Right vertical -->
+  <rect x="24" y="12.5" width="1" height="3" fill="rgba(255,255,255,0.6)"/>
+  <!-- Bottom left node -->
+  <rect x="3" y="15.5" width="9" height="5" rx="1" fill="white"/>
+  <!-- Bottom center node -->
+  <rect x="11.5" y="15.5" width="9" height="5" rx="1" fill="white"/>
+  <!-- Bottom right node -->
+  <rect x="20" y="15.5" width="9" height="5" rx="1" fill="white"/>
+  <!-- Bar chart -->
+  <rect x="6" y="23" width="2" height="5" rx="0.5" fill="rgba(255,255,255,0.4)"/>
+  <rect x="9" y="21.5" width="2" height="6.5" rx="0.5" fill="rgba(255,255,255,0.55)"/>
+  <rect x="12" y="20" width="2" height="8" rx="0.5" fill="rgba(255,255,255,0.75)"/>
+  <rect x="15" y="21" width="2" height="7" rx="0.5" fill="rgba(255,255,255,0.65)"/>
+  <rect x="18" y="19" width="2" height="9" rx="0.5" fill="rgba(255,255,255,0.85)"/>
+  <rect x="21" y="21.5" width="2" height="6.5" rx="0.5" fill="rgba(255,255,255,0.55)"/>
+  <rect x="24" y="23" width="2" height="5" rx="0.5" fill="rgba(255,255,255,0.40)"/>
+</svg>
