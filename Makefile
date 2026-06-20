@@ -13,7 +13,8 @@ DOCKER_RUN  = docker run --rm $(IMAGE_NAME)
 
 .DEFAULT_GOAL := test
 .PHONY: build lint unit test clean shell help \
-        e2e e2e-build e2e-up e2e-down e2e-reset e2e-logs
+        e2e e2e-build e2e-up e2e-down e2e-reset e2e-logs \
+        backup-config restore-config backup-list
 
 ## help: tampilkan daftar target
 help:
@@ -41,6 +42,27 @@ clean:
 ## shell: masuk ke shell container test (debugging)
 shell: build
 	docker run --rm -it $(IMAGE_NAME) sh
+
+################################################################################
+# Backup & Restore konfigurasi
+# Web app bersifat stateless (tidak ada database lokal).
+# Backup = salin .env.local ke lokasi aman.
+# Rollback versi = ganti WEB_VERSION di .env deployment Docker Compose, lalu
+#   docker compose up -d web
+################################################################################
+
+## backup-config: salin .env.local ke backups/ (mengandung secret — simpan aman)
+backup-config:
+	@./scripts/backup-config.sh backups
+
+## restore-config: pulihkan .env.local dari BACKUP_FILE=<path>
+restore-config:
+	@[ -n "$(BACKUP_FILE)" ] || { echo "Pakai: make restore-config BACKUP_FILE=<path>"; exit 1; }
+	@./scripts/restore-config.sh "$(BACKUP_FILE)"
+
+## backup-list: tampilkan daftar file backup konfigurasi di backups/
+backup-list:
+	@ls -lht backups/config_*.env.local 2>/dev/null || echo "(belum ada file backup di backups/)"
 
 ################################################################################
 # E2E — stack manual (web + backend + Authentik)

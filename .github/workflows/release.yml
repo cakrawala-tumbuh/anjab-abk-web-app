@@ -1,0 +1,26 @@
+# release.yml — komposisi: GitHub Release + Docker image ke GHCR (Next.js service).
+# Dipicu push tag v*; semver, isi catatan rilis, dan pembuatan tag = skill git-workflow.
+# Image runtime: output "standalone" non-root (Dockerfile). NEXT_PUBLIC_* diisi runtime
+# via docker-entrypoint.sh (placeholder), tidak di-bake saat build.
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write     # untuk GitHub Release
+  packages: write     # untuk push image ke GHCR
+
+jobs:
+  github-release:
+    uses: andhit-r/github-release/.github/workflows/release.yml@v1
+    secrets: inherit
+
+  docker-image:
+    uses: andhit-r/release-docker-image-ghcr/.github/workflows/ghcr.yml@v2
+    with:
+      dockerfile: Dockerfile
+      # NEXT_PUBLIC_* tidak perlu di-bake saat build — docker-entrypoint.sh
+      # mengganti placeholder __NEXT_PUBLIC_API_BASE_URL__ di runtime.
+    secrets: inherit

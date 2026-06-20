@@ -7,6 +7,20 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-06-20
+
+### Ditambahkan
+
+- **CI/CD**: Workflow rilis otomatis (`.github/workflows/release.yml`) — dipicu push tag `v*`, membuat GitHub Release dan mem-push image Docker ke GHCR (`andhit-r/github-release@v1` + `andhit-r/release-docker-image-ghcr@v2`, preset nextjs, output standalone)
+- **Operasional**: `scripts/backup-config.sh` — backup `.env.local` ke folder `backups/` dengan timestamp
+- **Operasional**: `scripts/restore-config.sh` — restore `.env.local` dari file backup
+- **Makefile**: target `backup-config`, `restore-config`, `backup-list` untuk operasi backup konfigurasi
+
+### Diubah
+
+- `Makefile` — tambah deklarasi `.PHONY` untuk target backup/restore
+- `.gitignore` — tambah pola `backups/` agar folder backup tidak masuk repositori
+
 ## [0.3.0] - 2026-06-20
 
 ### Ditambahkan
@@ -49,7 +63,8 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 - Gate test: lint (ESLint + Prettier) + typecheck + unit test (Vitest) via Docker
 - E2E test scaffold (Playwright) dengan stack Authentik + backend
 
-[Unreleased]: https://github.com/cakrawala-tumbuh/anjab-abk-web-app/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/cakrawala-tumbuh/anjab-abk-web-app/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/cakrawala-tumbuh/anjab-abk-web-app/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/cakrawala-tumbuh/anjab-abk-web-app/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/cakrawala-tumbuh/anjab-abk-web-app/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/cakrawala-tumbuh/anjab-abk-web-app/releases/tag/v0.1.0
