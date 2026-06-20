@@ -96,6 +96,7 @@ export function TambahPartisipanForm({ sekolah, jabatan, mataPelajaran, accessTo
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
+      noValidate
       className="space-y-5 rounded-lg border border-gray-200 bg-white p-6"
     >
       {serverError && (

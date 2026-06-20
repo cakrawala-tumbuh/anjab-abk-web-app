@@ -35,7 +35,16 @@ async function doTransisi(
   apiUrlFragment: string,
 ): Promise<void> {
   const btn = page.getByRole("button", { name: buttonName });
-  if (!(await btn.isVisible())) return; // sudah dalam status target
+  // Tunggu sampai 3 detik agar Client Component selesai hydrate.
+  // Jika button tidak muncul, sesi sudah dalam status target — lewati.
+  let visible = false;
+  try {
+    await btn.waitFor({ state: "visible", timeout: 3_000 });
+    visible = true;
+  } catch {
+    // Button tidak ada — sudah dalam status target
+  }
+  if (!visible) return;
 
   const responsePromise = page.waitForResponse(
     (resp) => resp.url().includes(apiUrlFragment) && resp.status() === 200,
@@ -95,6 +104,7 @@ test.describe.serial("Sesi DCS — Alur Admin", () => {
     await page.goto("/dcs");
     await page.getByRole("link", { name: JABATAN_NAMA }).first().click();
     await page.waitForURL(/\/dcs\/dses_/);
+    await page.waitForLoadState("networkidle");
 
     // Buka sesi: DRAFT → OPEN (idempoten — lewati jika sudah OPEN atau CLOSED)
     await doTransisi(page, "Buka Sesi", "/buka");
@@ -186,6 +196,7 @@ test.describe.serial("Sesi WCP — Alur Admin", () => {
     await page.goto("/wcp");
     await page.getByRole("link", { name: JABATAN_NAMA }).first().click();
     await page.waitForURL(/\/wcp\/wses_/);
+    await page.waitForLoadState("networkidle");
 
     // Buka sesi: DRAFT → OPEN (idempoten)
     await doTransisi(page, "Buka Sesi", "/buka");

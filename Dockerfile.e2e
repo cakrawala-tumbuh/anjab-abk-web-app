@@ -7,8 +7,10 @@ FROM mcr.microsoft.com/playwright:v1.49.1-noble
 
 WORKDIR /e2e
 
-RUN npm init -y \
-    && npm install --save-dev @playwright/test@1.49.1
+# Salin package manifest dulu agar layer deps ter-cache saat source berubah.
+# package-e2e.json = dependency manifest eksplisit untuk E2E (versi dipin).
+COPY package-e2e.json ./package.json
+RUN npm install
 
 COPY playwright.config.ts ./
 COPY e2e/ ./e2e/
