@@ -1,0 +1,19 @@
+# Image TEST — lint + typecheck + unit (Vitest).
+# Source di-COPY ke image; tidak ada artefak yang tertulis ke folder project.
+#
+# `npm ci` butuh package-lock.json (generate dengan `npm install` di lokal lalu commit).
+# Pin base image untuk parity lokal vs CI.
+
+FROM node:20-slim
+
+WORKDIR /app
+
+# Install deps terkunci dulu (layer ter-cache) → rebuild cepat bila source berubah.
+COPY package.json package-lock.json ./
+RUN npm ci
+
+# Copy seluruh source (pengecualian di .dockerignore).
+COPY . .
+
+# CI=true membuat vitest/ESLint berjalan dalam mode non-interaktif.
+ENV CI=true

@@ -1,0 +1,35 @@
+# Jangan ikutkan artefak & file lokal ke dalam image test.
+# WAJIB mengecualikan node_modules: deps di-install bersih via `npm ci` di image.
+.git
+.gitignore
+.github
+
+# Dependency & artefak Node
+node_modules/
+coverage/
+.nyc_output/
+dist/
+build/
+out/
+.next/
+.turbo/
+
+# Log & cache
+*.log
+npm-debug.log*
+.eslintcache
+
+# Env lokal (tidak boleh masuk image)
+.env
+.env.local
+.env.*.local
+
+# Playwright artefak
+playwright-report/
+test-results/
+
+# Editor / OS
+.idea/
+.vscode/
+.DS_Store
+README.md

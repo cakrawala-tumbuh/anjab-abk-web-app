@@ -1,0 +1,16 @@
+# Image Playwright untuk E2E test.
+# Browser sudah tersedia di base image; kita hanya install test runner.
+# Dijalankan dengan --network=host agar container dapat menjangkau
+# localhost:9100 (web), localhost:9300 (Authentik) di stack E2E.
+
+FROM mcr.microsoft.com/playwright:v1.49.1-noble
+
+WORKDIR /e2e
+
+RUN npm init -y \
+    && npm install --save-dev @playwright/test@1.49.1
+
+COPY playwright.config.ts ./
+COPY e2e/ ./e2e/
+
+CMD ["npx", "playwright", "test"]
