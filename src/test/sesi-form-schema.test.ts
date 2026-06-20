@@ -67,16 +67,12 @@ describe("DcsSesiSchema", () => {
   });
 
   it("menerima catatan opsional", () => {
-    expect(
-      dcsSesiSchema.safeParse({ ...VALID_DCS, catatan: "Catatan sesi" }).success,
-    ).toBe(true);
+    expect(dcsSesiSchema.safeParse({ ...VALID_DCS, catatan: "Catatan sesi" }).success).toBe(true);
     expect(dcsSesiSchema.safeParse({ ...VALID_DCS, catatan: undefined }).success).toBe(true);
   });
 
   it("menolak catatan > 500 karakter", () => {
-    expect(
-      dcsSesiSchema.safeParse({ ...VALID_DCS, catatan: "a".repeat(501) }).success,
-    ).toBe(false);
+    expect(dcsSesiSchema.safeParse({ ...VALID_DCS, catatan: "a".repeat(501) }).success).toBe(false);
   });
 });
 
@@ -126,15 +122,11 @@ describe("WcpSesiSchema", () => {
   });
 
   it("menerima catatan opsional", () => {
-    expect(
-      wcpSesiSchema.safeParse({ ...VALID_WCP, catatan: "Catatan WCP" }).success,
-    ).toBe(true);
+    expect(wcpSesiSchema.safeParse({ ...VALID_WCP, catatan: "Catatan WCP" }).success).toBe(true);
     expect(wcpSesiSchema.safeParse({ ...VALID_WCP, catatan: undefined }).success).toBe(true);
   });
 
   it("menolak catatan > 500 karakter", () => {
-    expect(
-      wcpSesiSchema.safeParse({ ...VALID_WCP, catatan: "b".repeat(501) }).success,
-    ).toBe(false);
+    expect(wcpSesiSchema.safeParse({ ...VALID_WCP, catatan: "b".repeat(501) }).success).toBe(false);
   });
 });

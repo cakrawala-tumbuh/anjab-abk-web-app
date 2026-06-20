@@ -58,7 +58,7 @@ src/
 
 - `npm run gen:api` butuh file `openapi/openapi.json` dari backend; tanpa file itu perintah gagal.
 - `NEXT_PUBLIC_API_BASE_URL` wajib di-set di `.env.local`; tanpa itu klien API tidak bisa terhubung ke backend.
-- `AUTHENTIK_*` (issuer, client_id) untuk Auth.js ada di env **server** (tanpa `NEXT_PUBLIC_`) — jangan expose ke klien.
+- `AUTHENTIK_*` (issuer, client*id) untuk Auth.js ada di env **server** (tanpa `NEXT_PUBLIC*`) — jangan expose ke klien.
 - `next build` dengan `output: "standalone"` menghasilkan folder `.next/standalone/` — image Docker menyalin folder itu, bukan seluruh `node_modules`.
 - Redirect URI untuk callback OIDC (`/api/auth/callback/authentik`) wajib didaftarkan di Authentik sebelum login bisa berjalan.
 
@@ -71,14 +71,14 @@ src/
 
 ## Delegasi Skill
 
-| Tugas | Skill |
-|---|---|
-| Scaffold frontend Next.js (App Router, klien API bertipe, auth seam, Tailwind, shadcn/ui) | `frontend-development-skill` |
-| Mengisi seam autentikasi sisi klien (Auth.js OIDC Authentik, PKCE, Bearer ke backend) | `backend-authentik-skill` (auth klien berpasangan dengan auth backend) |
-| Gate test (lint + unit, Makefile + Docker, lokal == CI, Node.js/TS preset) | `automated-test-skill` |
-| Dokumentasi penggunaan untuk pengguna akhir (Material for MkDocs, `docs-usage/`) | `dokumentasi-penggunaan-skill` |
-| Docstring komponen/hook/fungsi (TSDoc, Docusaurus + TypeDoc) | `docstring-skill` |
-| README.md (pintu depan repo) | `readme-skill` |
-| Commit, branch, PR, tag/release semver, changelog | `git-workflow-skill` |
-| Eksekusi perintah `gh` (PR, release, Actions) | `github-cli-skill` |
-| Orkestrasi deploy (Docker Compose + Traefik, env runtime) | `copier-docker-compose-skill` |
+| Tugas                                                                                     | Skill                                                                  |
+| ----------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| Scaffold frontend Next.js (App Router, klien API bertipe, auth seam, Tailwind, shadcn/ui) | `frontend-development-skill`                                           |
+| Mengisi seam autentikasi sisi klien (Auth.js OIDC Authentik, PKCE, Bearer ke backend)     | `backend-authentik-skill` (auth klien berpasangan dengan auth backend) |
+| Gate test (lint + unit, Makefile + Docker, lokal == CI, Node.js/TS preset)                | `automated-test-skill`                                                 |
+| Dokumentasi penggunaan untuk pengguna akhir (Material for MkDocs, `docs-usage/`)          | `dokumentasi-penggunaan-skill`                                         |
+| Docstring komponen/hook/fungsi (TSDoc, Docusaurus + TypeDoc)                              | `docstring-skill`                                                      |
+| README.md (pintu depan repo)                                                              | `readme-skill`                                                         |
+| Commit, branch, PR, tag/release semver, changelog                                         | `git-workflow-skill`                                                   |
+| Eksekusi perintah `gh` (PR, release, Actions)                                             | `github-cli-skill`                                                     |
+| Orkestrasi deploy (Docker Compose + Traefik, env runtime)                                 | `copier-docker-compose-skill`                                          |
