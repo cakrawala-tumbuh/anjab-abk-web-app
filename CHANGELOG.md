@@ -7,6 +7,14 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [1.4.1] - 2026-06-21
+
+### Diperbaiki
+
+- **Tombol "Keluar" tidak berfungsi** — Auth.js v5 tidak mendukung form POST ke
+  `/api/auth/signout`. Diperbaiki dengan mengubah form menjadi Server Action yang
+  memanggil `signOut({ redirectTo: "/" })` secara langsung.
+
 ## [1.4.0] - 2026-06-21
 
 ### Diubah
@@ -221,7 +229,12 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 - Gate test: lint (ESLint + Prettier) + typecheck + unit test (Vitest) via Docker
 - E2E test scaffold (Playwright) dengan stack Authentik + backend
 
-[Unreleased]: https://github.com/cakrawala-tumbuh/anjab-abk-web-app/compare/v0.9.0...HEAD
+[Unreleased]: https://github.com/cakrawala-tumbuh/anjab-abk-web-app/compare/v1.4.1...HEAD
+[1.4.1]: https://github.com/cakrawala-tumbuh/anjab-abk-web-app/compare/v1.4.0...v1.4.1
+[1.4.0]: https://github.com/cakrawala-tumbuh/anjab-abk-web-app/compare/v1.3.0...v1.4.0
+[1.3.0]: https://github.com/cakrawala-tumbuh/anjab-abk-web-app/compare/v1.2.0...v1.3.0
+[1.2.0]: https://github.com/cakrawala-tumbuh/anjab-abk-web-app/compare/v1.0.0...v1.2.0
+[1.0.0]: https://github.com/cakrawala-tumbuh/anjab-abk-web-app/compare/v0.9.0...v1.0.0
 [0.9.0]: https://github.com/cakrawala-tumbuh/anjab-abk-web-app/compare/v0.8.0...v0.9.0
 [0.8.0]: https://github.com/cakrawala-tumbuh/anjab-abk-web-app/compare/v0.7.0...v0.8.0
 [0.7.0]: https://github.com/cakrawala-tumbuh/anjab-abk-web-app/compare/v0.6.0...v0.7.0

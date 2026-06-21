@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { auth, isAdmin } from "@/lib/auth/auth";
+import { auth, isAdmin, signOut } from "@/lib/auth/auth";
 import { ThemeToggle } from "@/components/theme-toggle";
 
 /** Layout semua route yang butuh autentikasi. Middleware sudah menangani redirect
@@ -59,7 +59,12 @@ export default async function AuthLayout({ children }: { children: ReactNode }) 
             <div className="flex items-center gap-3">
               <span className="text-sm text-gray-500 dark:text-gray-400">{session.user?.name}</span>
               <ThemeToggle />
-              <form action="/api/auth/signout" method="POST">
+              <form
+                action={async () => {
+                  "use server";
+                  await signOut({ redirectTo: "/" });
+                }}
+              >
                 <button
                   type="submit"
                   className="text-sm text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
