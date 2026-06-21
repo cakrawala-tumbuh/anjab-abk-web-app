@@ -10,11 +10,13 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 ## [0.8.0] - 2026-06-21
 
 ### Ditambahkan
+
 - **SME Panel**: halaman `master-data/sme-panel/` — daftar panel pakar, detail panel,
   tambah & hapus anggota panel per jabatan.
 - E2E test SME Panel di `e2e/master-data.spec.ts`.
 
 ### Diubah
+
 - **DCS & WCP "Kuesioner Saya" berbasis assignment**: halaman `/kuesioner` hanya
   menampilkan DCS/WCP yang sudah di-assign admin secara eksplisit; tidak ada lagi
   auto-enrollment berdasarkan jabatan.
@@ -22,6 +24,7 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
   (SME Panel API + perubahan enrollment).
 
 ### Diperbaiki
+
 - `compose.e2e.yml`: backend URL menggunakan `HOST_IP` untuk Next.js SSR (sebelumnya
   hanya `localhost` yang tidak terjangkau dari dalam container saat SSR).
 - Form partisipan (`tambah` & `edit`): perbaikan validasi dan tampilan field.
