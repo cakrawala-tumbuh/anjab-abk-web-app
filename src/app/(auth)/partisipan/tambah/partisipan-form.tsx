@@ -95,20 +95,16 @@ export function TambahPartisipanForm({ sekolah, jabatan, mataPelajaran, accessTo
   }
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      noValidate
-      className="space-y-5 rounded-lg border border-gray-200 bg-white p-6"
-    >
+    <form onSubmit={handleSubmit(onSubmit)} noValidate className="form-card space-y-5 p-6">
       {serverError && (
-        <div role="alert" className="rounded-md bg-red-50 p-3 text-sm text-red-700">
+        <div role="alert" className="form-server-error">
           {serverError}
         </div>
       )}
 
       {/* Nama */}
       <div>
-        <label htmlFor="nama" className="block text-sm font-medium text-gray-700">
+        <label htmlFor="nama" className="form-label">
           Nama Lengkap <span aria-hidden>*</span>
         </label>
         <input
@@ -120,7 +116,7 @@ export function TambahPartisipanForm({ sekolah, jabatan, mataPelajaran, accessTo
           aria-invalid={!!errors.nama}
         />
         {errors.nama && (
-          <p className="mt-1 text-xs text-red-600" role="alert">
+          <p className="form-error" role="alert">
             {errors.nama.message}
           </p>
         )}
@@ -128,7 +124,7 @@ export function TambahPartisipanForm({ sekolah, jabatan, mataPelajaran, accessTo
 
       {/* Email */}
       <div>
-        <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+        <label htmlFor="email" className="form-label">
           Email <span aria-hidden>*</span>
         </label>
         <input
@@ -139,11 +135,11 @@ export function TambahPartisipanForm({ sekolah, jabatan, mataPelajaran, accessTo
           className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
           aria-invalid={!!errors.email}
         />
-        <p className="mt-1 text-xs text-gray-500">
+        <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
           Email ini digunakan untuk membuat akun login Authentik.
         </p>
         {errors.email && (
-          <p className="mt-1 text-xs text-red-600" role="alert">
+          <p className="form-error" role="alert">
             {errors.email.message}
           </p>
         )}
@@ -151,7 +147,7 @@ export function TambahPartisipanForm({ sekolah, jabatan, mataPelajaran, accessTo
 
       {/* Sekolah */}
       <div>
-        <label htmlFor="sekolah_id" className="block text-sm font-medium text-gray-700">
+        <label htmlFor="sekolah_id" className="form-label">
           Satuan Pendidikan <span aria-hidden>*</span>
         </label>
         <select
@@ -168,7 +164,7 @@ export function TambahPartisipanForm({ sekolah, jabatan, mataPelajaran, accessTo
           ))}
         </select>
         {errors.sekolah_id && (
-          <p className="mt-1 text-xs text-red-600" role="alert">
+          <p className="form-error" role="alert">
             {errors.sekolah_id.message}
           </p>
         )}
@@ -176,7 +172,7 @@ export function TambahPartisipanForm({ sekolah, jabatan, mataPelajaran, accessTo
 
       {/* Jabatan Utama */}
       <div>
-        <label htmlFor="jabatan_utama_id" className="block text-sm font-medium text-gray-700">
+        <label htmlFor="jabatan_utama_id" className="form-label">
           Jabatan Utama <span aria-hidden>*</span>
         </label>
         <select
@@ -193,7 +189,7 @@ export function TambahPartisipanForm({ sekolah, jabatan, mataPelajaran, accessTo
           ))}
         </select>
         {errors.jabatan_utama_id && (
-          <p className="mt-1 text-xs text-red-600" role="alert">
+          <p className="form-error" role="alert">
             {errors.jabatan_utama_id.message}
           </p>
         )}
@@ -202,7 +198,7 @@ export function TambahPartisipanForm({ sekolah, jabatan, mataPelajaran, accessTo
       {/* Jabatan Tambahan */}
       {jabatan.length > 0 && (
         <fieldset>
-          <legend className="block text-sm font-medium text-gray-700">
+          <legend className="form-label">
             Jabatan Tambahan <span className="font-normal text-gray-400">(opsional)</span>
           </legend>
           <div className="mt-2 space-y-1">
@@ -224,7 +220,7 @@ export function TambahPartisipanForm({ sekolah, jabatan, mataPelajaran, accessTo
       {/* Masa Kerja */}
       <div className="flex gap-4">
         <div className="flex-1">
-          <label htmlFor="masa_kerja_tahun" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="masa_kerja_tahun" className="form-label">
             Masa Kerja (Tahun) <span aria-hidden>*</span>
           </label>
           <input
@@ -237,13 +233,13 @@ export function TambahPartisipanForm({ sekolah, jabatan, mataPelajaran, accessTo
             aria-invalid={!!errors.masa_kerja_tahun}
           />
           {errors.masa_kerja_tahun && (
-            <p className="mt-1 text-xs text-red-600" role="alert">
+            <p className="form-error" role="alert">
               {errors.masa_kerja_tahun.message}
             </p>
           )}
         </div>
         <div className="flex-1">
-          <label htmlFor="masa_kerja_bulan" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="masa_kerja_bulan" className="form-label">
             Bulan
           </label>
           <input
@@ -256,7 +252,7 @@ export function TambahPartisipanForm({ sekolah, jabatan, mataPelajaran, accessTo
             aria-invalid={!!errors.masa_kerja_bulan}
           />
           {errors.masa_kerja_bulan && (
-            <p className="mt-1 text-xs text-red-600" role="alert">
+            <p className="form-error" role="alert">
               {errors.masa_kerja_bulan.message}
             </p>
           )}
@@ -266,10 +262,7 @@ export function TambahPartisipanForm({ sekolah, jabatan, mataPelajaran, accessTo
       {/* Mata Pelajaran Utama */}
       {mataPelajaran.length > 0 && (
         <div>
-          <label
-            htmlFor="mata_pelajaran_utama_id"
-            className="block text-sm font-medium text-gray-700"
-          >
+          <label htmlFor="mata_pelajaran_utama_id" className="form-label">
             Mata Pelajaran Utama{" "}
             <span className="font-normal text-gray-400">(opsional, untuk guru)</span>
           </label>
@@ -297,7 +290,10 @@ export function TambahPartisipanForm({ sekolah, jabatan, mataPelajaran, accessTo
         >
           {isSubmitting ? "Menyimpan…" : "Tambah Partisipan"}
         </button>
-        <Link href="/partisipan" className="text-sm text-gray-500 hover:text-gray-700">
+        <Link
+          href="/partisipan"
+          className="text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+        >
           Batal
         </Link>
       </div>

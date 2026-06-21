@@ -56,8 +56,8 @@ export default async function PartisipanDetailPage({ params }: Props) {
 
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-2xl font-semibold text-gray-900">{partisipan.nama}</h1>
-          <p className="mt-1 text-sm text-gray-500">{partisipan.email}</p>
+          <h1 className="page-heading">{partisipan.nama}</h1>
+          <p className="page-subtext">{partisipan.email}</p>
         </div>
         <span
           className={`inline-flex rounded-full px-3 py-1 text-sm font-medium ${

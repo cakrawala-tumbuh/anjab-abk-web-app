@@ -56,8 +56,8 @@ export default async function Tahap3Page({ params }: Props) {
       </div>
 
       <div>
-        <h1 className="text-2xl font-semibold text-gray-900">Tahap 3 — Detailing Tugas</h1>
-        <p className="mt-1 text-sm text-gray-500">
+        <h1 className="page-heading">Tahap 3 — Detailing Tugas</h1>
+        <p className="page-subtext">
           {responden.nama ?? "Anonim"} · isi rincian beban kerja (CalHR) untuk tugas yang Anda
           kerjakan.
         </p>

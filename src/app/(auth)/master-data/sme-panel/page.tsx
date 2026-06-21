@@ -31,7 +31,9 @@ export default async function SMEPanelPage() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <p className="text-sm text-gray-500">{panels.length} panel SME terdaftar</p>
+        <p className="text-sm text-gray-500 dark:text-gray-400">
+          {panels.length} panel SME terdaftar
+        </p>
         <Link
           href="/master-data/sme-panel/tambah"
           className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
@@ -41,28 +43,40 @@ export default async function SMEPanelPage() {
       </div>
 
       {panels.length === 0 ? (
-        <p className="text-sm text-gray-500">Belum ada SME panel. Mulai dengan menambah satu.</p>
+        <p className="text-sm text-gray-500 dark:text-gray-400">
+          Belum ada SME panel. Mulai dengan menambah satu.
+        </p>
       ) : (
-        <div className="overflow-hidden rounded-lg border border-gray-200 bg-white">
+        <div className="table-container">
           <table className="w-full text-sm">
-            <thead className="bg-gray-50">
+            <thead className="bg-gray-50 dark:bg-gray-800">
               <tr>
-                <th className="px-4 py-3 text-left font-medium text-gray-600">Jabatan</th>
-                <th className="px-4 py-3 text-left font-medium text-gray-600">Jenis</th>
-                <th className="px-4 py-3 text-left font-medium text-gray-600">Anggota</th>
-                <th className="px-4 py-3 text-left font-medium text-gray-600">Status</th>
-                <th className="px-4 py-3 text-left font-medium text-gray-600">Aksi</th>
+                <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
+                  Jabatan
+                </th>
+                <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
+                  Jenis
+                </th>
+                <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
+                  Anggota
+                </th>
+                <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
+                  Status
+                </th>
+                <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
+                  Aksi
+                </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
               {panels.map((p) => {
                 const jbt = jabatanMap[p.jabatan_id];
                 return (
-                  <tr key={p.id} className="hover:bg-gray-50">
+                  <tr key={p.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50">
                     <td className="px-4 py-3 font-medium text-gray-900">
                       {jbt?.nama ?? p.jabatan_id}
                     </td>
-                    <td className="px-4 py-3 text-gray-500">
+                    <td className="px-4 py-3 text-gray-500 dark:text-gray-500">
                       {jbt?.jenis ? (
                         <span className="inline-flex rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-700">
                           {jbt.jenis}
@@ -71,7 +85,7 @@ export default async function SMEPanelPage() {
                         "—"
                       )}
                     </td>
-                    <td className="px-4 py-3 text-gray-600">
+                    <td className="px-4 py-3 text-gray-600 dark:text-gray-400">
                       {(p.partisipan_ids ?? []).length} orang
                     </td>
                     <td className="px-4 py-3">

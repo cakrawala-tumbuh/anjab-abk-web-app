@@ -37,8 +37,8 @@ export default async function TambahPartisipanPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold text-gray-900">Tambah Partisipan</h1>
-        <p className="mt-1 text-sm text-gray-500">
+        <h1 className="page-heading">Tambah Partisipan</h1>
+        <p className="page-subtext">
           Akun Authentik akan dibuat otomatis. Partisipan dapat langsung login dengan email yang
           didaftarkan.
         </p>

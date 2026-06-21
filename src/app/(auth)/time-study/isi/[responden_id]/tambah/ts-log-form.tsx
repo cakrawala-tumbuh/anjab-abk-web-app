@@ -117,7 +117,7 @@ export function TsLogForm({ respondenId, accessToken }: Props) {
       className="space-y-6 rounded-lg border border-gray-200 bg-white p-6"
     >
       {serverError && (
-        <div role="alert" className="rounded-md bg-red-50 p-3 text-sm text-red-700">
+        <div role="alert" className="form-server-error">
           {serverError}
         </div>
       )}
@@ -125,7 +125,7 @@ export function TsLogForm({ respondenId, accessToken }: Props) {
       {/* Tanggal & Waktu */}
       <div className="grid gap-4 sm:grid-cols-3">
         <div>
-          <label htmlFor="tanggal" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="tanggal" className="form-label">
             Tanggal <span aria-hidden>*</span>
           </label>
           <input
@@ -136,14 +136,14 @@ export function TsLogForm({ respondenId, accessToken }: Props) {
             aria-invalid={!!errors.tanggal}
           />
           {errors.tanggal && (
-            <p className="mt-1 text-xs text-red-600" role="alert">
+            <p className="form-error" role="alert">
               {errors.tanggal.message}
             </p>
           )}
         </div>
 
         <div>
-          <label htmlFor="waktu_masuk" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="waktu_masuk" className="form-label">
             Waktu Masuk <span aria-hidden>*</span>
           </label>
           <input
@@ -154,14 +154,14 @@ export function TsLogForm({ respondenId, accessToken }: Props) {
             aria-invalid={!!errors.waktu_masuk}
           />
           {errors.waktu_masuk && (
-            <p className="mt-1 text-xs text-red-600" role="alert">
+            <p className="form-error" role="alert">
               {errors.waktu_masuk.message}
             </p>
           )}
         </div>
 
         <div>
-          <label htmlFor="waktu_keluar" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="waktu_keluar" className="form-label">
             Waktu Keluar <span aria-hidden>*</span>
           </label>
           <input
@@ -172,7 +172,7 @@ export function TsLogForm({ respondenId, accessToken }: Props) {
             aria-invalid={!!errors.waktu_keluar}
           />
           {errors.waktu_keluar && (
-            <p className="mt-1 text-xs text-red-600" role="alert">
+            <p className="form-error" role="alert">
               {errors.waktu_keluar.message}
             </p>
           )}
@@ -181,7 +181,7 @@ export function TsLogForm({ respondenId, accessToken }: Props) {
 
       {/* Warna Hari */}
       <div>
-        <label htmlFor="day_color" className="block text-sm font-medium text-gray-700">
+        <label htmlFor="day_color" className="form-label">
           Kategori Hari <span aria-hidden>*</span>
         </label>
         <select
@@ -216,7 +216,7 @@ export function TsLogForm({ respondenId, accessToken }: Props) {
                   className="w-16 rounded-md border border-gray-300 px-2 py-1.5 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                   aria-label={`${label} jam`}
                 />
-                <span className="text-sm text-gray-500">jam</span>
+                <span className="text-sm text-gray-500 dark:text-gray-400">jam</span>
                 <input
                   type="number"
                   min={0}
@@ -225,7 +225,7 @@ export function TsLogForm({ respondenId, accessToken }: Props) {
                   className="w-16 rounded-md border border-gray-300 px-2 py-1.5 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                   aria-label={`${label} menit`}
                 />
-                <span className="text-sm text-gray-500">menit</span>
+                <span className="text-sm text-gray-500 dark:text-gray-400">menit</span>
               </div>
             </div>
           ))}
@@ -234,7 +234,7 @@ export function TsLogForm({ respondenId, accessToken }: Props) {
 
       {/* Catatan */}
       <div>
-        <label htmlFor="catatan" className="block text-sm font-medium text-gray-700">
+        <label htmlFor="catatan" className="form-label">
           Catatan <span className="font-normal text-gray-400">(opsional)</span>
         </label>
         <textarea
@@ -256,7 +256,7 @@ export function TsLogForm({ respondenId, accessToken }: Props) {
         </button>
         <Link
           href={`/time-study/isi/${respondenId}`}
-          className="text-sm text-gray-500 hover:text-gray-700"
+          className="text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
         >
           Batal
         </Link>

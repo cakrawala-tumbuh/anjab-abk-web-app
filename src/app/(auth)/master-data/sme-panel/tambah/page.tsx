@@ -27,7 +27,7 @@ export default async function TambahSMEPanelPage() {
     <div className="space-y-6">
       <div>
         <h2 className="text-lg font-semibold text-gray-900">Tambah SME Panel</h2>
-        <p className="mt-1 text-sm text-gray-500">
+        <p className="page-subtext">
           Panel SME (Subject Matter Expert) mengelompokkan partisipan berdasarkan jabatan untuk
           keperluan Analisis Jabatan.
         </p>

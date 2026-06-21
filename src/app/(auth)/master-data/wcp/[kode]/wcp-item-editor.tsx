@@ -27,18 +27,20 @@ export function WcpItemEditor({ items, accessToken }: Props) {
   }
 
   return (
-    <div className="overflow-hidden rounded-lg border border-gray-200 bg-white">
+    <div className="table-container">
       <table className="w-full text-sm">
-        <thead className="bg-gray-50">
+        <thead className="bg-gray-50 dark:bg-gray-800">
           <tr>
             <th className="w-16 px-4 py-3 text-left font-medium text-gray-600">No.</th>
             <th className="w-24 px-4 py-3 text-left font-medium text-gray-600">Kode</th>
-            <th className="px-4 py-3 text-left font-medium text-gray-600">Pernyataan</th>
+            <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
+              Pernyataan
+            </th>
             <th className="w-28 px-4 py-3 text-left font-medium text-gray-600">Scoring</th>
             <th className="w-24 px-4 py-3 text-right font-medium text-gray-600">Aksi</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-gray-100">
+        <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
           {rows.map((item) =>
             editingId === item.item_id ? (
               <WcpItemEditRow
@@ -50,7 +52,7 @@ export function WcpItemEditor({ items, accessToken }: Props) {
               />
             ) : (
               <tr key={item.item_id} className="align-top hover:bg-gray-50">
-                <td className="px-4 py-3 text-gray-500">{item.urutan}</td>
+                <td className="px-4 py-3 text-gray-500 dark:text-gray-500">{item.urutan}</td>
                 <td className="px-4 py-3 font-mono text-gray-700">{item.item_id}</td>
                 <td className="px-4 py-3">
                   <p className="text-gray-900">{item.pernyataan}</p>

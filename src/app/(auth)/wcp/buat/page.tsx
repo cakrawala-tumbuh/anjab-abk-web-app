@@ -35,8 +35,8 @@ export default async function BuatWcpSesiPage() {
       </div>
 
       <div>
-        <h1 className="text-2xl font-semibold text-gray-900">Buat Sesi WCP</h1>
-        <p className="mt-1 text-sm text-gray-500">
+        <h1 className="page-heading">Buat Sesi WCP</h1>
+        <p className="page-subtext">
           Pilih jabatan dan periode survei. Setelah dibuat, buka sesi untuk mulai mendaftarkan
           responden.
         </p>

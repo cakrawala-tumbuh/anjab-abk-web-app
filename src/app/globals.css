@@ -71,3 +71,86 @@ body {
   outline: 2px solid var(--ring);
   outline-offset: 2px;
 }
+
+/* ============================================================
+   Dark mode — form controls
+   Ditempatkan di luar @layer agar menang atas Tailwind utilities
+   (unlayered styles selalu menang atas layered styles).
+   ============================================================ */
+.dark
+  input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]):not(
+    [type="reset"]
+  ),
+.dark select,
+.dark textarea {
+  background-color: theme(colors.gray.800);
+  border-color: theme(colors.gray.600);
+  color: theme(colors.gray.100);
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: theme(colors.gray.500);
+}
+
+.dark input[type="checkbox"],
+.dark input[type="radio"] {
+  background-color: theme(colors.gray.800);
+  border-color: theme(colors.gray.600);
+  color-scheme: dark;
+}
+
+/* ============================================================
+   Component utilities — form & page building blocks
+   ============================================================ */
+@layer components {
+  /* Form card container */
+  .form-card {
+    @apply rounded-lg border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900;
+  }
+
+  /* Form label */
+  .form-label {
+    @apply block text-sm font-medium text-gray-700 dark:text-gray-300;
+  }
+
+  /* Inline hint / optional marker */
+  .form-hint {
+    @apply font-normal text-gray-400 dark:text-gray-500;
+  }
+
+  /* Validation error */
+  .form-error {
+    @apply mt-1 text-xs text-red-600 dark:text-red-400;
+  }
+
+  /* Server error banner */
+  .form-server-error {
+    @apply rounded-md bg-red-50 p-3 text-sm text-red-700 dark:bg-red-900/30 dark:text-red-300;
+  }
+
+  /* Page heading */
+  .page-heading {
+    @apply text-2xl font-semibold text-gray-900 dark:text-gray-50;
+  }
+
+  /* Page sub-description */
+  .page-subtext {
+    @apply mt-1 text-sm text-gray-500 dark:text-gray-400;
+  }
+
+  /* Dashboard / info card */
+  .page-card {
+    @apply rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-900;
+  }
+
+  /* Table wrapper */
+  .table-container {
+    @apply overflow-hidden rounded-lg border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900;
+  }
+
+  /* Empty-state box */
+  .empty-state {
+    @apply rounded-lg border border-dashed border-gray-300 bg-white p-12 text-center dark:border-gray-600 dark:bg-gray-900;
+  }
+}

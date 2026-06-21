@@ -31,10 +31,8 @@ export default async function TambahLogPage({ params }: Props) {
       </div>
 
       <div>
-        <h1 className="text-2xl font-semibold text-gray-900">Tambah Log Harian</h1>
-        <p className="mt-1 text-sm text-gray-500">
-          Catat distribusi waktu aktivitas kerja untuk hari ini.
-        </p>
+        <h1 className="page-heading">Tambah Log Harian</h1>
+        <p className="page-subtext">Catat distribusi waktu aktivitas kerja untuk hari ini.</p>
       </div>
 
       <TsLogForm respondenId={responden_id} accessToken={session?.accessToken} />

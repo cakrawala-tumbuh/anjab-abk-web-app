@@ -65,8 +65,8 @@ export default async function Tahap1Page({ params }: Props) {
       </div>
 
       <div>
-        <h1 className="text-2xl font-semibold text-gray-900">Tahap 1 — Seleksi Relevansi</h1>
-        <p className="mt-1 text-sm text-gray-500">
+        <h1 className="page-heading">Tahap 1 — Seleksi Relevansi</h1>
+        <p className="page-subtext">
           {responden.nama ?? "Anonim"} · pilih task yang relevan untuk jabatan Anda.
         </p>
       </div>

@@ -129,13 +129,13 @@ export function DetailForm({ respondenId, sesiId, tasks, accessToken }: Props) {
   return (
     <div className="space-y-5">
       {error && (
-        <div role="alert" className="rounded-md bg-red-50 p-3 text-sm text-red-700">
+        <div role="alert" className="form-server-error">
           {error}
         </div>
       )}
 
       <div className="flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50 px-4 py-3">
-        <p className="text-sm text-gray-600">
+        <p className="text-sm text-gray-600 dark:text-gray-400">
           Ditandai dikerjakan: <strong>{checkedCount}</strong> dari {tasks.length} task
         </p>
         <button

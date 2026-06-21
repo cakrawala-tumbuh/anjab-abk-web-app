@@ -69,7 +69,7 @@ export function ReviewForm({ sesiId, review, accessToken, readOnly }: Props) {
   return (
     <div className="space-y-4">
       {error && (
-        <div role="alert" className="rounded-md bg-red-50 p-3 text-sm text-red-700">
+        <div role="alert" className="form-server-error">
           {error}
         </div>
       )}
@@ -105,22 +105,24 @@ export function ReviewForm({ sesiId, review, accessToken, readOnly }: Props) {
         </div>
       )}
 
-      <div className="overflow-hidden rounded-lg border border-gray-200 bg-white">
+      <div className="table-container">
         <table className="w-full text-sm">
-          <thead className="bg-gray-50">
+          <thead className="bg-gray-50 dark:bg-gray-800">
             <tr>
-              <th className="px-4 py-3 text-left font-medium text-gray-600">Task</th>
+              <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
+                Task
+              </th>
               <th className="px-4 py-3 text-center font-medium text-gray-600">Pilih</th>
               <th className="px-4 py-3 text-center font-medium text-gray-600">
                 {readOnly ? "Keputusan" : "Setujui?"}
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-100">
+          <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
             {review.tasks.map((t: TiTahap2TaskRead) => {
               const val = keputusan[t.task_kode];
               return (
-                <tr key={t.task_kode} className="hover:bg-gray-50">
+                <tr key={t.task_kode} className="hover:bg-gray-50 dark:hover:bg-gray-800/50">
                   <td className="px-4 py-3 text-gray-800">{t.task_kode}</td>
                   <td className="px-4 py-3 text-center text-gray-500">
                     {t.n_relevan}/{t.n_total}

@@ -32,7 +32,9 @@ export default async function JabatanPage() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <p className="text-sm text-gray-500">{jabatan.length} jabatan terdaftar</p>
+        <p className="text-sm text-gray-500 dark:text-gray-400">
+          {jabatan.length} jabatan terdaftar
+        </p>
         <Link
           href="/master-data/jabatan/tambah"
           className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
@@ -42,22 +44,34 @@ export default async function JabatanPage() {
       </div>
 
       {jabatan.length === 0 ? (
-        <p className="text-sm text-gray-500">Belum ada jabatan. Mulai dengan menambah satu.</p>
+        <p className="text-sm text-gray-500 dark:text-gray-400">
+          Belum ada jabatan. Mulai dengan menambah satu.
+        </p>
       ) : (
-        <div className="overflow-hidden rounded-lg border border-gray-200 bg-white">
+        <div className="table-container">
           <table className="w-full text-sm">
-            <thead className="bg-gray-50">
+            <thead className="bg-gray-50 dark:bg-gray-800">
               <tr>
-                <th className="px-4 py-3 text-left font-medium text-gray-600">Kode</th>
-                <th className="px-4 py-3 text-left font-medium text-gray-600">Nama</th>
-                <th className="px-4 py-3 text-left font-medium text-gray-600">Jenis</th>
-                <th className="px-4 py-3 text-left font-medium text-gray-600">Deskripsi</th>
-                <th className="px-4 py-3 text-left font-medium text-gray-600">Status</th>
+                <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
+                  Kode
+                </th>
+                <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
+                  Nama
+                </th>
+                <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
+                  Jenis
+                </th>
+                <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
+                  Deskripsi
+                </th>
+                <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
+                  Status
+                </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
               {jabatan.map((j) => (
-                <tr key={j.id} className="hover:bg-gray-50">
+                <tr key={j.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50">
                   <td className="px-4 py-3 font-mono text-gray-700">{j.kode}</td>
                   <td className="px-4 py-3 font-medium text-gray-900">{j.nama}</td>
                   <td className="px-4 py-3">

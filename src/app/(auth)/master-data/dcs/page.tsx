@@ -27,7 +27,7 @@ export default async function DcsMasterDataPage() {
         <h2 className="text-lg font-semibold text-gray-900">
           Instrumen DCS — Demand·Control·Support
         </h2>
-        <p className="mt-1 text-sm text-gray-500">
+        <p className="page-subtext">
           Tiga sub-skala dengan total 42 item pernyataan. Pilih sub-skala untuk meninjau dan
           mengubah teks, arah penilaian, serta urutan item.
         </p>
@@ -47,7 +47,7 @@ export default async function DcsMasterDataPage() {
               </span>
             </div>
             <p className="mt-2 font-medium text-gray-900 group-hover:text-blue-700">{s.nama}</p>
-            <p className="mt-1 text-xs text-gray-500">Kelola item →</p>
+            <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">Kelola item →</p>
           </Link>
         ))}
       </div>

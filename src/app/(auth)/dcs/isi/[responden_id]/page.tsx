@@ -61,8 +61,8 @@ export default async function DcsIsiPage({ params }: Props) {
 
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-semibold text-gray-900">Kuesioner DCS</h1>
-        <p className="mt-1 text-sm text-gray-500">
+        <h1 className="page-heading">Kuesioner DCS</h1>
+        <p className="page-subtext">
           {responden.jabatan_label} · {responden.nama ?? "Anonim"}
         </p>
       </div>

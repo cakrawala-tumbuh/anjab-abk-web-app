@@ -27,7 +27,7 @@ export default async function WcpMasterDataPage() {
         <h2 className="text-lg font-semibold text-gray-900">
           Instrumen WCP — Workplace Climate Profile
         </h2>
-        <p className="mt-1 text-sm text-gray-500">
+        <p className="page-subtext">
           12 dimensi dengan total 72 item pernyataan. Pilih dimensi untuk meninjau dan mengubah
           teks, tipe scoring, serta urutan item.
         </p>

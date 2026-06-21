@@ -74,8 +74,8 @@ export default async function WcpIsiPage({ params }: Props) {
 
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-semibold text-gray-900">Kuesioner WCP</h1>
-        <p className="mt-1 text-sm text-gray-500">
+        <h1 className="page-heading">Kuesioner WCP</h1>
+        <p className="page-subtext">
           {responden.jabatan_label} · {responden.nama ?? "Anonim"}
         </p>
       </div>

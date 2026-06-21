@@ -55,18 +55,15 @@ export function TambahSMEPanelForm({ jabatan, accessToken }: Props) {
   }
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="space-y-5 rounded-lg border border-gray-200 bg-white p-6"
-    >
+    <form onSubmit={handleSubmit(onSubmit)} className="form-card space-y-5 p-6">
       {serverError && (
-        <div role="alert" className="rounded-md bg-red-50 p-3 text-sm text-red-700">
+        <div role="alert" className="form-server-error">
           {serverError}
         </div>
       )}
 
       <div>
-        <label htmlFor="jabatan_id" className="block text-sm font-medium text-gray-700">
+        <label htmlFor="jabatan_id" className="form-label">
           Jabatan <span aria-hidden>*</span>
         </label>
         <select
@@ -82,11 +79,11 @@ export function TambahSMEPanelForm({ jabatan, accessToken }: Props) {
             </option>
           ))}
         </select>
-        <p className="mt-1 text-xs text-gray-500">
+        <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
           Setiap jabatan hanya dapat memiliki satu SME panel.
         </p>
         {errors.jabatan_id && (
-          <p className="mt-1 text-xs text-red-600" role="alert">
+          <p className="form-error" role="alert">
             {errors.jabatan_id.message}
           </p>
         )}
@@ -112,7 +109,10 @@ export function TambahSMEPanelForm({ jabatan, accessToken }: Props) {
         >
           {isSubmitting ? "Menyimpan…" : "Tambah SME Panel"}
         </button>
-        <Link href="/master-data/sme-panel" className="text-sm text-gray-500 hover:text-gray-700">
+        <Link
+          href="/master-data/sme-panel"
+          className="text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+        >
           Batal
         </Link>
       </div>

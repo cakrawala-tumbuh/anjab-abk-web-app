@@ -12,7 +12,7 @@ export default async function TambahJenjangPage() {
     <div className="space-y-6">
       <div>
         <h2 className="text-lg font-semibold text-gray-900">Tambah Jenjang Pendidikan</h2>
-        <p className="mt-1 text-sm text-gray-500">
+        <p className="page-subtext">
           Jenjang pendidikan digunakan sebagai referensi saat mendaftarkan sekolah.
         </p>
       </div>

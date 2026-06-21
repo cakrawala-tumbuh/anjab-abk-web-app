@@ -20,23 +20,24 @@ export default function MasterDataLayout({ children }: { children: ReactNode }) 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold text-gray-900">Master Data</h1>
-        <p className="mt-1 text-sm text-gray-500">
-          Kelola data referensi yang digunakan di seluruh aplikasi.
-        </p>
+        <h1 className="page-heading">Master Data</h1>
+        <p className="page-subtext">Kelola data referensi yang digunakan di seluruh aplikasi.</p>
       </div>
 
-      <nav className="flex gap-1 border-b border-gray-200" aria-label="Navigasi master data">
+      <nav
+        className="flex gap-1 border-b border-gray-200 dark:border-gray-700"
+        aria-label="Navigasi master data"
+      >
         {NAV_ITEMS.map((item) => {
           const active = pathname.startsWith(item.href);
           return (
             <Link
               key={item.href}
               href={item.href}
-              className={`px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors ${
+              className={`-mb-px border-b-2 px-4 py-2 text-sm font-medium transition-colors ${
                 active
-                  ? "border-blue-600 text-blue-600"
-                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                  ? "border-blue-600 text-blue-600 dark:border-blue-400 dark:text-blue-400"
+                  : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:text-gray-200"
               }`}
               aria-current={active ? "page" : undefined}
             >

@@ -27,7 +27,7 @@ export default async function TambahJabatanPage() {
     <div className="space-y-6">
       <div>
         <h2 className="text-lg font-semibold text-gray-900">Tambah Jabatan</h2>
-        <p className="mt-1 text-sm text-gray-500">
+        <p className="page-subtext">
           Jabatan digunakan sebagai referensi dalam analisis jabatan dan beban kerja.
         </p>
       </div>

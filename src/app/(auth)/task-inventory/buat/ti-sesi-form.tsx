@@ -93,13 +93,9 @@ export function TiSesiForm({ kombinasi, accessToken }: Props) {
   }
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      noValidate
-      className="space-y-5 rounded-lg border border-gray-200 bg-white p-6"
-    >
+    <form onSubmit={handleSubmit(onSubmit)} noValidate className="form-card space-y-5 p-6">
       {serverError && (
-        <div role="alert" className="rounded-md bg-red-50 p-3 text-sm text-red-700">
+        <div role="alert" className="form-server-error">
           {serverError}
         </div>
       )}
@@ -107,7 +103,7 @@ export function TiSesiForm({ kombinasi, accessToken }: Props) {
       <div className="grid gap-4 sm:grid-cols-2">
         {/* Unit */}
         <div>
-          <label htmlFor="unit" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="unit" className="form-label">
             Unit / Jenjang <span aria-hidden>*</span>
           </label>
           <select
@@ -129,7 +125,7 @@ export function TiSesiForm({ kombinasi, accessToken }: Props) {
             ))}
           </select>
           {errors.unit && (
-            <p className="mt-1 text-xs text-red-600" role="alert">
+            <p className="form-error" role="alert">
               {errors.unit.message}
             </p>
           )}
@@ -137,7 +133,7 @@ export function TiSesiForm({ kombinasi, accessToken }: Props) {
 
         {/* Kategori Jabatan */}
         <div>
-          <label htmlFor="kategori_jabatan" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="kategori_jabatan" className="form-label">
             Kategori Jabatan <span aria-hidden>*</span>
           </label>
           <select
@@ -155,7 +151,7 @@ export function TiSesiForm({ kombinasi, accessToken }: Props) {
             ))}
           </select>
           {errors.kategori_jabatan && (
-            <p className="mt-1 text-xs text-red-600" role="alert">
+            <p className="form-error" role="alert">
               {errors.kategori_jabatan.message}
             </p>
           )}
@@ -164,7 +160,7 @@ export function TiSesiForm({ kombinasi, accessToken }: Props) {
 
       {/* Periode */}
       <div>
-        <label htmlFor="periode" className="block text-sm font-medium text-gray-700">
+        <label htmlFor="periode" className="form-label">
           Periode <span aria-hidden>*</span>
         </label>
         <input
@@ -176,9 +172,9 @@ export function TiSesiForm({ kombinasi, accessToken }: Props) {
           className="mt-1 block w-48 rounded-md border border-gray-300 px-3 py-2 font-mono text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
           aria-invalid={!!errors.periode}
         />
-        <p className="mt-1 text-xs text-gray-500">Format: YYYY-MM</p>
+        <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">Format: YYYY-MM</p>
         {errors.periode && (
-          <p className="mt-1 text-xs text-red-600" role="alert">
+          <p className="form-error" role="alert">
             {errors.periode.message}
           </p>
         )}
@@ -187,7 +183,7 @@ export function TiSesiForm({ kombinasi, accessToken }: Props) {
       {/* Min/Max Responden */}
       <div className="flex gap-4">
         <div className="w-36">
-          <label htmlFor="min_responden" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="min_responden" className="form-label">
             Min. Responden <span aria-hidden>*</span>
           </label>
           <input
@@ -199,13 +195,13 @@ export function TiSesiForm({ kombinasi, accessToken }: Props) {
             aria-invalid={!!errors.min_responden}
           />
           {errors.min_responden && (
-            <p className="mt-1 text-xs text-red-600" role="alert">
+            <p className="form-error" role="alert">
               {errors.min_responden.message}
             </p>
           )}
         </div>
         <div className="w-36">
-          <label htmlFor="max_responden" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="max_responden" className="form-label">
             Maks. Responden <span aria-hidden>*</span>
           </label>
           <input
@@ -217,7 +213,7 @@ export function TiSesiForm({ kombinasi, accessToken }: Props) {
             aria-invalid={!!errors.max_responden}
           />
           {errors.max_responden && (
-            <p className="mt-1 text-xs text-red-600" role="alert">
+            <p className="form-error" role="alert">
               {errors.max_responden.message}
             </p>
           )}
@@ -226,7 +222,7 @@ export function TiSesiForm({ kombinasi, accessToken }: Props) {
 
       {/* Catatan */}
       <div>
-        <label htmlFor="catatan" className="block text-sm font-medium text-gray-700">
+        <label htmlFor="catatan" className="form-label">
           Catatan <span className="font-normal text-gray-400">(opsional)</span>
         </label>
         <textarea
@@ -245,7 +241,10 @@ export function TiSesiForm({ kombinasi, accessToken }: Props) {
         >
           {isSubmitting ? "Membuat…" : "Buat Sesi"}
         </button>
-        <Link href="/task-inventory" className="text-sm text-gray-500 hover:text-gray-700">
+        <Link
+          href="/task-inventory"
+          className="text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+        >
           Batal
         </Link>
       </div>

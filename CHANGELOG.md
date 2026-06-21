@@ -7,6 +7,30 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-06-21
+
+### Ditambahkan
+
+- **ThemeToggle di navigasi**: tombol ganti dark/light mode kini muncul di navbar untuk semua
+  pengguna (admin maupun partisipan), bukan hanya sebagai komponen tersembunyi.
+- **Unit test ThemeProvider & ThemeToggle** (10 kasus): verifikasi baca/tulis localStorage,
+  toggle kelas `.dark` pada `<html>`, dan aria-label tombol sesuai mode aktif.
+- **E2E test tema** (5 kasus): verifikasi ThemeToggle tersedia di navbar, mengubah kelas
+  `.dark`, menyimpan ke localStorage, dan bertahan setelah reload halaman.
+- **CSS component utilities** di `globals.css`: `.form-card`, `.form-label`, `.form-error`,
+  `.form-server-error`, `.page-heading`, `.page-subtext`, `.page-card`, `.table-container`,
+  `.empty-state` — sebagai fondasi dark/light mode konsisten.
+
+### Diperbaiki
+
+- **Dark mode UI rusak**: seluruh halaman (form, tabel, kartu, navigasi, tab Master Data)
+  kini merespons dark mode dengan benar. Sebelumnya hampir semua warna hard-coded ke light
+  mode (`bg-white`, `text-gray-700`, `border-gray-200`, dst.) sehingga UI terlihat putih di
+  atas latar gelap.
+- **Input/select/textarea tidak terbaca di dark mode**: ditambahkan CSS global (di luar
+  `@layer`) yang meng-override warna form control browser agar menggunakan `gray-800`
+  background dan `gray-100` teks di dark mode, mengatasi konflik dengan Tailwind utilities.
+
 ## [1.2.0] - 2026-06-21
 
 ### Ditambahkan

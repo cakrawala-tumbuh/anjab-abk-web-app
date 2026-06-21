@@ -40,7 +40,9 @@ export default async function MataPelajaranPage() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <p className="text-sm text-gray-500">{mataPelajaran.length} mata pelajaran terdaftar</p>
+        <p className="text-sm text-gray-500 dark:text-gray-400">
+          {mataPelajaran.length} mata pelajaran terdaftar
+        </p>
         <Link
           href="/master-data/mata-pelajaran/tambah"
           className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
@@ -50,24 +52,34 @@ export default async function MataPelajaranPage() {
       </div>
 
       {mataPelajaran.length === 0 ? (
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-gray-500 dark:text-gray-400">
           Belum ada mata pelajaran. Mulai dengan menambah satu.
         </p>
       ) : (
-        <div className="overflow-hidden rounded-lg border border-gray-200 bg-white">
+        <div className="table-container">
           <table className="w-full text-sm">
-            <thead className="bg-gray-50">
+            <thead className="bg-gray-50 dark:bg-gray-800">
               <tr>
-                <th className="px-4 py-3 text-left font-medium text-gray-600">Kode</th>
-                <th className="px-4 py-3 text-left font-medium text-gray-600">Nama</th>
-                <th className="px-4 py-3 text-left font-medium text-gray-600">Kelompok</th>
-                <th className="px-4 py-3 text-left font-medium text-gray-600">Deskripsi</th>
-                <th className="px-4 py-3 text-left font-medium text-gray-600">Status</th>
+                <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
+                  Kode
+                </th>
+                <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
+                  Nama
+                </th>
+                <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
+                  Kelompok
+                </th>
+                <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
+                  Deskripsi
+                </th>
+                <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
+                  Status
+                </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
               {mataPelajaran.map((mp) => (
-                <tr key={mp.id} className="hover:bg-gray-50">
+                <tr key={mp.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50">
                   <td className="px-4 py-3 font-mono text-gray-700">{mp.kode}</td>
                   <td className="px-4 py-3 font-medium text-gray-900">{mp.nama}</td>
                   <td className="px-4 py-3">

@@ -52,8 +52,8 @@ export default async function EditLogPage({ params }: Props) {
       </div>
 
       <div>
-        <h1 className="text-2xl font-semibold text-gray-900">Edit Log Harian</h1>
-        <p className="mt-1 text-sm text-gray-500">
+        <h1 className="page-heading">Edit Log Harian</h1>
+        <p className="page-subtext">
           Tanggal: <strong className="font-mono">{log.tanggal}</strong>
         </p>
       </div>

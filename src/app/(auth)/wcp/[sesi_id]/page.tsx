@@ -89,7 +89,7 @@ export default async function WcpSesiDetailPage({ params }: Props) {
       {/* Header */}
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold text-gray-900">{jabatanNama}</h1>
+          <h1 className="page-heading">{jabatanNama}</h1>
           <p className="mt-1 font-mono text-sm text-gray-500">{sesi.periode}</p>
           {sesi.catatan && <p className="mt-2 text-sm italic text-gray-600">{sesi.catatan}</p>}
         </div>
@@ -105,17 +105,17 @@ export default async function WcpSesiDetailPage({ params }: Props) {
       <div className="grid grid-cols-3 gap-4">
         <div className="rounded-lg border border-gray-200 bg-white p-4 text-center">
           <p className="text-2xl font-bold text-gray-900">{responden.length}</p>
-          <p className="mt-1 text-xs text-gray-500">Terdaftar</p>
+          <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">Terdaftar</p>
         </div>
         <div className="rounded-lg border border-gray-200 bg-white p-4 text-center">
           <p className="text-2xl font-bold text-green-600">{sudahSubmit}</p>
-          <p className="mt-1 text-xs text-gray-500">Sudah Mengisi</p>
+          <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">Sudah Mengisi</p>
         </div>
         <div className="rounded-lg border border-gray-200 bg-white p-4 text-center">
           <p className="text-2xl font-bold text-gray-400">
             {sesi.min_responden}–{sesi.max_responden}
           </p>
-          <p className="mt-1 text-xs text-gray-500">Target Responden</p>
+          <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">Target Responden</p>
         </div>
       </div>
 
@@ -142,34 +142,46 @@ export default async function WcpSesiDetailPage({ params }: Props) {
         </h2>
         {responden.length === 0 ? (
           <div className="rounded-lg border border-dashed border-gray-300 bg-white p-8 text-center">
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-gray-500 dark:text-gray-400">
               {sesi.status === "OPEN"
                 ? "Belum ada responden. Gunakan form di atas untuk mendaftarkan partisipan."
                 : "Belum ada responden yang terdaftar di sesi ini."}
             </p>
           </div>
         ) : (
-          <div className="overflow-hidden rounded-lg border border-gray-200 bg-white">
+          <div className="table-container">
             <table className="w-full text-sm">
-              <thead className="bg-gray-50">
+              <thead className="bg-gray-50 dark:bg-gray-800">
                 <tr>
-                  <th className="px-4 py-3 text-left font-medium text-gray-600">#</th>
-                  <th className="px-4 py-3 text-left font-medium text-gray-600">Nama</th>
-                  <th className="px-4 py-3 text-left font-medium text-gray-600">Jabatan</th>
-                  <th className="px-4 py-3 text-left font-medium text-gray-600">Status Isian</th>
+                  <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
+                    #
+                  </th>
+                  <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
+                    Nama
+                  </th>
+                  <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
+                    Jabatan
+                  </th>
+                  <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
+                    Status Isian
+                  </th>
                   {sesi.status === "OPEN" && (
-                    <th className="px-4 py-3 text-left font-medium text-gray-600">Aksi</th>
+                    <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
+                      Aksi
+                    </th>
                   )}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
+              <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
                 {responden.map((r, idx) => (
-                  <tr key={r.id} className="hover:bg-gray-50">
+                  <tr key={r.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50">
                     <td className="px-4 py-3 text-gray-400">{idx + 1}</td>
                     <td className="px-4 py-3 text-gray-900">
                       {r.nama ?? <span className="italic text-gray-400">Anonim</span>}
                     </td>
-                    <td className="px-4 py-3 text-gray-600">{r.jabatan_label}</td>
+                    <td className="px-4 py-3 text-gray-600 dark:text-gray-400">
+                      {r.jabatan_label}
+                    </td>
                     <td className="px-4 py-3">
                       {r.sudah_submit ? (
                         <span className="inline-flex items-center gap-1 rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700">

@@ -33,8 +33,8 @@ export default async function BuatTiSesiPage() {
       </div>
 
       <div>
-        <h1 className="text-2xl font-semibold text-gray-900">Buat Sesi Task Inventory</h1>
-        <p className="mt-1 text-sm text-gray-500">
+        <h1 className="page-heading">Buat Sesi Task Inventory</h1>
+        <p className="page-subtext">
           Pilih kombinasi unit & kategori jabatan beserta periode. Setelah dibuat, mulai Tahap 1
           untuk membuka seleksi relevansi task.
         </p>

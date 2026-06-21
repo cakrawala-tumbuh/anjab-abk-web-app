@@ -35,8 +35,8 @@ export default async function PartisipanPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold text-gray-900">Partisipan</h1>
-          <p className="mt-1 text-sm text-gray-500">{partisipan.length} partisipan terdaftar</p>
+          <h1 className="page-heading">Partisipan</h1>
+          <p className="page-subtext">{partisipan.length} partisipan terdaftar</p>
         </div>
         <Link
           href="/partisipan/tambah"
@@ -47,8 +47,10 @@ export default async function PartisipanPage() {
       </div>
 
       {partisipan.length === 0 ? (
-        <div className="rounded-lg border border-dashed border-gray-300 bg-white p-12 text-center">
-          <p className="text-sm text-gray-500">Belum ada partisipan. Mulai dengan menambah satu.</p>
+        <div className="empty-state">
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            Belum ada partisipan. Mulai dengan menambah satu.
+          </p>
           <Link
             href="/partisipan/tambah"
             className="mt-4 inline-block rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
@@ -57,21 +59,33 @@ export default async function PartisipanPage() {
           </Link>
         </div>
       ) : (
-        <div className="overflow-hidden rounded-lg border border-gray-200 bg-white">
+        <div className="table-container">
           <table className="w-full text-sm">
-            <thead className="bg-gray-50">
+            <thead className="bg-gray-50 dark:bg-gray-800">
               <tr>
-                <th className="px-4 py-3 text-left font-medium text-gray-600">Nama</th>
-                <th className="px-4 py-3 text-left font-medium text-gray-600">Email</th>
-                <th className="px-4 py-3 text-left font-medium text-gray-600">Satuan Pendidikan</th>
-                <th className="px-4 py-3 text-left font-medium text-gray-600">Jabatan Utama</th>
-                <th className="px-4 py-3 text-left font-medium text-gray-600">Masa Kerja</th>
-                <th className="px-4 py-3 text-left font-medium text-gray-600">Status</th>
+                <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
+                  Nama
+                </th>
+                <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
+                  Email
+                </th>
+                <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
+                  Satuan Pendidikan
+                </th>
+                <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
+                  Jabatan Utama
+                </th>
+                <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
+                  Masa Kerja
+                </th>
+                <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
+                  Status
+                </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
               {partisipan.map((p) => (
-                <tr key={p.id} className="hover:bg-gray-50">
+                <tr key={p.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50">
                   <td className="px-4 py-3">
                     <Link
                       href={`/partisipan/${p.id}`}
@@ -80,14 +94,14 @@ export default async function PartisipanPage() {
                       {p.nama}
                     </Link>
                   </td>
-                  <td className="px-4 py-3 text-gray-600">{p.email}</td>
-                  <td className="px-4 py-3 text-gray-600">
+                  <td className="px-4 py-3 text-gray-600 dark:text-gray-400">{p.email}</td>
+                  <td className="px-4 py-3 text-gray-600 dark:text-gray-400">
                     {sekolahMap[p.sekolah_id] ?? p.sekolah_id}
                   </td>
-                  <td className="px-4 py-3 text-gray-600">
+                  <td className="px-4 py-3 text-gray-600 dark:text-gray-400">
                     {jabatanMap[p.jabatan_utama_id] ?? p.jabatan_utama_id}
                   </td>
-                  <td className="px-4 py-3 text-gray-500">
+                  <td className="px-4 py-3 text-gray-500 dark:text-gray-500">
                     {p.masa_kerja_tahun}t {p.masa_kerja_bulan > 0 ? `${p.masa_kerja_bulan}b` : ""}
                   </td>
                   <td className="px-4 py-3">

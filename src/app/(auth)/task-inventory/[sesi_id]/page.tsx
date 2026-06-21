@@ -127,8 +127,8 @@ export default async function TiSesiDetailPage({ params }: Props) {
       {/* Header */}
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold text-gray-900">{sesi.kategori_jabatan}</h1>
-          <p className="mt-1 text-sm text-gray-500">
+          <h1 className="page-heading">{sesi.kategori_jabatan}</h1>
+          <p className="page-subtext">
             Unit <span className="font-medium text-gray-700">{sesi.unit}</span> ·{" "}
             <span className="font-mono">{sesi.periode}</span>
           </p>
@@ -146,19 +146,19 @@ export default async function TiSesiDetailPage({ params }: Props) {
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
         <div className="rounded-lg border border-gray-200 bg-white p-4 text-center">
           <p className="text-2xl font-bold text-gray-900">{responden.length}</p>
-          <p className="mt-1 text-xs text-gray-500">Terdaftar</p>
+          <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">Terdaftar</p>
         </div>
         <div className="rounded-lg border border-gray-200 bg-white p-4 text-center">
           <p className="text-2xl font-bold text-blue-600">{tahap1Submit}</p>
-          <p className="mt-1 text-xs text-gray-500">Selesai Tahap 1</p>
+          <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">Selesai Tahap 1</p>
         </div>
         <div className="rounded-lg border border-gray-200 bg-white p-4 text-center">
           <p className="text-2xl font-bold text-indigo-600">{tahap3Submit}</p>
-          <p className="mt-1 text-xs text-gray-500">Selesai Tahap 3</p>
+          <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">Selesai Tahap 3</p>
         </div>
         <div className="rounded-lg border border-gray-200 bg-white p-4 text-center">
           <p className="text-2xl font-bold text-gray-400">{sesi.jumlah_task_terpilih ?? "—"}</p>
-          <p className="mt-1 text-xs text-gray-500">Task Terpilih</p>
+          <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">Task Terpilih</p>
         </div>
       </div>
 
@@ -200,23 +200,35 @@ export default async function TiSesiDetailPage({ params }: Props) {
         </h2>
         {responden.length === 0 ? (
           <div className="rounded-lg border border-dashed border-gray-300 bg-white p-8 text-center">
-            <p className="text-sm text-gray-500">Belum ada responden terdaftar.</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              Belum ada responden terdaftar.
+            </p>
           </div>
         ) : (
-          <div className="overflow-hidden rounded-lg border border-gray-200 bg-white">
+          <div className="table-container">
             <table className="w-full text-sm">
-              <thead className="bg-gray-50">
+              <thead className="bg-gray-50 dark:bg-gray-800">
                 <tr>
-                  <th className="px-4 py-3 text-left font-medium text-gray-600">#</th>
-                  <th className="px-4 py-3 text-left font-medium text-gray-600">Nama</th>
-                  <th className="px-4 py-3 text-left font-medium text-gray-600">Tahap 1</th>
-                  <th className="px-4 py-3 text-left font-medium text-gray-600">Tahap 3</th>
-                  <th className="px-4 py-3 text-left font-medium text-gray-600">Aksi</th>
+                  <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
+                    #
+                  </th>
+                  <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
+                    Nama
+                  </th>
+                  <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
+                    Tahap 1
+                  </th>
+                  <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
+                    Tahap 3
+                  </th>
+                  <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
+                    Aksi
+                  </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
+              <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
                 {responden.map((r, idx) => (
-                  <tr key={r.id} className="hover:bg-gray-50">
+                  <tr key={r.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50">
                     <td className="px-4 py-3 text-gray-400">{idx + 1}</td>
                     <td className="px-4 py-3 text-gray-900">
                       {r.nama ?? <span className="italic text-gray-400">Anonim</span>}
@@ -285,21 +297,27 @@ export default async function TiSesiDetailPage({ params }: Props) {
           <h2 className="mb-4 text-lg font-medium text-gray-900">
             Task Relevan Terpilih ({taskTerpilih.length})
           </h2>
-          <div className="overflow-hidden rounded-lg border border-gray-200 bg-white">
+          <div className="table-container">
             <table className="w-full text-sm">
-              <thead className="bg-gray-50">
+              <thead className="bg-gray-50 dark:bg-gray-800">
                 <tr>
-                  <th className="px-4 py-3 text-left font-medium text-gray-600">Tugas Pokok</th>
-                  <th className="px-4 py-3 text-left font-medium text-gray-600">Uraian Tugas</th>
-                  <th className="px-4 py-3 text-left font-medium text-gray-600">Relevan</th>
+                  <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
+                    Tugas Pokok
+                  </th>
+                  <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
+                    Uraian Tugas
+                  </th>
+                  <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
+                    Relevan
+                  </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
+              <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
                 {taskTerpilih.map((t) => (
-                  <tr key={t.kode} className="hover:bg-gray-50">
-                    <td className="px-4 py-3 text-gray-600">{t.tugas_pokok}</td>
+                  <tr key={t.kode} className="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                    <td className="px-4 py-3 text-gray-600 dark:text-gray-400">{t.tugas_pokok}</td>
                     <td className="px-4 py-3 text-gray-900">{t.uraian_tugas}</td>
-                    <td className="px-4 py-3 text-gray-500">
+                    <td className="px-4 py-3 text-gray-500 dark:text-gray-500">
                       {t.n_relevan} ({t.pct_relevan}%)
                     </td>
                   </tr>
@@ -318,20 +336,22 @@ export default async function TiSesiDetailPage({ params }: Props) {
             Total beban: <strong>{hasil.total_jam_per_minggu}</strong> jam/minggu ·{" "}
             <strong>{hasil.total_jam_per_tahun}</strong> jam/tahun · {hasil.tasks.length} task.
           </p>
-          <div className="overflow-hidden rounded-lg border border-gray-200 bg-white">
+          <div className="table-container">
             <table className="w-full text-sm">
-              <thead className="bg-gray-50">
+              <thead className="bg-gray-50 dark:bg-gray-800">
                 <tr>
-                  <th className="px-4 py-3 text-left font-medium text-gray-600">Uraian Tugas</th>
+                  <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
+                    Uraian Tugas
+                  </th>
                   <th className="px-4 py-3 text-right font-medium text-gray-600">Relevan</th>
                   <th className="px-4 py-3 text-right font-medium text-gray-600">Jam/Minggu</th>
                   <th className="px-4 py-3 text-right font-medium text-gray-600">Jam/Tahun</th>
                   <th className="px-4 py-3 text-right font-medium text-gray-600">DCS</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
+              <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
                 {hasil.tasks.map((t: TiHasilTaskRead) => (
-                  <tr key={t.kode} className="hover:bg-gray-50">
+                  <tr key={t.kode} className="hover:bg-gray-50 dark:hover:bg-gray-800/50">
                     <td className="px-4 py-3 text-gray-900">{t.uraian_tugas}</td>
                     <td className="px-4 py-3 text-right text-gray-500">
                       {t.n_relevan} ({t.pct_relevan}%)

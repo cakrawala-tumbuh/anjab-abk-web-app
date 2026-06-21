@@ -27,7 +27,7 @@ export default async function TambahSekolahPage() {
     <div className="space-y-6">
       <div>
         <h2 className="text-lg font-semibold text-gray-900">Tambah Sekolah</h2>
-        <p className="mt-1 text-sm text-gray-500">
+        <p className="page-subtext">
           Sekolah adalah satuan pendidikan yang menjadi unit kerja dalam analisis jabatan.
         </p>
       </div>

@@ -59,10 +59,8 @@ export default async function TimeStudyIsiPage({ params }: Props) {
       {/* Header */}
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold text-gray-900">Log Harian — Time Study</h1>
-          <p className="mt-1 text-sm text-gray-500">
-            Catat aktivitas harian Anda untuk keperluan Studi Waktu.
-          </p>
+          <h1 className="page-heading">Log Harian — Time Study</h1>
+          <p className="page-subtext">Catat aktivitas harian Anda untuk keperluan Studi Waktu.</p>
         </div>
         <Link
           href={`/time-study/isi/${responden_id}/tambah`}
@@ -73,8 +71,10 @@ export default async function TimeStudyIsiPage({ params }: Props) {
       </div>
 
       {logs.length === 0 ? (
-        <div className="rounded-lg border border-dashed border-gray-300 bg-white p-12 text-center">
-          <p className="text-sm text-gray-500">Belum ada log harian. Mulai catat aktivitas Anda.</p>
+        <div className="empty-state">
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            Belum ada log harian. Mulai catat aktivitas Anda.
+          </p>
           <Link
             href={`/time-study/isi/${responden_id}/tambah`}
             className="mt-4 inline-block rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
@@ -83,40 +83,72 @@ export default async function TimeStudyIsiPage({ params }: Props) {
           </Link>
         </div>
       ) : (
-        <div className="overflow-hidden rounded-lg border border-gray-200 bg-white">
+        <div className="table-container">
           <table className="w-full text-sm">
-            <thead className="bg-gray-50">
+            <thead className="bg-gray-50 dark:bg-gray-800">
               <tr>
-                <th className="px-4 py-3 text-left font-medium text-gray-600">Tanggal</th>
-                <th className="px-4 py-3 text-left font-medium text-gray-600">Masuk–Keluar</th>
-                <th className="px-4 py-3 text-left font-medium text-gray-600">Inti</th>
-                <th className="px-4 py-3 text-left font-medium text-gray-600">Karakter</th>
-                <th className="px-4 py-3 text-left font-medium text-gray-600">Pengembangan</th>
-                <th className="px-4 py-3 text-left font-medium text-gray-600">Strategis</th>
-                <th className="px-4 py-3 text-left font-medium text-gray-600">Administrasi</th>
-                <th className="px-4 py-3 text-left font-medium text-gray-600">Istirahat</th>
-                <th className="px-4 py-3 text-left font-medium text-gray-600">Warna Hari</th>
-                <th className="px-4 py-3 text-left font-medium text-gray-600">Aksi</th>
+                <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
+                  Tanggal
+                </th>
+                <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
+                  Masuk–Keluar
+                </th>
+                <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
+                  Inti
+                </th>
+                <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
+                  Karakter
+                </th>
+                <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
+                  Pengembangan
+                </th>
+                <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
+                  Strategis
+                </th>
+                <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
+                  Administrasi
+                </th>
+                <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
+                  Istirahat
+                </th>
+                <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
+                  Warna Hari
+                </th>
+                <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
+                  Aksi
+                </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
               {logs.map((log) => {
                 const dc = DAY_COLOR_LABEL[log.day_color] ?? {
                   label: log.day_color,
                   cls: "bg-gray-100 text-gray-500",
                 };
                 return (
-                  <tr key={log.id} className="hover:bg-gray-50">
+                  <tr key={log.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50">
                     <td className="px-4 py-3 font-mono text-gray-900">{log.tanggal}</td>
                     <td className="px-4 py-3 font-mono text-gray-700">
                       {log.waktu_masuk}–{log.waktu_keluar}
                     </td>
-                    <td className="px-4 py-3 text-gray-600">{formatMenit(log.menit_core)}</td>
-                    <td className="px-4 py-3 text-gray-600">{formatMenit(log.menit_character)}</td>
-                    <td className="px-4 py-3 text-gray-600">{formatMenit(log.menit_improve)}</td>
-                    <td className="px-4 py-3 text-gray-600">{formatMenit(log.menit_strategic)}</td>
-                    <td className="px-4 py-3 text-gray-600">{formatMenit(log.menit_admin)}</td>
-                    <td className="px-4 py-3 text-gray-600">{formatMenit(log.menit_recovery)}</td>
+                    <td className="px-4 py-3 text-gray-600 dark:text-gray-400">
+                      {formatMenit(log.menit_core)}
+                    </td>
+                    <td className="px-4 py-3 text-gray-600 dark:text-gray-400">
+                      {formatMenit(log.menit_character)}
+                    </td>
+                    <td className="px-4 py-3 text-gray-600 dark:text-gray-400">
+                      {formatMenit(log.menit_improve)}
+                    </td>
+                    <td className="px-4 py-3 text-gray-600 dark:text-gray-400">
+                      {formatMenit(log.menit_strategic)}
+                    </td>
+                    <td className="px-4 py-3 text-gray-600 dark:text-gray-400">
+                      {formatMenit(log.menit_admin)}
+                    </td>
+                    <td className="px-4 py-3 text-gray-600 dark:text-gray-400">
+                      {formatMenit(log.menit_recovery)}
+                    </td>
                     <td className="px-4 py-3">
                       <span
                         className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${dc.cls}`}
@@ -140,7 +172,7 @@ export default async function TimeStudyIsiPage({ params }: Props) {
         </div>
       )}
 
-      <div className="text-sm text-gray-500">
+      <div className="text-sm text-gray-500 dark:text-gray-400">
         Total: <strong>{logs.length}</strong> log hari
       </div>
     </div>

@@ -92,7 +92,7 @@ export function TransisiSesi({ sesi, accessToken }: Props) {
       )}
 
       {sesi.status === "CLOSED" && (
-        <p className="text-sm text-gray-600">
+        <p className="text-sm text-gray-600 dark:text-gray-400">
           Sesi tertutup. Jalankan analisis dari backend untuk memproses hasil.
         </p>
       )}

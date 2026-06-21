@@ -31,7 +31,9 @@ export default async function SekolahPage() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <p className="text-sm text-gray-500">{sekolah.length} sekolah terdaftar</p>
+        <p className="text-sm text-gray-500 dark:text-gray-400">
+          {sekolah.length} sekolah terdaftar
+        </p>
         <Link
           href="/master-data/sekolah/tambah"
           className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
@@ -41,28 +43,40 @@ export default async function SekolahPage() {
       </div>
 
       {sekolah.length === 0 ? (
-        <p className="text-sm text-gray-500">Belum ada sekolah. Mulai dengan menambah satu.</p>
+        <p className="text-sm text-gray-500 dark:text-gray-400">
+          Belum ada sekolah. Mulai dengan menambah satu.
+        </p>
       ) : (
-        <div className="overflow-hidden rounded-lg border border-gray-200 bg-white">
+        <div className="table-container">
           <table className="w-full text-sm">
-            <thead className="bg-gray-50">
+            <thead className="bg-gray-50 dark:bg-gray-800">
               <tr>
-                <th className="px-4 py-3 text-left font-medium text-gray-600">Nama</th>
-                <th className="px-4 py-3 text-left font-medium text-gray-600">Jenjang</th>
-                <th className="px-4 py-3 text-left font-medium text-gray-600">NPSN</th>
-                <th className="px-4 py-3 text-left font-medium text-gray-600">Kota</th>
-                <th className="px-4 py-3 text-left font-medium text-gray-600">Status</th>
+                <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
+                  Nama
+                </th>
+                <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
+                  Jenjang
+                </th>
+                <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
+                  NPSN
+                </th>
+                <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
+                  Kota
+                </th>
+                <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
+                  Status
+                </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
               {sekolah.map((s) => (
-                <tr key={s.id} className="hover:bg-gray-50">
+                <tr key={s.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50">
                   <td className="px-4 py-3 font-medium text-gray-900">{s.nama}</td>
-                  <td className="px-4 py-3 text-gray-600">
+                  <td className="px-4 py-3 text-gray-600 dark:text-gray-400">
                     {jenjangMap[s.jenjang_pendidikan_id] ?? s.jenjang_pendidikan_id}
                   </td>
                   <td className="px-4 py-3 font-mono text-gray-500">{s.npsn ?? "—"}</td>
-                  <td className="px-4 py-3 text-gray-500">{s.kota ?? "—"}</td>
+                  <td className="px-4 py-3 text-gray-500 dark:text-gray-500">{s.kota ?? "—"}</td>
                   <td className="px-4 py-3">
                     <span
                       className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${

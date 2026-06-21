@@ -66,18 +66,15 @@ export function TambahSekolahForm({ jenjang, accessToken }: Props) {
   }
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="space-y-5 rounded-lg border border-gray-200 bg-white p-6"
-    >
+    <form onSubmit={handleSubmit(onSubmit)} className="form-card space-y-5 p-6">
       {serverError && (
-        <div role="alert" className="rounded-md bg-red-50 p-3 text-sm text-red-700">
+        <div role="alert" className="form-server-error">
           {serverError}
         </div>
       )}
 
       <div>
-        <label htmlFor="nama" className="block text-sm font-medium text-gray-700">
+        <label htmlFor="nama" className="form-label">
           Nama Sekolah <span aria-hidden>*</span>
         </label>
         <input
@@ -89,14 +86,14 @@ export function TambahSekolahForm({ jenjang, accessToken }: Props) {
           aria-invalid={!!errors.nama}
         />
         {errors.nama && (
-          <p className="mt-1 text-xs text-red-600" role="alert">
+          <p className="form-error" role="alert">
             {errors.nama.message}
           </p>
         )}
       </div>
 
       <div>
-        <label htmlFor="jenjang_pendidikan_id" className="block text-sm font-medium text-gray-700">
+        <label htmlFor="jenjang_pendidikan_id" className="form-label">
           Jenjang Pendidikan <span aria-hidden>*</span>
         </label>
         <select
@@ -113,14 +110,14 @@ export function TambahSekolahForm({ jenjang, accessToken }: Props) {
           ))}
         </select>
         {errors.jenjang_pendidikan_id && (
-          <p className="mt-1 text-xs text-red-600" role="alert">
+          <p className="form-error" role="alert">
             {errors.jenjang_pendidikan_id.message}
           </p>
         )}
       </div>
 
       <div>
-        <label htmlFor="npsn" className="block text-sm font-medium text-gray-700">
+        <label htmlFor="npsn" className="form-label">
           NPSN <span className="font-normal text-gray-400">(opsional)</span>
         </label>
         <input
@@ -132,9 +129,11 @@ export function TambahSekolahForm({ jenjang, accessToken }: Props) {
           className="mt-1 block w-40 rounded-md border border-gray-300 px-3 py-2 font-mono text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
           aria-invalid={!!errors.npsn}
         />
-        <p className="mt-1 text-xs text-gray-500">Nomor Pokok Sekolah Nasional (8 digit).</p>
+        <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+          Nomor Pokok Sekolah Nasional (8 digit).
+        </p>
         {errors.npsn && (
-          <p className="mt-1 text-xs text-red-600" role="alert">
+          <p className="form-error" role="alert">
             {errors.npsn.message}
           </p>
         )}
@@ -142,7 +141,7 @@ export function TambahSekolahForm({ jenjang, accessToken }: Props) {
 
       <div className="flex gap-4">
         <div className="flex-1">
-          <label htmlFor="kota" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="kota" className="form-label">
             Kota <span className="font-normal text-gray-400">(opsional)</span>
           </label>
           <input
@@ -154,7 +153,7 @@ export function TambahSekolahForm({ jenjang, accessToken }: Props) {
           />
         </div>
         <div className="flex-1">
-          <label htmlFor="provinsi" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="provinsi" className="form-label">
             Provinsi <span className="font-normal text-gray-400">(opsional)</span>
           </label>
           <input
@@ -187,7 +186,10 @@ export function TambahSekolahForm({ jenjang, accessToken }: Props) {
         >
           {isSubmitting ? "Menyimpan…" : "Tambah Sekolah"}
         </button>
-        <a href="/master-data/sekolah" className="text-sm text-gray-500 hover:text-gray-700">
+        <a
+          href="/master-data/sekolah"
+          className="text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+        >
           Batal
         </a>
       </div>

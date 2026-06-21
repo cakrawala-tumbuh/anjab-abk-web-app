@@ -53,8 +53,8 @@ export default async function Tahap2KoordinatorPage({ params }: Props) {
       </div>
 
       <div>
-        <h1 className="text-2xl font-semibold text-gray-900">Tahap 2 — Review Koordinator</h1>
-        <p className="mt-1 text-sm text-gray-500">
+        <h1 className="page-heading">Tahap 2 — Review Koordinator</h1>
+        <p className="page-subtext">
           Tentukan relevansi task yang tidak dipilih unanimously oleh semua anggota panel. Task yang
           disetujui akan digabung dengan task unanimous saat masuk Tahap 3.
         </p>
@@ -69,7 +69,7 @@ export default async function Tahap2KoordinatorPage({ params }: Props) {
 
       {!review || review.tasks.length === 0 ? (
         <div className="rounded-lg border border-dashed border-gray-300 bg-white p-8 text-center">
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-gray-500 dark:text-gray-400">
             Tidak ada task partial — semua task dipilih secara unanimous atau belum ada yang submit
             Tahap 1.
           </p>

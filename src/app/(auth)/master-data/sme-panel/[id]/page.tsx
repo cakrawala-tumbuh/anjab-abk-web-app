@@ -50,7 +50,7 @@ export default async function SMEPanelDetailPage({ params }: Props) {
           <h2 className="text-lg font-semibold text-gray-900">
             SME Panel: {jbt?.nama ?? panel.jabatan_id}
           </h2>
-          <p className="mt-1 text-sm text-gray-500">
+          <p className="page-subtext">
             {jbt?.jenis && (
               <span className="inline-flex rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-700 mr-2">
                 {jbt.jenis}
@@ -67,7 +67,10 @@ export default async function SMEPanelDetailPage({ params }: Props) {
             )}
           </p>
         </div>
-        <Link href="/master-data/sme-panel" className="text-sm text-gray-500 hover:text-gray-700">
+        <Link
+          href="/master-data/sme-panel"
+          className="text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+        >
           ← Kembali
         </Link>
       </div>

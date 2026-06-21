@@ -35,13 +35,16 @@ export default async function DcsSubSkalaDetailPage({ params }: PageProps) {
   return (
     <div className="space-y-4">
       <div>
-        <Link href="/master-data/dcs" className="text-sm text-gray-500 hover:text-gray-700">
+        <Link
+          href="/master-data/dcs"
+          className="text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+        >
           ← Kembali ke daftar sub-skala
         </Link>
         <h2 className="mt-2 text-lg font-semibold text-gray-900">
           {subSkala.nama} <span className="font-mono text-sm text-gray-400">({subSkala.kode})</span>
         </h2>
-        <p className="mt-1 text-sm text-gray-500">
+        <p className="page-subtext">
           {subSkala.items.length} item. Klik &ldquo;Ubah&rdquo; untuk menyunting pernyataan, arah
           (F/UF), atau urutan.
         </p>

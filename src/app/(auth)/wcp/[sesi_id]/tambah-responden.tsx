@@ -92,7 +92,7 @@ export function TambahResponden({ sesiId, partisipan, jabatan, accessToken }: Pr
       <div className="grid gap-4 sm:grid-cols-3">
         {/* Pilih Partisipan */}
         <div className="sm:col-span-3">
-          <label htmlFor="partisipan_select" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="partisipan_select" className="form-label">
             Pilih dari Partisipan{" "}
             <span className="font-normal text-gray-400">(opsional — pre-isi nama & jabatan)</span>
           </label>
@@ -115,7 +115,7 @@ export function TambahResponden({ sesiId, partisipan, jabatan, accessToken }: Pr
 
         {/* Nama */}
         <div>
-          <label htmlFor="resp-nama" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="resp-nama" className="form-label">
             Nama <span className="font-normal text-gray-400">(opsional)</span>
           </label>
           <input
@@ -129,7 +129,7 @@ export function TambahResponden({ sesiId, partisipan, jabatan, accessToken }: Pr
 
         {/* Jabatan Label */}
         <div>
-          <label htmlFor="resp-jabatan" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="resp-jabatan" className="form-label">
             Label Jabatan <span aria-hidden>*</span>
           </label>
           <input
@@ -141,7 +141,7 @@ export function TambahResponden({ sesiId, partisipan, jabatan, accessToken }: Pr
             aria-invalid={!!errors.jabatan_label}
           />
           {errors.jabatan_label && (
-            <p className="mt-1 text-xs text-red-600" role="alert">
+            <p className="form-error" role="alert">
               {errors.jabatan_label.message}
             </p>
           )}

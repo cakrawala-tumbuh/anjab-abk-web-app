@@ -80,7 +80,7 @@ export function TambahResponden({ sesiId, partisipan, accessToken }: Props) {
 
       <div className="grid gap-4 sm:grid-cols-3">
         <div className="sm:col-span-1">
-          <label htmlFor="partisipan_select" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="partisipan_select" className="form-label">
             Pilih Partisipan <span className="font-normal text-gray-400">(opsional)</span>
           </label>
           <select
@@ -98,7 +98,7 @@ export function TambahResponden({ sesiId, partisipan, accessToken }: Props) {
         </div>
 
         <div className="sm:col-span-1">
-          <label htmlFor="resp-nama" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="resp-nama" className="form-label">
             Nama <span className="font-normal text-gray-400">(opsional)</span>
           </label>
           <input

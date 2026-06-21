@@ -18,7 +18,7 @@ export default function Loading() {
         ))}
       </div>
       <div className="h-12 animate-pulse rounded-lg bg-gray-100" />
-      <div className="overflow-hidden rounded-lg border border-gray-200 bg-white">
+      <div className="table-container">
         {Array.from({ length: 3 }).map((_, i) => (
           <div key={i} className="flex gap-4 border-b border-gray-100 px-4 py-3">
             <div className="h-4 w-6 animate-pulse rounded bg-gray-200" />

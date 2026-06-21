@@ -51,7 +51,7 @@ function TambahForm({ panelId, partisipanBelumAnggota, accessToken }: TambahProp
 
   if (partisipanBelumAnggota.length === 0) {
     return (
-      <p className="text-sm text-gray-500">
+      <p className="text-sm text-gray-500 dark:text-gray-400">
         Semua partisipan yang sesuai jabatan sudah menjadi anggota panel ini.
       </p>
     );
@@ -65,7 +65,7 @@ function TambahForm({ panelId, partisipanBelumAnggota, accessToken }: TambahProp
         </div>
       )}
       <div className="flex-1">
-        <label htmlFor="partisipan_id" className="block text-sm font-medium text-gray-700">
+        <label htmlFor="partisipan_id" className="form-label">
           Tambah Anggota
         </label>
         <select
@@ -82,7 +82,7 @@ function TambahForm({ panelId, partisipanBelumAnggota, accessToken }: TambahProp
           ))}
         </select>
         {errors.partisipan_id && (
-          <p className="mt-1 text-xs text-red-600" role="alert">
+          <p className="form-error" role="alert">
             {errors.partisipan_id.message}
           </p>
         )}
@@ -244,29 +244,39 @@ export function AnggotaSection({
       />
 
       {partisipanAnggota.length === 0 ? (
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-gray-500 dark:text-gray-400">
           Belum ada anggota. Tambahkan partisipan yang jabatannya sesuai.
         </p>
       ) : (
         <div className="overflow-hidden rounded-lg border border-gray-200">
           <table className="w-full text-sm">
-            <thead className="bg-gray-50">
+            <thead className="bg-gray-50 dark:bg-gray-800">
               <tr>
-                <th className="px-4 py-3 text-left font-medium text-gray-600">Nama</th>
-                <th className="px-4 py-3 text-left font-medium text-gray-600">Email</th>
-                <th className="px-4 py-3 text-left font-medium text-gray-600">Jabatan Utama</th>
-                <th className="px-4 py-3 text-left font-medium text-gray-600">Koordinator</th>
-                <th className="px-4 py-3 text-left font-medium text-gray-600">Aksi</th>
+                <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
+                  Nama
+                </th>
+                <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
+                  Email
+                </th>
+                <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
+                  Jabatan Utama
+                </th>
+                <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
+                  Koordinator
+                </th>
+                <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
+                  Aksi
+                </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
               {partisipanAnggota.map((p) => {
                 const isKoordinator = koordinatorId === p.id;
                 return (
-                  <tr key={p.id} className="hover:bg-gray-50">
+                  <tr key={p.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50">
                     <td className="px-4 py-3 font-medium text-gray-900">{p.nama}</td>
-                    <td className="px-4 py-3 text-gray-600">{p.email}</td>
-                    <td className="px-4 py-3 text-gray-500">
+                    <td className="px-4 py-3 text-gray-600 dark:text-gray-400">{p.email}</td>
+                    <td className="px-4 py-3 text-gray-500 dark:text-gray-500">
                       {jabatanMap[p.jabatan_utama_id]?.nama ?? p.jabatan_utama_id}
                     </td>
                     <td className="px-4 py-3">

@@ -9,29 +9,27 @@ export default async function DashboardPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold text-gray-900">Dashboard</h1>
-        <p className="mt-1 text-sm text-gray-500">
-          Selamat datang, {session?.user?.name ?? "Pengguna"}.
-        </p>
+        <h1 className="page-heading">Dashboard</h1>
+        <p className="page-subtext">Selamat datang, {session?.user?.name ?? "Pengguna"}.</p>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {admin && (
           <Link
             href="/partisipan"
-            className="rounded-lg border border-gray-200 bg-white p-6 hover:border-blue-300 hover:shadow-sm"
+            className="page-card hover:border-blue-300 hover:shadow-sm dark:hover:border-blue-600"
           >
-            <h2 className="font-medium text-gray-900">Kelola Partisipan</h2>
-            <p className="mt-1 text-sm text-gray-500">Tambah dan kelola partisipan ANJAB-ABK.</p>
+            <h2 className="font-medium text-gray-900 dark:text-gray-50">Kelola Partisipan</h2>
+            <p className="page-subtext">Tambah dan kelola partisipan ANJAB-ABK.</p>
           </Link>
         )}
         {admin && (
           <Link
             href="/task-inventory"
-            className="rounded-lg border border-gray-200 bg-white p-6 hover:border-blue-300 hover:shadow-sm"
+            className="page-card hover:border-blue-300 hover:shadow-sm dark:hover:border-blue-600"
           >
-            <h2 className="font-medium text-gray-900">Task Inventory</h2>
-            <p className="mt-1 text-sm text-gray-500">
+            <h2 className="font-medium text-gray-900 dark:text-gray-50">Task Inventory</h2>
+            <p className="page-subtext">
               Inventori tugas 2 tahap: seleksi relevansi lalu detailing beban kerja.
             </p>
           </Link>
@@ -39,10 +37,10 @@ export default async function DashboardPage() {
         {admin && (
           <Link
             href="/time-study"
-            className="rounded-lg border border-gray-200 bg-white p-6 hover:border-blue-300 hover:shadow-sm"
+            className="page-card hover:border-blue-300 hover:shadow-sm dark:hover:border-blue-600"
           >
-            <h2 className="font-medium text-gray-900">Time Study</h2>
-            <p className="mt-1 text-sm text-gray-500">
+            <h2 className="font-medium text-gray-900 dark:text-gray-50">Time Study</h2>
+            <p className="page-subtext">
               Studi Waktu — kelola sesi pencatatan log harian per jabatan.
             </p>
           </Link>
@@ -50,16 +48,16 @@ export default async function DashboardPage() {
         {partisipan && !admin && (
           <Link
             href="/kuesioner"
-            className="rounded-lg border border-gray-200 bg-white p-6 hover:border-blue-300 hover:shadow-sm"
+            className="page-card hover:border-blue-300 hover:shadow-sm dark:hover:border-blue-600"
           >
-            <h2 className="font-medium text-gray-900">Kuesioner Saya</h2>
-            <p className="mt-1 text-sm text-gray-500">Lihat dan isi kuesioner yang ditugaskan.</p>
+            <h2 className="font-medium text-gray-900 dark:text-gray-50">Kuesioner Saya</h2>
+            <p className="page-subtext">Lihat dan isi kuesioner yang ditugaskan.</p>
           </Link>
         )}
       </div>
 
       {!admin && !partisipan && (
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-gray-500 dark:text-gray-400">
           Akun Anda belum tergabung ke grup manapun. Hubungi administrator.
         </p>
       )}

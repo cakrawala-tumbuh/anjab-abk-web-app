@@ -63,8 +63,8 @@ export default async function KuesionerSayaPage() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-semibold text-gray-900">Kuesioner Saya</h1>
-        <p className="mt-1 text-sm text-gray-500">
+        <h1 className="page-heading">Kuesioner Saya</h1>
+        <p className="page-subtext">
           {total === 0
             ? "Belum ada alat ukur yang aktif."
             : `${total} alat ukur, ${belumDiisi} belum diisi.`}
@@ -73,7 +73,9 @@ export default async function KuesionerSayaPage() {
 
       {total === 0 && (
         <div className="rounded-lg border border-dashed border-gray-300 bg-white p-10 text-center">
-          <p className="text-sm text-gray-500">Belum ada alat ukur yang aktif untuk Anda.</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            Belum ada alat ukur yang aktif untuk Anda.
+          </p>
           <p className="mt-1 text-xs text-gray-400">
             Alat ukur akan muncul otomatis saat sesi studi dibuka oleh administrator.
           </p>
@@ -169,7 +171,7 @@ function KuesionerCard({
   return (
     <div className="flex items-center justify-between rounded-lg border border-gray-200 bg-white p-4">
       <div>
-        <p className="font-medium text-gray-900">{jabatan_label}</p>
+        <p className="font-medium text-gray-900 dark:text-gray-50">{jabatan_label}</p>
         <p className="mt-0.5 text-sm text-gray-500">
           {tipe} · Periode {periode}
         </p>
@@ -223,7 +225,7 @@ function TsKuesionerCard({ item }: { item: TsKuesionerItemRead }) {
   return (
     <div className="flex items-center justify-between rounded-lg border border-gray-200 bg-white p-4">
       <div>
-        <p className="font-medium text-gray-900">{item.jabatan_label}</p>
+        <p className="font-medium text-gray-900 dark:text-gray-50">{item.jabatan_label}</p>
         <p className="mt-0.5 text-sm text-gray-500">Time Study · Periode {item.sesi_periode}</p>
         <div className="mt-2 flex items-center gap-2">
           <span
@@ -281,7 +283,7 @@ function TiKuesionerCard({ item }: { item: TiKuesionerItemRead }) {
   return (
     <div className="flex items-center justify-between rounded-lg border border-gray-200 bg-white p-4">
       <div>
-        <p className="font-medium text-gray-900">{item.sesi_kategori_jabatan}</p>
+        <p className="font-medium text-gray-900 dark:text-gray-50">{item.sesi_kategori_jabatan}</p>
         <p className="mt-0.5 text-sm text-gray-500">
           Task Inventory · {item.sesi_unit} · Periode {item.sesi_periode}
         </p>

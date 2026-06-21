@@ -152,7 +152,7 @@ export function WcpForm({ respondenId, dimensi, jawabanAwal, sudahSubmit, access
       {!sudahSubmit && (
         <div className="sticky bottom-0 border-t border-gray-200 bg-white/90 py-4 backdrop-blur">
           <div className="flex items-center justify-between">
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-gray-500 dark:text-gray-400">
               {Object.keys(skor).length} / {allItems.length} pernyataan dijawab
             </p>
             <button

@@ -70,19 +70,16 @@ export function TambahJabatanForm({ sekolah, accessToken }: Props) {
   }
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="space-y-5 rounded-lg border border-gray-200 bg-white p-6"
-    >
+    <form onSubmit={handleSubmit(onSubmit)} className="form-card space-y-5 p-6">
       {serverError && (
-        <div role="alert" className="rounded-md bg-red-50 p-3 text-sm text-red-700">
+        <div role="alert" className="form-server-error">
           {serverError}
         </div>
       )}
 
       <div className="flex gap-4">
         <div className="w-36">
-          <label htmlFor="kode" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="kode" className="form-label">
             Kode <span aria-hidden>*</span>
           </label>
           <input
@@ -94,13 +91,13 @@ export function TambahJabatanForm({ sekolah, accessToken }: Props) {
             aria-invalid={!!errors.kode}
           />
           {errors.kode && (
-            <p className="mt-1 text-xs text-red-600" role="alert">
+            <p className="form-error" role="alert">
               {errors.kode.message}
             </p>
           )}
         </div>
         <div className="flex-1">
-          <label htmlFor="nama" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="nama" className="form-label">
             Nama Jabatan <span aria-hidden>*</span>
           </label>
           <input
@@ -112,7 +109,7 @@ export function TambahJabatanForm({ sekolah, accessToken }: Props) {
             aria-invalid={!!errors.nama}
           />
           {errors.nama && (
-            <p className="mt-1 text-xs text-red-600" role="alert">
+            <p className="form-error" role="alert">
               {errors.nama.message}
             </p>
           )}
@@ -120,7 +117,7 @@ export function TambahJabatanForm({ sekolah, accessToken }: Props) {
       </div>
 
       <div>
-        <label htmlFor="jenis" className="block text-sm font-medium text-gray-700">
+        <label htmlFor="jenis" className="form-label">
           Jenis Jabatan <span aria-hidden>*</span>
         </label>
         <select
@@ -137,7 +134,7 @@ export function TambahJabatanForm({ sekolah, accessToken }: Props) {
           ))}
         </select>
         {errors.jenis && (
-          <p className="mt-1 text-xs text-red-600" role="alert">
+          <p className="form-error" role="alert">
             {errors.jenis.message}
           </p>
         )}
@@ -145,7 +142,7 @@ export function TambahJabatanForm({ sekolah, accessToken }: Props) {
 
       {sekolah.length > 0 && (
         <div>
-          <label htmlFor="unit_kerja_id" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="unit_kerja_id" className="form-label">
             Unit Kerja / Sekolah <span className="font-normal text-gray-400">(opsional)</span>
           </label>
           <select
@@ -164,7 +161,7 @@ export function TambahJabatanForm({ sekolah, accessToken }: Props) {
       )}
 
       <div>
-        <label htmlFor="deskripsi" className="block text-sm font-medium text-gray-700">
+        <label htmlFor="deskripsi" className="form-label">
           Deskripsi <span className="font-normal text-gray-400">(opsional)</span>
         </label>
         <textarea
@@ -175,7 +172,7 @@ export function TambahJabatanForm({ sekolah, accessToken }: Props) {
           className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
         />
         {errors.deskripsi && (
-          <p className="mt-1 text-xs text-red-600" role="alert">
+          <p className="form-error" role="alert">
             {errors.deskripsi.message}
           </p>
         )}
@@ -201,7 +198,10 @@ export function TambahJabatanForm({ sekolah, accessToken }: Props) {
         >
           {isSubmitting ? "Menyimpan…" : "Tambah Jabatan"}
         </button>
-        <a href="/master-data/jabatan" className="text-sm text-gray-500 hover:text-gray-700">
+        <a
+          href="/master-data/jabatan"
+          className="text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+        >
           Batal
         </a>
       </div>
