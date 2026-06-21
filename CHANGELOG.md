@@ -7,6 +7,15 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-06-21
+
+### Ditambahkan
+
+- **Koordinator SME Panel**: kolom "Koordinator" pada tabel anggota panel — menampilkan badge
+  amber bila anggota berstatus koordinator. Tombol "Jadikan Koordinator" / "Batalkan Koordinator"
+  per baris memungkinkan admin menetapkan atau mencabut koordinator via PATCH SME Panel.
+- E2E test baru: "admin dapat menetapkan koordinator SME panel".
+
 ## [0.9.0] - 2026-06-21
 
 ### Diperbaiki

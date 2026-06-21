@@ -135,12 +135,70 @@ export function HapusAnggotaButton({ panelId, partisipanId, accessToken }: Hapus
   );
 }
 
+// ─── Set Koordinator Button ───────────────────────────────────────────────────
+
+interface SetKoordinatorProps {
+  panelId: string;
+  partisipanId: string;
+  isKoordinator: boolean;
+  accessToken: string | undefined;
+}
+
+export function SetKoordinatorButton({
+  panelId,
+  partisipanId,
+  isKoordinator,
+  accessToken,
+}: SetKoordinatorProps) {
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+
+  async function handleSet() {
+    setLoading(true);
+    try {
+      const client = withServerAuth(accessToken);
+      const newKoordinatorId = isKoordinator ? null : partisipanId;
+      await client.PATCH("/api/v1/sme-panel/{panel_id}", {
+        params: { path: { panel_id: panelId } },
+        body: { koordinator_id: newKoordinatorId },
+      });
+      router.refresh();
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  if (isKoordinator) {
+    return (
+      <button
+        onClick={handleSet}
+        disabled={loading}
+        className="text-xs text-amber-600 hover:text-amber-800 disabled:opacity-50"
+        title="Klik untuk hapus sebagai koordinator"
+      >
+        {loading ? "Memproses…" : "Batalkan Koordinator"}
+      </button>
+    );
+  }
+
+  return (
+    <button
+      onClick={handleSet}
+      disabled={loading}
+      className="text-xs text-blue-600 hover:text-blue-800 disabled:opacity-50"
+    >
+      {loading ? "Memproses…" : "Jadikan Koordinator"}
+    </button>
+  );
+}
+
 // ─── Anggota Section (client-side fetch partisipan) ──────────────────────────
 
 interface AnggotaSectionProps {
   panelId: string;
   panelJabatanId: string;
   partisipanIds: string[];
+  koordinatorId: string | null;
   jabatanMap: Record<string, { nama: string }>;
   accessToken: string | undefined;
 }
@@ -149,6 +207,7 @@ export function AnggotaSection({
   panelId,
   panelJabatanId,
   partisipanIds,
+  koordinatorId,
   jabatanMap,
   accessToken,
 }: AnggotaSectionProps) {
@@ -196,26 +255,45 @@ export function AnggotaSection({
                 <th className="px-4 py-3 text-left font-medium text-gray-600">Nama</th>
                 <th className="px-4 py-3 text-left font-medium text-gray-600">Email</th>
                 <th className="px-4 py-3 text-left font-medium text-gray-600">Jabatan Utama</th>
+                <th className="px-4 py-3 text-left font-medium text-gray-600">Koordinator</th>
                 <th className="px-4 py-3 text-left font-medium text-gray-600">Aksi</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {partisipanAnggota.map((p) => (
-                <tr key={p.id} className="hover:bg-gray-50">
-                  <td className="px-4 py-3 font-medium text-gray-900">{p.nama}</td>
-                  <td className="px-4 py-3 text-gray-600">{p.email}</td>
-                  <td className="px-4 py-3 text-gray-500">
-                    {jabatanMap[p.jabatan_utama_id]?.nama ?? p.jabatan_utama_id}
-                  </td>
-                  <td className="px-4 py-3">
-                    <HapusAnggotaButton
-                      panelId={panelId}
-                      partisipanId={p.id}
-                      accessToken={accessToken}
-                    />
-                  </td>
-                </tr>
-              ))}
+              {partisipanAnggota.map((p) => {
+                const isKoordinator = koordinatorId === p.id;
+                return (
+                  <tr key={p.id} className="hover:bg-gray-50">
+                    <td className="px-4 py-3 font-medium text-gray-900">{p.nama}</td>
+                    <td className="px-4 py-3 text-gray-600">{p.email}</td>
+                    <td className="px-4 py-3 text-gray-500">
+                      {jabatanMap[p.jabatan_utama_id]?.nama ?? p.jabatan_utama_id}
+                    </td>
+                    <td className="px-4 py-3">
+                      {isKoordinator ? (
+                        <span className="inline-flex rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700">
+                          Koordinator
+                        </span>
+                      ) : (
+                        "—"
+                      )}
+                    </td>
+                    <td className="px-4 py-3 flex items-center gap-3">
+                      <SetKoordinatorButton
+                        panelId={panelId}
+                        partisipanId={p.id}
+                        isKoordinator={isKoordinator}
+                        accessToken={accessToken}
+                      />
+                      <HapusAnggotaButton
+                        panelId={panelId}
+                        partisipanId={p.id}
+                        accessToken={accessToken}
+                      />
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>

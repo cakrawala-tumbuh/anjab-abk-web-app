@@ -439,10 +439,11 @@ export interface paths {
     };
     /**
      * Daftar kuesioner DCS milik pengguna yang sedang login
-     * @description Enrollment otomatis: kembalikan sesi DCS yang berlaku untuk jabatan utama
-     *     partisipan dan berstatus OPEN, sambil membuat record responden bila belum ada.
+     * @description Kembalikan sesi DCS yang sudah di-assign ke partisipan dan berstatus OPEN.
      *
-     *     Tiap partisipan mengisi tepat satu DCS sesuai ``jabatan_utama_id``-nya.
+     *     Partisipan hanya melihat kuesioner DCS yang telah di-assign secara eksplisit
+     *     oleh admin (record responden sudah dibuat dengan ``partisipan_id`` mereka).
+     *     Tidak ada enrollment otomatis.
      */
     get: operations["dcs_kuesioner_saya"];
     put?: never;
@@ -462,10 +463,11 @@ export interface paths {
     };
     /**
      * Daftar kuesioner WCP milik pengguna yang sedang login
-     * @description Enrollment otomatis: kembalikan sesi WCP yang berlaku untuk jabatan utama
-     *     partisipan dan berstatus OPEN, sambil membuat record responden bila belum ada.
+     * @description Kembalikan sesi WCP yang sudah di-assign ke partisipan dan berstatus OPEN.
      *
-     *     Tiap partisipan mengisi tepat satu WCP sesuai ``jabatan_utama_id``-nya.
+     *     Partisipan hanya melihat kuesioner WCP yang telah di-assign secara eksplisit
+     *     oleh admin (record responden sudah dibuat dengan ``partisipan_id`` mereka).
+     *     Tidak ada enrollment otomatis.
      */
     get: operations["wcp_kuesioner_saya"];
     put?: never;
@@ -2760,6 +2762,11 @@ export interface components {
        */
       partisipan_ids?: string[];
       /**
+       * Koordinator Id
+       * @description ID partisipan yang menjadi koordinator panel. Harus merupakan anggota panel.
+       */
+      koordinator_id?: string | null;
+      /**
        * Aktif
        * @description Status aktif.
        */
@@ -2781,6 +2788,11 @@ export interface components {
        * @description Status aktif baru.
        */
       aktif?: boolean | null;
+      /**
+       * Koordinator Id
+       * @description ID partisipan yang menjadi koordinator panel. Harus anggota panel. Kirim null untuk menghapus koordinator.
+       */
+      koordinator_id?: string | null;
     };
     /**
      * SearchRequest
@@ -6266,13 +6278,13 @@ export interface operations {
           "application/json": components["schemas"]["ErrorResponse"];
         };
       };
-      /** @description Validation Error */
+      /** @description Koordinator bukan anggota panel. */
       422: {
         headers: {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
+          "application/json": components["schemas"]["ErrorResponse"];
         };
       };
       /** @description If-Match wajib. */
@@ -7137,6 +7149,15 @@ export interface operations {
       };
       /** @description Sesi WCP tidak ditemukan. */
       404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      /** @description Partisipan sudah terdaftar sebagai responden WCP. */
+      409: {
         headers: {
           [name: string]: unknown;
         };
@@ -8167,6 +8188,15 @@ export interface operations {
       };
       /** @description Sesi DCS tidak ditemukan. */
       404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      /** @description Partisipan sudah terdaftar sebagai responden DCS. */
+      409: {
         headers: {
           [name: string]: unknown;
         };

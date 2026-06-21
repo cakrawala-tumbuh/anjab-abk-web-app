@@ -284,6 +284,61 @@ test.describe.serial("Master Data — SME Panel", () => {
     }
     await expect(page.getByRole("row").filter({ hasText: "Partisipan SME E2E" })).toBeVisible();
   });
+
+  test("admin dapat menetapkan koordinator SME panel", async ({ page }) => {
+    test.setTimeout(120_000);
+    await loginViaAuthentik(page, "admin-e2e", "AdminE2e123!");
+
+    // Pastikan semua prasyarat tersedia (idempoten)
+    await buatJabatan(page, "E2E-SME-JBT", "Jabatan SME E2E Test");
+    await buatSekolah(page, "Sekolah SME E2E", "E2E-JENJANG", "Jenjang E2E Test");
+    await buatPartisipan(page, {
+      nama: "Partisipan SME E2E",
+      email: "sme.e2e@test.local",
+      sekolahNama: "Sekolah SME E2E",
+      jabatanNama: "Jabatan SME E2E Test",
+    });
+
+    // Buka detail panel
+    await page.goto("/master-data/sme-panel");
+    await page.waitForLoadState("networkidle");
+    const panelRow = page.getByRole("row").filter({ hasText: "Jabatan SME E2E Test" });
+    await panelRow.getByRole("link", { name: /Kelola anggota/ }).click();
+    await page.waitForLoadState("networkidle");
+
+    // Tunggu client-side fetch selesai
+    await expect(page.getByText("Memuat data partisipan")).not.toBeVisible({ timeout: 10_000 });
+
+    // Pastikan anggota sudah ada — waitFor menunggu DOM render selesai.
+    const anggotaRow = page.getByRole("row").filter({ hasText: "Partisipan SME E2E" });
+    const sudahAnggota = await anggotaRow
+      .waitFor({ state: "visible", timeout: 5_000 })
+      .then(() => true)
+      .catch(() => false);
+    if (!sudahAnggota) {
+      const select = page.getByLabel("Tambah Anggota");
+      await expect(select).toBeVisible({ timeout: 10_000 });
+      await select.selectOption({ label: "Partisipan SME E2E — sme.e2e@test.local" });
+      await page.getByRole("button", { name: "Tambah" }).click();
+      await expect(page.getByText("Memuat data partisipan")).not.toBeVisible({ timeout: 10_000 });
+      await expect(anggotaRow).toBeVisible({ timeout: 10_000 });
+    }
+
+    // Jadikan koordinator jika belum
+    const koordinatorBadge = anggotaRow.getByText("Koordinator");
+    const sudahKoordinator = await koordinatorBadge
+      .waitFor({ state: "visible", timeout: 3_000 })
+      .then(() => true)
+      .catch(() => false);
+    if (!sudahKoordinator) {
+      await anggotaRow.getByRole("button", { name: "Jadikan Koordinator" }).click();
+      await page.waitForLoadState("networkidle");
+      await expect(page.getByText("Memuat data partisipan")).not.toBeVisible({ timeout: 10_000 });
+    }
+
+    // Verifikasi badge "Koordinator" tampil di baris yang benar
+    await expect(anggotaRow.getByText("Koordinator")).toBeVisible({ timeout: 10_000 });
+  });
 });
 
 // ─── Instrumen DCS & WCP ─────────────────────────────────────────────────────

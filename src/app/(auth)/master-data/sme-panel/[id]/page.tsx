@@ -81,6 +81,7 @@ export default async function SMEPanelDetailPage({ params }: Props) {
           panelId={panel.id}
           panelJabatanId={panel.jabatan_id}
           partisipanIds={panelPartisipanIds}
+          koordinatorId={panel.koordinator_id ?? null}
           jabatanMap={jabatanMap}
           accessToken={session?.accessToken}
         />

@@ -32,7 +32,9 @@ async function buatSekolah(page: Page): Promise<void> {
   if ((await page.content()).includes(SEKOLAH_NAMA)) return;
   await page.goto("/master-data/sekolah/tambah");
   await page.getByLabel("Nama Sekolah").fill(SEKOLAH_NAMA);
-  await page.getByLabel("Jenjang Pendidikan").selectOption({ label: `${JENJANG_KODE} — ${JENJANG_NAMA}` });
+  await page
+    .getByLabel("Jenjang Pendidikan")
+    .selectOption({ label: `${JENJANG_KODE} — ${JENJANG_NAMA}` });
   await page.getByRole("button", { name: "Tambah Sekolah" }).click();
   await page.waitForURL(/\/master-data\/sekolah$/, { timeout: 15_000 });
 }
@@ -110,10 +112,16 @@ async function buatDcsSesiOpen(page: Page): Promise<string> {
 async function tambahRespondenPartisipan(page: Page, sesiId: string): Promise<void> {
   await page.goto(`/dcs/${sesiId}`);
   await page.waitForLoadState("networkidle");
-  const inList = await page.locator("tbody").getByText(PARTISIPAN_NAMA).isVisible().catch(() => false);
+  const inList = await page
+    .locator("tbody")
+    .getByText(PARTISIPAN_NAMA)
+    .isVisible()
+    .catch(() => false);
   if (inList) return;
 
-  await page.locator("#partisipan_select").selectOption({ label: `${PARTISIPAN_NAMA} — ${JABATAN_NAMA}` });
+  await page
+    .locator("#partisipan_select")
+    .selectOption({ label: `${PARTISIPAN_NAMA} — ${JABATAN_NAMA}` });
   // Tunggu auto-fill nama & jabatan_label
   await expect(page.locator("#resp-jabatan")).not.toHaveValue("", { timeout: 3_000 });
 
