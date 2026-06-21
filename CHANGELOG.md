@@ -7,6 +7,25 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-06-21
+
+### Ditambahkan
+
+- **Time Study — halaman admin** (`/time-study`): daftar sesi, buat sesi baru (jabatan + periode),
+  detail sesi dengan transisi status (buka/tutup/analisis), kelola responden (tambah/hapus).
+- **Time Study — halaman partisipan** (`/time-study/isi/{responden_id}`): daftar log harian,
+  form tambah log (waktu masuk, waktu keluar, warna hari, pembagian jam+menit per 6 kategori),
+  form edit log yang sudah ada. Tampilan menit dalam format "Xj Ym".
+- **Halaman Kuesioner Saya** (`/kuesioner`): tambah seksi "Time Study — Studi Waktu" yang
+  menampilkan sesi yang aktif, jumlah log yang telah diinput, dan tombol "Tambah Log" atau
+  "Lihat Log".
+- **Dashboard**: tambah kartu "Time Study" untuk admin.
+
+### Diubah
+
+- `openapi/openapi.json` dan `src/lib/api/schema.ts` diperbarui untuk mencakup semua endpoint
+  Time Study yang baru.
+
 ## [1.0.0] - 2026-06-21
 
 ### Ditambahkan

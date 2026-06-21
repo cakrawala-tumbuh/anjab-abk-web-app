@@ -1319,6 +1319,189 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/time-study/kuesioner/saya": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Daftar kuesioner Time Study milik pengguna yang sedang login
+         * @description Kembalikan sesi Time Study yang sudah di-assign ke partisipan dan berstatus OPEN.
+         *
+         *     Partisipan hanya melihat kuesioner Time Study yang telah di-assign secara eksplisit
+         *     oleh admin (record responden sudah dibuat dengan ``partisipan_id`` mereka).
+         *     Tidak ada enrollment otomatis.
+         */
+        get: operations["ts_kuesioner_saya"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/time-study/sesi": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Daftar sesi Time Study */
+        get: operations["ts_sesi_list"];
+        put?: never;
+        /** Buat sesi Time Study */
+        post: operations["ts_sesi_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/time-study/sesi/{sesi_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Ambil sesi Time Study */
+        get: operations["ts_sesi_get"];
+        put?: never;
+        post?: never;
+        /** Hapus sesi Time Study (hanya saat DRAFT) */
+        delete: operations["ts_sesi_delete"];
+        options?: never;
+        head?: never;
+        /** Perbarui sesi Time Study (hanya saat DRAFT) */
+        patch: operations["ts_sesi_update"];
+        trace?: never;
+    };
+    "/api/v1/time-study/sesi/{sesi_id}/buka": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Buka sesi Time Study (DRAFT → OPEN) */
+        post: operations["ts_sesi_buka"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/time-study/sesi/{sesi_id}/tutup": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Tutup sesi Time Study (OPEN → CLOSED) */
+        post: operations["ts_sesi_tutup"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/time-study/sesi/{sesi_id}/analisis": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Tandai sesi Time Study sebagai ANALYZED (CLOSED → ANALYZED) */
+        post: operations["ts_sesi_analisis"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/time-study/sesi/{sesi_id}/responden": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Daftar responden dalam sesi Time Study */
+        get: operations["ts_responden_list"];
+        put?: never;
+        /** Daftarkan responden ke sesi Time Study */
+        post: operations["ts_responden_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/time-study/sesi/{sesi_id}/responden/{responden_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Hapus responden dari sesi Time Study */
+        delete: operations["ts_responden_delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/time-study/responden/{responden_id}/log": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Daftar log harian responden Time Study */
+        get: operations["ts_log_list"];
+        put?: never;
+        /** Tambah log harian untuk responden Time Study */
+        post: operations["ts_log_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/time-study/responden/{responden_id}/log/{log_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Ambil detail log harian Time Study */
+        get: operations["ts_log_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Perbarui log harian Time Study */
+        patch: operations["ts_log_update"];
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -2487,6 +2670,32 @@ export interface components {
              * @description Item pada halaman ini.
              */
             items: components["schemas"]["TiSesiRead"][];
+            /**
+             * Total
+             * @description Total item tersedia.
+             * @example 42
+             */
+            total: number;
+            /**
+             * Limit
+             * @description Maksimum item per halaman.
+             * @example 20
+             */
+            limit: number;
+            /**
+             * Offset
+             * @description Jumlah item yang dilewati.
+             * @example 0
+             */
+            offset: number;
+        };
+        /** Page[TsSesiRead] */
+        Page_TsSesiRead_: {
+            /**
+             * Items
+             * @description Item pada halaman ini.
+             */
+            items: components["schemas"]["TsSesiRead"][];
             /**
              * Total
              * @description Total item tersedia.
@@ -3792,6 +4001,416 @@ export interface components {
              * @description Persentase partisipan (terhadap submit Tahap 1).
              */
             pct_relevan: number;
+        };
+        /**
+         * TsKuesionerItemRead
+         * @description Responden TS diperkaya info sesi — dipakai endpoint /kuesioner/saya.
+         */
+        TsKuesionerItemRead: {
+            /**
+             * Id
+             * @description ID responden.
+             * @example trsp_a1b2c3d4
+             */
+            id: string;
+            /**
+             * Sesi Id
+             * @description ID sesi Time Study.
+             * @example tses_a1b2c3d4
+             */
+            sesi_id: string;
+            /**
+             * Jabatan Label
+             * @description Label jabatan responden.
+             */
+            jabatan_label: string;
+            /**
+             * Created At
+             * Format: date-time
+             * @description Waktu pendaftaran.
+             */
+            created_at: string;
+            /**
+             * Sesi Status
+             * @description Status sesi: DRAFT | OPEN | CLOSED | ANALYZED.
+             * @example OPEN
+             */
+            sesi_status: string;
+            /**
+             * Sesi Periode
+             * @description Periode sesi (YYYY-MM).
+             * @example 2025-06
+             */
+            sesi_periode: string;
+            /**
+             * Sesi Jabatan Id
+             * @description ID jabatan yang dikaji.
+             */
+            sesi_jabatan_id: string;
+            /**
+             * Jumlah Log
+             * @description Jumlah log harian yang sudah diisi.
+             */
+            jumlah_log: number;
+        };
+        /**
+         * TsLogCreate
+         * @description Payload pembuatan log harian Time Study.
+         */
+        TsLogCreate: {
+            /**
+             * Tanggal
+             * Format: date
+             * @description Tanggal pencatatan (YYYY-MM-DD).
+             * @example 2025-06-01
+             */
+            tanggal: string;
+            /**
+             * Waktu Masuk
+             * @description Waktu masuk kerja format HH:MM.
+             * @example 07:30
+             */
+            waktu_masuk: string;
+            /**
+             * Waktu Keluar
+             * @description Waktu keluar kerja format HH:MM.
+             * @example 16:00
+             */
+            waktu_keluar: string;
+            /**
+             * Day Color
+             * @description Kategori hari: GREEN (normal), YELLOW (sedang), RED (sibuk).
+             * @example GREEN
+             * @enum {string}
+             */
+            day_color: "GREEN" | "YELLOW" | "RED";
+            /**
+             * Menit Core
+             * @description Menit untuk Pekerjaan Inti.
+             */
+            menit_core: number;
+            /**
+             * Menit Character
+             * @description Menit untuk Asesmen Karakter.
+             */
+            menit_character: number;
+            /**
+             * Menit Improve
+             * @description Menit untuk Pengembangan Diri.
+             */
+            menit_improve: number;
+            /**
+             * Menit Strategic
+             * @description Menit untuk Pekerjaan Strategis.
+             */
+            menit_strategic: number;
+            /**
+             * Menit Admin
+             * @description Menit untuk Administrasi.
+             */
+            menit_admin: number;
+            /**
+             * Menit Recovery
+             * @description Menit untuk Istirahat Terstruktur.
+             */
+            menit_recovery: number;
+            /**
+             * Catatan
+             * @description Catatan opsional.
+             */
+            catatan?: string | null;
+        };
+        /**
+         * TsLogRead
+         * @description Representasi log harian Time Study yang dikembalikan API.
+         */
+        TsLogRead: {
+            /**
+             * Id
+             * @description ID log.
+             * @example tlog_a1b2c3d4
+             */
+            id: string;
+            /**
+             * Responden Id
+             * @description ID responden induk.
+             * @example trsp_a1b2c3d4
+             */
+            responden_id: string;
+            /**
+             * Tanggal
+             * Format: date
+             * @description Tanggal pencatatan.
+             */
+            tanggal: string;
+            /**
+             * Waktu Masuk
+             * @description Waktu masuk kerja (HH:MM).
+             */
+            waktu_masuk: string;
+            /**
+             * Waktu Keluar
+             * @description Waktu keluar kerja (HH:MM).
+             */
+            waktu_keluar: string;
+            /**
+             * Day Color
+             * @description Kategori hari.
+             * @enum {string}
+             */
+            day_color: "GREEN" | "YELLOW" | "RED";
+            /**
+             * Menit Core
+             * @description Menit untuk Pekerjaan Inti.
+             */
+            menit_core: number;
+            /**
+             * Menit Character
+             * @description Menit untuk Asesmen Karakter.
+             */
+            menit_character: number;
+            /**
+             * Menit Improve
+             * @description Menit untuk Pengembangan Diri.
+             */
+            menit_improve: number;
+            /**
+             * Menit Strategic
+             * @description Menit untuk Pekerjaan Strategis.
+             */
+            menit_strategic: number;
+            /**
+             * Menit Admin
+             * @description Menit untuk Administrasi.
+             */
+            menit_admin: number;
+            /**
+             * Menit Recovery
+             * @description Menit untuk Istirahat Terstruktur.
+             */
+            menit_recovery: number;
+            /**
+             * Catatan
+             * @description Catatan opsional.
+             */
+            catatan?: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             * @description Waktu pembuatan (UTC, ISO-8601).
+             */
+            created_at: string;
+            /**
+             * Updated At
+             * Format: date-time
+             * @description Waktu pembaruan terakhir (UTC, ISO-8601).
+             */
+            updated_at: string;
+        };
+        /**
+         * TsLogUpdate
+         * @description Payload pembaruan log harian Time Study (semua field opsional).
+         */
+        TsLogUpdate: {
+            /**
+             * Tanggal
+             * @description Tanggal pencatatan (YYYY-MM-DD).
+             */
+            tanggal?: string | null;
+            /**
+             * Waktu Masuk
+             * @description Waktu masuk kerja format HH:MM.
+             */
+            waktu_masuk?: string | null;
+            /**
+             * Waktu Keluar
+             * @description Waktu keluar kerja format HH:MM.
+             */
+            waktu_keluar?: string | null;
+            /**
+             * Day Color
+             * @description Kategori hari.
+             */
+            day_color?: ("GREEN" | "YELLOW" | "RED") | null;
+            /**
+             * Menit Core
+             * @description Menit untuk Pekerjaan Inti.
+             */
+            menit_core?: number | null;
+            /**
+             * Menit Character
+             * @description Menit untuk Asesmen Karakter.
+             */
+            menit_character?: number | null;
+            /**
+             * Menit Improve
+             * @description Menit untuk Pengembangan Diri.
+             */
+            menit_improve?: number | null;
+            /**
+             * Menit Strategic
+             * @description Menit untuk Pekerjaan Strategis.
+             */
+            menit_strategic?: number | null;
+            /**
+             * Menit Admin
+             * @description Menit untuk Administrasi.
+             */
+            menit_admin?: number | null;
+            /**
+             * Menit Recovery
+             * @description Menit untuk Istirahat Terstruktur.
+             */
+            menit_recovery?: number | null;
+            /**
+             * Catatan
+             * @description Catatan opsional.
+             */
+            catatan?: string | null;
+        };
+        /**
+         * TsRespondenCreate
+         * @description Payload pendaftaran responden ke dalam sesi Time Study.
+         */
+        TsRespondenCreate: {
+            /**
+             * Nama
+             * @description Nama responden (opsional, boleh anonim).
+             * @example Budi Santoso, S.Pd.
+             */
+            nama?: string | null;
+            /**
+             * Jabatan Label
+             * @description Label jabatan responden (teks bebas).
+             * @example Guru Matematika
+             */
+            jabatan_label: string;
+            /**
+             * Partisipan Id
+             * @description ID partisipan yang terhubung (opsional, untuk fitur 'Kuesioner Saya').
+             * @example par_a1b2c3d4
+             */
+            partisipan_id?: string | null;
+        };
+        /**
+         * TsRespondenRead
+         * @description Representasi responden Time Study yang dikembalikan API.
+         */
+        TsRespondenRead: {
+            /**
+             * Id
+             * @description ID responden.
+             * @example trsp_a1b2c3d4
+             */
+            id: string;
+            /**
+             * Sesi Id
+             * @description ID sesi induk.
+             * @example tses_a1b2c3d4
+             */
+            sesi_id: string;
+            /**
+             * Nama
+             * @description Nama responden.
+             */
+            nama?: string | null;
+            /**
+             * Jabatan Label
+             * @description Label jabatan responden.
+             */
+            jabatan_label: string;
+            /**
+             * Partisipan Id
+             * @description ID partisipan yang terhubung, bila ada.
+             */
+            partisipan_id?: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             * @description Waktu pendaftaran (UTC, ISO-8601).
+             */
+            created_at: string;
+        };
+        /**
+         * TsSesiCreate
+         * @description Payload pembuatan sesi Time Study.
+         */
+        TsSesiCreate: {
+            /**
+             * Jabatan Id
+             * @description ID jabatan yang dikaji.
+             * @example jbt_a1b2c3d4
+             */
+            jabatan_id: string;
+            /**
+             * Periode
+             * @description Periode survei format YYYY-MM.
+             * @example 2025-06
+             */
+            periode: string;
+            /**
+             * Catatan
+             * @description Catatan opsional untuk sesi ini.
+             */
+            catatan?: string | null;
+        };
+        /**
+         * TsSesiRead
+         * @description Representasi sesi Time Study yang dikembalikan API.
+         */
+        TsSesiRead: {
+            /**
+             * Id
+             * @description ID sesi.
+             * @example tses_a1b2c3d4
+             */
+            id: string;
+            /**
+             * Jabatan Id
+             * @description ID jabatan.
+             * @example jbt_a1b2c3d4
+             */
+            jabatan_id: string;
+            /**
+             * Periode
+             * @description Periode survei (YYYY-MM).
+             * @example 2025-06
+             */
+            periode: string;
+            /**
+             * Status
+             * @description Status sesi.
+             * @example DRAFT
+             * @enum {string}
+             */
+            status: "DRAFT" | "OPEN" | "CLOSED" | "ANALYZED";
+            /**
+             * Catatan
+             * @description Catatan.
+             */
+            catatan?: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             * @description Waktu pembuatan (UTC, ISO-8601).
+             */
+            created_at: string;
+        };
+        /**
+         * TsSesiUpdate
+         * @description Payload pembaruan sesi Time Study (hanya saat DRAFT).
+         */
+        TsSesiUpdate: {
+            /**
+             * Periode
+             * @description Periode baru.
+             */
+            periode?: string | null;
+            /**
+             * Catatan
+             * @description Catatan baru.
+             */
+            catatan?: string | null;
         };
         /** ValidationError */
         ValidationError: {
@@ -9989,11 +10608,902 @@ export interface operations {
             };
         };
     };
+    ts_kuesioner_saya: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TsKuesionerItemRead"][];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    ts_sesi_list: {
+        parameters: {
+            query?: {
+                /** @description Maks item per halaman. */
+                limit?: number;
+                /** @description Jumlah item yang dilewati. */
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Page_TsSesiRead_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    ts_sesi_create: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TsSesiCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TsSesiRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    ts_sesi_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID sesi Time Study. */
+                sesi_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TsSesiRead"];
+                };
+            };
+            /** @description Sesi Time Study tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    ts_sesi_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID sesi Time Study. */
+                sesi_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Sesi Time Study tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    ts_sesi_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID sesi Time Study. */
+                sesi_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TsSesiUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TsSesiRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Sesi Time Study tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    ts_sesi_buka: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID sesi Time Study. */
+                sesi_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TsSesiRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Sesi Time Study tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    ts_sesi_tutup: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID sesi Time Study. */
+                sesi_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TsSesiRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Sesi Time Study tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    ts_sesi_analisis: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID sesi Time Study. */
+                sesi_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TsSesiRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Sesi Time Study tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    ts_responden_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID sesi Time Study. */
+                sesi_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TsRespondenRead"][];
+                };
+            };
+            /** @description Sesi Time Study tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    ts_responden_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID sesi Time Study. */
+                sesi_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TsRespondenCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TsRespondenRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Sesi Time Study tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Partisipan sudah terdaftar sebagai responden dalam sesi ini. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    ts_responden_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID sesi Time Study. */
+                sesi_id: string;
+                /** @description ID responden. */
+                responden_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Responden tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    ts_log_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID responden Time Study. */
+                responden_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TsLogRead"][];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Responden tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    ts_log_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID responden Time Study. */
+                responden_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TsLogCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TsLogRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Responden tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Log untuk tanggal ini sudah ada. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    ts_log_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID responden Time Study. */
+                responden_id: string;
+                /** @description ID log. */
+                log_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TsLogRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Log tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    ts_log_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID responden Time Study. */
+                responden_id: string;
+                /** @description ID log. */
+                log_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TsLogUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TsLogRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Log tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
 }
 
-// Convenience re-exports — do not edit; regenerate via `npm run gen:api`
-export type DcsArahItem = "F" | "UF";
-export type WcpReverseType = "NONE" | "R" | "UF" | "R_STAR";
+// ---------------------------------------------------------------------------
+// Convenience re-exports — dipertahankan setelah `npm run gen:api`
+// ---------------------------------------------------------------------------
+export type JabatanRead = components["schemas"]["JabatanRead"];
+export type JenjangPendidikanRead = components["schemas"]["JenjangPendidikanRead"];
+export type MataPelajaranRead = components["schemas"]["MataPelajaranRead"];
+export type PartisipanRead = components["schemas"]["PartisipanRead"];
+export type SekolahRead = components["schemas"]["SekolahRead"];
+export type SMEPanelRead = components["schemas"]["SMEPanelRead"];
+
 export type DcsItemRead = components["schemas"]["DcsItemRead"];
 export type DcsJawabanRead = components["schemas"]["DcsJawabanRead"];
 export type DcsKuesionerItemRead = components["schemas"]["DcsKuesionerItemRead"];
@@ -10001,12 +11511,17 @@ export type DcsRespondenRead = components["schemas"]["DcsRespondenRead"];
 export type DcsSesiRead = components["schemas"]["DcsSesiRead"];
 export type DcsSubSkalaRead = components["schemas"]["DcsSubSkalaRead"];
 export type DcsSubSkalaWithItemsRead = components["schemas"]["DcsSubSkalaWithItemsRead"];
-export type JabatanRead = components["schemas"]["JabatanRead"];
-export type JenjangPendidikanRead = components["schemas"]["JenjangPendidikanRead"];
-export type MataPelajaranRead = components["schemas"]["MataPelajaranRead"];
-export type PartisipanRead = components["schemas"]["PartisipanRead"];
-export type SekolahRead = components["schemas"]["SekolahRead"];
-export type SMEPanelRead = components["schemas"]["SMEPanelRead"];
+export type DcsArahItem = components["schemas"]["DcsItemRead"]["arah"];
+
+export type WcpDimensiRead = components["schemas"]["WcpDimensiRead"];
+export type WcpDimensiWithItemsRead = components["schemas"]["WcpDimensiWithItemsRead"];
+export type WcpItemRead = components["schemas"]["WcpItemRead"];
+export type WcpJawabanRead = components["schemas"]["WcpJawabanRead"];
+export type WcpKuesionerItemRead = components["schemas"]["WcpKuesionerItemRead"];
+export type WcpRespondenRead = components["schemas"]["WcpRespondenRead"];
+export type WcpSesiRead = components["schemas"]["WcpSesiRead"];
+export type WcpReverseType = "NONE" | "R" | "UF" | "R_STAR";
+
 export type TiCatalogRead = components["schemas"]["TiCatalogRead"];
 export type TiDetailItem = components["schemas"]["TiDetailItem"];
 export type TiHasilSesiRead = components["schemas"]["TiHasilSesiRead"];
@@ -10019,10 +11534,8 @@ export type TiSesiRead = components["schemas"]["TiSesiRead"];
 export type TiTahap2ReviewRead = components["schemas"]["TiTahap2ReviewRead"];
 export type TiTahap2TaskRead = components["schemas"]["TiTahap2TaskRead"];
 export type TiTaskTerpilihRead = components["schemas"]["TiTaskTerpilihRead"];
-export type WcpDimensiRead = components["schemas"]["WcpDimensiRead"];
-export type WcpDimensiWithItemsRead = components["schemas"]["WcpDimensiWithItemsRead"];
-export type WcpItemRead = components["schemas"]["WcpItemRead"];
-export type WcpJawabanRead = components["schemas"]["WcpJawabanRead"];
-export type WcpKuesionerItemRead = components["schemas"]["WcpKuesionerItemRead"];
-export type WcpRespondenRead = components["schemas"]["WcpRespondenRead"];
-export type WcpSesiRead = components["schemas"]["WcpSesiRead"];
+
+export type TsSesiRead = components["schemas"]["TsSesiRead"];
+export type TsRespondenRead = components["schemas"]["TsRespondenRead"];
+export type TsLogRead = components["schemas"]["TsLogRead"];
+export type TsKuesionerItemRead = components["schemas"]["TsKuesionerItemRead"];

@@ -1,0 +1,270 @@
+"use client";
+
+import { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { withServerAuth } from "@/lib/api/client";
+import { toApiError } from "@/lib/api/errors";
+import type { components } from "@/lib/api/schema";
+
+type TsLogRead = components["schemas"]["TsLogRead"];
+
+const KATEGORI = [
+  { key: "core", label: "Pekerjaan Inti" },
+  { key: "character", label: "Asesmen Karakter" },
+  { key: "improve", label: "Pengembangan Diri" },
+  { key: "strategic", label: "Pekerjaan Strategis" },
+  { key: "admin", label: "Administrasi" },
+  { key: "recovery", label: "Istirahat Terstruktur" },
+] as const;
+
+type KategoriKey = (typeof KATEGORI)[number]["key"];
+
+const schema = z.object({
+  tanggal: z.string().min(1, "Tanggal wajib diisi"),
+  waktu_masuk: z.string().regex(/^\d{2}:\d{2}$/, "Format HH:MM"),
+  waktu_keluar: z.string().regex(/^\d{2}:\d{2}$/, "Format HH:MM"),
+  day_color: z.enum(["GREEN", "YELLOW", "RED"]),
+  jam_core: z.number({ invalid_type_error: "Isi angka" }).int().min(0).max(23),
+  menit_core: z.number({ invalid_type_error: "Isi angka" }).int().min(0).max(59),
+  jam_character: z.number({ invalid_type_error: "Isi angka" }).int().min(0).max(23),
+  menit_character: z.number({ invalid_type_error: "Isi angka" }).int().min(0).max(59),
+  jam_improve: z.number({ invalid_type_error: "Isi angka" }).int().min(0).max(23),
+  menit_improve: z.number({ invalid_type_error: "Isi angka" }).int().min(0).max(59),
+  jam_strategic: z.number({ invalid_type_error: "Isi angka" }).int().min(0).max(23),
+  menit_strategic: z.number({ invalid_type_error: "Isi angka" }).int().min(0).max(59),
+  jam_admin: z.number({ invalid_type_error: "Isi angka" }).int().min(0).max(23),
+  menit_admin: z.number({ invalid_type_error: "Isi angka" }).int().min(0).max(59),
+  jam_recovery: z.number({ invalid_type_error: "Isi angka" }).int().min(0).max(23),
+  menit_recovery: z.number({ invalid_type_error: "Isi angka" }).int().min(0).max(59),
+  catatan: z.string().max(500).optional(),
+});
+
+type FormValues = z.infer<typeof schema>;
+
+interface Props {
+  respondenId: string;
+  logId: string;
+  initialData: TsLogRead;
+  accessToken: string | undefined;
+}
+
+export function TsLogEditForm({ respondenId, logId, initialData, accessToken }: Props) {
+  const router = useRouter();
+  const [serverError, setServerError] = useState<string | null>(null);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<FormValues>({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      tanggal: initialData.tanggal,
+      waktu_masuk: initialData.waktu_masuk,
+      waktu_keluar: initialData.waktu_keluar,
+      day_color: initialData.day_color,
+      jam_core: Math.floor(initialData.menit_core / 60),
+      menit_core: initialData.menit_core % 60,
+      jam_character: Math.floor(initialData.menit_character / 60),
+      menit_character: initialData.menit_character % 60,
+      jam_improve: Math.floor(initialData.menit_improve / 60),
+      menit_improve: initialData.menit_improve % 60,
+      jam_strategic: Math.floor(initialData.menit_strategic / 60),
+      menit_strategic: initialData.menit_strategic % 60,
+      jam_admin: Math.floor(initialData.menit_admin / 60),
+      menit_admin: initialData.menit_admin % 60,
+      jam_recovery: Math.floor(initialData.menit_recovery / 60),
+      menit_recovery: initialData.menit_recovery % 60,
+      catatan: initialData.catatan ?? "",
+    },
+  });
+
+  async function onSubmit(values: FormValues) {
+    setServerError(null);
+    try {
+      const client = withServerAuth(accessToken);
+      const { error, response } = await client.PATCH(
+        "/api/v1/time-study/responden/{responden_id}/log/{log_id}",
+        {
+          params: { path: { responden_id: respondenId, log_id: logId } },
+          body: {
+            tanggal: values.tanggal,
+            waktu_masuk: values.waktu_masuk,
+            waktu_keluar: values.waktu_keluar,
+            day_color: values.day_color,
+            menit_core: values.jam_core * 60 + values.menit_core,
+            menit_character: values.jam_character * 60 + values.menit_character,
+            menit_improve: values.jam_improve * 60 + values.menit_improve,
+            menit_strategic: values.jam_strategic * 60 + values.menit_strategic,
+            menit_admin: values.jam_admin * 60 + values.menit_admin,
+            menit_recovery: values.jam_recovery * 60 + values.menit_recovery,
+            catatan: values.catatan || null,
+          },
+        },
+      );
+      const reqId = response.headers.get("x-request-id");
+      if (error) throw toApiError(error, reqId);
+      router.push(`/time-study/isi/${respondenId}`);
+      router.refresh();
+    } catch (err) {
+      setServerError(err instanceof Error ? err.message : "Terjadi kesalahan.");
+    }
+  }
+
+  return (
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="space-y-6 rounded-lg border border-gray-200 bg-white p-6"
+    >
+      {serverError && (
+        <div role="alert" className="rounded-md bg-red-50 p-3 text-sm text-red-700">
+          {serverError}
+        </div>
+      )}
+
+      {/* Tanggal & Waktu */}
+      <div className="grid gap-4 sm:grid-cols-3">
+        <div>
+          <label htmlFor="tanggal" className="block text-sm font-medium text-gray-700">
+            Tanggal <span aria-hidden>*</span>
+          </label>
+          <input
+            id="tanggal"
+            type="date"
+            {...register("tanggal")}
+            className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            aria-invalid={!!errors.tanggal}
+          />
+          {errors.tanggal && (
+            <p className="mt-1 text-xs text-red-600" role="alert">
+              {errors.tanggal.message}
+            </p>
+          )}
+        </div>
+
+        <div>
+          <label htmlFor="waktu_masuk" className="block text-sm font-medium text-gray-700">
+            Waktu Masuk <span aria-hidden>*</span>
+          </label>
+          <input
+            id="waktu_masuk"
+            type="time"
+            {...register("waktu_masuk")}
+            className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 font-mono text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            aria-invalid={!!errors.waktu_masuk}
+          />
+          {errors.waktu_masuk && (
+            <p className="mt-1 text-xs text-red-600" role="alert">
+              {errors.waktu_masuk.message}
+            </p>
+          )}
+        </div>
+
+        <div>
+          <label htmlFor="waktu_keluar" className="block text-sm font-medium text-gray-700">
+            Waktu Keluar <span aria-hidden>*</span>
+          </label>
+          <input
+            id="waktu_keluar"
+            type="time"
+            {...register("waktu_keluar")}
+            className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 font-mono text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            aria-invalid={!!errors.waktu_keluar}
+          />
+          {errors.waktu_keluar && (
+            <p className="mt-1 text-xs text-red-600" role="alert">
+              {errors.waktu_keluar.message}
+            </p>
+          )}
+        </div>
+      </div>
+
+      {/* Warna Hari */}
+      <div>
+        <label htmlFor="day_color" className="block text-sm font-medium text-gray-700">
+          Kategori Hari <span aria-hidden>*</span>
+        </label>
+        <select
+          id="day_color"
+          {...register("day_color")}
+          className="mt-1 block w-full max-w-xs rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+        >
+          <option value="GREEN">Hijau (Hari Biasa)</option>
+          <option value="YELLOW">Kuning (Hari Sibuk)</option>
+          <option value="RED">Merah (Hari Puncak)</option>
+        </select>
+      </div>
+
+      {/* Distribusi Waktu per Kategori */}
+      <div>
+        <h2 className="mb-3 text-sm font-medium text-gray-700">
+          Distribusi Waktu per Kategori <span aria-hidden>*</span>
+        </h2>
+        <p className="mb-4 text-xs text-gray-500">
+          Isi jam dan menit untuk setiap kategori aktivitas kerja.
+        </p>
+        <div className="space-y-3">
+          {KATEGORI.map(({ key, label }) => (
+            <div key={key} className="flex items-center gap-4">
+              <span className="w-48 text-sm text-gray-700">{label}</span>
+              <div className="flex items-center gap-2">
+                <input
+                  type="number"
+                  min={0}
+                  max={23}
+                  {...register(`jam_${key}` as `jam_${KategoriKey}`, { valueAsNumber: true })}
+                  className="w-16 rounded-md border border-gray-300 px-2 py-1.5 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  aria-label={`${label} jam`}
+                />
+                <span className="text-sm text-gray-500">jam</span>
+                <input
+                  type="number"
+                  min={0}
+                  max={59}
+                  {...register(`menit_${key}` as `menit_${KategoriKey}`, { valueAsNumber: true })}
+                  className="w-16 rounded-md border border-gray-300 px-2 py-1.5 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  aria-label={`${label} menit`}
+                />
+                <span className="text-sm text-gray-500">menit</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Catatan */}
+      <div>
+        <label htmlFor="catatan" className="block text-sm font-medium text-gray-700">
+          Catatan <span className="font-normal text-gray-400">(opsional)</span>
+        </label>
+        <textarea
+          id="catatan"
+          rows={3}
+          {...register("catatan")}
+          placeholder="Catatan tambahan…"
+          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+        />
+      </div>
+
+      <div className="flex items-center gap-3 pt-2">
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="rounded-md bg-blue-600 px-5 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          {isSubmitting ? "Menyimpan…" : "Simpan Perubahan"}
+        </button>
+        <Link
+          href={`/time-study/isi/${respondenId}`}
+          className="text-sm text-gray-500 hover:text-gray-700"
+        >
+          Batal
+        </Link>
+      </div>
+    </form>
+  );
+}

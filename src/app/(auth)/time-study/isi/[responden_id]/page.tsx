@@ -1,0 +1,148 @@
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { auth, isPartisipan } from "@/lib/auth/auth";
+import { withServerAuth } from "@/lib/api/client";
+import { toApiError } from "@/lib/api/errors";
+import type { components } from "@/lib/api/schema";
+
+type TsLogRead = components["schemas"]["TsLogRead"];
+
+export const metadata = { title: "Time Study — Log Harian — ANJAB-ABK" };
+
+const DAY_COLOR_LABEL: Record<string, { label: string; cls: string }> = {
+  GREEN: { label: "Hijau (Hari Biasa)", cls: "bg-green-100 text-green-700" },
+  YELLOW: { label: "Kuning (Hari Sibuk)", cls: "bg-yellow-100 text-yellow-700" },
+  RED: { label: "Merah (Hari Puncak)", cls: "bg-red-100 text-red-700" },
+};
+
+function formatMenit(menit: number): string {
+  const jam = Math.floor(menit / 60);
+  const sisa = menit % 60;
+  if (jam === 0) return `${sisa}m`;
+  if (sisa === 0) return `${jam}j`;
+  return `${jam}j ${sisa}m`;
+}
+
+interface Props {
+  params: Promise<{ responden_id: string }>;
+}
+
+async function fetchPageData(accessToken: string | undefined, respondenId: string) {
+  const client = withServerAuth(accessToken);
+  const { data, error, response } = await client.GET(
+    "/api/v1/time-study/responden/{responden_id}/log",
+    { params: { path: { responden_id: respondenId } } },
+  );
+  const reqId = response.headers.get("x-request-id");
+  if (error) throw toApiError(error, reqId);
+  return (data ?? []) as TsLogRead[];
+}
+
+export default async function TimeStudyIsiPage({ params }: Props) {
+  const session = await auth();
+  if (!isPartisipan(session)) notFound();
+
+  const { responden_id } = await params;
+  const logs = await fetchPageData(session?.accessToken, responden_id);
+
+  return (
+    <div className="space-y-6">
+      {/* Breadcrumb */}
+      <div className="flex items-center gap-2 text-sm text-gray-500">
+        <Link href="/kuesioner" className="hover:text-gray-700">
+          Kuesioner Saya
+        </Link>
+        <span>/</span>
+        <span className="text-gray-900">Time Study</span>
+      </div>
+
+      {/* Header */}
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-semibold text-gray-900">Log Harian — Time Study</h1>
+          <p className="mt-1 text-sm text-gray-500">
+            Catat aktivitas harian Anda untuk keperluan Studi Waktu.
+          </p>
+        </div>
+        <Link
+          href={`/time-study/isi/${responden_id}/tambah`}
+          className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+        >
+          + Tambah Log
+        </Link>
+      </div>
+
+      {logs.length === 0 ? (
+        <div className="rounded-lg border border-dashed border-gray-300 bg-white p-12 text-center">
+          <p className="text-sm text-gray-500">Belum ada log harian. Mulai catat aktivitas Anda.</p>
+          <Link
+            href={`/time-study/isi/${responden_id}/tambah`}
+            className="mt-4 inline-block rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+          >
+            Tambah Log Hari Ini
+          </Link>
+        </div>
+      ) : (
+        <div className="overflow-hidden rounded-lg border border-gray-200 bg-white">
+          <table className="w-full text-sm">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-4 py-3 text-left font-medium text-gray-600">Tanggal</th>
+                <th className="px-4 py-3 text-left font-medium text-gray-600">Masuk–Keluar</th>
+                <th className="px-4 py-3 text-left font-medium text-gray-600">Inti</th>
+                <th className="px-4 py-3 text-left font-medium text-gray-600">Karakter</th>
+                <th className="px-4 py-3 text-left font-medium text-gray-600">Pengembangan</th>
+                <th className="px-4 py-3 text-left font-medium text-gray-600">Strategis</th>
+                <th className="px-4 py-3 text-left font-medium text-gray-600">Administrasi</th>
+                <th className="px-4 py-3 text-left font-medium text-gray-600">Istirahat</th>
+                <th className="px-4 py-3 text-left font-medium text-gray-600">Warna Hari</th>
+                <th className="px-4 py-3 text-left font-medium text-gray-600">Aksi</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-100">
+              {logs.map((log) => {
+                const dc = DAY_COLOR_LABEL[log.day_color] ?? {
+                  label: log.day_color,
+                  cls: "bg-gray-100 text-gray-500",
+                };
+                return (
+                  <tr key={log.id} className="hover:bg-gray-50">
+                    <td className="px-4 py-3 font-mono text-gray-900">{log.tanggal}</td>
+                    <td className="px-4 py-3 font-mono text-gray-700">
+                      {log.waktu_masuk}–{log.waktu_keluar}
+                    </td>
+                    <td className="px-4 py-3 text-gray-600">{formatMenit(log.menit_core)}</td>
+                    <td className="px-4 py-3 text-gray-600">{formatMenit(log.menit_character)}</td>
+                    <td className="px-4 py-3 text-gray-600">{formatMenit(log.menit_improve)}</td>
+                    <td className="px-4 py-3 text-gray-600">{formatMenit(log.menit_strategic)}</td>
+                    <td className="px-4 py-3 text-gray-600">{formatMenit(log.menit_admin)}</td>
+                    <td className="px-4 py-3 text-gray-600">{formatMenit(log.menit_recovery)}</td>
+                    <td className="px-4 py-3">
+                      <span
+                        className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${dc.cls}`}
+                      >
+                        {dc.label}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3">
+                      <Link
+                        href={`/time-study/isi/${responden_id}/${log.id}/edit`}
+                        className="text-xs text-blue-600 hover:text-blue-800 hover:underline"
+                      >
+                        Edit
+                      </Link>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      <div className="text-sm text-gray-500">
+        Total: <strong>{logs.length}</strong> log hari
+      </div>
+    </div>
+  );
+}

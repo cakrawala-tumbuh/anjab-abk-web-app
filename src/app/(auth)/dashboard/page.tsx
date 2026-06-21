@@ -36,6 +36,17 @@ export default async function DashboardPage() {
             </p>
           </Link>
         )}
+        {admin && (
+          <Link
+            href="/time-study"
+            className="rounded-lg border border-gray-200 bg-white p-6 hover:border-blue-300 hover:shadow-sm"
+          >
+            <h2 className="font-medium text-gray-900">Time Study</h2>
+            <p className="mt-1 text-sm text-gray-500">
+              Studi Waktu — kelola sesi pencatatan log harian per jabatan.
+            </p>
+          </Link>
+        )}
         {partisipan && !admin && (
           <Link
             href="/kuesioner"
