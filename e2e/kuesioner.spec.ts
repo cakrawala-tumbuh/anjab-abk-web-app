@@ -32,7 +32,7 @@ async function buatSekolah(page: Page): Promise<void> {
   if ((await page.content()).includes(SEKOLAH_NAMA)) return;
   await page.goto("/master-data/sekolah/tambah");
   await page.getByLabel("Nama Sekolah").fill(SEKOLAH_NAMA);
-  await page.getByLabel("Jenjang Pendidikan").selectOption({ label: JENJANG_NAMA });
+  await page.getByLabel("Jenjang Pendidikan").selectOption({ label: `${JENJANG_KODE} — ${JENJANG_NAMA}` });
   await page.getByRole("button", { name: "Tambah Sekolah" }).click();
   await page.waitForURL(/\/master-data\/sekolah$/, { timeout: 15_000 });
 }
@@ -110,14 +110,15 @@ async function buatDcsSesiOpen(page: Page): Promise<string> {
 async function tambahRespondenPartisipan(page: Page, sesiId: string): Promise<void> {
   await page.goto(`/dcs/${sesiId}`);
   await page.waitForLoadState("networkidle");
-  if ((await page.content()).includes(PARTISIPAN_NAMA)) return;
+  const inList = await page.locator("tbody").getByText(PARTISIPAN_NAMA).isVisible().catch(() => false);
+  if (inList) return;
 
-  await page.locator("#partisipan_select").selectOption({ label: new RegExp(PARTISIPAN_NAMA) });
+  await page.locator("#partisipan_select").selectOption({ label: `${PARTISIPAN_NAMA} — ${JABATAN_NAMA}` });
   // Tunggu auto-fill nama & jabatan_label
   await expect(page.locator("#resp-jabatan")).not.toHaveValue("", { timeout: 3_000 });
 
   await page.getByRole("button", { name: "+ Daftarkan" }).click();
-  await expect(page.getByText(PARTISIPAN_NAMA)).toBeVisible({ timeout: 10_000 });
+  await expect(page.locator("tbody").getByText(PARTISIPAN_NAMA)).toBeVisible({ timeout: 10_000 });
 }
 
 // ─── Kuesioner DCS — alur partisipan ─────────────────────────────────────────
@@ -145,7 +146,7 @@ test.describe.serial("Kuesioner DCS — Alur Partisipan", () => {
     await expect(page.getByRole("heading", { name: "Kuesioner Saya" })).toBeVisible();
     await expect(page.getByText("DCS — Demand-Control-Support")).toBeVisible();
     await expect(page.getByText(JABATAN_NAMA)).toBeVisible();
-    await expect(page.getByText("Belum diisi")).toBeVisible();
+    await expect(page.getByText("Belum diisi", { exact: true })).toBeVisible();
     await expect(page.getByRole("link", { name: "Isi Sekarang" })).toBeVisible();
   });
 

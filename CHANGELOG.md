@@ -7,6 +7,22 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [0.9.0] - 2026-06-21
+
+### Diperbaiki
+
+- **E2E `kuesioner.spec.ts`**: empat perbaikan pada test helper:
+  - `buatSekolah`: label `selectOption` jenjang disesuaikan dengan format aktual
+    `{kode} — {nama}` (sebelumnya hanya nama, menyebabkan timeout 60 s).
+  - `tambahRespondenPartisipan`: cek idempoten diganti dari `page.content().includes()`
+    ke `tbody.getByText()` agar tidak false-positive dengan `<option>` di dropdown.
+  - `tambahRespondenPartisipan`: `selectOption` partisipan menggunakan label eksak
+    `{nama} — {jabatan}` (Playwright tidak mendukung `RegExp` untuk `label`).
+  - `tambahRespondenPartisipan`: konfirmasi responden terdaftar di-scope ke `tbody`
+    agar tidak ambiguous dengan elemen `<option>` di dropdown.
+  - `partisipan melihat kuesioner DCS`: `getByText("Belum diisi")` ditambahkan
+    `{ exact: true }` untuk menghindari strict mode violation.
+
 ## [0.8.0] - 2026-06-21
 
 ### Ditambahkan
@@ -132,7 +148,12 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 - Gate test: lint (ESLint + Prettier) + typecheck + unit test (Vitest) via Docker
 - E2E test scaffold (Playwright) dengan stack Authentik + backend
 
-[Unreleased]: https://github.com/cakrawala-tumbuh/anjab-abk-web-app/compare/v0.4.0...HEAD
+[Unreleased]: https://github.com/cakrawala-tumbuh/anjab-abk-web-app/compare/v0.9.0...HEAD
+[0.9.0]: https://github.com/cakrawala-tumbuh/anjab-abk-web-app/compare/v0.8.0...v0.9.0
+[0.8.0]: https://github.com/cakrawala-tumbuh/anjab-abk-web-app/compare/v0.7.0...v0.8.0
+[0.7.0]: https://github.com/cakrawala-tumbuh/anjab-abk-web-app/compare/v0.6.0...v0.7.0
+[0.6.0]: https://github.com/cakrawala-tumbuh/anjab-abk-web-app/compare/v0.5.0...v0.6.0
+[0.5.0]: https://github.com/cakrawala-tumbuh/anjab-abk-web-app/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/cakrawala-tumbuh/anjab-abk-web-app/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/cakrawala-tumbuh/anjab-abk-web-app/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/cakrawala-tumbuh/anjab-abk-web-app/compare/v0.1.0...v0.2.0
