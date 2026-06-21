@@ -84,8 +84,8 @@ export function EditPartisipanForm({
     setSaved(false);
     try {
       const client = withServerAuth(accessToken);
-      const { error, response } = await client.PATCH("/api/v1/partisipan/{id}", {
-        params: { path: { id: partisipan.id } },
+      const { error, response } = await client.PATCH("/api/v1/partisipan/{partisipan_id}", {
+        params: { path: { partisipan_id: partisipan.id } },
         body: {
           nama: values.nama,
           email: values.email,

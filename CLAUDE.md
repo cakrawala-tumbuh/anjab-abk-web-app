@@ -48,6 +48,17 @@ src/
 - Komponen shadcn/ui di-copy ke `src/components/ui/` dan dimiliki project — boleh dimodifikasi.
 - `src/lib/api/schema.ts` adalah artefak generate — regenerate dengan `npm run gen:api`, jangan edit tangan.
 
+## Revisi Desain
+
+### [2026-06-21] DCS & WCP: Kuesioner berbasis Assignment
+
+- Halaman `/kuesioner` hanya menampilkan DCS/WCP yang sudah di-assign admin
+  (endpoint `GET /kuesioner/saya` tidak lagi auto-enroll berdasarkan jabatan).
+- Alur admin: buat sesi → buka sesi → tambahkan responden per partisipan via
+  halaman detail sesi (`/dcs/{sesi_id}` atau `/wcp/{sesi_id}`).
+- Setiap alat ukur (DCS, WCP) dapat di-assign secara mandiri.
+- Task Inventory tidak berubah (sudah assignment manual sebelumnya).
+
 ## Jangan Sentuh
 
 - `src/lib/api/schema.ts` — di-generate `npm run gen:api` dari `openapi/openapi.json`; edit manual akan tertimpa.

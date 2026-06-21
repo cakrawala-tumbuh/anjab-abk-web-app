@@ -87,7 +87,9 @@ interface RowProps {
 
 function WcpItemEditRow({ item, accessToken, onCancel, onSaved }: RowProps) {
   const [pernyataan, setPernyataan] = useState(item.pernyataan);
-  const [reverseType, setReverseType] = useState<WcpReverseType>(item.reverse_type);
+  const [reverseType, setReverseType] = useState<WcpReverseType>(
+    item.reverse_type as WcpReverseType,
+  );
   const [urutan, setUrutan] = useState(item.urutan);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);

@@ -6,6 +6,7 @@ import { toApiError } from "@/lib/api/errors";
 import type {
   PartisipanRead,
   TiHasilSesiRead,
+  TiHasilTaskRead,
   TiRespondenRead,
   TiSesiRead,
   TiTaskTerpilihRead,
@@ -308,7 +309,7 @@ export default async function TiSesiDetailPage({ params }: Props) {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {hasil.tasks.map((t) => (
+                {hasil.tasks.map((t: TiHasilTaskRead) => (
                   <tr key={t.kode} className="hover:bg-gray-50">
                     <td className="px-4 py-3 text-gray-900">{t.uraian_tugas}</td>
                     <td className="px-4 py-3 text-right text-gray-500">

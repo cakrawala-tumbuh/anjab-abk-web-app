@@ -82,6 +82,7 @@ export function TambahPartisipanForm({ sekolah, jabatan, mataPelajaran, accessTo
           masa_kerja_tahun: values.masa_kerja_tahun,
           masa_kerja_bulan: values.masa_kerja_bulan,
           mata_pelajaran_utama_id: values.mata_pelajaran_utama_id || undefined,
+          aktif: true,
         },
       });
       const requestId = response.headers.get("x-request-id");

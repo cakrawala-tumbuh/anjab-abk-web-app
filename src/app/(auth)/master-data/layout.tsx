@@ -8,6 +8,7 @@ const NAV_ITEMS = [
   { href: "/master-data/jenjang-pendidikan", label: "Jenjang Pendidikan" },
   { href: "/master-data/sekolah", label: "Sekolah" },
   { href: "/master-data/jabatan", label: "Jabatan" },
+  { href: "/master-data/sme-panel", label: "SME Panel" },
   { href: "/master-data/mata-pelajaran", label: "Mata Pelajaran" },
   { href: "/master-data/dcs", label: "Instrumen DCS" },
   { href: "/master-data/wcp", label: "Instrumen WCP" },

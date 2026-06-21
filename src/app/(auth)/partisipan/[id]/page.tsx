@@ -15,7 +15,7 @@ interface Props {
 async function fetchPageData(accessToken: string | undefined, id: string) {
   const client = withServerAuth(accessToken);
   const [pRes, sRes, jRes, mpRes] = await Promise.all([
-    client.GET("/api/v1/partisipan/{id}", { params: { path: { id } } }),
+    client.GET("/api/v1/partisipan/{partisipan_id}", { params: { path: { partisipan_id: id } } }),
     client.GET("/api/v1/sekolah", { params: { query: { limit: 100 } } }),
     client.GET("/api/v1/jabatan", { params: { query: { limit: 100 } } }),
     client.GET("/api/v1/mata-pelajaran", { params: { query: { limit: 100 } } }),
