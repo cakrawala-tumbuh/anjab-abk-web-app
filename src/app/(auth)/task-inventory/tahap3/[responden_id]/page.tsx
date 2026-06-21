@@ -6,7 +6,7 @@ import { toApiError } from "@/lib/api/errors";
 import type { TiRespondenRead, TiSesiRead, TiTaskTerpilihRead } from "@/lib/api/schema";
 import { DetailForm } from "./detail-form";
 
-export const metadata = { title: "Tahap 2 — Detailing — ANJAB-ABK" };
+export const metadata = { title: "Tahap 3 — Detailing — ANJAB-ABK" };
 
 interface Props {
   params: Promise<{ responden_id: string }>;
@@ -28,7 +28,7 @@ async function fetchPageData(accessToken: string | undefined, respondenId: strin
   const sesi = sesiRes.data as TiSesiRead;
 
   let terpilih: TiTaskTerpilihRead[] = [];
-  if (["TAHAP2", "CLOSED", "ANALYZED"].includes(sesi.status)) {
+  if (["TAHAP3", "CLOSED", "ANALYZED"].includes(sesi.status)) {
     const ttRes = await client.GET("/api/v1/task-inventory/sesi/{sesi_id}/task-terpilih", {
       params: { path: { sesi_id: sesi.id } },
     });
@@ -38,7 +38,7 @@ async function fetchPageData(accessToken: string | undefined, respondenId: strin
   return { responden, sesi, terpilih };
 }
 
-export default async function Tahap2Page({ params }: Props) {
+export default async function Tahap3Page({ params }: Props) {
   const session = await auth();
   if (!session) notFound();
 
@@ -52,24 +52,24 @@ export default async function Tahap2Page({ params }: Props) {
           {sesi.unit} · {sesi.kategori_jabatan}
         </Link>
         <span>/</span>
-        <span className="text-gray-900">Tahap 2 — Detailing</span>
+        <span className="text-gray-900">Tahap 3 — Detailing</span>
       </div>
 
       <div>
-        <h1 className="text-2xl font-semibold text-gray-900">Tahap 2 — Detailing Tugas</h1>
+        <h1 className="text-2xl font-semibold text-gray-900">Tahap 3 — Detailing Tugas</h1>
         <p className="mt-1 text-sm text-gray-500">
           {responden.nama ?? "Anonim"} · isi rincian beban kerja (CalHR) untuk tugas yang Anda
           kerjakan.
         </p>
       </div>
 
-      {responden.tahap2_submit ? (
+      {responden.tahap3_submit ? (
         <div className="rounded-lg border border-green-200 bg-green-50 p-4 text-sm text-green-800">
-          Detail Tahap 2 sudah dikirim. Tidak dapat diubah.
+          Detail Tahap 3 sudah dikirim. Tidak dapat diubah.
         </div>
-      ) : sesi.status !== "TAHAP2" ? (
+      ) : sesi.status !== "TAHAP3" ? (
         <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
-          Sesi tidak sedang dalam Tahap 2 (status: {sesi.status}).
+          Sesi tidak sedang dalam Tahap 3 (status: {sesi.status}).
         </div>
       ) : (
         <DetailForm

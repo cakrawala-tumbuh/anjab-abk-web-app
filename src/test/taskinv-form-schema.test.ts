@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { schema as tiSesiSchema } from "@/app/(auth)/task-inventory/buat/ti-sesi-form";
-import { detailItemSchema } from "@/app/(auth)/task-inventory/tahap2/[responden_id]/detail-form";
+import { detailItemSchema } from "@/app/(auth)/task-inventory/tahap3/[responden_id]/detail-form";
 
 const VALID_SESI = {
   unit: "TK",

@@ -26,10 +26,15 @@ const STATUS_LABEL: Record<string, { label: string; cls: string; desc: string }>
   TAHAP1: {
     label: "Tahap 1 — Seleksi",
     cls: "bg-blue-100 text-blue-700",
-    desc: "Partisipan memilih task relevan. Setelah selesai, mulai Tahap 2.",
+    desc: "Partisipan memilih task relevan. Setelah selesai, mulai Tahap 2 (review koordinator).",
   },
   TAHAP2: {
-    label: "Tahap 2 — Detailing",
+    label: "Tahap 2 — Review Koordinator",
+    cls: "bg-violet-100 text-violet-700",
+    desc: "Koordinator menentukan relevansi task partial. Setelah selesai, mulai Tahap 3.",
+  },
+  TAHAP3: {
+    label: "Tahap 3 — Detailing",
     cls: "bg-indigo-100 text-indigo-700",
     desc: "Task relevan dibekukan. Partisipan mengisi field CalHR per task.",
   },
@@ -66,7 +71,7 @@ async function fetchPageData(accessToken: string | undefined, sesiId: string) {
 
   let taskTerpilih: TiTaskTerpilihRead[] = [];
   let hasil: TiHasilSesiRead | null = null;
-  if (["TAHAP2", "CLOSED", "ANALYZED"].includes(sesi.status)) {
+  if (["TAHAP3", "CLOSED", "ANALYZED"].includes(sesi.status)) {
     const ttRes = await client.GET("/api/v1/task-inventory/sesi/{sesi_id}/task-terpilih", {
       params: { path: { sesi_id: sesiId } },
     });
@@ -104,7 +109,7 @@ export default async function TiSesiDetailPage({ params }: Props) {
     desc: "",
   };
   const tahap1Submit = responden.filter((r) => r.tahap1_submit).length;
-  const tahap2Submit = responden.filter((r) => r.tahap2_submit).length;
+  const tahap3Submit = responden.filter((r) => r.tahap3_submit).length;
 
   return (
     <div className="space-y-6">
@@ -148,8 +153,8 @@ export default async function TiSesiDetailPage({ params }: Props) {
           <p className="mt-1 text-xs text-gray-500">Selesai Tahap 1</p>
         </div>
         <div className="rounded-lg border border-gray-200 bg-white p-4 text-center">
-          <p className="text-2xl font-bold text-indigo-600">{tahap2Submit}</p>
-          <p className="mt-1 text-xs text-gray-500">Selesai Tahap 2</p>
+          <p className="text-2xl font-bold text-indigo-600">{tahap3Submit}</p>
+          <p className="mt-1 text-xs text-gray-500">Selesai Tahap 3</p>
         </div>
         <div className="rounded-lg border border-gray-200 bg-white p-4 text-center">
           <p className="text-2xl font-bold text-gray-400">{sesi.jumlah_task_terpilih ?? "—"}</p>
@@ -159,6 +164,22 @@ export default async function TiSesiDetailPage({ params }: Props) {
 
       {/* Aksi transisi status */}
       <TransisiSesi sesi={sesi} accessToken={session?.accessToken} />
+
+      {/* Review koordinator (TAHAP2) */}
+      {sesi.status === "TAHAP2" && (
+        <div className="rounded-lg border border-violet-200 bg-violet-50 p-4">
+          <p className="text-sm font-medium text-violet-800">Tahap 2 — Review Koordinator</p>
+          <p className="mt-1 text-sm text-violet-700">
+            Koordinator SME panel perlu menentukan relevansi task yang dipilih sebagian anggota.
+          </p>
+          <a
+            href={`/task-inventory/tahap2/${sesi.id}`}
+            className="mt-2 inline-block rounded-md bg-violet-600 px-4 py-2 text-sm font-medium text-white hover:bg-violet-700"
+          >
+            Buka Review Koordinator
+          </a>
+        </div>
+      )}
 
       {/* Tambah responden (DRAFT/TAHAP1) */}
       {(sesi.status === "DRAFT" || sesi.status === "TAHAP1") && (
@@ -189,7 +210,7 @@ export default async function TiSesiDetailPage({ params }: Props) {
                   <th className="px-4 py-3 text-left font-medium text-gray-600">#</th>
                   <th className="px-4 py-3 text-left font-medium text-gray-600">Nama</th>
                   <th className="px-4 py-3 text-left font-medium text-gray-600">Tahap 1</th>
-                  <th className="px-4 py-3 text-left font-medium text-gray-600">Tahap 2</th>
+                  <th className="px-4 py-3 text-left font-medium text-gray-600">Tahap 3</th>
                   <th className="px-4 py-3 text-left font-medium text-gray-600">Aksi</th>
                 </tr>
               </thead>
@@ -212,7 +233,7 @@ export default async function TiSesiDetailPage({ params }: Props) {
                       )}
                     </td>
                     <td className="px-4 py-3">
-                      {r.tahap2_submit ? (
+                      {r.tahap3_submit ? (
                         <span className="inline-flex rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700">
                           ✓ Selesai
                         </span>
@@ -232,12 +253,12 @@ export default async function TiSesiDetailPage({ params }: Props) {
                             Isi Tahap 1
                           </Link>
                         )}
-                        {sesi.status === "TAHAP2" && !r.tahap2_submit && (
+                        {sesi.status === "TAHAP3" && !r.tahap3_submit && (
                           <Link
-                            href={`/task-inventory/tahap2/${r.id}`}
+                            href={`/task-inventory/tahap3/${r.id}`}
                             className="text-xs font-medium text-indigo-600 hover:text-indigo-800"
                           >
-                            Isi Tahap 2
+                            Isi Tahap 3
                           </Link>
                         )}
                         {(sesi.status === "DRAFT" || sesi.status === "TAHAP1") &&
@@ -258,7 +279,7 @@ export default async function TiSesiDetailPage({ params }: Props) {
         )}
       </div>
 
-      {/* Task terpilih (setelah TAHAP2) */}
+      {/* Task terpilih (setelah TAHAP3) */}
       {taskTerpilih.length > 0 && (
         <div>
           <h2 className="mb-4 text-lg font-medium text-gray-900">

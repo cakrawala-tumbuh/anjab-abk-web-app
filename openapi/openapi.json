@@ -17,7 +17,10 @@
   "paths": {
     "/api/v1/health": {
       "get": {
-        "tags": ["system", "system"],
+        "tags": [
+          "system",
+          "system"
+        ],
         "summary": "Liveness",
         "operationId": "health_api_v1_health_get",
         "responses": {
@@ -36,7 +39,10 @@
     },
     "/api/v1/ready": {
       "get": {
-        "tags": ["system", "system"],
+        "tags": [
+          "system",
+          "system"
+        ],
         "summary": "Readiness",
         "operationId": "ready_api_v1_ready_get",
         "responses": {
@@ -65,7 +71,10 @@
     },
     "/api/v1/version": {
       "get": {
-        "tags": ["system", "system"],
+        "tags": [
+          "system",
+          "system"
+        ],
         "summary": "Versi",
         "operationId": "version_api_v1_version_get",
         "responses": {
@@ -84,7 +93,10 @@
     },
     "/api/v1/me": {
       "get": {
-        "tags": ["system", "system"],
+        "tags": [
+          "system",
+          "system"
+        ],
         "summary": "Principal saat ini",
         "operationId": "me_api_v1_me_get",
         "responses": {
@@ -118,7 +130,9 @@
     },
     "/api/v1/jenjang-pendidikan": {
       "get": {
-        "tags": ["core.jenjang-pendidikan"],
+        "tags": [
+          "core.jenjang-pendidikan"
+        ],
         "summary": "Daftar jenjang pendidikan",
         "operationId": "jenjang_pendidikan_list",
         "parameters": [
@@ -174,7 +188,9 @@
         }
       },
       "post": {
-        "tags": ["core.jenjang-pendidikan"],
+        "tags": [
+          "core.jenjang-pendidikan"
+        ],
         "summary": "Buat jenjang pendidikan",
         "operationId": "jenjang_pendidikan_create",
         "security": [
@@ -286,7 +302,9 @@
     },
     "/api/v1/jenjang-pendidikan/search": {
       "post": {
-        "tags": ["core.jenjang-pendidikan"],
+        "tags": [
+          "core.jenjang-pendidikan"
+        ],
         "summary": "Cari jenjang pendidikan (domain ala Odoo)",
         "operationId": "jenjang_pendidikan_search",
         "requestBody": {
@@ -325,7 +343,9 @@
     },
     "/api/v1/jenjang-pendidikan/{jp_id}": {
       "get": {
-        "tags": ["core.jenjang-pendidikan"],
+        "tags": [
+          "core.jenjang-pendidikan"
+        ],
         "summary": "Ambil jenjang pendidikan",
         "operationId": "jenjang_pendidikan_get",
         "parameters": [
@@ -396,7 +416,9 @@
         }
       },
       "patch": {
-        "tags": ["core.jenjang-pendidikan"],
+        "tags": [
+          "core.jenjang-pendidikan"
+        ],
         "summary": "Perbarui jenjang pendidikan",
         "operationId": "jenjang_pendidikan_update",
         "security": [
@@ -519,7 +541,9 @@
         }
       },
       "delete": {
-        "tags": ["core.jenjang-pendidikan"],
+        "tags": [
+          "core.jenjang-pendidikan"
+        ],
         "summary": "Hapus jenjang pendidikan",
         "operationId": "jenjang_pendidikan_delete",
         "security": [
@@ -589,7 +613,9 @@
     },
     "/api/v1/sekolah": {
       "get": {
-        "tags": ["core.sekolah"],
+        "tags": [
+          "core.sekolah"
+        ],
         "summary": "Daftar sekolah",
         "operationId": "sekolah_list",
         "parameters": [
@@ -645,7 +671,9 @@
         }
       },
       "post": {
-        "tags": ["core.sekolah"],
+        "tags": [
+          "core.sekolah"
+        ],
         "summary": "Buat sekolah",
         "operationId": "sekolah_create",
         "security": [
@@ -751,7 +779,9 @@
     },
     "/api/v1/sekolah/search": {
       "post": {
-        "tags": ["core.sekolah"],
+        "tags": [
+          "core.sekolah"
+        ],
         "summary": "Cari sekolah (domain ala Odoo)",
         "operationId": "sekolah_search",
         "requestBody": {
@@ -790,7 +820,9 @@
     },
     "/api/v1/sekolah/{sekolah_id}": {
       "get": {
-        "tags": ["core.sekolah"],
+        "tags": [
+          "core.sekolah"
+        ],
         "summary": "Ambil sekolah",
         "operationId": "sekolah_get",
         "parameters": [
@@ -861,7 +893,9 @@
         }
       },
       "patch": {
-        "tags": ["core.sekolah"],
+        "tags": [
+          "core.sekolah"
+        ],
         "summary": "Perbarui sekolah",
         "operationId": "sekolah_update",
         "security": [
@@ -984,7 +1018,9 @@
         }
       },
       "delete": {
-        "tags": ["core.sekolah"],
+        "tags": [
+          "core.sekolah"
+        ],
         "summary": "Hapus sekolah",
         "operationId": "sekolah_delete",
         "security": [
@@ -1054,7 +1090,9 @@
     },
     "/api/v1/mata-pelajaran": {
       "get": {
-        "tags": ["core.mata-pelajaran"],
+        "tags": [
+          "core.mata-pelajaran"
+        ],
         "summary": "Daftar mata pelajaran",
         "operationId": "mata_pelajaran_list",
         "parameters": [
@@ -1110,7 +1148,9 @@
         }
       },
       "post": {
-        "tags": ["core.mata-pelajaran"],
+        "tags": [
+          "core.mata-pelajaran"
+        ],
         "summary": "Buat mata pelajaran",
         "operationId": "mata_pelajaran_create",
         "security": [
@@ -1222,7 +1262,9 @@
     },
     "/api/v1/mata-pelajaran/search": {
       "post": {
-        "tags": ["core.mata-pelajaran"],
+        "tags": [
+          "core.mata-pelajaran"
+        ],
         "summary": "Cari mata pelajaran (domain ala Odoo)",
         "operationId": "mata_pelajaran_search",
         "requestBody": {
@@ -1261,7 +1303,9 @@
     },
     "/api/v1/mata-pelajaran/{mp_id}": {
       "get": {
-        "tags": ["core.mata-pelajaran"],
+        "tags": [
+          "core.mata-pelajaran"
+        ],
         "summary": "Ambil mata pelajaran",
         "operationId": "mata_pelajaran_get",
         "parameters": [
@@ -1332,7 +1376,9 @@
         }
       },
       "patch": {
-        "tags": ["core.mata-pelajaran"],
+        "tags": [
+          "core.mata-pelajaran"
+        ],
         "summary": "Perbarui mata pelajaran",
         "operationId": "mata_pelajaran_update",
         "security": [
@@ -1455,7 +1501,9 @@
         }
       },
       "delete": {
-        "tags": ["core.mata-pelajaran"],
+        "tags": [
+          "core.mata-pelajaran"
+        ],
         "summary": "Hapus mata pelajaran",
         "operationId": "mata_pelajaran_delete",
         "security": [
@@ -1525,7 +1573,9 @@
     },
     "/api/v1/partisipan": {
       "get": {
-        "tags": ["core.partisipan"],
+        "tags": [
+          "core.partisipan"
+        ],
         "summary": "Daftar partisipan",
         "operationId": "partisipan_list",
         "parameters": [
@@ -1581,7 +1631,9 @@
         }
       },
       "post": {
-        "tags": ["core.partisipan"],
+        "tags": [
+          "core.partisipan"
+        ],
         "summary": "Buat partisipan",
         "operationId": "partisipan_create",
         "security": [
@@ -1624,7 +1676,9 @@
                     "email": "siti.rahayu@sekolah.id",
                     "sekolah_id": "skl_a1b2c3d4",
                     "jabatan_utama_id": "jbt_a1b2c3d4",
-                    "jabatan_tambahan_ids": ["jbt_b2c3d4e5"],
+                    "jabatan_tambahan_ids": [
+                      "jbt_b2c3d4e5"
+                    ],
                     "masa_kerja_tahun": 5,
                     "masa_kerja_bulan": 3,
                     "mata_pelajaran_utama_id": "mp_a1b2c3d4"
@@ -1692,7 +1746,9 @@
     },
     "/api/v1/partisipan/search": {
       "post": {
-        "tags": ["core.partisipan"],
+        "tags": [
+          "core.partisipan"
+        ],
         "summary": "Cari partisipan (domain ala Odoo)",
         "operationId": "partisipan_search",
         "requestBody": {
@@ -1731,7 +1787,9 @@
     },
     "/api/v1/partisipan/{partisipan_id}": {
       "get": {
-        "tags": ["core.partisipan"],
+        "tags": [
+          "core.partisipan"
+        ],
         "summary": "Ambil partisipan",
         "operationId": "partisipan_get",
         "parameters": [
@@ -1802,7 +1860,9 @@
         }
       },
       "patch": {
-        "tags": ["core.partisipan"],
+        "tags": [
+          "core.partisipan"
+        ],
         "summary": "Perbarui partisipan",
         "operationId": "partisipan_update",
         "security": [
@@ -1925,7 +1985,9 @@
         }
       },
       "delete": {
-        "tags": ["core.partisipan"],
+        "tags": [
+          "core.partisipan"
+        ],
         "summary": "Hapus partisipan",
         "operationId": "partisipan_delete",
         "security": [
@@ -1995,7 +2057,9 @@
     },
     "/api/v1/jabatan": {
       "get": {
-        "tags": ["anjab.jabatan"],
+        "tags": [
+          "anjab.jabatan"
+        ],
         "summary": "Daftar jabatan",
         "operationId": "jabatan_list",
         "parameters": [
@@ -2051,7 +2115,9 @@
         }
       },
       "post": {
-        "tags": ["anjab.jabatan"],
+        "tags": [
+          "anjab.jabatan"
+        ],
         "summary": "Buat jabatan",
         "operationId": "jabatan_create",
         "security": [
@@ -2164,7 +2230,9 @@
     },
     "/api/v1/jabatan/search": {
       "post": {
-        "tags": ["anjab.jabatan"],
+        "tags": [
+          "anjab.jabatan"
+        ],
         "summary": "Cari jabatan (domain ala Odoo)",
         "operationId": "jabatan_search",
         "requestBody": {
@@ -2203,7 +2271,9 @@
     },
     "/api/v1/jabatan/{jabatan_id}": {
       "get": {
-        "tags": ["anjab.jabatan"],
+        "tags": [
+          "anjab.jabatan"
+        ],
         "summary": "Ambil jabatan",
         "operationId": "jabatan_get",
         "parameters": [
@@ -2274,7 +2344,9 @@
         }
       },
       "patch": {
-        "tags": ["anjab.jabatan"],
+        "tags": [
+          "anjab.jabatan"
+        ],
         "summary": "Perbarui jabatan",
         "operationId": "jabatan_update",
         "security": [
@@ -2397,7 +2469,9 @@
         }
       },
       "delete": {
-        "tags": ["anjab.jabatan"],
+        "tags": [
+          "anjab.jabatan"
+        ],
         "summary": "Hapus jabatan",
         "operationId": "jabatan_delete",
         "security": [
@@ -2467,7 +2541,9 @@
     },
     "/api/v1/sme-panel": {
       "get": {
-        "tags": ["anjab.sme-panel"],
+        "tags": [
+          "anjab.sme-panel"
+        ],
         "summary": "Daftar SME panel",
         "operationId": "sme_panel_list",
         "parameters": [
@@ -2523,7 +2599,9 @@
         }
       },
       "post": {
-        "tags": ["anjab.sme-panel"],
+        "tags": [
+          "anjab.sme-panel"
+        ],
         "summary": "Buat SME panel",
         "operationId": "sme_panel_create",
         "security": [
@@ -2626,7 +2704,9 @@
     },
     "/api/v1/sme-panel/search": {
       "post": {
-        "tags": ["anjab.sme-panel"],
+        "tags": [
+          "anjab.sme-panel"
+        ],
         "summary": "Cari SME panel (domain ala Odoo)",
         "operationId": "sme_panel_search",
         "requestBody": {
@@ -2665,7 +2745,9 @@
     },
     "/api/v1/sme-panel/{panel_id}": {
       "get": {
-        "tags": ["anjab.sme-panel"],
+        "tags": [
+          "anjab.sme-panel"
+        ],
         "summary": "Ambil SME panel",
         "operationId": "sme_panel_get",
         "parameters": [
@@ -2736,7 +2818,9 @@
         }
       },
       "patch": {
-        "tags": ["anjab.sme-panel"],
+        "tags": [
+          "anjab.sme-panel"
+        ],
         "summary": "Perbarui SME panel",
         "operationId": "sme_panel_update",
         "security": [
@@ -2859,7 +2943,9 @@
         }
       },
       "delete": {
-        "tags": ["anjab.sme-panel"],
+        "tags": [
+          "anjab.sme-panel"
+        ],
         "summary": "Hapus SME panel",
         "operationId": "sme_panel_delete",
         "security": [
@@ -2929,7 +3015,9 @@
     },
     "/api/v1/sme-panel/{panel_id}/anggota": {
       "post": {
-        "tags": ["anjab.sme-panel"],
+        "tags": [
+          "anjab.sme-panel"
+        ],
         "summary": "Tambah anggota ke SME panel",
         "operationId": "sme_panel_add_anggota",
         "security": [
@@ -3026,7 +3114,9 @@
     },
     "/api/v1/sme-panel/{panel_id}/anggota/{partisipan_id}": {
       "delete": {
-        "tags": ["anjab.sme-panel"],
+        "tags": [
+          "anjab.sme-panel"
+        ],
         "summary": "Hapus anggota dari SME panel",
         "operationId": "sme_panel_remove_anggota",
         "security": [
@@ -3114,7 +3204,9 @@
     },
     "/api/v1/dcs/kuesioner/saya": {
       "get": {
-        "tags": ["dcs.kuesioner"],
+        "tags": [
+          "dcs.kuesioner"
+        ],
         "summary": "Daftar kuesioner DCS milik pengguna yang sedang login",
         "description": "Kembalikan sesi DCS yang sudah di-assign ke partisipan dan berstatus OPEN.\n\nPartisipan hanya melihat kuesioner DCS yang telah di-assign secara eksplisit\noleh admin (record responden sudah dibuat dengan ``partisipan_id`` mereka).\nTidak ada enrollment otomatis.",
         "operationId": "dcs_kuesioner_saya",
@@ -3153,7 +3245,9 @@
     },
     "/api/v1/wcp/kuesioner/saya": {
       "get": {
-        "tags": ["wcp.kuesioner"],
+        "tags": [
+          "wcp.kuesioner"
+        ],
         "summary": "Daftar kuesioner WCP milik pengguna yang sedang login",
         "description": "Kembalikan sesi WCP yang sudah di-assign ke partisipan dan berstatus OPEN.\n\nPartisipan hanya melihat kuesioner WCP yang telah di-assign secara eksplisit\noleh admin (record responden sudah dibuat dengan ``partisipan_id`` mereka).\nTidak ada enrollment otomatis.",
         "operationId": "wcp_kuesioner_saya",
@@ -3192,7 +3286,9 @@
     },
     "/api/v1/wcp/dimensi": {
       "get": {
-        "tags": ["wcp.dimensi"],
+        "tags": [
+          "wcp.dimensi"
+        ],
         "summary": "Daftar 12 dimensi WCP",
         "operationId": "wcp_dimensi_list",
         "responses": {
@@ -3215,7 +3311,9 @@
     },
     "/api/v1/wcp/dimensi/{kode}": {
       "get": {
-        "tags": ["wcp.dimensi"],
+        "tags": [
+          "wcp.dimensi"
+        ],
         "summary": "Ambil dimensi WCP beserta 6 item-nya",
         "operationId": "wcp_dimensi_get",
         "parameters": [
@@ -3267,7 +3365,9 @@
     },
     "/api/v1/wcp/dimensi/{kode}/items": {
       "get": {
-        "tags": ["wcp.dimensi"],
+        "tags": [
+          "wcp.dimensi"
+        ],
         "summary": "Daftar item untuk satu dimensi WCP",
         "operationId": "wcp_dimensi_items",
         "parameters": [
@@ -3323,7 +3423,9 @@
     },
     "/api/v1/wcp/dimensi/items/{item_id}": {
       "patch": {
-        "tags": ["wcp.dimensi"],
+        "tags": [
+          "wcp.dimensi"
+        ],
         "summary": "Ubah satu item WCP (admin)",
         "operationId": "wcp_item_update",
         "security": [
@@ -3410,7 +3512,9 @@
     },
     "/api/v1/wcp/sesi": {
       "get": {
-        "tags": ["wcp.sesi"],
+        "tags": [
+          "wcp.sesi"
+        ],
         "summary": "Daftar sesi WCP",
         "operationId": "wcp_sesi_list",
         "parameters": [
@@ -3466,7 +3570,9 @@
         }
       },
       "post": {
-        "tags": ["wcp.sesi"],
+        "tags": [
+          "wcp.sesi"
+        ],
         "summary": "Buat sesi WCP",
         "operationId": "wcp_sesi_create",
         "security": [
@@ -3571,7 +3677,9 @@
     },
     "/api/v1/wcp/sesi/search": {
       "post": {
-        "tags": ["wcp.sesi"],
+        "tags": [
+          "wcp.sesi"
+        ],
         "summary": "Cari sesi WCP (domain ala Odoo)",
         "operationId": "wcp_sesi_search",
         "requestBody": {
@@ -3610,7 +3718,9 @@
     },
     "/api/v1/wcp/sesi/{sesi_id}": {
       "get": {
-        "tags": ["wcp.sesi"],
+        "tags": [
+          "wcp.sesi"
+        ],
         "summary": "Ambil sesi WCP",
         "operationId": "wcp_sesi_get",
         "parameters": [
@@ -3660,7 +3770,9 @@
         }
       },
       "patch": {
-        "tags": ["wcp.sesi"],
+        "tags": [
+          "wcp.sesi"
+        ],
         "summary": "Perbarui sesi WCP (hanya saat DRAFT)",
         "operationId": "wcp_sesi_update",
         "security": [
@@ -3745,7 +3857,9 @@
         }
       },
       "delete": {
-        "tags": ["wcp.sesi"],
+        "tags": [
+          "wcp.sesi"
+        ],
         "summary": "Hapus sesi WCP (hanya saat DRAFT)",
         "operationId": "wcp_sesi_delete",
         "security": [
@@ -3815,7 +3929,9 @@
     },
     "/api/v1/wcp/sesi/{sesi_id}/buka": {
       "post": {
-        "tags": ["wcp.sesi"],
+        "tags": [
+          "wcp.sesi"
+        ],
         "summary": "Buka sesi WCP (DRAFT → OPEN)",
         "operationId": "wcp_sesi_buka",
         "security": [
@@ -3892,7 +4008,9 @@
     },
     "/api/v1/wcp/sesi/{sesi_id}/tutup": {
       "post": {
-        "tags": ["wcp.sesi"],
+        "tags": [
+          "wcp.sesi"
+        ],
         "summary": "Tutup sesi WCP (OPEN → CLOSED)",
         "operationId": "wcp_sesi_tutup",
         "security": [
@@ -3969,7 +4087,9 @@
     },
     "/api/v1/wcp/sesi/{sesi_id}/responden": {
       "get": {
-        "tags": ["wcp.responden"],
+        "tags": [
+          "wcp.responden"
+        ],
         "summary": "Daftar responden dalam sesi WCP",
         "operationId": "wcp_responden_list",
         "parameters": [
@@ -4023,7 +4143,9 @@
         }
       },
       "post": {
-        "tags": ["wcp.responden"],
+        "tags": [
+          "wcp.responden"
+        ],
         "summary": "Daftarkan responden ke sesi WCP",
         "operationId": "wcp_responden_create",
         "security": [
@@ -4120,7 +4242,9 @@
     },
     "/api/v1/wcp/sesi/responden/{responden_id}": {
       "get": {
-        "tags": ["wcp.responden"],
+        "tags": [
+          "wcp.responden"
+        ],
         "summary": "Ambil detail responden WCP",
         "operationId": "wcp_responden_get",
         "parameters": [
@@ -4170,7 +4294,9 @@
         }
       },
       "delete": {
-        "tags": ["wcp.responden"],
+        "tags": [
+          "wcp.responden"
+        ],
         "summary": "Hapus responden (hanya jika belum submit)",
         "operationId": "wcp_responden_delete",
         "security": [
@@ -4240,7 +4366,9 @@
     },
     "/api/v1/wcp/sesi/responden/{responden_id}/jawaban": {
       "post": {
-        "tags": ["wcp.responden"],
+        "tags": [
+          "wcp.responden"
+        ],
         "summary": "Submit 72 jawaban untuk satu responden",
         "operationId": "wcp_jawaban_submit",
         "security": [
@@ -4339,7 +4467,9 @@
         }
       },
       "get": {
-        "tags": ["wcp.responden"],
+        "tags": [
+          "wcp.responden"
+        ],
         "summary": "Lihat jawaban responden",
         "operationId": "wcp_jawaban_list",
         "parameters": [
@@ -4395,7 +4525,9 @@
     },
     "/api/v1/wcp/sesi/{sesi_id}/analisis": {
       "post": {
-        "tags": ["wcp.hasil"],
+        "tags": [
+          "wcp.hasil"
+        ],
         "summary": "Jalankan analisis WCP (CLOSED → ANALYZED)",
         "operationId": "wcp_analisis_run",
         "security": [
@@ -4472,7 +4604,9 @@
     },
     "/api/v1/wcp/sesi/{sesi_id}/hasil": {
       "get": {
-        "tags": ["wcp.hasil"],
+        "tags": [
+          "wcp.hasil"
+        ],
         "summary": "Lihat hasil analisis sesi WCP",
         "operationId": "wcp_hasil_sesi_get",
         "parameters": [
@@ -4524,7 +4658,9 @@
     },
     "/api/v1/wcp/sesi/responden/{responden_id}/hasil": {
       "get": {
-        "tags": ["wcp.hasil"],
+        "tags": [
+          "wcp.hasil"
+        ],
         "summary": "Lihat hasil analisis per responden",
         "operationId": "wcp_hasil_responden_get",
         "parameters": [
@@ -4576,7 +4712,9 @@
     },
     "/api/v1/dcs/sub-skala": {
       "get": {
-        "tags": ["dcs.sub-skala"],
+        "tags": [
+          "dcs.sub-skala"
+        ],
         "summary": "Daftar 3 sub-skala DCS",
         "operationId": "dcs_subskala_list",
         "responses": {
@@ -4599,7 +4737,9 @@
     },
     "/api/v1/dcs/sub-skala/{kode}": {
       "get": {
-        "tags": ["dcs.sub-skala"],
+        "tags": [
+          "dcs.sub-skala"
+        ],
         "summary": "Ambil sub-skala DCS beserta 14 item-nya",
         "operationId": "dcs_subskala_get",
         "parameters": [
@@ -4651,7 +4791,9 @@
     },
     "/api/v1/dcs/sub-skala/{kode}/items": {
       "get": {
-        "tags": ["dcs.sub-skala"],
+        "tags": [
+          "dcs.sub-skala"
+        ],
         "summary": "Daftar item untuk satu sub-skala DCS",
         "operationId": "dcs_subskala_items",
         "parameters": [
@@ -4707,7 +4849,9 @@
     },
     "/api/v1/dcs/sub-skala/items/{item_id}": {
       "patch": {
-        "tags": ["dcs.sub-skala"],
+        "tags": [
+          "dcs.sub-skala"
+        ],
         "summary": "Ubah satu item DCS (admin)",
         "operationId": "dcs_item_update",
         "security": [
@@ -4794,7 +4938,9 @@
     },
     "/api/v1/dcs/sesi": {
       "get": {
-        "tags": ["dcs.sesi"],
+        "tags": [
+          "dcs.sesi"
+        ],
         "summary": "Daftar sesi DCS",
         "operationId": "dcs_sesi_list",
         "parameters": [
@@ -4850,7 +4996,9 @@
         }
       },
       "post": {
-        "tags": ["dcs.sesi"],
+        "tags": [
+          "dcs.sesi"
+        ],
         "summary": "Buat sesi DCS",
         "operationId": "dcs_sesi_create",
         "security": [
@@ -4955,7 +5103,9 @@
     },
     "/api/v1/dcs/sesi/search": {
       "post": {
-        "tags": ["dcs.sesi"],
+        "tags": [
+          "dcs.sesi"
+        ],
         "summary": "Cari sesi DCS (domain ala Odoo)",
         "operationId": "dcs_sesi_search",
         "requestBody": {
@@ -4994,7 +5144,9 @@
     },
     "/api/v1/dcs/sesi/{sesi_id}": {
       "get": {
-        "tags": ["dcs.sesi"],
+        "tags": [
+          "dcs.sesi"
+        ],
         "summary": "Ambil sesi DCS",
         "operationId": "dcs_sesi_get",
         "parameters": [
@@ -5044,7 +5196,9 @@
         }
       },
       "patch": {
-        "tags": ["dcs.sesi"],
+        "tags": [
+          "dcs.sesi"
+        ],
         "summary": "Perbarui sesi DCS (hanya saat DRAFT)",
         "operationId": "dcs_sesi_update",
         "security": [
@@ -5129,7 +5283,9 @@
         }
       },
       "delete": {
-        "tags": ["dcs.sesi"],
+        "tags": [
+          "dcs.sesi"
+        ],
         "summary": "Hapus sesi DCS (hanya saat DRAFT)",
         "operationId": "dcs_sesi_delete",
         "security": [
@@ -5199,7 +5355,9 @@
     },
     "/api/v1/dcs/sesi/{sesi_id}/buka": {
       "post": {
-        "tags": ["dcs.sesi"],
+        "tags": [
+          "dcs.sesi"
+        ],
         "summary": "Buka sesi DCS (DRAFT → OPEN)",
         "operationId": "dcs_sesi_buka",
         "security": [
@@ -5276,7 +5434,9 @@
     },
     "/api/v1/dcs/sesi/{sesi_id}/tutup": {
       "post": {
-        "tags": ["dcs.sesi"],
+        "tags": [
+          "dcs.sesi"
+        ],
         "summary": "Tutup sesi DCS (OPEN → CLOSED)",
         "operationId": "dcs_sesi_tutup",
         "security": [
@@ -5353,7 +5513,9 @@
     },
     "/api/v1/dcs/sesi/{sesi_id}/responden": {
       "get": {
-        "tags": ["dcs.responden"],
+        "tags": [
+          "dcs.responden"
+        ],
         "summary": "Daftar responden dalam sesi DCS",
         "operationId": "dcs_responden_list",
         "parameters": [
@@ -5407,7 +5569,9 @@
         }
       },
       "post": {
-        "tags": ["dcs.responden"],
+        "tags": [
+          "dcs.responden"
+        ],
         "summary": "Daftarkan responden ke sesi DCS",
         "operationId": "dcs_responden_create",
         "security": [
@@ -5504,7 +5668,9 @@
     },
     "/api/v1/dcs/sesi/responden/{responden_id}": {
       "get": {
-        "tags": ["dcs.responden"],
+        "tags": [
+          "dcs.responden"
+        ],
         "summary": "Ambil detail responden DCS",
         "operationId": "dcs_responden_get",
         "parameters": [
@@ -5554,7 +5720,9 @@
         }
       },
       "delete": {
-        "tags": ["dcs.responden"],
+        "tags": [
+          "dcs.responden"
+        ],
         "summary": "Hapus responden (hanya jika belum submit)",
         "operationId": "dcs_responden_delete",
         "security": [
@@ -5624,7 +5792,9 @@
     },
     "/api/v1/dcs/sesi/responden/{responden_id}/jawaban": {
       "post": {
-        "tags": ["dcs.responden"],
+        "tags": [
+          "dcs.responden"
+        ],
         "summary": "Submit 42 jawaban untuk satu responden",
         "operationId": "dcs_jawaban_submit",
         "security": [
@@ -5723,7 +5893,9 @@
         }
       },
       "get": {
-        "tags": ["dcs.responden"],
+        "tags": [
+          "dcs.responden"
+        ],
         "summary": "Lihat jawaban responden DCS",
         "operationId": "dcs_jawaban_list",
         "parameters": [
@@ -5779,7 +5951,9 @@
     },
     "/api/v1/dcs/sesi/{sesi_id}/analisis": {
       "post": {
-        "tags": ["dcs.hasil"],
+        "tags": [
+          "dcs.hasil"
+        ],
         "summary": "Jalankan analisis DCS (CLOSED → ANALYZED)",
         "operationId": "dcs_analisis_run",
         "security": [
@@ -5874,7 +6048,9 @@
     },
     "/api/v1/dcs/sesi/{sesi_id}/hasil": {
       "get": {
-        "tags": ["dcs.hasil"],
+        "tags": [
+          "dcs.hasil"
+        ],
         "summary": "Lihat hasil analisis sesi DCS",
         "operationId": "dcs_hasil_sesi_get",
         "parameters": [
@@ -5944,7 +6120,9 @@
     },
     "/api/v1/dcs/sesi/responden/{responden_id}/hasil": {
       "get": {
-        "tags": ["dcs.hasil"],
+        "tags": [
+          "dcs.hasil"
+        ],
         "summary": "Lihat hasil analisis per responden DCS",
         "operationId": "dcs_hasil_responden_get",
         "parameters": [
@@ -5996,9 +6174,11 @@
     },
     "/api/v1/task-inventory/kuesioner/saya": {
       "get": {
-        "tags": ["taskinv.kuesioner"],
+        "tags": [
+          "taskinv.kuesioner"
+        ],
         "summary": "Daftar kuesioner Task Inventory milik pengguna yang sedang login",
-        "description": "Enrollment otomatis: Task Inventory bersifat universal — tiap partisipan\nmengisi SEMUA sesi aktif (TAHAP1/TAHAP2) tanpa filter jabatan, sambil membuat\nrecord responden bila belum ada.",
+        "description": "Enrollment otomatis: Task Inventory bersifat universal — tiap partisipan\nmengisi SEMUA sesi aktif (TAHAP1/TAHAP2/TAHAP3), sambil membuat record\nresponden bila belum ada.",
         "operationId": "taskinv_kuesioner_saya",
         "responses": {
           "200": {
@@ -6035,7 +6215,9 @@
     },
     "/api/v1/task-inventory/catalog/kombinasi": {
       "get": {
-        "tags": ["taskinv.catalog"],
+        "tags": [
+          "taskinv.catalog"
+        ],
         "summary": "Daftar kombinasi unit × kategori jabatan beserta jumlah task",
         "operationId": "taskinv_catalog_kombinasi",
         "responses": {
@@ -6058,7 +6240,9 @@
     },
     "/api/v1/task-inventory/catalog": {
       "get": {
-        "tags": ["taskinv.catalog"],
+        "tags": [
+          "taskinv.catalog"
+        ],
         "summary": "Daftar task catalog untuk satu kombinasi unit × kategori jabatan",
         "operationId": "taskinv_catalog_list",
         "parameters": [
@@ -6115,7 +6299,9 @@
     },
     "/api/v1/task-inventory/sesi": {
       "get": {
-        "tags": ["taskinv.sesi"],
+        "tags": [
+          "taskinv.sesi"
+        ],
         "summary": "Daftar sesi Task Inventory",
         "operationId": "taskinv_sesi_list",
         "parameters": [
@@ -6171,7 +6357,9 @@
         }
       },
       "post": {
-        "tags": ["taskinv.sesi"],
+        "tags": [
+          "taskinv.sesi"
+        ],
         "summary": "Buat sesi Task Inventory",
         "operationId": "taskinv_sesi_create",
         "security": [
@@ -6277,7 +6465,9 @@
     },
     "/api/v1/task-inventory/sesi/search": {
       "post": {
-        "tags": ["taskinv.sesi"],
+        "tags": [
+          "taskinv.sesi"
+        ],
         "summary": "Cari sesi Task Inventory (domain ala Odoo)",
         "operationId": "taskinv_sesi_search",
         "requestBody": {
@@ -6316,7 +6506,9 @@
     },
     "/api/v1/task-inventory/sesi/{sesi_id}": {
       "get": {
-        "tags": ["taskinv.sesi"],
+        "tags": [
+          "taskinv.sesi"
+        ],
         "summary": "Ambil sesi Task Inventory",
         "operationId": "taskinv_sesi_get",
         "parameters": [
@@ -6366,7 +6558,9 @@
         }
       },
       "patch": {
-        "tags": ["taskinv.sesi"],
+        "tags": [
+          "taskinv.sesi"
+        ],
         "summary": "Perbarui sesi Task Inventory (hanya saat DRAFT)",
         "operationId": "taskinv_sesi_update",
         "security": [
@@ -6451,7 +6645,9 @@
         }
       },
       "delete": {
-        "tags": ["taskinv.sesi"],
+        "tags": [
+          "taskinv.sesi"
+        ],
         "summary": "Hapus sesi Task Inventory (hanya saat DRAFT)",
         "operationId": "taskinv_sesi_delete",
         "security": [
@@ -6521,7 +6717,9 @@
     },
     "/api/v1/task-inventory/sesi/{sesi_id}/mulai-tahap1": {
       "post": {
-        "tags": ["taskinv.sesi"],
+        "tags": [
+          "taskinv.sesi"
+        ],
         "summary": "Mulai Tahap 1 — Seleksi Relevansi (DRAFT → TAHAP1)",
         "operationId": "taskinv_sesi_mulai_tahap1",
         "security": [
@@ -6598,8 +6796,10 @@
     },
     "/api/v1/task-inventory/sesi/{sesi_id}/mulai-tahap2": {
       "post": {
-        "tags": ["taskinv.sesi"],
-        "summary": "Mulai Tahap 2 — Detailing (TAHAP1 → TAHAP2), bekukan task relevan (≥1 partisipan)",
+        "tags": [
+          "taskinv.sesi"
+        ],
+        "summary": "Mulai Tahap 2 — Review Koordinator (TAHAP1 → TAHAP2)",
         "operationId": "taskinv_sesi_mulai_tahap2",
         "security": [
           {
@@ -6673,7 +6873,98 @@
             }
           },
           "422": {
-            "description": "Belum semua submit / tidak ada task relevan.",
+            "description": "Belum ada responden yang submit Tahap 1.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/task-inventory/sesi/{sesi_id}/mulai-tahap3": {
+      "post": {
+        "tags": [
+          "taskinv.sesi"
+        ],
+        "summary": "Mulai Tahap 3 — Detailing (TAHAP2 → TAHAP3), bekukan task relevan",
+        "operationId": "taskinv_sesi_mulai_tahap3",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "sesi_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID sesi.",
+              "title": "Sesi Id"
+            },
+            "description": "ID sesi."
+          },
+          {
+            "name": "paksa",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "description": "Paksa lanjut walau masih ada task partial yang belum diputuskan koordinator.",
+              "default": false,
+              "title": "Paksa"
+            },
+            "description": "Paksa lanjut walau masih ada task partial yang belum diputuskan koordinator."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TiSesiRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sesi Task Inventory tidak ditemukan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Belum semua task diputuskan koordinator / tidak ada task relevan.",
             "content": {
               "application/json": {
                 "schema": {
@@ -6687,8 +6978,10 @@
     },
     "/api/v1/task-inventory/sesi/{sesi_id}/tutup": {
       "post": {
-        "tags": ["taskinv.sesi"],
-        "summary": "Tutup sesi (TAHAP2 → CLOSED)",
+        "tags": [
+          "taskinv.sesi"
+        ],
+        "summary": "Tutup sesi (TAHAP3 → CLOSED)",
         "operationId": "taskinv_sesi_tutup",
         "security": [
           {
@@ -6764,7 +7057,9 @@
     },
     "/api/v1/task-inventory/sesi/{sesi_id}/responden": {
       "get": {
-        "tags": ["taskinv.responden"],
+        "tags": [
+          "taskinv.responden"
+        ],
         "summary": "Daftar responden dalam sesi",
         "operationId": "taskinv_responden_list",
         "parameters": [
@@ -6818,7 +7113,9 @@
         }
       },
       "post": {
-        "tags": ["taskinv.responden"],
+        "tags": [
+          "taskinv.responden"
+        ],
         "summary": "Daftarkan responden ke sesi (saat DRAFT/TAHAP1)",
         "operationId": "taskinv_responden_create",
         "security": [
@@ -6905,7 +7202,9 @@
     },
     "/api/v1/task-inventory/sesi/responden/{responden_id}": {
       "get": {
-        "tags": ["taskinv.responden"],
+        "tags": [
+          "taskinv.responden"
+        ],
         "summary": "Ambil detail responden",
         "operationId": "taskinv_responden_get",
         "parameters": [
@@ -6955,7 +7254,9 @@
         }
       },
       "delete": {
-        "tags": ["taskinv.responden"],
+        "tags": [
+          "taskinv.responden"
+        ],
         "summary": "Hapus responden (hanya jika belum submit)",
         "operationId": "taskinv_responden_delete",
         "security": [
@@ -7025,7 +7326,9 @@
     },
     "/api/v1/task-inventory/sesi/responden/{responden_id}/seleksi": {
       "post": {
-        "tags": ["taskinv.seleksi"],
+        "tags": [
+          "taskinv.seleksi"
+        ],
         "summary": "Submit seleksi relevansi Tahap 1 untuk satu responden",
         "operationId": "taskinv_seleksi_submit",
         "security": [
@@ -7120,7 +7423,9 @@
         }
       },
       "get": {
-        "tags": ["taskinv.seleksi"],
+        "tags": [
+          "taskinv.seleksi"
+        ],
         "summary": "Lihat seleksi Tahap 1 satu responden",
         "operationId": "taskinv_seleksi_get",
         "parameters": [
@@ -7172,8 +7477,10 @@
     },
     "/api/v1/task-inventory/sesi/responden/{responden_id}/detail": {
       "post": {
-        "tags": ["taskinv.detail"],
-        "summary": "Submit detail Tahap 2 untuk satu responden",
+        "tags": [
+          "taskinv.detail"
+        ],
+        "summary": "Submit detail Tahap 3 untuk satu responden",
         "operationId": "taskinv_detail_submit",
         "security": [
           {
@@ -7271,8 +7578,10 @@
         }
       },
       "get": {
-        "tags": ["taskinv.detail"],
-        "summary": "Lihat detail Tahap 2 satu responden",
+        "tags": [
+          "taskinv.detail"
+        ],
+        "summary": "Lihat detail Tahap 3 satu responden",
         "operationId": "taskinv_detail_list",
         "parameters": [
           {
@@ -7325,9 +7634,152 @@
         }
       }
     },
+    "/api/v1/task-inventory/sesi/{sesi_id}/tahap2": {
+      "get": {
+        "tags": [
+          "taskinv.tahap2"
+        ],
+        "summary": "Lihat task yang perlu diputuskan koordinator di Tahap 2",
+        "operationId": "taskinv_tahap2_get",
+        "parameters": [
+          {
+            "name": "sesi_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID sesi.",
+              "title": "Sesi Id"
+            },
+            "description": "ID sesi."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TiTahap2ReviewRead"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sesi tidak ditemukan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "taskinv.tahap2"
+        ],
+        "summary": "Submit keputusan koordinator untuk task-task Tahap 2",
+        "operationId": "taskinv_tahap2_submit",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "sesi_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID sesi.",
+              "title": "Sesi Id"
+            },
+            "description": "ID sesi."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TiTahap2Submit"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TiTahap2ReviewRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sesi tidak ditemukan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Sesi bukan TAHAP2 / kode task tidak valid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/task-inventory/sesi/{sesi_id}/task-terpilih": {
       "get": {
-        "tags": ["taskinv.hasil"],
+        "tags": [
+          "taskinv.hasil"
+        ],
         "summary": "Himpunan task relevan yang dibekukan (tersedia setelah TAHAP2)",
         "operationId": "taskinv_task_terpilih",
         "parameters": [
@@ -7383,7 +7835,9 @@
     },
     "/api/v1/task-inventory/sesi/{sesi_id}/analisis": {
       "post": {
-        "tags": ["taskinv.hasil"],
+        "tags": [
+          "taskinv.hasil"
+        ],
         "summary": "Jalankan analisis Task Inventory (CLOSED → ANALYZED)",
         "operationId": "taskinv_analisis_run",
         "security": [
@@ -7460,7 +7914,9 @@
     },
     "/api/v1/task-inventory/sesi/{sesi_id}/hasil": {
       "get": {
-        "tags": ["taskinv.hasil"],
+        "tags": [
+          "taskinv.hasil"
+        ],
         "summary": "Lihat hasil analisis sesi Task Inventory",
         "operationId": "taskinv_hasil_get",
         "parameters": [
@@ -7530,14 +7986,24 @@
           },
           "risk_flag": {
             "type": "string",
-            "enum": ["HIGH", "MODERATE", "LOW"],
+            "enum": [
+              "HIGH",
+              "MODERATE",
+              "LOW"
+            ],
             "title": "Risk Flag",
             "description": "Flag risiko DCS responden ini.",
-            "examples": ["MODERATE"]
+            "examples": [
+              "MODERATE"
+            ]
           }
         },
         "type": "object",
-        "required": ["responden_id", "sub_skala", "risk_flag"],
+        "required": [
+          "responden_id",
+          "sub_skala",
+          "risk_flag"
+        ],
         "title": "DcsHasilRespondenRead",
         "description": "Hasil analisis untuk satu responden (3 sub-skala)."
       },
@@ -7573,10 +8039,16 @@
           },
           "risk_flag": {
             "type": "string",
-            "enum": ["HIGH", "MODERATE", "LOW"],
+            "enum": [
+              "HIGH",
+              "MODERATE",
+              "LOW"
+            ],
             "title": "Risk Flag",
             "description": "Flag risiko DCS: HIGH = demand tinggi + control/support rendah; MODERATE = salah satu kondisi; LOW = tidak ada kondisi.",
-            "examples": ["MODERATE"]
+            "examples": [
+              "MODERATE"
+            ]
           },
           "k_index": {
             "anyOf": [
@@ -7589,7 +8061,9 @@
             ],
             "title": "K Index",
             "description": "K-Index psikososial (0–1). None jika wcp_sesi_id tidak disertakan. Rumus: 0,40×DemandPressure + 0,25×ControlDeficit + 0,25×SupportDeficit + 0,10×WCPRisk.",
-            "examples": [0.42]
+            "examples": [
+              0.42
+            ]
           },
           "k_index_wcp_risk": {
             "anyOf": [
@@ -7602,11 +8076,20 @@
             ],
             "title": "K Index Wcp Risk",
             "description": "Komponen WCP risk yang dipakai dalam K-Index (0–1). None jika tidak ada.",
-            "examples": [0.65]
+            "examples": [
+              0.65
+            ]
           }
         },
         "type": "object",
-        "required": ["sesi_id", "jabatan_id", "periode", "n_responden", "sub_skala", "risk_flag"],
+        "required": [
+          "sesi_id",
+          "jabatan_id",
+          "periode",
+          "n_responden",
+          "sub_skala",
+          "risk_flag"
+        ],
         "title": "DcsHasilSesiRead",
         "description": "Hasil analisis lengkap satu sesi DCS (seluruh sub-skala + risk flag + K-Index)."
       },
@@ -7616,23 +8099,33 @@
             "type": "string",
             "title": "Subskala Kode",
             "description": "Kode sub-skala.",
-            "examples": ["DEMAND"]
+            "examples": [
+              "DEMAND"
+            ]
           },
           "subskala_nama": {
             "type": "string",
             "title": "Subskala Nama",
             "description": "Nama sub-skala.",
-            "examples": ["Demand (Tuntutan Kerja)"]
+            "examples": [
+              "Demand (Tuntutan Kerja)"
+            ]
           },
           "skor": {
             "type": "number",
             "title": "Skor",
             "description": "Rata-rata 14 item setelah reverse UF.",
-            "examples": [3.71]
+            "examples": [
+              3.71
+            ]
           }
         },
         "type": "object",
-        "required": ["subskala_kode", "subskala_nama", "skor"],
+        "required": [
+          "subskala_kode",
+          "subskala_nama",
+          "skor"
+        ],
         "title": "DcsHasilSubSkalaRespondenRead",
         "description": "Skor satu sub-skala untuk satu responden."
       },
@@ -7642,31 +8135,41 @@
             "type": "string",
             "title": "Subskala Kode",
             "description": "Kode sub-skala.",
-            "examples": ["DEMAND"]
+            "examples": [
+              "DEMAND"
+            ]
           },
           "subskala_nama": {
             "type": "string",
             "title": "Subskala Nama",
             "description": "Nama sub-skala.",
-            "examples": ["Demand (Tuntutan Kerja)"]
+            "examples": [
+              "Demand (Tuntutan Kerja)"
+            ]
           },
           "n_responden": {
             "type": "integer",
             "title": "N Responden",
             "description": "Jumlah responden yang dianalisis.",
-            "examples": [7]
+            "examples": [
+              7
+            ]
           },
           "skor_mean": {
             "type": "number",
             "title": "Skor Mean",
             "description": "Rata-rata skor sub-skala antar responden.",
-            "examples": [3.71]
+            "examples": [
+              3.71
+            ]
           },
           "skor_std": {
             "type": "number",
             "title": "Skor Std",
             "description": "Standar deviasi skor sub-skala.",
-            "examples": [0.42]
+            "examples": [
+              0.42
+            ]
           },
           "cronbach_alpha": {
             "anyOf": [
@@ -7679,7 +8182,9 @@
             ],
             "title": "Cronbach Alpha",
             "description": "Cronbach's alpha (None jika responden < 2).",
-            "examples": [0.78]
+            "examples": [
+              0.78
+            ]
           }
         },
         "type": "object",
@@ -7700,44 +8205,61 @@
             "type": "string",
             "title": "Id",
             "description": "ID item.",
-            "examples": ["ditm_D1a"]
+            "examples": [
+              "ditm_D1a"
+            ]
           },
           "item_id": {
             "type": "string",
             "title": "Item Id",
             "description": "Kode item orisinal.",
-            "examples": ["D1a"]
+            "examples": [
+              "D1a"
+            ]
           },
           "subskala_kode": {
             "type": "string",
             "title": "Subskala Kode",
             "description": "Kode sub-skala.",
-            "examples": ["DEMAND"]
+            "examples": [
+              "DEMAND"
+            ]
           },
           "sub_dimensi": {
             "type": "string",
             "title": "Sub Dimensi",
             "description": "Sub-dimensi item.",
-            "examples": ["Volume"]
+            "examples": [
+              "Volume"
+            ]
           },
           "pernyataan": {
             "type": "string",
             "title": "Pernyataan",
             "description": "Teks pernyataan.",
-            "examples": ["Saya harus menyelesaikan banyak tugas dalam waktu yang sangat terbatas."]
+            "examples": [
+              "Saya harus menyelesaikan banyak tugas dalam waktu yang sangat terbatas."
+            ]
           },
           "arah": {
             "type": "string",
-            "enum": ["F", "UF"],
+            "enum": [
+              "F",
+              "UF"
+            ],
             "title": "Arah",
             "description": "Arah item: F (Favorable) atau UF (Unfavorable, reverse-scored).",
-            "examples": ["UF"]
+            "examples": [
+              "UF"
+            ]
           },
           "urutan": {
             "type": "integer",
             "title": "Urutan",
             "description": "Urutan global item (1–42).",
-            "examples": [1]
+            "examples": [
+              1
+            ]
           }
         },
         "type": "object",
@@ -7773,7 +8295,10 @@
             "anyOf": [
               {
                 "type": "string",
-                "enum": ["F", "UF"]
+                "enum": [
+                  "F",
+                  "UF"
+                ]
               },
               {
                 "type": "null"
@@ -7816,7 +8341,9 @@
         },
         "additionalProperties": false,
         "type": "object",
-        "required": ["jawaban"],
+        "required": [
+          "jawaban"
+        ],
         "title": "DcsJawabanBulkCreate",
         "description": "Payload bulk submission 42 jawaban untuk satu responden."
       },
@@ -7826,7 +8353,9 @@
             "type": "string",
             "title": "Item Id",
             "description": "Kode item orisinal (mis. D1a).",
-            "examples": ["D1a"]
+            "examples": [
+              "D1a"
+            ]
           },
           "skor_raw": {
             "type": "integer",
@@ -7834,12 +8363,17 @@
             "minimum": 1.0,
             "title": "Skor Raw",
             "description": "Skor mentah 1–5 dari responden.",
-            "examples": [4]
+            "examples": [
+              4
+            ]
           }
         },
         "additionalProperties": false,
         "type": "object",
-        "required": ["item_id", "skor_raw"],
+        "required": [
+          "item_id",
+          "skor_raw"
+        ],
         "title": "DcsJawabanItem",
         "description": "Satu jawaban item dalam bulk submission."
       },
@@ -7849,19 +8383,25 @@
             "type": "string",
             "title": "Id",
             "description": "ID jawaban.",
-            "examples": ["djwb_a1b2c3d4"]
+            "examples": [
+              "djwb_a1b2c3d4"
+            ]
           },
           "responden_id": {
             "type": "string",
             "title": "Responden Id",
             "description": "ID responden.",
-            "examples": ["drsp_a1b2c3d4"]
+            "examples": [
+              "drsp_a1b2c3d4"
+            ]
           },
           "item_id": {
             "type": "string",
             "title": "Item Id",
             "description": "Kode item orisinal.",
-            "examples": ["D1a"]
+            "examples": [
+              "D1a"
+            ]
           },
           "skor_raw": {
             "type": "integer",
@@ -7870,7 +8410,12 @@
           }
         },
         "type": "object",
-        "required": ["id", "responden_id", "item_id", "skor_raw"],
+        "required": [
+          "id",
+          "responden_id",
+          "item_id",
+          "skor_raw"
+        ],
         "title": "DcsJawabanRead",
         "description": "Representasi satu jawaban yang dikembalikan API."
       },
@@ -7880,13 +8425,17 @@
             "type": "string",
             "title": "Id",
             "description": "ID responden.",
-            "examples": ["drsp_a1b2c3d4"]
+            "examples": [
+              "drsp_a1b2c3d4"
+            ]
           },
           "sesi_id": {
             "type": "string",
             "title": "Sesi Id",
             "description": "ID sesi DCS.",
-            "examples": ["dses_a1b2c3d4"]
+            "examples": [
+              "dses_a1b2c3d4"
+            ]
           },
           "jabatan_label": {
             "type": "string",
@@ -7921,13 +8470,17 @@
             "type": "string",
             "title": "Sesi Status",
             "description": "Status sesi: DRAFT | OPEN | CLOSED | ANALYZED.",
-            "examples": ["OPEN"]
+            "examples": [
+              "OPEN"
+            ]
           },
           "sesi_periode": {
             "type": "string",
             "title": "Sesi Periode",
             "description": "Periode sesi (YYYY-MM).",
-            "examples": ["2025-06"]
+            "examples": [
+              "2025-06"
+            ]
           },
           "sesi_jabatan_id": {
             "type": "string",
@@ -7963,7 +8516,9 @@
             ],
             "title": "Nama",
             "description": "Nama responden (opsional, boleh anonim).",
-            "examples": ["Budi Santoso, S.Pd."]
+            "examples": [
+              "Budi Santoso, S.Pd."
+            ]
           },
           "jabatan_label": {
             "type": "string",
@@ -7971,7 +8526,9 @@
             "minLength": 1,
             "title": "Jabatan Label",
             "description": "Label jabatan responden (teks bebas).",
-            "examples": ["Guru Matematika"]
+            "examples": [
+              "Guru Matematika"
+            ]
           },
           "partisipan_id": {
             "anyOf": [
@@ -7984,12 +8541,16 @@
             ],
             "title": "Partisipan Id",
             "description": "ID partisipan yang terhubung (opsional, untuk fitur 'Kuesioner Saya').",
-            "examples": ["par_a1b2c3d4"]
+            "examples": [
+              "par_a1b2c3d4"
+            ]
           }
         },
         "additionalProperties": false,
         "type": "object",
-        "required": ["jabatan_label"],
+        "required": [
+          "jabatan_label"
+        ],
         "title": "DcsRespondenCreate",
         "description": "Payload pendaftaran responden ke dalam sesi DCS."
       },
@@ -7999,13 +8560,17 @@
             "type": "string",
             "title": "Id",
             "description": "ID responden.",
-            "examples": ["drsp_a1b2c3d4"]
+            "examples": [
+              "drsp_a1b2c3d4"
+            ]
           },
           "sesi_id": {
             "type": "string",
             "title": "Sesi Id",
             "description": "ID sesi induk.",
-            "examples": ["dses_a1b2c3d4"]
+            "examples": [
+              "dses_a1b2c3d4"
+            ]
           },
           "nama": {
             "anyOf": [
@@ -8062,7 +8627,13 @@
           }
         },
         "type": "object",
-        "required": ["id", "sesi_id", "jabatan_label", "sudah_submit", "created_at"],
+        "required": [
+          "id",
+          "sesi_id",
+          "jabatan_label",
+          "sudah_submit",
+          "created_at"
+        ],
         "title": "DcsRespondenRead",
         "description": "Representasi responden yang dikembalikan API."
       },
@@ -8072,7 +8643,9 @@
             "type": "string",
             "title": "Jabatan Id",
             "description": "ID jabatan yang dikaji.",
-            "examples": ["jbt_a1b2c3d4"]
+            "examples": [
+              "jbt_a1b2c3d4"
+            ]
           },
           "periode": {
             "type": "string",
@@ -8081,7 +8654,9 @@
             "pattern": "^\\d{4}-\\d{2}$",
             "title": "Periode",
             "description": "Periode survei format YYYY-MM.",
-            "examples": ["2025-06"]
+            "examples": [
+              "2025-06"
+            ]
           },
           "min_responden": {
             "type": "integer",
@@ -8089,7 +8664,9 @@
             "title": "Min Responden",
             "description": "Jumlah minimum responden.",
             "default": 6,
-            "examples": [6]
+            "examples": [
+              6
+            ]
           },
           "max_responden": {
             "type": "integer",
@@ -8097,7 +8674,9 @@
             "title": "Max Responden",
             "description": "Jumlah maksimum responden.",
             "default": 8,
-            "examples": [8]
+            "examples": [
+              8
+            ]
           },
           "catatan": {
             "anyOf": [
@@ -8115,7 +8694,10 @@
         },
         "additionalProperties": false,
         "type": "object",
-        "required": ["jabatan_id", "periode"],
+        "required": [
+          "jabatan_id",
+          "periode"
+        ],
         "title": "DcsSesiCreate",
         "description": "Payload pembuatan sesi DCS."
       },
@@ -8125,26 +8707,39 @@
             "type": "string",
             "title": "Id",
             "description": "ID sesi.",
-            "examples": ["dses_a1b2c3d4"]
+            "examples": [
+              "dses_a1b2c3d4"
+            ]
           },
           "jabatan_id": {
             "type": "string",
             "title": "Jabatan Id",
             "description": "ID jabatan.",
-            "examples": ["jbt_a1b2c3d4"]
+            "examples": [
+              "jbt_a1b2c3d4"
+            ]
           },
           "periode": {
             "type": "string",
             "title": "Periode",
             "description": "Periode survei (YYYY-MM).",
-            "examples": ["2025-06"]
+            "examples": [
+              "2025-06"
+            ]
           },
           "status": {
             "type": "string",
-            "enum": ["DRAFT", "OPEN", "CLOSED", "ANALYZED"],
+            "enum": [
+              "DRAFT",
+              "OPEN",
+              "CLOSED",
+              "ANALYZED"
+            ],
             "title": "Status",
             "description": "Status sesi.",
-            "examples": ["DRAFT"]
+            "examples": [
+              "DRAFT"
+            ]
           },
           "min_responden": {
             "type": "integer",
@@ -8256,29 +8851,42 @@
             "type": "string",
             "title": "Id",
             "description": "ID sub-skala.",
-            "examples": ["dsk_DEMAND"]
+            "examples": [
+              "dsk_DEMAND"
+            ]
           },
           "kode": {
             "type": "string",
             "title": "Kode",
             "description": "Kode sub-skala.",
-            "examples": ["DEMAND"]
+            "examples": [
+              "DEMAND"
+            ]
           },
           "nama": {
             "type": "string",
             "title": "Nama",
             "description": "Nama sub-skala.",
-            "examples": ["Demand (Tuntutan Kerja)"]
+            "examples": [
+              "Demand (Tuntutan Kerja)"
+            ]
           },
           "urutan": {
             "type": "integer",
             "title": "Urutan",
             "description": "Urutan sub-skala (1–3).",
-            "examples": [1]
+            "examples": [
+              1
+            ]
           }
         },
         "type": "object",
-        "required": ["id", "kode", "nama", "urutan"],
+        "required": [
+          "id",
+          "kode",
+          "nama",
+          "urutan"
+        ],
         "title": "DcsSubSkalaRead",
         "description": "Representasi sub-skala DCS tanpa item."
       },
@@ -8288,25 +8896,33 @@
             "type": "string",
             "title": "Id",
             "description": "ID sub-skala.",
-            "examples": ["dsk_DEMAND"]
+            "examples": [
+              "dsk_DEMAND"
+            ]
           },
           "kode": {
             "type": "string",
             "title": "Kode",
             "description": "Kode sub-skala.",
-            "examples": ["DEMAND"]
+            "examples": [
+              "DEMAND"
+            ]
           },
           "nama": {
             "type": "string",
             "title": "Nama",
             "description": "Nama sub-skala.",
-            "examples": ["Demand (Tuntutan Kerja)"]
+            "examples": [
+              "Demand (Tuntutan Kerja)"
+            ]
           },
           "urutan": {
             "type": "integer",
             "title": "Urutan",
             "description": "Urutan sub-skala (1–3).",
-            "examples": [1]
+            "examples": [
+              1
+            ]
           },
           "items": {
             "items": {
@@ -8318,7 +8934,13 @@
           }
         },
         "type": "object",
-        "required": ["id", "kode", "nama", "urutan", "items"],
+        "required": [
+          "id",
+          "kode",
+          "nama",
+          "urutan",
+          "items"
+        ],
         "title": "DcsSubSkalaWithItemsRead",
         "description": "Representasi sub-skala DCS beserta 14 item-nya."
       },
@@ -8360,11 +8982,16 @@
             ],
             "title": "Code",
             "description": "Kode mesin-terbaca stabil.",
-            "examples": ["not_allowed"]
+            "examples": [
+              "not_allowed"
+            ]
           }
         },
         "type": "object",
-        "required": ["msg", "type"],
+        "required": [
+          "msg",
+          "type"
+        ],
         "title": "ErrorDetail"
       },
       "ErrorResponse": {
@@ -8373,13 +9000,17 @@
             "type": "string",
             "title": "Error",
             "description": "Kode error stabil.",
-            "examples": ["not_found"]
+            "examples": [
+              "not_found"
+            ]
           },
           "message": {
             "type": "string",
             "title": "Message",
             "description": "Pesan ramah-manusia.",
-            "examples": ["Data tidak ditemukan."]
+            "examples": [
+              "Data tidak ditemukan."
+            ]
           },
           "request_id": {
             "anyOf": [
@@ -8410,7 +9041,10 @@
           }
         },
         "type": "object",
-        "required": ["error", "message"],
+        "required": [
+          "error",
+          "message"
+        ],
         "title": "ErrorResponse"
       },
       "HTTPValidationError": {
@@ -8432,17 +9066,24 @@
             "type": "string",
             "title": "Status",
             "description": "Status ringkas.",
-            "examples": ["ok"]
+            "examples": [
+              "ok"
+            ]
           },
           "version": {
             "type": "string",
             "title": "Version",
             "description": "Versi aplikasi.",
-            "examples": ["0.1.0"]
+            "examples": [
+              "0.1.0"
+            ]
           }
         },
         "type": "object",
-        "required": ["status", "version"],
+        "required": [
+          "status",
+          "version"
+        ],
         "title": "Health"
       },
       "JabatanCreate": {
@@ -8453,7 +9094,9 @@
             "minLength": 1,
             "title": "Kode",
             "description": "Kode jabatan (unik).",
-            "examples": ["KS-001"]
+            "examples": [
+              "KS-001"
+            ]
           },
           "nama": {
             "type": "string",
@@ -8461,14 +9104,22 @@
             "minLength": 1,
             "title": "Nama",
             "description": "Nama jabatan.",
-            "examples": ["Kepala Sekolah"]
+            "examples": [
+              "Kepala Sekolah"
+            ]
           },
           "jenis": {
             "type": "string",
-            "enum": ["struktural", "fungsional", "teknisi"],
+            "enum": [
+              "struktural",
+              "fungsional",
+              "teknisi"
+            ],
             "title": "Jenis",
             "description": "Jenis jabatan.",
-            "examples": ["struktural"]
+            "examples": [
+              "struktural"
+            ]
           },
           "unit_kerja_id": {
             "anyOf": [
@@ -8481,7 +9132,9 @@
             ],
             "title": "Unit Kerja Id",
             "description": "ID unit kerja / sekolah tempat jabatan ini berada.",
-            "examples": ["skl_a1b2c3d4"]
+            "examples": [
+              "skl_a1b2c3d4"
+            ]
           },
           "deskripsi": {
             "anyOf": [
@@ -8505,7 +9158,11 @@
         },
         "additionalProperties": false,
         "type": "object",
-        "required": ["kode", "nama", "jenis"],
+        "required": [
+          "kode",
+          "nama",
+          "jenis"
+        ],
         "title": "JabatanCreate",
         "description": "Payload pembuatan jabatan."
       },
@@ -8515,26 +9172,38 @@
             "type": "string",
             "title": "Id",
             "description": "ID unik jabatan.",
-            "examples": ["jbt_a1b2c3d4"]
+            "examples": [
+              "jbt_a1b2c3d4"
+            ]
           },
           "kode": {
             "type": "string",
             "title": "Kode",
             "description": "Kode jabatan.",
-            "examples": ["KS-001"]
+            "examples": [
+              "KS-001"
+            ]
           },
           "nama": {
             "type": "string",
             "title": "Nama",
             "description": "Nama jabatan.",
-            "examples": ["Kepala Sekolah"]
+            "examples": [
+              "Kepala Sekolah"
+            ]
           },
           "jenis": {
             "type": "string",
-            "enum": ["struktural", "fungsional", "teknisi"],
+            "enum": [
+              "struktural",
+              "fungsional",
+              "teknisi"
+            ],
             "title": "Jenis",
             "description": "Jenis jabatan.",
-            "examples": ["struktural"]
+            "examples": [
+              "struktural"
+            ]
           },
           "unit_kerja_id": {
             "anyOf": [
@@ -8573,7 +9242,14 @@
           }
         },
         "type": "object",
-        "required": ["id", "kode", "nama", "jenis", "aktif", "created_at"],
+        "required": [
+          "id",
+          "kode",
+          "nama",
+          "jenis",
+          "aktif",
+          "created_at"
+        ],
         "title": "JabatanRead",
         "description": "Representasi jabatan yang dikembalikan API."
       },
@@ -8611,7 +9287,11 @@
             "anyOf": [
               {
                 "type": "string",
-                "enum": ["struktural", "fungsional", "teknisi"]
+                "enum": [
+                  "struktural",
+                  "fungsional",
+                  "teknisi"
+                ]
               },
               {
                 "type": "null"
@@ -8671,7 +9351,9 @@
             "minLength": 1,
             "title": "Kode",
             "description": "Kode jenjang (unik), mis. SD, SMP, SMA, SMK.",
-            "examples": ["SD"]
+            "examples": [
+              "SD"
+            ]
           },
           "nama": {
             "type": "string",
@@ -8679,7 +9361,9 @@
             "minLength": 1,
             "title": "Nama",
             "description": "Nama lengkap jenjang pendidikan.",
-            "examples": ["Sekolah Dasar"]
+            "examples": [
+              "Sekolah Dasar"
+            ]
           },
           "urutan": {
             "type": "integer",
@@ -8687,7 +9371,9 @@
             "title": "Urutan",
             "description": "Urutan tampilan (makin kecil makin atas).",
             "default": 0,
-            "examples": [3]
+            "examples": [
+              3
+            ]
           },
           "aktif": {
             "type": "boolean",
@@ -8698,7 +9384,10 @@
         },
         "additionalProperties": false,
         "type": "object",
-        "required": ["kode", "nama"],
+        "required": [
+          "kode",
+          "nama"
+        ],
         "title": "JenjangPendidikanCreate",
         "description": "Payload pembuatan jenjang pendidikan."
       },
@@ -8708,25 +9397,33 @@
             "type": "string",
             "title": "Id",
             "description": "ID unik jenjang pendidikan.",
-            "examples": ["jp_a1b2c3d4"]
+            "examples": [
+              "jp_a1b2c3d4"
+            ]
           },
           "kode": {
             "type": "string",
             "title": "Kode",
             "description": "Kode jenjang.",
-            "examples": ["SD"]
+            "examples": [
+              "SD"
+            ]
           },
           "nama": {
             "type": "string",
             "title": "Nama",
             "description": "Nama lengkap.",
-            "examples": ["Sekolah Dasar"]
+            "examples": [
+              "Sekolah Dasar"
+            ]
           },
           "urutan": {
             "type": "integer",
             "title": "Urutan",
             "description": "Urutan tampilan.",
-            "examples": [3]
+            "examples": [
+              3
+            ]
           },
           "aktif": {
             "type": "boolean",
@@ -8735,7 +9432,13 @@
           }
         },
         "type": "object",
-        "required": ["id", "kode", "nama", "urutan", "aktif"],
+        "required": [
+          "id",
+          "kode",
+          "nama",
+          "urutan",
+          "aktif"
+        ],
         "title": "JenjangPendidikanRead",
         "description": "Representasi jenjang pendidikan yang dikembalikan API."
       },
@@ -8808,7 +9511,9 @@
             "minLength": 1,
             "title": "Kode",
             "description": "Kode mata pelajaran (unik).",
-            "examples": ["MTK"]
+            "examples": [
+              "MTK"
+            ]
           },
           "nama": {
             "type": "string",
@@ -8816,14 +9521,23 @@
             "minLength": 1,
             "title": "Nama",
             "description": "Nama mata pelajaran.",
-            "examples": ["Matematika"]
+            "examples": [
+              "Matematika"
+            ]
           },
           "kelompok": {
             "type": "string",
-            "enum": ["umum", "peminatan", "muatan_lokal", "kejuruan"],
+            "enum": [
+              "umum",
+              "peminatan",
+              "muatan_lokal",
+              "kejuruan"
+            ],
             "title": "Kelompok",
             "description": "Kelompok mata pelajaran.",
-            "examples": ["umum"]
+            "examples": [
+              "umum"
+            ]
           },
           "deskripsi": {
             "anyOf": [
@@ -8847,7 +9561,11 @@
         },
         "additionalProperties": false,
         "type": "object",
-        "required": ["kode", "nama", "kelompok"],
+        "required": [
+          "kode",
+          "nama",
+          "kelompok"
+        ],
         "title": "MataPelajaranCreate",
         "description": "Payload pembuatan mata pelajaran."
       },
@@ -8857,26 +9575,39 @@
             "type": "string",
             "title": "Id",
             "description": "ID unik mata pelajaran.",
-            "examples": ["mp_a1b2c3d4"]
+            "examples": [
+              "mp_a1b2c3d4"
+            ]
           },
           "kode": {
             "type": "string",
             "title": "Kode",
             "description": "Kode mata pelajaran.",
-            "examples": ["MTK"]
+            "examples": [
+              "MTK"
+            ]
           },
           "nama": {
             "type": "string",
             "title": "Nama",
             "description": "Nama mata pelajaran.",
-            "examples": ["Matematika"]
+            "examples": [
+              "Matematika"
+            ]
           },
           "kelompok": {
             "type": "string",
-            "enum": ["umum", "peminatan", "muatan_lokal", "kejuruan"],
+            "enum": [
+              "umum",
+              "peminatan",
+              "muatan_lokal",
+              "kejuruan"
+            ],
             "title": "Kelompok",
             "description": "Kelompok mata pelajaran.",
-            "examples": ["umum"]
+            "examples": [
+              "umum"
+            ]
           },
           "deskripsi": {
             "anyOf": [
@@ -8897,7 +9628,13 @@
           }
         },
         "type": "object",
-        "required": ["id", "kode", "nama", "kelompok", "aktif"],
+        "required": [
+          "id",
+          "kode",
+          "nama",
+          "kelompok",
+          "aktif"
+        ],
         "title": "MataPelajaranRead",
         "description": "Representasi mata pelajaran yang dikembalikan API."
       },
@@ -8935,7 +9672,12 @@
             "anyOf": [
               {
                 "type": "string",
-                "enum": ["umum", "peminatan", "muatan_lokal", "kejuruan"]
+                "enum": [
+                  "umum",
+                  "peminatan",
+                  "muatan_lokal",
+                  "kejuruan"
+                ]
               },
               {
                 "type": "null"
@@ -8989,23 +9731,34 @@
             "type": "integer",
             "title": "Total",
             "description": "Total item tersedia.",
-            "examples": [42]
+            "examples": [
+              42
+            ]
           },
           "limit": {
             "type": "integer",
             "title": "Limit",
             "description": "Maksimum item per halaman.",
-            "examples": [20]
+            "examples": [
+              20
+            ]
           },
           "offset": {
             "type": "integer",
             "title": "Offset",
             "description": "Jumlah item yang dilewati.",
-            "examples": [0]
+            "examples": [
+              0
+            ]
           }
         },
         "type": "object",
-        "required": ["items", "total", "limit", "offset"],
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
         "title": "Page[DcsSesiRead]"
       },
       "Page_JabatanRead_": {
@@ -9022,23 +9775,34 @@
             "type": "integer",
             "title": "Total",
             "description": "Total item tersedia.",
-            "examples": [42]
+            "examples": [
+              42
+            ]
           },
           "limit": {
             "type": "integer",
             "title": "Limit",
             "description": "Maksimum item per halaman.",
-            "examples": [20]
+            "examples": [
+              20
+            ]
           },
           "offset": {
             "type": "integer",
             "title": "Offset",
             "description": "Jumlah item yang dilewati.",
-            "examples": [0]
+            "examples": [
+              0
+            ]
           }
         },
         "type": "object",
-        "required": ["items", "total", "limit", "offset"],
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
         "title": "Page[JabatanRead]"
       },
       "Page_JenjangPendidikanRead_": {
@@ -9055,23 +9819,34 @@
             "type": "integer",
             "title": "Total",
             "description": "Total item tersedia.",
-            "examples": [42]
+            "examples": [
+              42
+            ]
           },
           "limit": {
             "type": "integer",
             "title": "Limit",
             "description": "Maksimum item per halaman.",
-            "examples": [20]
+            "examples": [
+              20
+            ]
           },
           "offset": {
             "type": "integer",
             "title": "Offset",
             "description": "Jumlah item yang dilewati.",
-            "examples": [0]
+            "examples": [
+              0
+            ]
           }
         },
         "type": "object",
-        "required": ["items", "total", "limit", "offset"],
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
         "title": "Page[JenjangPendidikanRead]"
       },
       "Page_MataPelajaranRead_": {
@@ -9088,23 +9863,34 @@
             "type": "integer",
             "title": "Total",
             "description": "Total item tersedia.",
-            "examples": [42]
+            "examples": [
+              42
+            ]
           },
           "limit": {
             "type": "integer",
             "title": "Limit",
             "description": "Maksimum item per halaman.",
-            "examples": [20]
+            "examples": [
+              20
+            ]
           },
           "offset": {
             "type": "integer",
             "title": "Offset",
             "description": "Jumlah item yang dilewati.",
-            "examples": [0]
+            "examples": [
+              0
+            ]
           }
         },
         "type": "object",
-        "required": ["items", "total", "limit", "offset"],
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
         "title": "Page[MataPelajaranRead]"
       },
       "Page_PartisipanRead_": {
@@ -9121,23 +9907,34 @@
             "type": "integer",
             "title": "Total",
             "description": "Total item tersedia.",
-            "examples": [42]
+            "examples": [
+              42
+            ]
           },
           "limit": {
             "type": "integer",
             "title": "Limit",
             "description": "Maksimum item per halaman.",
-            "examples": [20]
+            "examples": [
+              20
+            ]
           },
           "offset": {
             "type": "integer",
             "title": "Offset",
             "description": "Jumlah item yang dilewati.",
-            "examples": [0]
+            "examples": [
+              0
+            ]
           }
         },
         "type": "object",
-        "required": ["items", "total", "limit", "offset"],
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
         "title": "Page[PartisipanRead]"
       },
       "Page_SMEPanelRead_": {
@@ -9154,23 +9951,34 @@
             "type": "integer",
             "title": "Total",
             "description": "Total item tersedia.",
-            "examples": [42]
+            "examples": [
+              42
+            ]
           },
           "limit": {
             "type": "integer",
             "title": "Limit",
             "description": "Maksimum item per halaman.",
-            "examples": [20]
+            "examples": [
+              20
+            ]
           },
           "offset": {
             "type": "integer",
             "title": "Offset",
             "description": "Jumlah item yang dilewati.",
-            "examples": [0]
+            "examples": [
+              0
+            ]
           }
         },
         "type": "object",
-        "required": ["items", "total", "limit", "offset"],
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
         "title": "Page[SMEPanelRead]"
       },
       "Page_SekolahRead_": {
@@ -9187,23 +9995,34 @@
             "type": "integer",
             "title": "Total",
             "description": "Total item tersedia.",
-            "examples": [42]
+            "examples": [
+              42
+            ]
           },
           "limit": {
             "type": "integer",
             "title": "Limit",
             "description": "Maksimum item per halaman.",
-            "examples": [20]
+            "examples": [
+              20
+            ]
           },
           "offset": {
             "type": "integer",
             "title": "Offset",
             "description": "Jumlah item yang dilewati.",
-            "examples": [0]
+            "examples": [
+              0
+            ]
           }
         },
         "type": "object",
-        "required": ["items", "total", "limit", "offset"],
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
         "title": "Page[SekolahRead]"
       },
       "Page_TiSesiRead_": {
@@ -9220,23 +10039,34 @@
             "type": "integer",
             "title": "Total",
             "description": "Total item tersedia.",
-            "examples": [42]
+            "examples": [
+              42
+            ]
           },
           "limit": {
             "type": "integer",
             "title": "Limit",
             "description": "Maksimum item per halaman.",
-            "examples": [20]
+            "examples": [
+              20
+            ]
           },
           "offset": {
             "type": "integer",
             "title": "Offset",
             "description": "Jumlah item yang dilewati.",
-            "examples": [0]
+            "examples": [
+              0
+            ]
           }
         },
         "type": "object",
-        "required": ["items", "total", "limit", "offset"],
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
         "title": "Page[TiSesiRead]"
       },
       "Page_WcpSesiRead_": {
@@ -9253,23 +10083,34 @@
             "type": "integer",
             "title": "Total",
             "description": "Total item tersedia.",
-            "examples": [42]
+            "examples": [
+              42
+            ]
           },
           "limit": {
             "type": "integer",
             "title": "Limit",
             "description": "Maksimum item per halaman.",
-            "examples": [20]
+            "examples": [
+              20
+            ]
           },
           "offset": {
             "type": "integer",
             "title": "Offset",
             "description": "Jumlah item yang dilewati.",
-            "examples": [0]
+            "examples": [
+              0
+            ]
           }
         },
         "type": "object",
-        "required": ["items", "total", "limit", "offset"],
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
         "title": "Page[WcpSesiRead]"
       },
       "PartisipanCreate": {
@@ -9280,26 +10121,34 @@
             "minLength": 1,
             "title": "Nama",
             "description": "Nama lengkap partisipan.",
-            "examples": ["Siti Rahayu, S.Pd."]
+            "examples": [
+              "Siti Rahayu, S.Pd."
+            ]
           },
           "email": {
             "type": "string",
             "pattern": "^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$",
             "title": "Email",
             "description": "Alamat email partisipan — digunakan untuk akun Authentik.",
-            "examples": ["siti.rahayu@sekolah.id"]
+            "examples": [
+              "siti.rahayu@sekolah.id"
+            ]
           },
           "sekolah_id": {
             "type": "string",
             "title": "Sekolah Id",
             "description": "ID sekolah / satuan pendidikan tempat partisipan bertugas.",
-            "examples": ["skl_a1b2c3d4"]
+            "examples": [
+              "skl_a1b2c3d4"
+            ]
           },
           "jabatan_utama_id": {
             "type": "string",
             "title": "Jabatan Utama Id",
             "description": "ID jabatan utama partisipan.",
-            "examples": ["jbt_a1b2c3d4"]
+            "examples": [
+              "jbt_a1b2c3d4"
+            ]
           },
           "jabatan_tambahan_ids": {
             "items": {
@@ -9308,14 +10157,21 @@
             "type": "array",
             "title": "Jabatan Tambahan Ids",
             "description": "Daftar ID jabatan tambahan (boleh kosong).",
-            "examples": [["jbt_b2c3d4e5", "jbt_c3d4e5f6"]]
+            "examples": [
+              [
+                "jbt_b2c3d4e5",
+                "jbt_c3d4e5f6"
+              ]
+            ]
           },
           "masa_kerja_tahun": {
             "type": "integer",
             "minimum": 0.0,
             "title": "Masa Kerja Tahun",
             "description": "Masa kerja dalam tahun.",
-            "examples": [5]
+            "examples": [
+              5
+            ]
           },
           "masa_kerja_bulan": {
             "type": "integer",
@@ -9324,7 +10180,9 @@
             "title": "Masa Kerja Bulan",
             "description": "Sisa masa kerja dalam bulan (0–11).",
             "default": 0,
-            "examples": [3]
+            "examples": [
+              3
+            ]
           },
           "mata_pelajaran_utama_id": {
             "anyOf": [
@@ -9337,7 +10195,9 @@
             ],
             "title": "Mata Pelajaran Utama Id",
             "description": "ID mata pelajaran utama (opsional, relevan untuk guru).",
-            "examples": ["mp_a1b2c3d4"]
+            "examples": [
+              "mp_a1b2c3d4"
+            ]
           },
           "aktif": {
             "type": "boolean",
@@ -9348,7 +10208,13 @@
         },
         "additionalProperties": false,
         "type": "object",
-        "required": ["nama", "email", "sekolah_id", "jabatan_utama_id", "masa_kerja_tahun"],
+        "required": [
+          "nama",
+          "email",
+          "sekolah_id",
+          "jabatan_utama_id",
+          "masa_kerja_tahun"
+        ],
         "title": "PartisipanCreate",
         "description": "Payload pembuatan partisipan."
       },
@@ -9358,19 +10224,25 @@
             "type": "string",
             "title": "Id",
             "description": "ID unik partisipan.",
-            "examples": ["par_a1b2c3d4"]
+            "examples": [
+              "par_a1b2c3d4"
+            ]
           },
           "nama": {
             "type": "string",
             "title": "Nama",
             "description": "Nama lengkap partisipan.",
-            "examples": ["Siti Rahayu, S.Pd."]
+            "examples": [
+              "Siti Rahayu, S.Pd."
+            ]
           },
           "email": {
             "type": "string",
             "title": "Email",
             "description": "Alamat email partisipan.",
-            "examples": ["siti.rahayu@sekolah.id"]
+            "examples": [
+              "siti.rahayu@sekolah.id"
+            ]
           },
           "authentik_user_id": {
             "anyOf": [
@@ -9383,7 +10255,9 @@
             ],
             "title": "Authentik User Id",
             "description": "ID pengguna di Authentik (pk). None bila provisioning belum dikonfigurasi.",
-            "examples": ["42"]
+            "examples": [
+              "42"
+            ]
           },
           "sekolah_id": {
             "type": "string",
@@ -9584,7 +10458,9 @@
             "type": "string",
             "title": "Subject",
             "description": "Subject (sub) token.",
-            "examples": ["user-123"]
+            "examples": [
+              "user-123"
+            ]
           },
           "username": {
             "anyOf": [
@@ -9616,7 +10492,9 @@
           }
         },
         "type": "object",
-        "required": ["subject"],
+        "required": [
+          "subject"
+        ],
         "title": "Principal",
         "description": "Identitas yang sudah terverifikasi dari token."
       },
@@ -9626,12 +10504,16 @@
             "type": "string",
             "title": "Partisipan Id",
             "description": "ID partisipan yang akan ditambahkan ke panel.",
-            "examples": ["par_a1b2c3d4"]
+            "examples": [
+              "par_a1b2c3d4"
+            ]
           }
         },
         "additionalProperties": false,
         "type": "object",
-        "required": ["partisipan_id"],
+        "required": [
+          "partisipan_id"
+        ],
         "title": "SMEPanelAnggotaAdd",
         "description": "Payload penambahan anggota ke SME panel."
       },
@@ -9641,7 +10523,9 @@
             "type": "string",
             "title": "Jabatan Id",
             "description": "ID jabatan yang menjadi dasar panel SME ini.",
-            "examples": ["jbt_a1b2c3d4"]
+            "examples": [
+              "jbt_a1b2c3d4"
+            ]
           },
           "aktif": {
             "type": "boolean",
@@ -9652,7 +10536,9 @@
         },
         "additionalProperties": false,
         "type": "object",
-        "required": ["jabatan_id"],
+        "required": [
+          "jabatan_id"
+        ],
         "title": "SMEPanelCreate",
         "description": "Payload pembuatan SME panel."
       },
@@ -9662,7 +10548,9 @@
             "type": "string",
             "title": "Id",
             "description": "ID unik SME panel.",
-            "examples": ["sme_a1b2c3d4"]
+            "examples": [
+              "sme_a1b2c3d4"
+            ]
           },
           "jabatan_id": {
             "type": "string",
@@ -9702,7 +10590,12 @@
           }
         },
         "type": "object",
-        "required": ["id", "jabatan_id", "aktif", "created_at"],
+        "required": [
+          "id",
+          "jabatan_id",
+          "aktif",
+          "created_at"
+        ],
         "title": "SMEPanelRead",
         "description": "Representasi SME panel yang dikembalikan API."
       },
@@ -9745,7 +10638,11 @@
               "anyOf": [
                 {
                   "type": "string",
-                  "enum": ["&", "|", "!"]
+                  "enum": [
+                    "&",
+                    "|",
+                    "!"
+                  ]
                 },
                 {
                   "prefixItems": [
@@ -9792,7 +10689,10 @@
                 },
                 {
                   "type": "string",
-                  "enum": ["asc", "desc"]
+                  "enum": [
+                    "asc",
+                    "desc"
+                  ]
                 }
               ],
               "type": "array",
@@ -9825,10 +10725,21 @@
         "title": "SearchRequest",
         "examples": [
           {
-            "domain": [["nama", "ilike", "dasar"]],
+            "domain": [
+              [
+                "nama",
+                "ilike",
+                "dasar"
+              ]
+            ],
             "limit": 20,
             "offset": 0,
-            "order": [["nama", "asc"]]
+            "order": [
+              [
+                "nama",
+                "asc"
+              ]
+            ]
           }
         ]
       },
@@ -9840,7 +10751,9 @@
             "minLength": 1,
             "title": "Nama",
             "description": "Nama sekolah.",
-            "examples": ["SD Negeri 1 Bandung"]
+            "examples": [
+              "SD Negeri 1 Bandung"
+            ]
           },
           "npsn": {
             "anyOf": [
@@ -9856,13 +10769,17 @@
             ],
             "title": "Npsn",
             "description": "Nomor Pokok Sekolah Nasional (8 digit angka).",
-            "examples": ["20201234"]
+            "examples": [
+              "20201234"
+            ]
           },
           "jenjang_pendidikan_id": {
             "type": "string",
             "title": "Jenjang Pendidikan Id",
             "description": "ID jenjang pendidikan.",
-            "examples": ["jp_a1b2c3d4"]
+            "examples": [
+              "jp_a1b2c3d4"
+            ]
           },
           "kota": {
             "anyOf": [
@@ -9876,7 +10793,9 @@
             ],
             "title": "Kota",
             "description": "Kota lokasi sekolah.",
-            "examples": ["Bandung"]
+            "examples": [
+              "Bandung"
+            ]
           },
           "provinsi": {
             "anyOf": [
@@ -9890,7 +10809,9 @@
             ],
             "title": "Provinsi",
             "description": "Provinsi lokasi sekolah.",
-            "examples": ["Jawa Barat"]
+            "examples": [
+              "Jawa Barat"
+            ]
           },
           "aktif": {
             "type": "boolean",
@@ -9901,7 +10822,10 @@
         },
         "additionalProperties": false,
         "type": "object",
-        "required": ["nama", "jenjang_pendidikan_id"],
+        "required": [
+          "nama",
+          "jenjang_pendidikan_id"
+        ],
         "title": "SekolahCreate",
         "description": "Payload pembuatan sekolah / satuan pendidikan."
       },
@@ -9911,13 +10835,17 @@
             "type": "string",
             "title": "Id",
             "description": "ID unik sekolah.",
-            "examples": ["skl_a1b2c3d4"]
+            "examples": [
+              "skl_a1b2c3d4"
+            ]
           },
           "nama": {
             "type": "string",
             "title": "Nama",
             "description": "Nama sekolah.",
-            "examples": ["SD Negeri 1 Bandung"]
+            "examples": [
+              "SD Negeri 1 Bandung"
+            ]
           },
           "npsn": {
             "anyOf": [
@@ -9973,7 +10901,13 @@
           }
         },
         "type": "object",
-        "required": ["id", "nama", "jenjang_pendidikan_id", "aktif", "created_at"],
+        "required": [
+          "id",
+          "nama",
+          "jenjang_pendidikan_id",
+          "aktif",
+          "created_at"
+        ],
         "title": "SekolahRead",
         "description": "Representasi sekolah yang dikembalikan API."
       },
@@ -10070,43 +11004,57 @@
             "type": "string",
             "title": "Kode",
             "description": "Kode task deterministik.",
-            "examples": ["TIf0b59714"]
+            "examples": [
+              "TIf0b59714"
+            ]
           },
           "unit": {
             "type": "string",
             "title": "Unit",
             "description": "Unit/jenjang (TK/SD/SMP/SMA).",
-            "examples": ["TK"]
+            "examples": [
+              "TK"
+            ]
           },
           "kategori_jabatan": {
             "type": "string",
             "title": "Kategori Jabatan",
             "description": "Kategori jabatan.",
-            "examples": ["Kepala Sekolah"]
+            "examples": [
+              "Kepala Sekolah"
+            ]
           },
           "tugas_pokok": {
             "type": "string",
             "title": "Tugas Pokok",
             "description": "Tugas pokok (klaster).",
-            "examples": ["Pengelolaan SDM"]
+            "examples": [
+              "Pengelolaan SDM"
+            ]
           },
           "detil_tugas": {
             "type": "string",
             "title": "Detil Tugas",
             "description": "Detil tugas (kelompok).",
-            "examples": ["Mengevaluasi Kinerja Karyawan"]
+            "examples": [
+              "Mengevaluasi Kinerja Karyawan"
+            ]
           },
           "uraian_tugas": {
             "type": "string",
             "title": "Uraian Tugas",
             "description": "Uraian tugas (task statement).",
-            "examples": ["Menyusun evaluasi karyawan"]
+            "examples": [
+              "Menyusun evaluasi karyawan"
+            ]
           },
           "urutan": {
             "type": "integer",
             "title": "Urutan",
             "description": "Urutan dalam kombinasi unit×kategori.",
-            "examples": [1]
+            "examples": [
+              1
+            ]
           }
         },
         "type": "object",
@@ -10131,13 +11079,21 @@
           },
           "sumber_bukti": {
             "type": "string",
-            "enum": ["Formal", "Aktual", "Keduanya"],
+            "enum": [
+              "Formal",
+              "Aktual",
+              "Keduanya"
+            ],
             "title": "Sumber Bukti",
             "description": "Formal/Aktual/Keduanya."
           },
           "kondisi": {
             "type": "string",
-            "enum": ["Baseline", "Peak", "Both"],
+            "enum": [
+              "Baseline",
+              "Peak",
+              "Both"
+            ],
             "title": "Kondisi",
             "description": "Baseline/Peak/Both."
           },
@@ -10169,13 +11125,21 @@
           },
           "ai_mode": {
             "type": "string",
-            "enum": ["Human-led", "Co-Pilot", "AI-assisted"],
+            "enum": [
+              "Human-led",
+              "Co-Pilot",
+              "AI-assisted"
+            ],
             "title": "Ai Mode",
             "description": "Human-led/Co-Pilot/AI-assisted."
           },
           "va_type": {
             "type": "string",
-            "enum": ["VA-Core", "VA-Enable", "NVA-Residual"],
+            "enum": [
+              "VA-Core",
+              "VA-Enable",
+              "NVA-Residual"
+            ],
             "title": "Va Type",
             "description": "VA-Core/VA-Enable/NVA-Residual."
           },
@@ -10220,7 +11184,9 @@
             "type": "string",
             "title": "Id",
             "description": "ID entri detail.",
-            "examples": ["tdet_a1b2c3d4"]
+            "examples": [
+              "tdet_a1b2c3d4"
+            ]
           },
           "responden_id": {
             "type": "string",
@@ -10239,12 +11205,20 @@
           },
           "sumber_bukti": {
             "type": "string",
-            "enum": ["Formal", "Aktual", "Keduanya"],
+            "enum": [
+              "Formal",
+              "Aktual",
+              "Keduanya"
+            ],
             "title": "Sumber Bukti"
           },
           "kondisi": {
             "type": "string",
-            "enum": ["Baseline", "Peak", "Both"],
+            "enum": [
+              "Baseline",
+              "Peak",
+              "Both"
+            ],
             "title": "Kondisi"
           },
           "frekuensi_teks": {
@@ -10265,12 +11239,20 @@
           },
           "ai_mode": {
             "type": "string",
-            "enum": ["Human-led", "Co-Pilot", "AI-assisted"],
+            "enum": [
+              "Human-led",
+              "Co-Pilot",
+              "AI-assisted"
+            ],
             "title": "Ai Mode"
           },
           "va_type": {
             "type": "string",
-            "enum": ["VA-Core", "VA-Enable", "NVA-Residual"],
+            "enum": [
+              "VA-Core",
+              "VA-Enable",
+              "NVA-Residual"
+            ],
             "title": "Va Type"
           },
           "dcs_flag": {
@@ -10322,7 +11304,9 @@
         },
         "additionalProperties": false,
         "type": "object",
-        "required": ["detail"],
+        "required": [
+          "detail"
+        ],
         "title": "TiDetailSubmit",
         "description": "Payload submit detail Tahap 2 untuk satu responden.\n\nBoleh subset dari himpunan terpilih (hanya task yang benar-benar dikerjakan responden),\ntetapi setiap `task_kode` wajib termasuk himpunan terpilih sesi."
       },
@@ -10353,10 +11337,10 @@
             "title": "N Responden Tahap1",
             "description": "Jumlah responden yang submit Tahap 1."
           },
-          "n_responden_tahap2": {
+          "n_responden_tahap3": {
             "type": "integer",
-            "title": "N Responden Tahap2",
-            "description": "Jumlah responden yang submit Tahap 2."
+            "title": "N Responden Tahap3",
+            "description": "Jumlah responden yang submit Tahap 3 (detail)."
           },
           "jumlah_task_terpilih": {
             "type": "integer",
@@ -10389,7 +11373,7 @@
           "kategori_jabatan",
           "periode",
           "n_responden_tahap1",
-          "n_responden_tahap2",
+          "n_responden_tahap3",
           "jumlah_task_terpilih",
           "total_jam_per_minggu",
           "total_jam_per_tahun",
@@ -10433,7 +11417,7 @@
           "n_detail": {
             "type": "integer",
             "title": "N Detail",
-            "description": "Jumlah partisipan yang mengisi detail (Tahap 2)."
+            "description": "Jumlah partisipan yang mengisi detail (Tahap 3)."
           },
           "jam_per_minggu_mean": {
             "type": "number",
@@ -10503,23 +11487,33 @@
             "type": "string",
             "title": "Unit",
             "description": "Unit/jenjang.",
-            "examples": ["TK"]
+            "examples": [
+              "TK"
+            ]
           },
           "kategori_jabatan": {
             "type": "string",
             "title": "Kategori Jabatan",
             "description": "Kategori jabatan.",
-            "examples": ["Kepala Sekolah"]
+            "examples": [
+              "Kepala Sekolah"
+            ]
           },
           "jumlah_task": {
             "type": "integer",
             "title": "Jumlah Task",
             "description": "Jumlah task pada kombinasi ini.",
-            "examples": [42]
+            "examples": [
+              42
+            ]
           }
         },
         "type": "object",
-        "required": ["unit", "kategori_jabatan", "jumlah_task"],
+        "required": [
+          "unit",
+          "kategori_jabatan",
+          "jumlah_task"
+        ],
         "title": "TiKombinasiRead",
         "description": "Satu kombinasi (unit × kategori jabatan) beserta jumlah task."
       },
@@ -10529,13 +11523,17 @@
             "type": "string",
             "title": "Id",
             "description": "ID responden.",
-            "examples": ["trsp_a1b2c3d4"]
+            "examples": [
+              "trsp_a1b2c3d4"
+            ]
           },
           "sesi_id": {
             "type": "string",
             "title": "Sesi Id",
             "description": "ID sesi Task Inventory.",
-            "examples": ["tises_a1b2c3d4"]
+            "examples": [
+              "tises_a1b2c3d4"
+            ]
           },
           "tahap1_submit": {
             "type": "boolean",
@@ -10555,12 +11553,12 @@
             "title": "Tahap1 Submitted At",
             "description": "Waktu submit Tahap 1."
           },
-          "tahap2_submit": {
+          "tahap3_submit": {
             "type": "boolean",
-            "title": "Tahap2 Submit",
-            "description": "True jika detail Tahap 2 sudah disubmit."
+            "title": "Tahap3 Submit",
+            "description": "True jika detail Tahap 3 sudah disubmit."
           },
-          "tahap2_submitted_at": {
+          "tahap3_submitted_at": {
             "anyOf": [
               {
                 "type": "string",
@@ -10570,8 +11568,8 @@
                 "type": "null"
               }
             ],
-            "title": "Tahap2 Submitted At",
-            "description": "Waktu submit Tahap 2."
+            "title": "Tahap3 Submitted At",
+            "description": "Waktu submit Tahap 3."
           },
           "created_at": {
             "type": "string",
@@ -10582,26 +11580,34 @@
           "sesi_status": {
             "type": "string",
             "title": "Sesi Status",
-            "description": "Status sesi: DRAFT | TAHAP1 | TAHAP2 | CLOSED | ANALYZED.",
-            "examples": ["TAHAP1"]
+            "description": "Status sesi: DRAFT | TAHAP1 | TAHAP2 | TAHAP3 | CLOSED | ANALYZED.",
+            "examples": [
+              "TAHAP1"
+            ]
           },
           "sesi_unit": {
             "type": "string",
             "title": "Sesi Unit",
             "description": "Unit/jenjang yang dikaji.",
-            "examples": ["TK"]
+            "examples": [
+              "TK"
+            ]
           },
           "sesi_kategori_jabatan": {
             "type": "string",
             "title": "Sesi Kategori Jabatan",
             "description": "Kategori jabatan yang dikaji.",
-            "examples": ["Kepala Sekolah"]
+            "examples": [
+              "Kepala Sekolah"
+            ]
           },
           "sesi_periode": {
             "type": "string",
             "title": "Sesi Periode",
             "description": "Periode sesi (YYYY-MM).",
-            "examples": ["2026-06"]
+            "examples": [
+              "2026-06"
+            ]
           }
         },
         "type": "object",
@@ -10609,7 +11615,7 @@
           "id",
           "sesi_id",
           "tahap1_submit",
-          "tahap2_submit",
+          "tahap3_submit",
           "created_at",
           "sesi_status",
           "sesi_unit",
@@ -10633,7 +11639,9 @@
             ],
             "title": "Nama",
             "description": "Nama responden (opsional, boleh anonim).",
-            "examples": ["Budi Santoso, S.Pd."]
+            "examples": [
+              "Budi Santoso, S.Pd."
+            ]
           },
           "partisipan_id": {
             "anyOf": [
@@ -10646,7 +11654,9 @@
             ],
             "title": "Partisipan Id",
             "description": "ID partisipan terhubung (opsional, untuk fitur 'Kuesioner Saya').",
-            "examples": ["p_a1b2c3d4"]
+            "examples": [
+              "p_a1b2c3d4"
+            ]
           }
         },
         "additionalProperties": false,
@@ -10660,13 +11670,17 @@
             "type": "string",
             "title": "Id",
             "description": "ID responden.",
-            "examples": ["trsp_a1b2c3d4"]
+            "examples": [
+              "trsp_a1b2c3d4"
+            ]
           },
           "sesi_id": {
             "type": "string",
             "title": "Sesi Id",
             "description": "ID sesi induk.",
-            "examples": ["tises_a1b2c3d4"]
+            "examples": [
+              "tises_a1b2c3d4"
+            ]
           },
           "nama": {
             "anyOf": [
@@ -10710,12 +11724,12 @@
             "title": "Tahap1 Submitted At",
             "description": "Waktu submit Tahap 1."
           },
-          "tahap2_submit": {
+          "tahap3_submit": {
             "type": "boolean",
-            "title": "Tahap2 Submit",
-            "description": "True jika detail Tahap 2 sudah disubmit."
+            "title": "Tahap3 Submit",
+            "description": "True jika detail Tahap 3 sudah disubmit."
           },
-          "tahap2_submitted_at": {
+          "tahap3_submitted_at": {
             "anyOf": [
               {
                 "type": "string",
@@ -10725,8 +11739,8 @@
                 "type": "null"
               }
             ],
-            "title": "Tahap2 Submitted At",
-            "description": "Waktu submit Tahap 2."
+            "title": "Tahap3 Submitted At",
+            "description": "Waktu submit Tahap 3."
           },
           "created_at": {
             "type": "string",
@@ -10736,7 +11750,13 @@
           }
         },
         "type": "object",
-        "required": ["id", "sesi_id", "tahap1_submit", "tahap2_submit", "created_at"],
+        "required": [
+          "id",
+          "sesi_id",
+          "tahap1_submit",
+          "tahap3_submit",
+          "created_at"
+        ],
         "title": "TiRespondenRead",
         "description": "Representasi responden yang dikembalikan API."
       },
@@ -10746,13 +11766,17 @@
             "type": "string",
             "title": "Responden Id",
             "description": "ID responden.",
-            "examples": ["trsp_a1b2c3d4"]
+            "examples": [
+              "trsp_a1b2c3d4"
+            ]
           },
           "sesi_id": {
             "type": "string",
             "title": "Sesi Id",
             "description": "ID sesi.",
-            "examples": ["tises_a1b2c3d4"]
+            "examples": [
+              "tises_a1b2c3d4"
+            ]
           },
           "task_kode": {
             "items": {
@@ -10777,7 +11801,11 @@
           }
         },
         "type": "object",
-        "required": ["responden_id", "sesi_id", "task_kode"],
+        "required": [
+          "responden_id",
+          "sesi_id",
+          "task_kode"
+        ],
         "title": "TiSeleksiRead",
         "description": "Representasi seleksi Tahap 1 satu responden."
       },
@@ -10791,12 +11819,19 @@
             "minItems": 1,
             "title": "Task Kode",
             "description": "Daftar kode task yang relevan untuk responden ini (≥1).",
-            "examples": [["TIf0b59714", "TIa1b2c3d4"]]
+            "examples": [
+              [
+                "TIf0b59714",
+                "TIa1b2c3d4"
+              ]
+            ]
           }
         },
         "additionalProperties": false,
         "type": "object",
-        "required": ["task_kode"],
+        "required": [
+          "task_kode"
+        ],
         "title": "TiSeleksiSubmit",
         "description": "Payload submit seleksi relevansi Tahap 1: daftar kode task yang relevan."
       },
@@ -10808,7 +11843,9 @@
             "minLength": 1,
             "title": "Unit",
             "description": "Unit/jenjang yang dikaji (TK/SD/SMP/SMA).",
-            "examples": ["TK"]
+            "examples": [
+              "TK"
+            ]
           },
           "kategori_jabatan": {
             "type": "string",
@@ -10816,7 +11853,9 @@
             "minLength": 1,
             "title": "Kategori Jabatan",
             "description": "Kategori jabatan yang dikaji.",
-            "examples": ["Kepala Sekolah"]
+            "examples": [
+              "Kepala Sekolah"
+            ]
           },
           "periode": {
             "type": "string",
@@ -10825,7 +11864,9 @@
             "pattern": "^\\d{4}-\\d{2}$",
             "title": "Periode",
             "description": "Periode kajian format YYYY-MM.",
-            "examples": ["2026-06"]
+            "examples": [
+              "2026-06"
+            ]
           },
           "min_responden": {
             "type": "integer",
@@ -10833,7 +11874,9 @@
             "title": "Min Responden",
             "description": "Jumlah minimum responden.",
             "default": 3,
-            "examples": [3]
+            "examples": [
+              3
+            ]
           },
           "max_responden": {
             "type": "integer",
@@ -10841,7 +11884,24 @@
             "title": "Max Responden",
             "description": "Jumlah maksimum responden.",
             "default": 10,
-            "examples": [10]
+            "examples": [
+              10
+            ]
+          },
+          "koordinator_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Koordinator Id",
+            "description": "ID partisipan yang menjadi koordinator SME panel (Tahap 2).",
+            "examples": [
+              "p_a1b2c3d4"
+            ]
           },
           "catatan": {
             "anyOf": [
@@ -10859,7 +11919,11 @@
         },
         "additionalProperties": false,
         "type": "object",
-        "required": ["unit", "kategori_jabatan", "periode"],
+        "required": [
+          "unit",
+          "kategori_jabatan",
+          "periode"
+        ],
         "title": "TiSesiCreate",
         "description": "Payload pembuatan sesi Task Inventory."
       },
@@ -10869,32 +11933,49 @@
             "type": "string",
             "title": "Id",
             "description": "ID sesi.",
-            "examples": ["tises_a1b2c3d4"]
+            "examples": [
+              "tises_a1b2c3d4"
+            ]
           },
           "unit": {
             "type": "string",
             "title": "Unit",
             "description": "Unit/jenjang.",
-            "examples": ["TK"]
+            "examples": [
+              "TK"
+            ]
           },
           "kategori_jabatan": {
             "type": "string",
             "title": "Kategori Jabatan",
             "description": "Kategori jabatan.",
-            "examples": ["Kepala Sekolah"]
+            "examples": [
+              "Kepala Sekolah"
+            ]
           },
           "periode": {
             "type": "string",
             "title": "Periode",
             "description": "Periode kajian (YYYY-MM).",
-            "examples": ["2026-06"]
+            "examples": [
+              "2026-06"
+            ]
           },
           "status": {
             "type": "string",
-            "enum": ["DRAFT", "TAHAP1", "TAHAP2", "CLOSED", "ANALYZED"],
+            "enum": [
+              "DRAFT",
+              "TAHAP1",
+              "TAHAP2",
+              "TAHAP3",
+              "CLOSED",
+              "ANALYZED"
+            ],
             "title": "Status",
             "description": "Status sesi.",
-            "examples": ["DRAFT"]
+            "examples": [
+              "DRAFT"
+            ]
           },
           "min_responden": {
             "type": "integer",
@@ -10906,6 +11987,18 @@
             "title": "Max Responden",
             "description": "Maksimum responden."
           },
+          "koordinator_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Koordinator Id",
+            "description": "ID koordinator SME panel yang bertanggung jawab Tahap 2."
+          },
           "jumlah_task_terpilih": {
             "anyOf": [
               {
@@ -10916,7 +12009,7 @@
               }
             ],
             "title": "Jumlah Task Terpilih",
-            "description": "Jumlah task relevan yang dibekukan saat masuk TAHAP2 (None bila belum)."
+            "description": "Jumlah task relevan yang dibekukan saat masuk TAHAP3 (None bila belum)."
           },
           "catatan": {
             "anyOf": [
@@ -10967,6 +12060,18 @@
             ],
             "title": "Periode"
           },
+          "koordinator_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Koordinator Id",
+            "description": "ID koordinator SME panel."
+          },
           "min_responden": {
             "anyOf": [
               {
@@ -11009,13 +12114,148 @@
         "title": "TiSesiUpdate",
         "description": "Payload pembaruan sesi Task Inventory (hanya saat DRAFT)."
       },
+      "TiTahap2KeputusanItem": {
+        "properties": {
+          "task_kode": {
+            "type": "string",
+            "title": "Task Kode",
+            "description": "Kode task.",
+            "examples": [
+              "TIf0b59714"
+            ]
+          },
+          "disetujui": {
+            "type": "boolean",
+            "title": "Disetujui",
+            "description": "True jika koordinator menyetujui task ini masuk Tahap 3."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "task_kode",
+          "disetujui"
+        ],
+        "title": "TiTahap2KeputusanItem",
+        "description": "Satu keputusan koordinator untuk satu task."
+      },
+      "TiTahap2ReviewRead": {
+        "properties": {
+          "sesi_id": {
+            "type": "string",
+            "title": "Sesi Id",
+            "description": "ID sesi.",
+            "examples": [
+              "tises_a1b2c3d4"
+            ]
+          },
+          "tasks": {
+            "items": {
+              "$ref": "#/components/schemas/TiTahap2TaskRead"
+            },
+            "type": "array",
+            "title": "Tasks",
+            "description": "Task yang perlu diputuskan koordinator."
+          },
+          "jumlah_belum_diputuskan": {
+            "type": "integer",
+            "title": "Jumlah Belum Diputuskan",
+            "description": "Jumlah task yang belum ada keputusan koordinator."
+          },
+          "submitted_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Submitted At",
+            "description": "Waktu terakhir keputusan disubmit."
+          }
+        },
+        "type": "object",
+        "required": [
+          "sesi_id",
+          "tasks",
+          "jumlah_belum_diputuskan"
+        ],
+        "title": "TiTahap2ReviewRead",
+        "description": "Status review Tahap 2 koordinator untuk satu sesi."
+      },
+      "TiTahap2Submit": {
+        "properties": {
+          "keputusan": {
+            "items": {
+              "$ref": "#/components/schemas/TiTahap2KeputusanItem"
+            },
+            "type": "array",
+            "minItems": 1,
+            "title": "Keputusan",
+            "description": "Daftar keputusan koordinator per task."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "keputusan"
+        ],
+        "title": "TiTahap2Submit",
+        "description": "Payload submit keputusan koordinator untuk seluruh task Tahap 2."
+      },
+      "TiTahap2TaskRead": {
+        "properties": {
+          "task_kode": {
+            "type": "string",
+            "title": "Task Kode",
+            "description": "Kode task.",
+            "examples": [
+              "TIf0b59714"
+            ]
+          },
+          "n_relevan": {
+            "type": "integer",
+            "title": "N Relevan",
+            "description": "Jumlah anggota yang memilih task ini sebagai relevan."
+          },
+          "n_total": {
+            "type": "integer",
+            "title": "N Total",
+            "description": "Total anggota panel yang sudah submit Tahap 1."
+          },
+          "disetujui": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Disetujui",
+            "description": "Keputusan koordinator: True=disetujui, False=ditolak, None=belum diputuskan."
+          }
+        },
+        "type": "object",
+        "required": [
+          "task_kode",
+          "n_relevan",
+          "n_total"
+        ],
+        "title": "TiTahap2TaskRead",
+        "description": "Satu task yang perlu diputuskan koordinator di Tahap 2."
+      },
       "TiTaskTerpilihRead": {
         "properties": {
           "kode": {
             "type": "string",
             "title": "Kode",
             "description": "Kode task.",
-            "examples": ["TIf0b59714"]
+            "examples": [
+              "TIf0b59714"
+            ]
           },
           "tugas_pokok": {
             "type": "string",
@@ -11088,7 +12328,11 @@
           }
         },
         "type": "object",
-        "required": ["loc", "msg", "type"],
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
         "title": "ValidationError"
       },
       "WcpDimensiRead": {
@@ -11097,25 +12341,33 @@
             "type": "string",
             "title": "Id",
             "description": "ID dimensi.",
-            "examples": ["wdim_SC"]
+            "examples": [
+              "wdim_SC"
+            ]
           },
           "kode": {
             "type": "string",
             "title": "Kode",
             "description": "Kode dimensi.",
-            "examples": ["SC"]
+            "examples": [
+              "SC"
+            ]
           },
           "nama": {
             "type": "string",
             "title": "Nama",
             "description": "Nama dimensi.",
-            "examples": ["Stability of Change"]
+            "examples": [
+              "Stability of Change"
+            ]
           },
           "urutan": {
             "type": "integer",
             "title": "Urutan",
             "description": "Urutan dimensi (1–12).",
-            "examples": [1]
+            "examples": [
+              1
+            ]
           },
           "is_risk": {
             "type": "boolean",
@@ -11124,7 +12376,13 @@
           }
         },
         "type": "object",
-        "required": ["id", "kode", "nama", "urutan", "is_risk"],
+        "required": [
+          "id",
+          "kode",
+          "nama",
+          "urutan",
+          "is_risk"
+        ],
         "title": "WcpDimensiRead",
         "description": "Representasi dimensi WCP tanpa item."
       },
@@ -11134,25 +12392,33 @@
             "type": "string",
             "title": "Id",
             "description": "ID dimensi.",
-            "examples": ["wdim_SC"]
+            "examples": [
+              "wdim_SC"
+            ]
           },
           "kode": {
             "type": "string",
             "title": "Kode",
             "description": "Kode dimensi.",
-            "examples": ["SC"]
+            "examples": [
+              "SC"
+            ]
           },
           "nama": {
             "type": "string",
             "title": "Nama",
             "description": "Nama dimensi.",
-            "examples": ["Stability of Change"]
+            "examples": [
+              "Stability of Change"
+            ]
           },
           "urutan": {
             "type": "integer",
             "title": "Urutan",
             "description": "Urutan dimensi (1–12).",
-            "examples": [1]
+            "examples": [
+              1
+            ]
           },
           "is_risk": {
             "type": "boolean",
@@ -11169,7 +12435,14 @@
           }
         },
         "type": "object",
-        "required": ["id", "kode", "nama", "urutan", "is_risk", "items"],
+        "required": [
+          "id",
+          "kode",
+          "nama",
+          "urutan",
+          "is_risk",
+          "items"
+        ],
         "title": "WcpDimensiWithItemsRead",
         "description": "Representasi dimensi WCP beserta 6 item-nya."
       },
@@ -11179,13 +12452,17 @@
             "type": "string",
             "title": "Dimensi Kode",
             "description": "Kode dimensi.",
-            "examples": ["SC"]
+            "examples": [
+              "SC"
+            ]
           },
           "dimensi_nama": {
             "type": "string",
             "title": "Dimensi Nama",
             "description": "Nama dimensi.",
-            "examples": ["Stability of Change"]
+            "examples": [
+              "Stability of Change"
+            ]
           },
           "is_risk": {
             "type": "boolean",
@@ -11196,18 +12473,35 @@
             "type": "number",
             "title": "Skor",
             "description": "Rata-rata 6 item setelah reverse scoring.",
-            "examples": [3.83]
+            "examples": [
+              3.83
+            ]
           },
           "interpretasi": {
             "type": "string",
-            "enum": ["BAIK", "CUKUP", "PERLU_PERHATIAN", "AMAN", "WASPADA", "RISIKO_TINGGI"],
+            "enum": [
+              "BAIK",
+              "CUKUP",
+              "PERLU_PERHATIAN",
+              "AMAN",
+              "WASPADA",
+              "RISIKO_TINGGI"
+            ],
             "title": "Interpretasi",
             "description": "Interpretasi skor.",
-            "examples": ["CUKUP"]
+            "examples": [
+              "CUKUP"
+            ]
           }
         },
         "type": "object",
-        "required": ["dimensi_kode", "dimensi_nama", "is_risk", "skor", "interpretasi"],
+        "required": [
+          "dimensi_kode",
+          "dimensi_nama",
+          "is_risk",
+          "skor",
+          "interpretasi"
+        ],
         "title": "WcpHasilDimensiRespondenRead",
         "description": "Skor satu dimensi untuk satu responden."
       },
@@ -11217,13 +12511,17 @@
             "type": "string",
             "title": "Dimensi Kode",
             "description": "Kode dimensi.",
-            "examples": ["SC"]
+            "examples": [
+              "SC"
+            ]
           },
           "dimensi_nama": {
             "type": "string",
             "title": "Dimensi Nama",
             "description": "Nama dimensi.",
-            "examples": ["Stability of Change"]
+            "examples": [
+              "Stability of Change"
+            ]
           },
           "is_risk": {
             "type": "boolean",
@@ -11234,19 +12532,25 @@
             "type": "integer",
             "title": "N Responden",
             "description": "Jumlah responden yang dianalisis.",
-            "examples": [7]
+            "examples": [
+              7
+            ]
           },
           "skor_mean": {
             "type": "number",
             "title": "Skor Mean",
             "description": "Rata-rata skor dimensi antar responden.",
-            "examples": [3.71]
+            "examples": [
+              3.71
+            ]
           },
           "skor_std": {
             "type": "number",
             "title": "Skor Std",
             "description": "Standar deviasi skor dimensi.",
-            "examples": [0.42]
+            "examples": [
+              0.42
+            ]
           },
           "cronbach_alpha": {
             "anyOf": [
@@ -11259,14 +12563,25 @@
             ],
             "title": "Cronbach Alpha",
             "description": "Cronbach's alpha (None jika responden < 2).",
-            "examples": [0.78]
+            "examples": [
+              0.78
+            ]
           },
           "interpretasi": {
             "type": "string",
-            "enum": ["BAIK", "CUKUP", "PERLU_PERHATIAN", "AMAN", "WASPADA", "RISIKO_TINGGI"],
+            "enum": [
+              "BAIK",
+              "CUKUP",
+              "PERLU_PERHATIAN",
+              "AMAN",
+              "WASPADA",
+              "RISIKO_TINGGI"
+            ],
             "title": "Interpretasi",
             "description": "Interpretasi skor.",
-            "examples": ["CUKUP"]
+            "examples": [
+              "CUKUP"
+            ]
           }
         },
         "type": "object",
@@ -11300,7 +12615,10 @@
           }
         },
         "type": "object",
-        "required": ["responden_id", "dimensi"],
+        "required": [
+          "responden_id",
+          "dimensi"
+        ],
         "title": "WcpHasilRespondenRead",
         "description": "Hasil analisis untuk satu responden (12 dimensi)."
       },
@@ -11336,7 +12654,13 @@
           }
         },
         "type": "object",
-        "required": ["sesi_id", "jabatan_id", "periode", "n_responden", "dimensi"],
+        "required": [
+          "sesi_id",
+          "jabatan_id",
+          "periode",
+          "n_responden",
+          "dimensi"
+        ],
         "title": "WcpHasilSesiRead",
         "description": "Hasil analisis lengkap satu sesi WCP (seluruh dimensi)."
       },
@@ -11346,49 +12670,65 @@
             "type": "string",
             "title": "Id",
             "description": "ID item.",
-            "examples": ["witm_SC1a"]
+            "examples": [
+              "witm_SC1a"
+            ]
           },
           "item_id": {
             "type": "string",
             "title": "Item Id",
             "description": "Kode item orisinal.",
-            "examples": ["SC1a"]
+            "examples": [
+              "SC1a"
+            ]
           },
           "dimensi_kode": {
             "type": "string",
             "title": "Dimensi Kode",
             "description": "Kode dimensi.",
-            "examples": ["SC"]
+            "examples": [
+              "SC"
+            ]
           },
           "indikator_kode": {
             "type": "string",
             "title": "Indikator Kode",
             "description": "Kode indikator (1/2/3).",
-            "examples": ["1"]
+            "examples": [
+              "1"
+            ]
           },
           "indikator_label": {
             "type": "string",
             "title": "Indikator Label",
             "description": "Label indikator.",
-            "examples": ["Frekuensi perubahan kebijakan"]
+            "examples": [
+              "Frekuensi perubahan kebijakan"
+            ]
           },
           "pernyataan": {
             "type": "string",
             "title": "Pernyataan",
             "description": "Teks pernyataan.",
-            "examples": ["Kebijakan dan prosedur kerja di unit saya berubah terlalu sering."]
+            "examples": [
+              "Kebijakan dan prosedur kerja di unit saya berubah terlalu sering."
+            ]
           },
           "reverse_type": {
             "type": "string",
             "title": "Reverse Type",
             "description": "Tipe scoring: NONE | R | UF | R_STAR.",
-            "examples": ["R"]
+            "examples": [
+              "R"
+            ]
           },
           "urutan": {
             "type": "integer",
             "title": "Urutan",
             "description": "Urutan global item (1–72).",
-            "examples": [1]
+            "examples": [
+              1
+            ]
           }
         },
         "type": "object",
@@ -11425,7 +12765,12 @@
             "anyOf": [
               {
                 "type": "string",
-                "enum": ["NONE", "R", "UF", "R_STAR"]
+                "enum": [
+                  "NONE",
+                  "R",
+                  "UF",
+                  "R_STAR"
+                ]
               },
               {
                 "type": "null"
@@ -11468,7 +12813,9 @@
         },
         "additionalProperties": false,
         "type": "object",
-        "required": ["jawaban"],
+        "required": [
+          "jawaban"
+        ],
         "title": "WcpJawabanBulkCreate",
         "description": "Payload bulk submission 72 jawaban untuk satu responden."
       },
@@ -11478,7 +12825,9 @@
             "type": "string",
             "title": "Item Id",
             "description": "Kode item orisinal (mis. SC1a).",
-            "examples": ["SC1a"]
+            "examples": [
+              "SC1a"
+            ]
           },
           "skor_raw": {
             "type": "integer",
@@ -11486,12 +12835,17 @@
             "minimum": 1.0,
             "title": "Skor Raw",
             "description": "Skor mentah 1–5 dari responden.",
-            "examples": [4]
+            "examples": [
+              4
+            ]
           }
         },
         "additionalProperties": false,
         "type": "object",
-        "required": ["item_id", "skor_raw"],
+        "required": [
+          "item_id",
+          "skor_raw"
+        ],
         "title": "WcpJawabanItem",
         "description": "Satu jawaban item dalam bulk submission."
       },
@@ -11501,19 +12855,25 @@
             "type": "string",
             "title": "Id",
             "description": "ID jawaban.",
-            "examples": ["wjwb_a1b2c3d4"]
+            "examples": [
+              "wjwb_a1b2c3d4"
+            ]
           },
           "responden_id": {
             "type": "string",
             "title": "Responden Id",
             "description": "ID responden.",
-            "examples": ["wrsp_a1b2c3d4"]
+            "examples": [
+              "wrsp_a1b2c3d4"
+            ]
           },
           "item_id": {
             "type": "string",
             "title": "Item Id",
             "description": "Kode item orisinal.",
-            "examples": ["SC1a"]
+            "examples": [
+              "SC1a"
+            ]
           },
           "skor_raw": {
             "type": "integer",
@@ -11522,7 +12882,12 @@
           }
         },
         "type": "object",
-        "required": ["id", "responden_id", "item_id", "skor_raw"],
+        "required": [
+          "id",
+          "responden_id",
+          "item_id",
+          "skor_raw"
+        ],
         "title": "WcpJawabanRead",
         "description": "Representasi satu jawaban yang dikembalikan API."
       },
@@ -11532,13 +12897,17 @@
             "type": "string",
             "title": "Id",
             "description": "ID responden.",
-            "examples": ["wrsp_a1b2c3d4"]
+            "examples": [
+              "wrsp_a1b2c3d4"
+            ]
           },
           "sesi_id": {
             "type": "string",
             "title": "Sesi Id",
             "description": "ID sesi WCP.",
-            "examples": ["wses_a1b2c3d4"]
+            "examples": [
+              "wses_a1b2c3d4"
+            ]
           },
           "jabatan_label": {
             "type": "string",
@@ -11573,13 +12942,17 @@
             "type": "string",
             "title": "Sesi Status",
             "description": "Status sesi: DRAFT | OPEN | CLOSED | ANALYZED.",
-            "examples": ["OPEN"]
+            "examples": [
+              "OPEN"
+            ]
           },
           "sesi_periode": {
             "type": "string",
             "title": "Sesi Periode",
             "description": "Periode sesi (YYYY-MM).",
-            "examples": ["2025-06"]
+            "examples": [
+              "2025-06"
+            ]
           },
           "sesi_jabatan_id": {
             "type": "string",
@@ -11615,7 +12988,9 @@
             ],
             "title": "Nama",
             "description": "Nama responden (opsional, boleh anonim).",
-            "examples": ["Budi Santoso, S.Pd."]
+            "examples": [
+              "Budi Santoso, S.Pd."
+            ]
           },
           "jabatan_label": {
             "type": "string",
@@ -11623,7 +12998,9 @@
             "minLength": 1,
             "title": "Jabatan Label",
             "description": "Label jabatan responden (teks bebas).",
-            "examples": ["Guru Matematika"]
+            "examples": [
+              "Guru Matematika"
+            ]
           },
           "partisipan_id": {
             "anyOf": [
@@ -11636,12 +13013,16 @@
             ],
             "title": "Partisipan Id",
             "description": "ID partisipan yang terhubung (opsional, untuk fitur 'Kuesioner Saya').",
-            "examples": ["par_a1b2c3d4"]
+            "examples": [
+              "par_a1b2c3d4"
+            ]
           }
         },
         "additionalProperties": false,
         "type": "object",
-        "required": ["jabatan_label"],
+        "required": [
+          "jabatan_label"
+        ],
         "title": "WcpRespondenCreate",
         "description": "Payload pendaftaran responden ke dalam sesi WCP."
       },
@@ -11651,13 +13032,17 @@
             "type": "string",
             "title": "Id",
             "description": "ID responden.",
-            "examples": ["wrsp_a1b2c3d4"]
+            "examples": [
+              "wrsp_a1b2c3d4"
+            ]
           },
           "sesi_id": {
             "type": "string",
             "title": "Sesi Id",
             "description": "ID sesi induk.",
-            "examples": ["wses_a1b2c3d4"]
+            "examples": [
+              "wses_a1b2c3d4"
+            ]
           },
           "nama": {
             "anyOf": [
@@ -11714,7 +13099,13 @@
           }
         },
         "type": "object",
-        "required": ["id", "sesi_id", "jabatan_label", "sudah_submit", "created_at"],
+        "required": [
+          "id",
+          "sesi_id",
+          "jabatan_label",
+          "sudah_submit",
+          "created_at"
+        ],
         "title": "WcpRespondenRead",
         "description": "Representasi responden yang dikembalikan API."
       },
@@ -11724,7 +13115,9 @@
             "type": "string",
             "title": "Jabatan Id",
             "description": "ID jabatan yang dikaji.",
-            "examples": ["jbt_a1b2c3d4"]
+            "examples": [
+              "jbt_a1b2c3d4"
+            ]
           },
           "periode": {
             "type": "string",
@@ -11733,7 +13126,9 @@
             "pattern": "^\\d{4}-\\d{2}$",
             "title": "Periode",
             "description": "Periode survei format YYYY-MM.",
-            "examples": ["2025-06"]
+            "examples": [
+              "2025-06"
+            ]
           },
           "min_responden": {
             "type": "integer",
@@ -11741,7 +13136,9 @@
             "title": "Min Responden",
             "description": "Jumlah minimum responden.",
             "default": 6,
-            "examples": [6]
+            "examples": [
+              6
+            ]
           },
           "max_responden": {
             "type": "integer",
@@ -11749,7 +13146,9 @@
             "title": "Max Responden",
             "description": "Jumlah maksimum responden.",
             "default": 8,
-            "examples": [8]
+            "examples": [
+              8
+            ]
           },
           "catatan": {
             "anyOf": [
@@ -11767,7 +13166,10 @@
         },
         "additionalProperties": false,
         "type": "object",
-        "required": ["jabatan_id", "periode"],
+        "required": [
+          "jabatan_id",
+          "periode"
+        ],
         "title": "WcpSesiCreate",
         "description": "Payload pembuatan sesi WCP."
       },
@@ -11777,26 +13179,39 @@
             "type": "string",
             "title": "Id",
             "description": "ID sesi.",
-            "examples": ["wses_a1b2c3d4"]
+            "examples": [
+              "wses_a1b2c3d4"
+            ]
           },
           "jabatan_id": {
             "type": "string",
             "title": "Jabatan Id",
             "description": "ID jabatan.",
-            "examples": ["jbt_a1b2c3d4"]
+            "examples": [
+              "jbt_a1b2c3d4"
+            ]
           },
           "periode": {
             "type": "string",
             "title": "Periode",
             "description": "Periode survei (YYYY-MM).",
-            "examples": ["2025-06"]
+            "examples": [
+              "2025-06"
+            ]
           },
           "status": {
             "type": "string",
-            "enum": ["DRAFT", "OPEN", "CLOSED", "ANALYZED"],
+            "enum": [
+              "DRAFT",
+              "OPEN",
+              "CLOSED",
+              "ANALYZED"
+            ],
             "title": "Status",
             "description": "Status sesi.",
-            "examples": ["DRAFT"]
+            "examples": [
+              "DRAFT"
+            ]
           },
           "min_responden": {
             "type": "integer",

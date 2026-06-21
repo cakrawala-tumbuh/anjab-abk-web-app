@@ -1,0 +1,4 @@
+openapi/
+src/lib/api/schema.ts
+.next/
+node_modules/

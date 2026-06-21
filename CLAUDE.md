@@ -50,6 +50,16 @@ src/
 
 ## Revisi Desain
 
+### [2026-06-21] Task Inventory: Alur 3 Tahap
+
+- Alur TI berubah dari 2 tahap menjadi 3 tahap.
+- **Tahap 1** (`/task-inventory/tahap1/{responden_id}`): Partisipan pilih task relevan.
+- **Tahap 2** (`/task-inventory/tahap2/{sesi_id}`): Koordinator review task partial (khusus admin).
+- **Tahap 3** (`/task-inventory/tahap3/{responden_id}`): Partisipan isi detail CalHR.
+- Status sesi: `DRAFT → TAHAP1 → TAHAP2 → TAHAP3 → CLOSED → ANALYZED`.
+- Saat transisi TAHAP2→TAHAP3, task dibekukan = unanimous ∪ koordinator-disetujui.
+- `src/lib/api/schema.ts` memiliki convenience re-exports di akhir file yang harus dipertahankan saat `gen:api` (append setelah generate ulang).
+
 ### [2026-06-21] DCS & WCP: Kuesioner berbasis Assignment
 
 - Halaman `/kuesioner` hanya menampilkan DCS/WCP yang sudah di-assign admin

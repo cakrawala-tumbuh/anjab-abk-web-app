@@ -4,9715 +4,9999 @@
  */
 
 export interface paths {
-  "/api/v1/health": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Liveness */
-    get: operations["health_api_v1_health_get"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/ready": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Readiness */
-    get: operations["ready_api_v1_ready_get"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/version": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Versi */
-    get: operations["version_api_v1_version_get"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/me": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Principal saat ini */
-    get: operations["me_api_v1_me_get"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/jenjang-pendidikan": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Daftar jenjang pendidikan */
-    get: operations["jenjang_pendidikan_list"];
-    put?: never;
-    /** Buat jenjang pendidikan */
-    post: operations["jenjang_pendidikan_create"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/jenjang-pendidikan/search": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Cari jenjang pendidikan (domain ala Odoo) */
-    post: operations["jenjang_pendidikan_search"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/jenjang-pendidikan/{jp_id}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Ambil jenjang pendidikan */
-    get: operations["jenjang_pendidikan_get"];
-    put?: never;
-    post?: never;
-    /** Hapus jenjang pendidikan */
-    delete: operations["jenjang_pendidikan_delete"];
-    options?: never;
-    head?: never;
-    /** Perbarui jenjang pendidikan */
-    patch: operations["jenjang_pendidikan_update"];
-    trace?: never;
-  };
-  "/api/v1/sekolah": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Daftar sekolah */
-    get: operations["sekolah_list"];
-    put?: never;
-    /** Buat sekolah */
-    post: operations["sekolah_create"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/sekolah/search": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Cari sekolah (domain ala Odoo) */
-    post: operations["sekolah_search"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/sekolah/{sekolah_id}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Ambil sekolah */
-    get: operations["sekolah_get"];
-    put?: never;
-    post?: never;
-    /** Hapus sekolah */
-    delete: operations["sekolah_delete"];
-    options?: never;
-    head?: never;
-    /** Perbarui sekolah */
-    patch: operations["sekolah_update"];
-    trace?: never;
-  };
-  "/api/v1/mata-pelajaran": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Daftar mata pelajaran */
-    get: operations["mata_pelajaran_list"];
-    put?: never;
-    /** Buat mata pelajaran */
-    post: operations["mata_pelajaran_create"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/mata-pelajaran/search": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Cari mata pelajaran (domain ala Odoo) */
-    post: operations["mata_pelajaran_search"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/mata-pelajaran/{mp_id}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Ambil mata pelajaran */
-    get: operations["mata_pelajaran_get"];
-    put?: never;
-    post?: never;
-    /** Hapus mata pelajaran */
-    delete: operations["mata_pelajaran_delete"];
-    options?: never;
-    head?: never;
-    /** Perbarui mata pelajaran */
-    patch: operations["mata_pelajaran_update"];
-    trace?: never;
-  };
-  "/api/v1/partisipan": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Daftar partisipan */
-    get: operations["partisipan_list"];
-    put?: never;
-    /** Buat partisipan */
-    post: operations["partisipan_create"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/partisipan/search": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Cari partisipan (domain ala Odoo) */
-    post: operations["partisipan_search"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/partisipan/{partisipan_id}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Ambil partisipan */
-    get: operations["partisipan_get"];
-    put?: never;
-    post?: never;
-    /** Hapus partisipan */
-    delete: operations["partisipan_delete"];
-    options?: never;
-    head?: never;
-    /** Perbarui partisipan */
-    patch: operations["partisipan_update"];
-    trace?: never;
-  };
-  "/api/v1/jabatan": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Daftar jabatan */
-    get: operations["jabatan_list"];
-    put?: never;
-    /** Buat jabatan */
-    post: operations["jabatan_create"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/jabatan/search": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Cari jabatan (domain ala Odoo) */
-    post: operations["jabatan_search"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/jabatan/{jabatan_id}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Ambil jabatan */
-    get: operations["jabatan_get"];
-    put?: never;
-    post?: never;
-    /** Hapus jabatan */
-    delete: operations["jabatan_delete"];
-    options?: never;
-    head?: never;
-    /** Perbarui jabatan */
-    patch: operations["jabatan_update"];
-    trace?: never;
-  };
-  "/api/v1/sme-panel": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Daftar SME panel */
-    get: operations["sme_panel_list"];
-    put?: never;
-    /** Buat SME panel */
-    post: operations["sme_panel_create"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/sme-panel/search": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Cari SME panel (domain ala Odoo) */
-    post: operations["sme_panel_search"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/sme-panel/{panel_id}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Ambil SME panel */
-    get: operations["sme_panel_get"];
-    put?: never;
-    post?: never;
-    /** Hapus SME panel */
-    delete: operations["sme_panel_delete"];
-    options?: never;
-    head?: never;
-    /** Perbarui SME panel */
-    patch: operations["sme_panel_update"];
-    trace?: never;
-  };
-  "/api/v1/sme-panel/{panel_id}/anggota": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Tambah anggota ke SME panel */
-    post: operations["sme_panel_add_anggota"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/sme-panel/{panel_id}/anggota/{partisipan_id}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post?: never;
-    /** Hapus anggota dari SME panel */
-    delete: operations["sme_panel_remove_anggota"];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/dcs/kuesioner/saya": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * Daftar kuesioner DCS milik pengguna yang sedang login
-     * @description Kembalikan sesi DCS yang sudah di-assign ke partisipan dan berstatus OPEN.
-     *
-     *     Partisipan hanya melihat kuesioner DCS yang telah di-assign secara eksplisit
-     *     oleh admin (record responden sudah dibuat dengan ``partisipan_id`` mereka).
-     *     Tidak ada enrollment otomatis.
-     */
-    get: operations["dcs_kuesioner_saya"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/wcp/kuesioner/saya": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * Daftar kuesioner WCP milik pengguna yang sedang login
-     * @description Kembalikan sesi WCP yang sudah di-assign ke partisipan dan berstatus OPEN.
-     *
-     *     Partisipan hanya melihat kuesioner WCP yang telah di-assign secara eksplisit
-     *     oleh admin (record responden sudah dibuat dengan ``partisipan_id`` mereka).
-     *     Tidak ada enrollment otomatis.
-     */
-    get: operations["wcp_kuesioner_saya"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/wcp/dimensi": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Daftar 12 dimensi WCP */
-    get: operations["wcp_dimensi_list"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/wcp/dimensi/{kode}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Ambil dimensi WCP beserta 6 item-nya */
-    get: operations["wcp_dimensi_get"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/wcp/dimensi/{kode}/items": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Daftar item untuk satu dimensi WCP */
-    get: operations["wcp_dimensi_items"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/wcp/dimensi/items/{item_id}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    /** Ubah satu item WCP (admin) */
-    patch: operations["wcp_item_update"];
-    trace?: never;
-  };
-  "/api/v1/wcp/sesi": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Daftar sesi WCP */
-    get: operations["wcp_sesi_list"];
-    put?: never;
-    /** Buat sesi WCP */
-    post: operations["wcp_sesi_create"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/wcp/sesi/search": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Cari sesi WCP (domain ala Odoo) */
-    post: operations["wcp_sesi_search"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/wcp/sesi/{sesi_id}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Ambil sesi WCP */
-    get: operations["wcp_sesi_get"];
-    put?: never;
-    post?: never;
-    /** Hapus sesi WCP (hanya saat DRAFT) */
-    delete: operations["wcp_sesi_delete"];
-    options?: never;
-    head?: never;
-    /** Perbarui sesi WCP (hanya saat DRAFT) */
-    patch: operations["wcp_sesi_update"];
-    trace?: never;
-  };
-  "/api/v1/wcp/sesi/{sesi_id}/buka": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Buka sesi WCP (DRAFT → OPEN) */
-    post: operations["wcp_sesi_buka"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/wcp/sesi/{sesi_id}/tutup": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Tutup sesi WCP (OPEN → CLOSED) */
-    post: operations["wcp_sesi_tutup"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/wcp/sesi/{sesi_id}/responden": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Daftar responden dalam sesi WCP */
-    get: operations["wcp_responden_list"];
-    put?: never;
-    /** Daftarkan responden ke sesi WCP */
-    post: operations["wcp_responden_create"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/wcp/sesi/responden/{responden_id}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Ambil detail responden WCP */
-    get: operations["wcp_responden_get"];
-    put?: never;
-    post?: never;
-    /** Hapus responden (hanya jika belum submit) */
-    delete: operations["wcp_responden_delete"];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/wcp/sesi/responden/{responden_id}/jawaban": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Lihat jawaban responden */
-    get: operations["wcp_jawaban_list"];
-    put?: never;
-    /** Submit 72 jawaban untuk satu responden */
-    post: operations["wcp_jawaban_submit"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/wcp/sesi/{sesi_id}/analisis": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Jalankan analisis WCP (CLOSED → ANALYZED) */
-    post: operations["wcp_analisis_run"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/wcp/sesi/{sesi_id}/hasil": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Lihat hasil analisis sesi WCP */
-    get: operations["wcp_hasil_sesi_get"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/wcp/sesi/responden/{responden_id}/hasil": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Lihat hasil analisis per responden */
-    get: operations["wcp_hasil_responden_get"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/dcs/sub-skala": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Daftar 3 sub-skala DCS */
-    get: operations["dcs_subskala_list"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/dcs/sub-skala/{kode}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Ambil sub-skala DCS beserta 14 item-nya */
-    get: operations["dcs_subskala_get"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/dcs/sub-skala/{kode}/items": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Daftar item untuk satu sub-skala DCS */
-    get: operations["dcs_subskala_items"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/dcs/sub-skala/items/{item_id}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    /** Ubah satu item DCS (admin) */
-    patch: operations["dcs_item_update"];
-    trace?: never;
-  };
-  "/api/v1/dcs/sesi": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Daftar sesi DCS */
-    get: operations["dcs_sesi_list"];
-    put?: never;
-    /** Buat sesi DCS */
-    post: operations["dcs_sesi_create"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/dcs/sesi/search": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Cari sesi DCS (domain ala Odoo) */
-    post: operations["dcs_sesi_search"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/dcs/sesi/{sesi_id}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Ambil sesi DCS */
-    get: operations["dcs_sesi_get"];
-    put?: never;
-    post?: never;
-    /** Hapus sesi DCS (hanya saat DRAFT) */
-    delete: operations["dcs_sesi_delete"];
-    options?: never;
-    head?: never;
-    /** Perbarui sesi DCS (hanya saat DRAFT) */
-    patch: operations["dcs_sesi_update"];
-    trace?: never;
-  };
-  "/api/v1/dcs/sesi/{sesi_id}/buka": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Buka sesi DCS (DRAFT → OPEN) */
-    post: operations["dcs_sesi_buka"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/dcs/sesi/{sesi_id}/tutup": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Tutup sesi DCS (OPEN → CLOSED) */
-    post: operations["dcs_sesi_tutup"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/dcs/sesi/{sesi_id}/responden": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Daftar responden dalam sesi DCS */
-    get: operations["dcs_responden_list"];
-    put?: never;
-    /** Daftarkan responden ke sesi DCS */
-    post: operations["dcs_responden_create"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/dcs/sesi/responden/{responden_id}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Ambil detail responden DCS */
-    get: operations["dcs_responden_get"];
-    put?: never;
-    post?: never;
-    /** Hapus responden (hanya jika belum submit) */
-    delete: operations["dcs_responden_delete"];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/dcs/sesi/responden/{responden_id}/jawaban": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Lihat jawaban responden DCS */
-    get: operations["dcs_jawaban_list"];
-    put?: never;
-    /** Submit 42 jawaban untuk satu responden */
-    post: operations["dcs_jawaban_submit"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/dcs/sesi/{sesi_id}/analisis": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Jalankan analisis DCS (CLOSED → ANALYZED) */
-    post: operations["dcs_analisis_run"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/dcs/sesi/{sesi_id}/hasil": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Lihat hasil analisis sesi DCS */
-    get: operations["dcs_hasil_sesi_get"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/dcs/sesi/responden/{responden_id}/hasil": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Lihat hasil analisis per responden DCS */
-    get: operations["dcs_hasil_responden_get"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/task-inventory/kuesioner/saya": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * Daftar kuesioner Task Inventory milik pengguna yang sedang login
-     * @description Enrollment otomatis: Task Inventory bersifat universal — tiap partisipan
-     *     mengisi SEMUA sesi aktif (TAHAP1/TAHAP2) tanpa filter jabatan, sambil membuat
-     *     record responden bila belum ada.
-     */
-    get: operations["taskinv_kuesioner_saya"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/task-inventory/catalog/kombinasi": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Daftar kombinasi unit × kategori jabatan beserta jumlah task */
-    get: operations["taskinv_catalog_kombinasi"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/task-inventory/catalog": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Daftar task catalog untuk satu kombinasi unit × kategori jabatan */
-    get: operations["taskinv_catalog_list"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/task-inventory/sesi": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Daftar sesi Task Inventory */
-    get: operations["taskinv_sesi_list"];
-    put?: never;
-    /** Buat sesi Task Inventory */
-    post: operations["taskinv_sesi_create"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/task-inventory/sesi/search": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Cari sesi Task Inventory (domain ala Odoo) */
-    post: operations["taskinv_sesi_search"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/task-inventory/sesi/{sesi_id}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Ambil sesi Task Inventory */
-    get: operations["taskinv_sesi_get"];
-    put?: never;
-    post?: never;
-    /** Hapus sesi Task Inventory (hanya saat DRAFT) */
-    delete: operations["taskinv_sesi_delete"];
-    options?: never;
-    head?: never;
-    /** Perbarui sesi Task Inventory (hanya saat DRAFT) */
-    patch: operations["taskinv_sesi_update"];
-    trace?: never;
-  };
-  "/api/v1/task-inventory/sesi/{sesi_id}/mulai-tahap1": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Mulai Tahap 1 — Seleksi Relevansi (DRAFT → TAHAP1) */
-    post: operations["taskinv_sesi_mulai_tahap1"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/task-inventory/sesi/{sesi_id}/mulai-tahap2": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Mulai Tahap 2 — Detailing (TAHAP1 → TAHAP2), bekukan task relevan (≥1 partisipan) */
-    post: operations["taskinv_sesi_mulai_tahap2"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/task-inventory/sesi/{sesi_id}/tutup": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Tutup sesi (TAHAP2 → CLOSED) */
-    post: operations["taskinv_sesi_tutup"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/task-inventory/sesi/{sesi_id}/responden": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Daftar responden dalam sesi */
-    get: operations["taskinv_responden_list"];
-    put?: never;
-    /** Daftarkan responden ke sesi (saat DRAFT/TAHAP1) */
-    post: operations["taskinv_responden_create"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/task-inventory/sesi/responden/{responden_id}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Ambil detail responden */
-    get: operations["taskinv_responden_get"];
-    put?: never;
-    post?: never;
-    /** Hapus responden (hanya jika belum submit) */
-    delete: operations["taskinv_responden_delete"];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/task-inventory/sesi/responden/{responden_id}/seleksi": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Lihat seleksi Tahap 1 satu responden */
-    get: operations["taskinv_seleksi_get"];
-    put?: never;
-    /** Submit seleksi relevansi Tahap 1 untuk satu responden */
-    post: operations["taskinv_seleksi_submit"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/task-inventory/sesi/responden/{responden_id}/detail": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Lihat detail Tahap 2 satu responden */
-    get: operations["taskinv_detail_list"];
-    put?: never;
-    /** Submit detail Tahap 2 untuk satu responden */
-    post: operations["taskinv_detail_submit"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/task-inventory/sesi/{sesi_id}/task-terpilih": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Himpunan task relevan yang dibekukan (tersedia setelah TAHAP2) */
-    get: operations["taskinv_task_terpilih"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/task-inventory/sesi/{sesi_id}/analisis": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Jalankan analisis Task Inventory (CLOSED → ANALYZED) */
-    post: operations["taskinv_analisis_run"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/task-inventory/sesi/{sesi_id}/hasil": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Lihat hasil analisis sesi Task Inventory */
-    get: operations["taskinv_hasil_get"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
+    "/api/v1/health": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Liveness */
+        get: operations["health_api_v1_health_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/ready": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Readiness */
+        get: operations["ready_api_v1_ready_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/version": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Versi */
+        get: operations["version_api_v1_version_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Principal saat ini */
+        get: operations["me_api_v1_me_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/jenjang-pendidikan": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Daftar jenjang pendidikan */
+        get: operations["jenjang_pendidikan_list"];
+        put?: never;
+        /** Buat jenjang pendidikan */
+        post: operations["jenjang_pendidikan_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/jenjang-pendidikan/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Cari jenjang pendidikan (domain ala Odoo) */
+        post: operations["jenjang_pendidikan_search"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/jenjang-pendidikan/{jp_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Ambil jenjang pendidikan */
+        get: operations["jenjang_pendidikan_get"];
+        put?: never;
+        post?: never;
+        /** Hapus jenjang pendidikan */
+        delete: operations["jenjang_pendidikan_delete"];
+        options?: never;
+        head?: never;
+        /** Perbarui jenjang pendidikan */
+        patch: operations["jenjang_pendidikan_update"];
+        trace?: never;
+    };
+    "/api/v1/sekolah": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Daftar sekolah */
+        get: operations["sekolah_list"];
+        put?: never;
+        /** Buat sekolah */
+        post: operations["sekolah_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/sekolah/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Cari sekolah (domain ala Odoo) */
+        post: operations["sekolah_search"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/sekolah/{sekolah_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Ambil sekolah */
+        get: operations["sekolah_get"];
+        put?: never;
+        post?: never;
+        /** Hapus sekolah */
+        delete: operations["sekolah_delete"];
+        options?: never;
+        head?: never;
+        /** Perbarui sekolah */
+        patch: operations["sekolah_update"];
+        trace?: never;
+    };
+    "/api/v1/mata-pelajaran": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Daftar mata pelajaran */
+        get: operations["mata_pelajaran_list"];
+        put?: never;
+        /** Buat mata pelajaran */
+        post: operations["mata_pelajaran_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/mata-pelajaran/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Cari mata pelajaran (domain ala Odoo) */
+        post: operations["mata_pelajaran_search"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/mata-pelajaran/{mp_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Ambil mata pelajaran */
+        get: operations["mata_pelajaran_get"];
+        put?: never;
+        post?: never;
+        /** Hapus mata pelajaran */
+        delete: operations["mata_pelajaran_delete"];
+        options?: never;
+        head?: never;
+        /** Perbarui mata pelajaran */
+        patch: operations["mata_pelajaran_update"];
+        trace?: never;
+    };
+    "/api/v1/partisipan": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Daftar partisipan */
+        get: operations["partisipan_list"];
+        put?: never;
+        /** Buat partisipan */
+        post: operations["partisipan_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/partisipan/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Cari partisipan (domain ala Odoo) */
+        post: operations["partisipan_search"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/partisipan/{partisipan_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Ambil partisipan */
+        get: operations["partisipan_get"];
+        put?: never;
+        post?: never;
+        /** Hapus partisipan */
+        delete: operations["partisipan_delete"];
+        options?: never;
+        head?: never;
+        /** Perbarui partisipan */
+        patch: operations["partisipan_update"];
+        trace?: never;
+    };
+    "/api/v1/jabatan": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Daftar jabatan */
+        get: operations["jabatan_list"];
+        put?: never;
+        /** Buat jabatan */
+        post: operations["jabatan_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/jabatan/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Cari jabatan (domain ala Odoo) */
+        post: operations["jabatan_search"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/jabatan/{jabatan_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Ambil jabatan */
+        get: operations["jabatan_get"];
+        put?: never;
+        post?: never;
+        /** Hapus jabatan */
+        delete: operations["jabatan_delete"];
+        options?: never;
+        head?: never;
+        /** Perbarui jabatan */
+        patch: operations["jabatan_update"];
+        trace?: never;
+    };
+    "/api/v1/sme-panel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Daftar SME panel */
+        get: operations["sme_panel_list"];
+        put?: never;
+        /** Buat SME panel */
+        post: operations["sme_panel_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/sme-panel/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Cari SME panel (domain ala Odoo) */
+        post: operations["sme_panel_search"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/sme-panel/{panel_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Ambil SME panel */
+        get: operations["sme_panel_get"];
+        put?: never;
+        post?: never;
+        /** Hapus SME panel */
+        delete: operations["sme_panel_delete"];
+        options?: never;
+        head?: never;
+        /** Perbarui SME panel */
+        patch: operations["sme_panel_update"];
+        trace?: never;
+    };
+    "/api/v1/sme-panel/{panel_id}/anggota": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Tambah anggota ke SME panel */
+        post: operations["sme_panel_add_anggota"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/sme-panel/{panel_id}/anggota/{partisipan_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Hapus anggota dari SME panel */
+        delete: operations["sme_panel_remove_anggota"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/dcs/kuesioner/saya": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Daftar kuesioner DCS milik pengguna yang sedang login
+         * @description Kembalikan sesi DCS yang sudah di-assign ke partisipan dan berstatus OPEN.
+         *
+         *     Partisipan hanya melihat kuesioner DCS yang telah di-assign secara eksplisit
+         *     oleh admin (record responden sudah dibuat dengan ``partisipan_id`` mereka).
+         *     Tidak ada enrollment otomatis.
+         */
+        get: operations["dcs_kuesioner_saya"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/wcp/kuesioner/saya": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Daftar kuesioner WCP milik pengguna yang sedang login
+         * @description Kembalikan sesi WCP yang sudah di-assign ke partisipan dan berstatus OPEN.
+         *
+         *     Partisipan hanya melihat kuesioner WCP yang telah di-assign secara eksplisit
+         *     oleh admin (record responden sudah dibuat dengan ``partisipan_id`` mereka).
+         *     Tidak ada enrollment otomatis.
+         */
+        get: operations["wcp_kuesioner_saya"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/wcp/dimensi": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Daftar 12 dimensi WCP */
+        get: operations["wcp_dimensi_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/wcp/dimensi/{kode}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Ambil dimensi WCP beserta 6 item-nya */
+        get: operations["wcp_dimensi_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/wcp/dimensi/{kode}/items": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Daftar item untuk satu dimensi WCP */
+        get: operations["wcp_dimensi_items"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/wcp/dimensi/items/{item_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Ubah satu item WCP (admin) */
+        patch: operations["wcp_item_update"];
+        trace?: never;
+    };
+    "/api/v1/wcp/sesi": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Daftar sesi WCP */
+        get: operations["wcp_sesi_list"];
+        put?: never;
+        /** Buat sesi WCP */
+        post: operations["wcp_sesi_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/wcp/sesi/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Cari sesi WCP (domain ala Odoo) */
+        post: operations["wcp_sesi_search"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/wcp/sesi/{sesi_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Ambil sesi WCP */
+        get: operations["wcp_sesi_get"];
+        put?: never;
+        post?: never;
+        /** Hapus sesi WCP (hanya saat DRAFT) */
+        delete: operations["wcp_sesi_delete"];
+        options?: never;
+        head?: never;
+        /** Perbarui sesi WCP (hanya saat DRAFT) */
+        patch: operations["wcp_sesi_update"];
+        trace?: never;
+    };
+    "/api/v1/wcp/sesi/{sesi_id}/buka": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Buka sesi WCP (DRAFT → OPEN) */
+        post: operations["wcp_sesi_buka"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/wcp/sesi/{sesi_id}/tutup": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Tutup sesi WCP (OPEN → CLOSED) */
+        post: operations["wcp_sesi_tutup"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/wcp/sesi/{sesi_id}/responden": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Daftar responden dalam sesi WCP */
+        get: operations["wcp_responden_list"];
+        put?: never;
+        /** Daftarkan responden ke sesi WCP */
+        post: operations["wcp_responden_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/wcp/sesi/responden/{responden_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Ambil detail responden WCP */
+        get: operations["wcp_responden_get"];
+        put?: never;
+        post?: never;
+        /** Hapus responden (hanya jika belum submit) */
+        delete: operations["wcp_responden_delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/wcp/sesi/responden/{responden_id}/jawaban": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lihat jawaban responden */
+        get: operations["wcp_jawaban_list"];
+        put?: never;
+        /** Submit 72 jawaban untuk satu responden */
+        post: operations["wcp_jawaban_submit"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/wcp/sesi/{sesi_id}/analisis": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Jalankan analisis WCP (CLOSED → ANALYZED) */
+        post: operations["wcp_analisis_run"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/wcp/sesi/{sesi_id}/hasil": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lihat hasil analisis sesi WCP */
+        get: operations["wcp_hasil_sesi_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/wcp/sesi/responden/{responden_id}/hasil": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lihat hasil analisis per responden */
+        get: operations["wcp_hasil_responden_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/dcs/sub-skala": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Daftar 3 sub-skala DCS */
+        get: operations["dcs_subskala_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/dcs/sub-skala/{kode}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Ambil sub-skala DCS beserta 14 item-nya */
+        get: operations["dcs_subskala_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/dcs/sub-skala/{kode}/items": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Daftar item untuk satu sub-skala DCS */
+        get: operations["dcs_subskala_items"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/dcs/sub-skala/items/{item_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Ubah satu item DCS (admin) */
+        patch: operations["dcs_item_update"];
+        trace?: never;
+    };
+    "/api/v1/dcs/sesi": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Daftar sesi DCS */
+        get: operations["dcs_sesi_list"];
+        put?: never;
+        /** Buat sesi DCS */
+        post: operations["dcs_sesi_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/dcs/sesi/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Cari sesi DCS (domain ala Odoo) */
+        post: operations["dcs_sesi_search"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/dcs/sesi/{sesi_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Ambil sesi DCS */
+        get: operations["dcs_sesi_get"];
+        put?: never;
+        post?: never;
+        /** Hapus sesi DCS (hanya saat DRAFT) */
+        delete: operations["dcs_sesi_delete"];
+        options?: never;
+        head?: never;
+        /** Perbarui sesi DCS (hanya saat DRAFT) */
+        patch: operations["dcs_sesi_update"];
+        trace?: never;
+    };
+    "/api/v1/dcs/sesi/{sesi_id}/buka": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Buka sesi DCS (DRAFT → OPEN) */
+        post: operations["dcs_sesi_buka"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/dcs/sesi/{sesi_id}/tutup": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Tutup sesi DCS (OPEN → CLOSED) */
+        post: operations["dcs_sesi_tutup"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/dcs/sesi/{sesi_id}/responden": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Daftar responden dalam sesi DCS */
+        get: operations["dcs_responden_list"];
+        put?: never;
+        /** Daftarkan responden ke sesi DCS */
+        post: operations["dcs_responden_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/dcs/sesi/responden/{responden_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Ambil detail responden DCS */
+        get: operations["dcs_responden_get"];
+        put?: never;
+        post?: never;
+        /** Hapus responden (hanya jika belum submit) */
+        delete: operations["dcs_responden_delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/dcs/sesi/responden/{responden_id}/jawaban": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lihat jawaban responden DCS */
+        get: operations["dcs_jawaban_list"];
+        put?: never;
+        /** Submit 42 jawaban untuk satu responden */
+        post: operations["dcs_jawaban_submit"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/dcs/sesi/{sesi_id}/analisis": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Jalankan analisis DCS (CLOSED → ANALYZED) */
+        post: operations["dcs_analisis_run"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/dcs/sesi/{sesi_id}/hasil": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lihat hasil analisis sesi DCS */
+        get: operations["dcs_hasil_sesi_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/dcs/sesi/responden/{responden_id}/hasil": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lihat hasil analisis per responden DCS */
+        get: operations["dcs_hasil_responden_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/task-inventory/kuesioner/saya": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Daftar kuesioner Task Inventory milik pengguna yang sedang login
+         * @description Enrollment otomatis: Task Inventory bersifat universal — tiap partisipan
+         *     mengisi SEMUA sesi aktif (TAHAP1/TAHAP2/TAHAP3), sambil membuat record
+         *     responden bila belum ada.
+         */
+        get: operations["taskinv_kuesioner_saya"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/task-inventory/catalog/kombinasi": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Daftar kombinasi unit × kategori jabatan beserta jumlah task */
+        get: operations["taskinv_catalog_kombinasi"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/task-inventory/catalog": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Daftar task catalog untuk satu kombinasi unit × kategori jabatan */
+        get: operations["taskinv_catalog_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/task-inventory/sesi": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Daftar sesi Task Inventory */
+        get: operations["taskinv_sesi_list"];
+        put?: never;
+        /** Buat sesi Task Inventory */
+        post: operations["taskinv_sesi_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/task-inventory/sesi/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Cari sesi Task Inventory (domain ala Odoo) */
+        post: operations["taskinv_sesi_search"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/task-inventory/sesi/{sesi_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Ambil sesi Task Inventory */
+        get: operations["taskinv_sesi_get"];
+        put?: never;
+        post?: never;
+        /** Hapus sesi Task Inventory (hanya saat DRAFT) */
+        delete: operations["taskinv_sesi_delete"];
+        options?: never;
+        head?: never;
+        /** Perbarui sesi Task Inventory (hanya saat DRAFT) */
+        patch: operations["taskinv_sesi_update"];
+        trace?: never;
+    };
+    "/api/v1/task-inventory/sesi/{sesi_id}/mulai-tahap1": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Mulai Tahap 1 — Seleksi Relevansi (DRAFT → TAHAP1) */
+        post: operations["taskinv_sesi_mulai_tahap1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/task-inventory/sesi/{sesi_id}/mulai-tahap2": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Mulai Tahap 2 — Review Koordinator (TAHAP1 → TAHAP2) */
+        post: operations["taskinv_sesi_mulai_tahap2"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/task-inventory/sesi/{sesi_id}/mulai-tahap3": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Mulai Tahap 3 — Detailing (TAHAP2 → TAHAP3), bekukan task relevan */
+        post: operations["taskinv_sesi_mulai_tahap3"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/task-inventory/sesi/{sesi_id}/tutup": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Tutup sesi (TAHAP3 → CLOSED) */
+        post: operations["taskinv_sesi_tutup"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/task-inventory/sesi/{sesi_id}/responden": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Daftar responden dalam sesi */
+        get: operations["taskinv_responden_list"];
+        put?: never;
+        /** Daftarkan responden ke sesi (saat DRAFT/TAHAP1) */
+        post: operations["taskinv_responden_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/task-inventory/sesi/responden/{responden_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Ambil detail responden */
+        get: operations["taskinv_responden_get"];
+        put?: never;
+        post?: never;
+        /** Hapus responden (hanya jika belum submit) */
+        delete: operations["taskinv_responden_delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/task-inventory/sesi/responden/{responden_id}/seleksi": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lihat seleksi Tahap 1 satu responden */
+        get: operations["taskinv_seleksi_get"];
+        put?: never;
+        /** Submit seleksi relevansi Tahap 1 untuk satu responden */
+        post: operations["taskinv_seleksi_submit"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/task-inventory/sesi/responden/{responden_id}/detail": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lihat detail Tahap 3 satu responden */
+        get: operations["taskinv_detail_list"];
+        put?: never;
+        /** Submit detail Tahap 3 untuk satu responden */
+        post: operations["taskinv_detail_submit"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/task-inventory/sesi/{sesi_id}/tahap2": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lihat task yang perlu diputuskan koordinator di Tahap 2 */
+        get: operations["taskinv_tahap2_get"];
+        put?: never;
+        /** Submit keputusan koordinator untuk task-task Tahap 2 */
+        post: operations["taskinv_tahap2_submit"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/task-inventory/sesi/{sesi_id}/task-terpilih": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Himpunan task relevan yang dibekukan (tersedia setelah TAHAP2) */
+        get: operations["taskinv_task_terpilih"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/task-inventory/sesi/{sesi_id}/analisis": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Jalankan analisis Task Inventory (CLOSED → ANALYZED) */
+        post: operations["taskinv_analisis_run"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/task-inventory/sesi/{sesi_id}/hasil": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lihat hasil analisis sesi Task Inventory */
+        get: operations["taskinv_hasil_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
-  schemas: {
-    /**
-     * DcsHasilRespondenRead
-     * @description Hasil analisis untuk satu responden (3 sub-skala).
-     */
-    DcsHasilRespondenRead: {
-      /**
-       * Responden Id
-       * @description ID responden.
-       */
-      responden_id: string;
-      /**
-       * Sub Skala
-       * @description Skor per sub-skala (3 entri).
-       */
-      sub_skala: components["schemas"]["DcsHasilSubSkalaRespondenRead"][];
-      /**
-       * Risk Flag
-       * @description Flag risiko DCS responden ini.
-       * @example MODERATE
-       * @enum {string}
-       */
-      risk_flag: "HIGH" | "MODERATE" | "LOW";
-    };
-    /**
-     * DcsHasilSesiRead
-     * @description Hasil analisis lengkap satu sesi DCS (seluruh sub-skala + risk flag + K-Index).
-     */
-    DcsHasilSesiRead: {
-      /**
-       * Sesi Id
-       * @description ID sesi.
-       */
-      sesi_id: string;
-      /**
-       * Jabatan Id
-       * @description ID jabatan yang dikaji.
-       */
-      jabatan_id: string;
-      /**
-       * Periode
-       * @description Periode survei.
-       */
-      periode: string;
-      /**
-       * N Responden
-       * @description Total responden yang submit.
-       */
-      n_responden: number;
-      /**
-       * Sub Skala
-       * @description Hasil per sub-skala (3 entri).
-       */
-      sub_skala: components["schemas"]["DcsHasilSubSkalaSesiRead"][];
-      /**
-       * Risk Flag
-       * @description Flag risiko DCS: HIGH = demand tinggi + control/support rendah; MODERATE = salah satu kondisi; LOW = tidak ada kondisi.
-       * @example MODERATE
-       * @enum {string}
-       */
-      risk_flag: "HIGH" | "MODERATE" | "LOW";
-      /**
-       * K Index
-       * @description K-Index psikososial (0–1). None jika wcp_sesi_id tidak disertakan. Rumus: 0,40×DemandPressure + 0,25×ControlDeficit + 0,25×SupportDeficit + 0,10×WCPRisk.
-       * @example 0.42
-       */
-      k_index?: number | null;
-      /**
-       * K Index Wcp Risk
-       * @description Komponen WCP risk yang dipakai dalam K-Index (0–1). None jika tidak ada.
-       * @example 0.65
-       */
-      k_index_wcp_risk?: number | null;
-    };
-    /**
-     * DcsHasilSubSkalaRespondenRead
-     * @description Skor satu sub-skala untuk satu responden.
-     */
-    DcsHasilSubSkalaRespondenRead: {
-      /**
-       * Subskala Kode
-       * @description Kode sub-skala.
-       * @example DEMAND
-       */
-      subskala_kode: string;
-      /**
-       * Subskala Nama
-       * @description Nama sub-skala.
-       * @example Demand (Tuntutan Kerja)
-       */
-      subskala_nama: string;
-      /**
-       * Skor
-       * @description Rata-rata 14 item setelah reverse UF.
-       * @example 3.71
-       */
-      skor: number;
-    };
-    /**
-     * DcsHasilSubSkalaSesiRead
-     * @description Hasil agregat satu sub-skala untuk satu sesi (seluruh responden).
-     */
-    DcsHasilSubSkalaSesiRead: {
-      /**
-       * Subskala Kode
-       * @description Kode sub-skala.
-       * @example DEMAND
-       */
-      subskala_kode: string;
-      /**
-       * Subskala Nama
-       * @description Nama sub-skala.
-       * @example Demand (Tuntutan Kerja)
-       */
-      subskala_nama: string;
-      /**
-       * N Responden
-       * @description Jumlah responden yang dianalisis.
-       * @example 7
-       */
-      n_responden: number;
-      /**
-       * Skor Mean
-       * @description Rata-rata skor sub-skala antar responden.
-       * @example 3.71
-       */
-      skor_mean: number;
-      /**
-       * Skor Std
-       * @description Standar deviasi skor sub-skala.
-       * @example 0.42
-       */
-      skor_std: number;
-      /**
-       * Cronbach Alpha
-       * @description Cronbach's alpha (None jika responden < 2).
-       * @example 0.78
-       */
-      cronbach_alpha: number | null;
-    };
-    /**
-     * DcsItemRead
-     * @description Representasi satu item pernyataan DCS.
-     */
-    DcsItemRead: {
-      /**
-       * Id
-       * @description ID item.
-       * @example ditm_D1a
-       */
-      id: string;
-      /**
-       * Item Id
-       * @description Kode item orisinal.
-       * @example D1a
-       */
-      item_id: string;
-      /**
-       * Subskala Kode
-       * @description Kode sub-skala.
-       * @example DEMAND
-       */
-      subskala_kode: string;
-      /**
-       * Sub Dimensi
-       * @description Sub-dimensi item.
-       * @example Volume
-       */
-      sub_dimensi: string;
-      /**
-       * Pernyataan
-       * @description Teks pernyataan.
-       * @example Saya harus menyelesaikan banyak tugas dalam waktu yang sangat terbatas.
-       */
-      pernyataan: string;
-      /**
-       * Arah
-       * @description Arah item: F (Favorable) atau UF (Unfavorable, reverse-scored).
-       * @example UF
-       * @enum {string}
-       */
-      arah: "F" | "UF";
-      /**
-       * Urutan
-       * @description Urutan global item (1–42).
-       * @example 1
-       */
-      urutan: number;
-    };
-    /**
-     * DcsItemUpdate
-     * @description Field item DCS yang dapat diubah admin (partial; field kosong diabaikan).
-     */
-    DcsItemUpdate: {
-      /**
-       * Pernyataan
-       * @description Teks pernyataan baru.
-       */
-      pernyataan?: string | null;
-      /**
-       * Arah
-       * @description Arah item: F (Favorable) atau UF (Unfavorable, reverse-scored).
-       */
-      arah?: ("F" | "UF") | null;
-      /**
-       * Urutan
-       * @description Urutan global item (1–42).
-       */
-      urutan?: number | null;
-    };
-    /**
-     * DcsJawabanBulkCreate
-     * @description Payload bulk submission 42 jawaban untuk satu responden.
-     */
-    DcsJawabanBulkCreate: {
-      /**
-       * Jawaban
-       * @description Tepat 42 jawaban, satu per item DCS.
-       */
-      jawaban: components["schemas"]["DcsJawabanItem"][];
-    };
-    /**
-     * DcsJawabanItem
-     * @description Satu jawaban item dalam bulk submission.
-     */
-    DcsJawabanItem: {
-      /**
-       * Item Id
-       * @description Kode item orisinal (mis. D1a).
-       * @example D1a
-       */
-      item_id: string;
-      /**
-       * Skor Raw
-       * @description Skor mentah 1–5 dari responden.
-       * @example 4
-       */
-      skor_raw: number;
-    };
-    /**
-     * DcsJawabanRead
-     * @description Representasi satu jawaban yang dikembalikan API.
-     */
-    DcsJawabanRead: {
-      /**
-       * Id
-       * @description ID jawaban.
-       * @example djwb_a1b2c3d4
-       */
-      id: string;
-      /**
-       * Responden Id
-       * @description ID responden.
-       * @example drsp_a1b2c3d4
-       */
-      responden_id: string;
-      /**
-       * Item Id
-       * @description Kode item orisinal.
-       * @example D1a
-       */
-      item_id: string;
-      /**
-       * Skor Raw
-       * @description Skor mentah 1–5.
-       */
-      skor_raw: number;
-    };
-    /**
-     * DcsKuesionerItemRead
-     * @description Responden DCS diperkaya info sesi — dipakai endpoint /kuesioner/saya.
-     */
-    DcsKuesionerItemRead: {
-      /**
-       * Id
-       * @description ID responden.
-       * @example drsp_a1b2c3d4
-       */
-      id: string;
-      /**
-       * Sesi Id
-       * @description ID sesi DCS.
-       * @example dses_a1b2c3d4
-       */
-      sesi_id: string;
-      /**
-       * Jabatan Label
-       * @description Label jabatan responden.
-       */
-      jabatan_label: string;
-      /**
-       * Sudah Submit
-       * @description True jika jawaban sudah disubmit.
-       */
-      sudah_submit: boolean;
-      /**
-       * Submitted At
-       * @description Waktu submit.
-       */
-      submitted_at?: string | null;
-      /**
-       * Created At
-       * Format: date-time
-       * @description Waktu pendaftaran.
-       */
-      created_at: string;
-      /**
-       * Sesi Status
-       * @description Status sesi: DRAFT | OPEN | CLOSED | ANALYZED.
-       * @example OPEN
-       */
-      sesi_status: string;
-      /**
-       * Sesi Periode
-       * @description Periode sesi (YYYY-MM).
-       * @example 2025-06
-       */
-      sesi_periode: string;
-      /**
-       * Sesi Jabatan Id
-       * @description ID jabatan yang dikaji.
-       */
-      sesi_jabatan_id: string;
-    };
-    /**
-     * DcsRespondenCreate
-     * @description Payload pendaftaran responden ke dalam sesi DCS.
-     */
-    DcsRespondenCreate: {
-      /**
-       * Nama
-       * @description Nama responden (opsional, boleh anonim).
-       * @example Budi Santoso, S.Pd.
-       */
-      nama?: string | null;
-      /**
-       * Jabatan Label
-       * @description Label jabatan responden (teks bebas).
-       * @example Guru Matematika
-       */
-      jabatan_label: string;
-      /**
-       * Partisipan Id
-       * @description ID partisipan yang terhubung (opsional, untuk fitur 'Kuesioner Saya').
-       * @example par_a1b2c3d4
-       */
-      partisipan_id?: string | null;
-    };
-    /**
-     * DcsRespondenRead
-     * @description Representasi responden yang dikembalikan API.
-     */
-    DcsRespondenRead: {
-      /**
-       * Id
-       * @description ID responden.
-       * @example drsp_a1b2c3d4
-       */
-      id: string;
-      /**
-       * Sesi Id
-       * @description ID sesi induk.
-       * @example dses_a1b2c3d4
-       */
-      sesi_id: string;
-      /**
-       * Nama
-       * @description Nama responden.
-       */
-      nama?: string | null;
-      /**
-       * Jabatan Label
-       * @description Label jabatan responden.
-       */
-      jabatan_label: string;
-      /**
-       * Partisipan Id
-       * @description ID partisipan yang terhubung, bila ada.
-       */
-      partisipan_id?: string | null;
-      /**
-       * Sudah Submit
-       * @description True jika jawaban sudah disubmit.
-       */
-      sudah_submit: boolean;
-      /**
-       * Submitted At
-       * @description Waktu submit jawaban.
-       */
-      submitted_at?: string | null;
-      /**
-       * Created At
-       * Format: date-time
-       * @description Waktu pendaftaran (UTC, ISO-8601).
-       */
-      created_at: string;
-    };
-    /**
-     * DcsSesiCreate
-     * @description Payload pembuatan sesi DCS.
-     */
-    DcsSesiCreate: {
-      /**
-       * Jabatan Id
-       * @description ID jabatan yang dikaji.
-       * @example jbt_a1b2c3d4
-       */
-      jabatan_id: string;
-      /**
-       * Periode
-       * @description Periode survei format YYYY-MM.
-       * @example 2025-06
-       */
-      periode: string;
-      /**
-       * Min Responden
-       * @description Jumlah minimum responden.
-       * @default 6
-       * @example 6
-       */
-      min_responden: number;
-      /**
-       * Max Responden
-       * @description Jumlah maksimum responden.
-       * @default 8
-       * @example 8
-       */
-      max_responden: number;
-      /**
-       * Catatan
-       * @description Catatan opsional untuk sesi ini.
-       */
-      catatan?: string | null;
-    };
-    /**
-     * DcsSesiRead
-     * @description Representasi sesi DCS yang dikembalikan API.
-     */
-    DcsSesiRead: {
-      /**
-       * Id
-       * @description ID sesi.
-       * @example dses_a1b2c3d4
-       */
-      id: string;
-      /**
-       * Jabatan Id
-       * @description ID jabatan.
-       * @example jbt_a1b2c3d4
-       */
-      jabatan_id: string;
-      /**
-       * Periode
-       * @description Periode survei (YYYY-MM).
-       * @example 2025-06
-       */
-      periode: string;
-      /**
-       * Status
-       * @description Status sesi.
-       * @example DRAFT
-       * @enum {string}
-       */
-      status: "DRAFT" | "OPEN" | "CLOSED" | "ANALYZED";
-      /**
-       * Min Responden
-       * @description Minimum responden.
-       */
-      min_responden: number;
-      /**
-       * Max Responden
-       * @description Maksimum responden.
-       */
-      max_responden: number;
-      /**
-       * Catatan
-       * @description Catatan.
-       */
-      catatan?: string | null;
-      /**
-       * Created At
-       * Format: date-time
-       * @description Waktu pembuatan (UTC, ISO-8601).
-       */
-      created_at: string;
-    };
-    /**
-     * DcsSesiUpdate
-     * @description Payload pembaruan sesi DCS (hanya saat DRAFT).
-     */
-    DcsSesiUpdate: {
-      /**
-       * Periode
-       * @description Periode baru.
-       */
-      periode?: string | null;
-      /**
-       * Min Responden
-       * @description Minimum responden baru.
-       */
-      min_responden?: number | null;
-      /**
-       * Max Responden
-       * @description Maksimum responden baru.
-       */
-      max_responden?: number | null;
-      /**
-       * Catatan
-       * @description Catatan baru.
-       */
-      catatan?: string | null;
-    };
-    /**
-     * DcsSubSkalaRead
-     * @description Representasi sub-skala DCS tanpa item.
-     */
-    DcsSubSkalaRead: {
-      /**
-       * Id
-       * @description ID sub-skala.
-       * @example dsk_DEMAND
-       */
-      id: string;
-      /**
-       * Kode
-       * @description Kode sub-skala.
-       * @example DEMAND
-       */
-      kode: string;
-      /**
-       * Nama
-       * @description Nama sub-skala.
-       * @example Demand (Tuntutan Kerja)
-       */
-      nama: string;
-      /**
-       * Urutan
-       * @description Urutan sub-skala (1–3).
-       * @example 1
-       */
-      urutan: number;
-    };
-    /**
-     * DcsSubSkalaWithItemsRead
-     * @description Representasi sub-skala DCS beserta 14 item-nya.
-     */
-    DcsSubSkalaWithItemsRead: {
-      /**
-       * Id
-       * @description ID sub-skala.
-       * @example dsk_DEMAND
-       */
-      id: string;
-      /**
-       * Kode
-       * @description Kode sub-skala.
-       * @example DEMAND
-       */
-      kode: string;
-      /**
-       * Nama
-       * @description Nama sub-skala.
-       * @example Demand (Tuntutan Kerja)
-       */
-      nama: string;
-      /**
-       * Urutan
-       * @description Urutan sub-skala (1–3).
-       * @example 1
-       */
-      urutan: number;
-      /**
-       * Items
-       * @description Daftar 14 item sub-skala ini.
-       */
-      items: components["schemas"]["DcsItemRead"][];
-    };
-    /** ErrorDetail */
-    ErrorDetail: {
-      /**
-       * Loc
-       * @description Lokasi field penyebab.
-       */
-      loc?: string[] | null;
-      /**
-       * Msg
-       * @description Penjelasan singkat.
-       */
-      msg: string;
-      /**
-       * Type
-       * @description Tipe error Pydantic.
-       */
-      type: string;
-      /**
-       * Code
-       * @description Kode mesin-terbaca stabil.
-       * @example not_allowed
-       */
-      code?: string | null;
-    };
-    /** ErrorResponse */
-    ErrorResponse: {
-      /**
-       * Error
-       * @description Kode error stabil.
-       * @example not_found
-       */
-      error: string;
-      /**
-       * Message
-       * @description Pesan ramah-manusia.
-       * @example Data tidak ditemukan.
-       */
-      message: string;
-      /**
-       * Request Id
-       * @description Korelasi dengan log.
-       */
-      request_id?: string | null;
-      /**
-       * Details
-       * @description Rincian validasi.
-       */
-      details?: components["schemas"]["ErrorDetail"][] | null;
-    };
-    /** HTTPValidationError */
-    HTTPValidationError: {
-      /** Detail */
-      detail?: components["schemas"]["ValidationError"][];
-    };
-    /** Health */
-    Health: {
-      /**
-       * Status
-       * @description Status ringkas.
-       * @example ok
-       */
-      status: string;
-      /**
-       * Version
-       * @description Versi aplikasi.
-       * @example 0.1.0
-       */
-      version: string;
-    };
-    /**
-     * JabatanCreate
-     * @description Payload pembuatan jabatan.
-     */
-    JabatanCreate: {
-      /**
-       * Kode
-       * @description Kode jabatan (unik).
-       * @example KS-001
-       */
-      kode: string;
-      /**
-       * Nama
-       * @description Nama jabatan.
-       * @example Kepala Sekolah
-       */
-      nama: string;
-      /**
-       * Jenis
-       * @description Jenis jabatan.
-       * @example struktural
-       * @enum {string}
-       */
-      jenis: "struktural" | "fungsional" | "teknisi";
-      /**
-       * Unit Kerja Id
-       * @description ID unit kerja / sekolah tempat jabatan ini berada.
-       * @example skl_a1b2c3d4
-       */
-      unit_kerja_id?: string | null;
-      /**
-       * Deskripsi
-       * @description Deskripsi singkat jabatan.
-       */
-      deskripsi?: string | null;
-      /**
-       * Aktif
-       * @description Status aktif jabatan.
-       * @default true
-       */
-      aktif: boolean;
-    };
-    /**
-     * JabatanRead
-     * @description Representasi jabatan yang dikembalikan API.
-     */
-    JabatanRead: {
-      /**
-       * Id
-       * @description ID unik jabatan.
-       * @example jbt_a1b2c3d4
-       */
-      id: string;
-      /**
-       * Kode
-       * @description Kode jabatan.
-       * @example KS-001
-       */
-      kode: string;
-      /**
-       * Nama
-       * @description Nama jabatan.
-       * @example Kepala Sekolah
-       */
-      nama: string;
-      /**
-       * Jenis
-       * @description Jenis jabatan.
-       * @example struktural
-       * @enum {string}
-       */
-      jenis: "struktural" | "fungsional" | "teknisi";
-      /**
-       * Unit Kerja Id
-       * @description ID unit kerja.
-       */
-      unit_kerja_id?: string | null;
-      /**
-       * Deskripsi
-       * @description Deskripsi jabatan.
-       */
-      deskripsi?: string | null;
-      /**
-       * Aktif
-       * @description Status aktif.
-       */
-      aktif: boolean;
-      /**
-       * Created At
-       * Format: date-time
-       * @description Waktu pembuatan (UTC, ISO-8601).
-       */
-      created_at: string;
-    };
-    /**
-     * JabatanUpdate
-     * @description Payload pembaruan sebagian jabatan.
-     */
-    JabatanUpdate: {
-      /**
-       * Kode
-       * @description Kode baru.
-       */
-      kode?: string | null;
-      /**
-       * Nama
-       * @description Nama baru.
-       */
-      nama?: string | null;
-      /**
-       * Jenis
-       * @description Jenis baru.
-       */
-      jenis?: ("struktural" | "fungsional" | "teknisi") | null;
-      /**
-       * Unit Kerja Id
-       * @description ID unit kerja baru.
-       */
-      unit_kerja_id?: string | null;
-      /**
-       * Deskripsi
-       * @description Deskripsi baru.
-       */
-      deskripsi?: string | null;
-      /**
-       * Aktif
-       * @description Status aktif baru.
-       */
-      aktif?: boolean | null;
-    };
-    /**
-     * JenjangPendidikanCreate
-     * @description Payload pembuatan jenjang pendidikan.
-     */
-    JenjangPendidikanCreate: {
-      /**
-       * Kode
-       * @description Kode jenjang (unik), mis. SD, SMP, SMA, SMK.
-       * @example SD
-       */
-      kode: string;
-      /**
-       * Nama
-       * @description Nama lengkap jenjang pendidikan.
-       * @example Sekolah Dasar
-       */
-      nama: string;
-      /**
-       * Urutan
-       * @description Urutan tampilan (makin kecil makin atas).
-       * @default 0
-       * @example 3
-       */
-      urutan: number;
-      /**
-       * Aktif
-       * @description Status aktif jenjang.
-       * @default true
-       */
-      aktif: boolean;
-    };
-    /**
-     * JenjangPendidikanRead
-     * @description Representasi jenjang pendidikan yang dikembalikan API.
-     */
-    JenjangPendidikanRead: {
-      /**
-       * Id
-       * @description ID unik jenjang pendidikan.
-       * @example jp_a1b2c3d4
-       */
-      id: string;
-      /**
-       * Kode
-       * @description Kode jenjang.
-       * @example SD
-       */
-      kode: string;
-      /**
-       * Nama
-       * @description Nama lengkap.
-       * @example Sekolah Dasar
-       */
-      nama: string;
-      /**
-       * Urutan
-       * @description Urutan tampilan.
-       * @example 3
-       */
-      urutan: number;
-      /**
-       * Aktif
-       * @description Status aktif.
-       */
-      aktif: boolean;
-    };
-    /**
-     * JenjangPendidikanUpdate
-     * @description Payload pembaruan sebagian jenjang pendidikan.
-     */
-    JenjangPendidikanUpdate: {
-      /**
-       * Kode
-       * @description Kode baru.
-       */
-      kode?: string | null;
-      /**
-       * Nama
-       * @description Nama baru.
-       */
-      nama?: string | null;
-      /**
-       * Urutan
-       * @description Urutan baru.
-       */
-      urutan?: number | null;
-      /**
-       * Aktif
-       * @description Status aktif baru.
-       */
-      aktif?: boolean | null;
-    };
-    /**
-     * MataPelajaranCreate
-     * @description Payload pembuatan mata pelajaran.
-     */
-    MataPelajaranCreate: {
-      /**
-       * Kode
-       * @description Kode mata pelajaran (unik).
-       * @example MTK
-       */
-      kode: string;
-      /**
-       * Nama
-       * @description Nama mata pelajaran.
-       * @example Matematika
-       */
-      nama: string;
-      /**
-       * Kelompok
-       * @description Kelompok mata pelajaran.
-       * @example umum
-       * @enum {string}
-       */
-      kelompok: "umum" | "peminatan" | "muatan_lokal" | "kejuruan";
-      /**
-       * Deskripsi
-       * @description Deskripsi singkat.
-       */
-      deskripsi?: string | null;
-      /**
-       * Aktif
-       * @description Status aktif mata pelajaran.
-       * @default true
-       */
-      aktif: boolean;
-    };
-    /**
-     * MataPelajaranRead
-     * @description Representasi mata pelajaran yang dikembalikan API.
-     */
-    MataPelajaranRead: {
-      /**
-       * Id
-       * @description ID unik mata pelajaran.
-       * @example mp_a1b2c3d4
-       */
-      id: string;
-      /**
-       * Kode
-       * @description Kode mata pelajaran.
-       * @example MTK
-       */
-      kode: string;
-      /**
-       * Nama
-       * @description Nama mata pelajaran.
-       * @example Matematika
-       */
-      nama: string;
-      /**
-       * Kelompok
-       * @description Kelompok mata pelajaran.
-       * @example umum
-       * @enum {string}
-       */
-      kelompok: "umum" | "peminatan" | "muatan_lokal" | "kejuruan";
-      /**
-       * Deskripsi
-       * @description Deskripsi singkat.
-       */
-      deskripsi?: string | null;
-      /**
-       * Aktif
-       * @description Status aktif.
-       */
-      aktif: boolean;
-    };
-    /**
-     * MataPelajaranUpdate
-     * @description Payload pembaruan sebagian mata pelajaran.
-     */
-    MataPelajaranUpdate: {
-      /**
-       * Kode
-       * @description Kode baru.
-       */
-      kode?: string | null;
-      /**
-       * Nama
-       * @description Nama baru.
-       */
-      nama?: string | null;
-      /**
-       * Kelompok
-       * @description Kelompok baru.
-       */
-      kelompok?: ("umum" | "peminatan" | "muatan_lokal" | "kejuruan") | null;
-      /**
-       * Deskripsi
-       * @description Deskripsi baru.
-       */
-      deskripsi?: string | null;
-      /**
-       * Aktif
-       * @description Status aktif baru.
-       */
-      aktif?: boolean | null;
-    };
-    /** Page[DcsSesiRead] */
-    Page_DcsSesiRead_: {
-      /**
-       * Items
-       * @description Item pada halaman ini.
-       */
-      items: components["schemas"]["DcsSesiRead"][];
-      /**
-       * Total
-       * @description Total item tersedia.
-       * @example 42
-       */
-      total: number;
-      /**
-       * Limit
-       * @description Maksimum item per halaman.
-       * @example 20
-       */
-      limit: number;
-      /**
-       * Offset
-       * @description Jumlah item yang dilewati.
-       * @example 0
-       */
-      offset: number;
-    };
-    /** Page[JabatanRead] */
-    Page_JabatanRead_: {
-      /**
-       * Items
-       * @description Item pada halaman ini.
-       */
-      items: components["schemas"]["JabatanRead"][];
-      /**
-       * Total
-       * @description Total item tersedia.
-       * @example 42
-       */
-      total: number;
-      /**
-       * Limit
-       * @description Maksimum item per halaman.
-       * @example 20
-       */
-      limit: number;
-      /**
-       * Offset
-       * @description Jumlah item yang dilewati.
-       * @example 0
-       */
-      offset: number;
-    };
-    /** Page[JenjangPendidikanRead] */
-    Page_JenjangPendidikanRead_: {
-      /**
-       * Items
-       * @description Item pada halaman ini.
-       */
-      items: components["schemas"]["JenjangPendidikanRead"][];
-      /**
-       * Total
-       * @description Total item tersedia.
-       * @example 42
-       */
-      total: number;
-      /**
-       * Limit
-       * @description Maksimum item per halaman.
-       * @example 20
-       */
-      limit: number;
-      /**
-       * Offset
-       * @description Jumlah item yang dilewati.
-       * @example 0
-       */
-      offset: number;
-    };
-    /** Page[MataPelajaranRead] */
-    Page_MataPelajaranRead_: {
-      /**
-       * Items
-       * @description Item pada halaman ini.
-       */
-      items: components["schemas"]["MataPelajaranRead"][];
-      /**
-       * Total
-       * @description Total item tersedia.
-       * @example 42
-       */
-      total: number;
-      /**
-       * Limit
-       * @description Maksimum item per halaman.
-       * @example 20
-       */
-      limit: number;
-      /**
-       * Offset
-       * @description Jumlah item yang dilewati.
-       * @example 0
-       */
-      offset: number;
-    };
-    /** Page[PartisipanRead] */
-    Page_PartisipanRead_: {
-      /**
-       * Items
-       * @description Item pada halaman ini.
-       */
-      items: components["schemas"]["PartisipanRead"][];
-      /**
-       * Total
-       * @description Total item tersedia.
-       * @example 42
-       */
-      total: number;
-      /**
-       * Limit
-       * @description Maksimum item per halaman.
-       * @example 20
-       */
-      limit: number;
-      /**
-       * Offset
-       * @description Jumlah item yang dilewati.
-       * @example 0
-       */
-      offset: number;
-    };
-    /** Page[SMEPanelRead] */
-    Page_SMEPanelRead_: {
-      /**
-       * Items
-       * @description Item pada halaman ini.
-       */
-      items: components["schemas"]["SMEPanelRead"][];
-      /**
-       * Total
-       * @description Total item tersedia.
-       * @example 42
-       */
-      total: number;
-      /**
-       * Limit
-       * @description Maksimum item per halaman.
-       * @example 20
-       */
-      limit: number;
-      /**
-       * Offset
-       * @description Jumlah item yang dilewati.
-       * @example 0
-       */
-      offset: number;
-    };
-    /** Page[SekolahRead] */
-    Page_SekolahRead_: {
-      /**
-       * Items
-       * @description Item pada halaman ini.
-       */
-      items: components["schemas"]["SekolahRead"][];
-      /**
-       * Total
-       * @description Total item tersedia.
-       * @example 42
-       */
-      total: number;
-      /**
-       * Limit
-       * @description Maksimum item per halaman.
-       * @example 20
-       */
-      limit: number;
-      /**
-       * Offset
-       * @description Jumlah item yang dilewati.
-       * @example 0
-       */
-      offset: number;
-    };
-    /** Page[TiSesiRead] */
-    Page_TiSesiRead_: {
-      /**
-       * Items
-       * @description Item pada halaman ini.
-       */
-      items: components["schemas"]["TiSesiRead"][];
-      /**
-       * Total
-       * @description Total item tersedia.
-       * @example 42
-       */
-      total: number;
-      /**
-       * Limit
-       * @description Maksimum item per halaman.
-       * @example 20
-       */
-      limit: number;
-      /**
-       * Offset
-       * @description Jumlah item yang dilewati.
-       * @example 0
-       */
-      offset: number;
-    };
-    /** Page[WcpSesiRead] */
-    Page_WcpSesiRead_: {
-      /**
-       * Items
-       * @description Item pada halaman ini.
-       */
-      items: components["schemas"]["WcpSesiRead"][];
-      /**
-       * Total
-       * @description Total item tersedia.
-       * @example 42
-       */
-      total: number;
-      /**
-       * Limit
-       * @description Maksimum item per halaman.
-       * @example 20
-       */
-      limit: number;
-      /**
-       * Offset
-       * @description Jumlah item yang dilewati.
-       * @example 0
-       */
-      offset: number;
-    };
-    /**
-     * PartisipanCreate
-     * @description Payload pembuatan partisipan.
-     */
-    PartisipanCreate: {
-      /**
-       * Nama
-       * @description Nama lengkap partisipan.
-       * @example Siti Rahayu, S.Pd.
-       */
-      nama: string;
-      /**
-       * Email
-       * @description Alamat email partisipan — digunakan untuk akun Authentik.
-       * @example siti.rahayu@sekolah.id
-       */
-      email: string;
-      /**
-       * Sekolah Id
-       * @description ID sekolah / satuan pendidikan tempat partisipan bertugas.
-       * @example skl_a1b2c3d4
-       */
-      sekolah_id: string;
-      /**
-       * Jabatan Utama Id
-       * @description ID jabatan utama partisipan.
-       * @example jbt_a1b2c3d4
-       */
-      jabatan_utama_id: string;
-      /**
-       * Jabatan Tambahan Ids
-       * @description Daftar ID jabatan tambahan (boleh kosong).
-       * @example [
-       *       "jbt_b2c3d4e5",
-       *       "jbt_c3d4e5f6"
-       *     ]
-       */
-      jabatan_tambahan_ids?: string[];
-      /**
-       * Masa Kerja Tahun
-       * @description Masa kerja dalam tahun.
-       * @example 5
-       */
-      masa_kerja_tahun: number;
-      /**
-       * Masa Kerja Bulan
-       * @description Sisa masa kerja dalam bulan (0–11).
-       * @default 0
-       * @example 3
-       */
-      masa_kerja_bulan: number;
-      /**
-       * Mata Pelajaran Utama Id
-       * @description ID mata pelajaran utama (opsional, relevan untuk guru).
-       * @example mp_a1b2c3d4
-       */
-      mata_pelajaran_utama_id?: string | null;
-      /**
-       * Aktif
-       * @description Status aktif partisipan.
-       * @default true
-       */
-      aktif: boolean;
-    };
-    /**
-     * PartisipanRead
-     * @description Representasi partisipan yang dikembalikan API.
-     */
-    PartisipanRead: {
-      /**
-       * Id
-       * @description ID unik partisipan.
-       * @example par_a1b2c3d4
-       */
-      id: string;
-      /**
-       * Nama
-       * @description Nama lengkap partisipan.
-       * @example Siti Rahayu, S.Pd.
-       */
-      nama: string;
-      /**
-       * Email
-       * @description Alamat email partisipan.
-       * @example siti.rahayu@sekolah.id
-       */
-      email: string;
-      /**
-       * Authentik User Id
-       * @description ID pengguna di Authentik (pk). None bila provisioning belum dikonfigurasi.
-       * @example 42
-       */
-      authentik_user_id?: string | null;
-      /**
-       * Sekolah Id
-       * @description ID sekolah tempat bertugas.
-       */
-      sekolah_id: string;
-      /**
-       * Jabatan Utama Id
-       * @description ID jabatan utama.
-       */
-      jabatan_utama_id: string;
-      /**
-       * Jabatan Tambahan Ids
-       * @description Daftar ID jabatan tambahan.
-       */
-      jabatan_tambahan_ids: string[];
-      /**
-       * Masa Kerja Tahun
-       * @description Masa kerja dalam tahun.
-       */
-      masa_kerja_tahun: number;
-      /**
-       * Masa Kerja Bulan
-       * @description Sisa masa kerja dalam bulan (0–11).
-       */
-      masa_kerja_bulan: number;
-      /**
-       * Mata Pelajaran Utama Id
-       * @description ID mata pelajaran utama (opsional).
-       */
-      mata_pelajaran_utama_id?: string | null;
-      /**
-       * Aktif
-       * @description Status aktif.
-       */
-      aktif: boolean;
-      /**
-       * Created At
-       * Format: date-time
-       * @description Waktu pembuatan (UTC, ISO-8601).
-       */
-      created_at: string;
-    };
-    /**
-     * PartisipanUpdate
-     * @description Payload pembaruan sebagian partisipan.
-     */
-    PartisipanUpdate: {
-      /**
-       * Nama
-       * @description Nama baru.
-       */
-      nama?: string | null;
-      /**
-       * Email
-       * @description Alamat email baru.
-       */
-      email?: string | null;
-      /**
-       * Sekolah Id
-       * @description ID sekolah baru.
-       */
-      sekolah_id?: string | null;
-      /**
-       * Jabatan Utama Id
-       * @description ID jabatan utama baru.
-       */
-      jabatan_utama_id?: string | null;
-      /**
-       * Jabatan Tambahan Ids
-       * @description Daftar ID jabatan tambahan baru (menggantikan seluruhnya).
-       */
-      jabatan_tambahan_ids?: string[] | null;
-      /**
-       * Masa Kerja Tahun
-       * @description Masa kerja tahun baru.
-       */
-      masa_kerja_tahun?: number | null;
-      /**
-       * Masa Kerja Bulan
-       * @description Masa kerja bulan baru (0–11).
-       */
-      masa_kerja_bulan?: number | null;
-      /**
-       * Mata Pelajaran Utama Id
-       * @description ID mata pelajaran utama baru.
-       */
-      mata_pelajaran_utama_id?: string | null;
-      /**
-       * Aktif
-       * @description Status aktif baru.
-       */
-      aktif?: boolean | null;
-    };
-    /**
-     * Principal
-     * @description Identitas yang sudah terverifikasi dari token.
-     */
-    Principal: {
-      /**
-       * Subject
-       * @description Subject (sub) token.
-       * @example user-123
-       */
-      subject: string;
-      /**
-       * Username
-       * @description Nama pengguna.
-       */
-      username?: string | null;
-      /**
-       * Groups
-       * @description Grup Authentik.
-       */
-      groups?: string[];
-      /**
-       * Scopes
-       * @description Scope/izin pada token.
-       */
-      scopes?: string[];
-    };
-    /**
-     * SMEPanelAnggotaAdd
-     * @description Payload penambahan anggota ke SME panel.
-     */
-    SMEPanelAnggotaAdd: {
-      /**
-       * Partisipan Id
-       * @description ID partisipan yang akan ditambahkan ke panel.
-       * @example par_a1b2c3d4
-       */
-      partisipan_id: string;
-    };
-    /**
-     * SMEPanelCreate
-     * @description Payload pembuatan SME panel.
-     */
-    SMEPanelCreate: {
-      /**
-       * Jabatan Id
-       * @description ID jabatan yang menjadi dasar panel SME ini.
-       * @example jbt_a1b2c3d4
-       */
-      jabatan_id: string;
-      /**
-       * Aktif
-       * @description Status aktif panel.
-       * @default true
-       */
-      aktif: boolean;
-    };
-    /**
-     * SMEPanelRead
-     * @description Representasi SME panel yang dikembalikan API.
-     */
-    SMEPanelRead: {
-      /**
-       * Id
-       * @description ID unik SME panel.
-       * @example sme_a1b2c3d4
-       */
-      id: string;
-      /**
-       * Jabatan Id
-       * @description ID jabatan yang menjadi dasar panel ini.
-       */
-      jabatan_id: string;
-      /**
-       * Partisipan Ids
-       * @description Daftar ID partisipan anggota panel.
-       */
-      partisipan_ids?: string[];
-      /**
-       * Koordinator Id
-       * @description ID partisipan yang menjadi koordinator panel. Harus merupakan anggota panel.
-       */
-      koordinator_id?: string | null;
-      /**
-       * Aktif
-       * @description Status aktif.
-       */
-      aktif: boolean;
-      /**
-       * Created At
-       * Format: date-time
-       * @description Waktu pembuatan (UTC, ISO-8601).
-       */
-      created_at: string;
-    };
-    /**
-     * SMEPanelUpdate
-     * @description Payload pembaruan sebagian SME panel.
-     */
-    SMEPanelUpdate: {
-      /**
-       * Aktif
-       * @description Status aktif baru.
-       */
-      aktif?: boolean | null;
-      /**
-       * Koordinator Id
-       * @description ID partisipan yang menjadi koordinator panel. Harus anggota panel. Kirim null untuk menghapus koordinator.
-       */
-      koordinator_id?: string | null;
-    };
-    /**
-     * SearchRequest
-     * @example {
-     *       "domain": [
-     *         [
-     *           "nama",
-     *           "ilike",
-     *           "dasar"
-     *         ]
-     *       ],
-     *       "limit": 20,
-     *       "offset": 0,
-     *       "order": [
-     *         [
-     *           "nama",
-     *           "asc"
-     *         ]
-     *       ]
-     *     }
-     */
-    SearchRequest: {
-      /**
-       * Domain
-       * @description Kriteria pencarian bergaya domain Odoo (notasi prefix). Maks 50 term.
-       */
-      domain?: (
-        | ("&" | "|" | "!")
-        | [
-            string,
-            (
-              | "="
-              | "!="
-              | ">"
-              | ">="
-              | "<"
-              | "<="
-              | "like"
-              | "ilike"
-              | "not like"
-              | "not ilike"
-              | "=like"
-              | "=ilike"
-              | "in"
-              | "not in"
-            ),
-            unknown,
-          ]
-      )[];
-      /**
-       * Order
-       * @description Urutan hasil: daftar (field, 'asc'|'desc'). Maks 10 kunci.
-       */
-      order?: [string, "asc" | "desc"][];
-      /**
-       * Limit
-       * @description Maks item per halaman.
-       * @default 20
-       */
-      limit: number;
-      /**
-       * Offset
-       * @description Jumlah item yang dilewati.
-       * @default 0
-       */
-      offset: number;
-    };
-    /**
-     * SekolahCreate
-     * @description Payload pembuatan sekolah / satuan pendidikan.
-     */
-    SekolahCreate: {
-      /**
-       * Nama
-       * @description Nama sekolah.
-       * @example SD Negeri 1 Bandung
-       */
-      nama: string;
-      /**
-       * Npsn
-       * @description Nomor Pokok Sekolah Nasional (8 digit angka).
-       * @example 20201234
-       */
-      npsn?: string | null;
-      /**
-       * Jenjang Pendidikan Id
-       * @description ID jenjang pendidikan.
-       * @example jp_a1b2c3d4
-       */
-      jenjang_pendidikan_id: string;
-      /**
-       * Kota
-       * @description Kota lokasi sekolah.
-       * @example Bandung
-       */
-      kota?: string | null;
-      /**
-       * Provinsi
-       * @description Provinsi lokasi sekolah.
-       * @example Jawa Barat
-       */
-      provinsi?: string | null;
-      /**
-       * Aktif
-       * @description Status aktif sekolah.
-       * @default true
-       */
-      aktif: boolean;
-    };
-    /**
-     * SekolahRead
-     * @description Representasi sekolah yang dikembalikan API.
-     */
-    SekolahRead: {
-      /**
-       * Id
-       * @description ID unik sekolah.
-       * @example skl_a1b2c3d4
-       */
-      id: string;
-      /**
-       * Nama
-       * @description Nama sekolah.
-       * @example SD Negeri 1 Bandung
-       */
-      nama: string;
-      /**
-       * Npsn
-       * @description Nomor Pokok Sekolah Nasional.
-       */
-      npsn?: string | null;
-      /**
-       * Jenjang Pendidikan Id
-       * @description ID jenjang pendidikan.
-       */
-      jenjang_pendidikan_id: string;
-      /**
-       * Kota
-       * @description Kota.
-       */
-      kota?: string | null;
-      /**
-       * Provinsi
-       * @description Provinsi.
-       */
-      provinsi?: string | null;
-      /**
-       * Aktif
-       * @description Status aktif.
-       */
-      aktif: boolean;
-      /**
-       * Created At
-       * Format: date-time
-       * @description Waktu pembuatan (UTC, ISO-8601).
-       */
-      created_at: string;
-    };
-    /**
-     * SekolahUpdate
-     * @description Payload pembaruan sebagian sekolah.
-     */
-    SekolahUpdate: {
-      /**
-       * Nama
-       * @description Nama baru.
-       */
-      nama?: string | null;
-      /**
-       * Npsn
-       * @description NPSN baru.
-       */
-      npsn?: string | null;
-      /**
-       * Jenjang Pendidikan Id
-       * @description ID jenjang pendidikan baru.
-       */
-      jenjang_pendidikan_id?: string | null;
-      /**
-       * Kota
-       * @description Kota baru.
-       */
-      kota?: string | null;
-      /**
-       * Provinsi
-       * @description Provinsi baru.
-       */
-      provinsi?: string | null;
-      /**
-       * Aktif
-       * @description Status aktif baru.
-       */
-      aktif?: boolean | null;
-    };
-    /**
-     * TiCatalogRead
-     * @description Satu item catalog task yang dikembalikan API.
-     */
-    TiCatalogRead: {
-      /**
-       * Kode
-       * @description Kode task deterministik.
-       * @example TIf0b59714
-       */
-      kode: string;
-      /**
-       * Unit
-       * @description Unit/jenjang (TK/SD/SMP/SMA).
-       * @example TK
-       */
-      unit: string;
-      /**
-       * Kategori Jabatan
-       * @description Kategori jabatan.
-       * @example Kepala Sekolah
-       */
-      kategori_jabatan: string;
-      /**
-       * Tugas Pokok
-       * @description Tugas pokok (klaster).
-       * @example Pengelolaan SDM
-       */
-      tugas_pokok: string;
-      /**
-       * Detil Tugas
-       * @description Detil tugas (kelompok).
-       * @example Mengevaluasi Kinerja Karyawan
-       */
-      detil_tugas: string;
-      /**
-       * Uraian Tugas
-       * @description Uraian tugas (task statement).
-       * @example Menyusun evaluasi karyawan
-       */
-      uraian_tugas: string;
-      /**
-       * Urutan
-       * @description Urutan dalam kombinasi unit×kategori.
-       * @example 1
-       */
-      urutan: number;
-    };
-    /**
-     * TiDetailItem
-     * @description Field detail CalHR untuk satu task relevan.
-     */
-    TiDetailItem: {
-      /**
-       * Task Kode
-       * @description Kode task (harus ada di himpunan terpilih).
-       */
-      task_kode: string;
-      /**
-       * Sumber Bukti
-       * @description Formal/Aktual/Keduanya.
-       * @enum {string}
-       */
-      sumber_bukti: "Formal" | "Aktual" | "Keduanya";
-      /**
-       * Kondisi
-       * @description Baseline/Peak/Both.
-       * @enum {string}
-       */
-      kondisi: "Baseline" | "Peak" | "Both";
-      /**
-       * Frekuensi Teks
-       * @description Frekuensi (Harian/Mingguan/Bulanan/dst).
-       */
-      frekuensi_teks: string;
-      /**
-       * Durasi Per Kali
-       * @description Durasi per pelaksanaan (menit).
-       */
-      durasi_per_kali: number;
-      /**
-       * Jam Per Minggu
-       * @description Estimasi jam per minggu.
-       */
-      jam_per_minggu: number;
-      /**
-       * Peak4W Hours
-       * @description Jam pada 4 minggu peak.
-       * @default 0
-       */
-      peak4w_hours: number;
-      /**
-       * Ai Mode
-       * @description Human-led/Co-Pilot/AI-assisted.
-       * @enum {string}
-       */
-      ai_mode: "Human-led" | "Co-Pilot" | "AI-assisted";
-      /**
-       * Va Type
-       * @description VA-Core/VA-Enable/NVA-Residual.
-       * @enum {string}
-       */
-      va_type: "VA-Core" | "VA-Enable" | "NVA-Residual";
-      /**
-       * Dcs Flag
-       * @description True bila ada risiko DCS.
-       * @default false
-       */
-      dcs_flag: boolean;
-      /**
-       * Catatan
-       * @description Catatan ambiguitas.
-       */
-      catatan?: string | null;
-    };
-    /**
-     * TiDetailRead
-     * @description Representasi satu entri detail Tahap 2.
-     */
-    TiDetailRead: {
-      /**
-       * Id
-       * @description ID entri detail.
-       * @example tdet_a1b2c3d4
-       */
-      id: string;
-      /**
-       * Responden Id
-       * @description ID responden.
-       */
-      responden_id: string;
-      /**
-       * Sesi Id
-       * @description ID sesi.
-       */
-      sesi_id: string;
-      /**
-       * Task Kode
-       * @description Kode task.
-       */
-      task_kode: string;
-      /**
-       * Sumber Bukti
-       * @enum {string}
-       */
-      sumber_bukti: "Formal" | "Aktual" | "Keduanya";
-      /**
-       * Kondisi
-       * @enum {string}
-       */
-      kondisi: "Baseline" | "Peak" | "Both";
-      /** Frekuensi Teks */
-      frekuensi_teks: string;
-      /** Durasi Per Kali */
-      durasi_per_kali: number;
-      /** Jam Per Minggu */
-      jam_per_minggu: number;
-      /** Peak4W Hours */
-      peak4w_hours: number;
-      /**
-       * Ai Mode
-       * @enum {string}
-       */
-      ai_mode: "Human-led" | "Co-Pilot" | "AI-assisted";
-      /**
-       * Va Type
-       * @enum {string}
-       */
-      va_type: "VA-Core" | "VA-Enable" | "NVA-Residual";
-      /** Dcs Flag */
-      dcs_flag: boolean;
-      /** Catatan */
-      catatan?: string | null;
-    };
-    /**
-     * TiDetailSubmit
-     * @description Payload submit detail Tahap 2 untuk satu responden.
-     *
-     *     Boleh subset dari himpunan terpilih (hanya task yang benar-benar dikerjakan responden),
-     *     tetapi setiap `task_kode` wajib termasuk himpunan terpilih sesi.
-     */
-    TiDetailSubmit: {
-      /**
-       * Detail
-       * @description Daftar entri detail, satu per task relevan.
-       */
-      detail: components["schemas"]["TiDetailItem"][];
-    };
-    /**
-     * TiHasilSesiRead
-     * @description Hasil analisis lengkap satu sesi Task Inventory.
-     */
-    TiHasilSesiRead: {
-      /**
-       * Sesi Id
-       * @description ID sesi.
-       */
-      sesi_id: string;
-      /**
-       * Unit
-       * @description Unit/jenjang.
-       */
-      unit: string;
-      /**
-       * Kategori Jabatan
-       * @description Kategori jabatan.
-       */
-      kategori_jabatan: string;
-      /**
-       * Periode
-       * @description Periode.
-       */
-      periode: string;
-      /**
-       * N Responden Tahap1
-       * @description Jumlah responden yang submit Tahap 1.
-       */
-      n_responden_tahap1: number;
-      /**
-       * N Responden Tahap2
-       * @description Jumlah responden yang submit Tahap 2.
-       */
-      n_responden_tahap2: number;
-      /**
-       * Jumlah Task Terpilih
-       * @description Jumlah task pada himpunan terpilih.
-       */
-      jumlah_task_terpilih: number;
-      /**
-       * Total Jam Per Minggu
-       * @description Total rata-rata jam/minggu seluruh task.
-       */
-      total_jam_per_minggu: number;
-      /**
-       * Total Jam Per Tahun
-       * @description Total rata-rata jam/tahun seluruh task.
-       */
-      total_jam_per_tahun: number;
-      /**
-       * Tasks
-       * @description Hasil agregasi per task.
-       */
-      tasks: components["schemas"]["TiHasilTaskRead"][];
-    };
-    /**
-     * TiHasilTaskRead
-     * @description Hasil agregasi satu task lintas responden (masukan ABK).
-     */
-    TiHasilTaskRead: {
-      /**
-       * Kode
-       * @description Kode task.
-       */
-      kode: string;
-      /**
-       * Tugas Pokok
-       * @description Tugas pokok.
-       */
-      tugas_pokok: string;
-      /**
-       * Detil Tugas
-       * @description Detil tugas.
-       */
-      detil_tugas: string;
-      /**
-       * Uraian Tugas
-       * @description Uraian tugas.
-       */
-      uraian_tugas: string;
-      /**
-       * N Relevan
-       * @description Jumlah partisipan yang menandai relevan (Tahap 1).
-       */
-      n_relevan: number;
-      /**
-       * Pct Relevan
-       * @description Persentase relevansi (terhadap submit Tahap 1).
-       */
-      pct_relevan: number;
-      /**
-       * N Detail
-       * @description Jumlah partisipan yang mengisi detail (Tahap 2).
-       */
-      n_detail: number;
-      /**
-       * Jam Per Minggu Mean
-       * @description Rata-rata jam/minggu antar responden.
-       */
-      jam_per_minggu_mean: number;
-      /**
-       * Jam Per Tahun Mean
-       * @description Rata-rata jam/tahun (jam/minggu × 45).
-       */
-      jam_per_tahun_mean: number;
-      /**
-       * Durasi Per Kali Mean
-       * @description Rata-rata durasi per pelaksanaan (menit).
-       */
-      durasi_per_kali_mean: number;
-      /**
-       * Peak4W Hours Mean
-       * @description Rata-rata jam pada 4 minggu peak.
-       */
-      peak4w_hours_mean: number;
-      /**
-       * Ai Mode Dist
-       * @description Distribusi AI_Mode.
-       */
-      ai_mode_dist: {
-        [key: string]: number;
-      };
-      /**
-       * Va Type Dist
-       * @description Distribusi VA_Type.
-       */
-      va_type_dist: {
-        [key: string]: number;
-      };
-      /**
-       * Dcs Flag Count
-       * @description Jumlah responden yang menandai risiko DCS.
-       */
-      dcs_flag_count: number;
-    };
-    /**
-     * TiKombinasiRead
-     * @description Satu kombinasi (unit × kategori jabatan) beserta jumlah task.
-     */
-    TiKombinasiRead: {
-      /**
-       * Unit
-       * @description Unit/jenjang.
-       * @example TK
-       */
-      unit: string;
-      /**
-       * Kategori Jabatan
-       * @description Kategori jabatan.
-       * @example Kepala Sekolah
-       */
-      kategori_jabatan: string;
-      /**
-       * Jumlah Task
-       * @description Jumlah task pada kombinasi ini.
-       * @example 42
-       */
-      jumlah_task: number;
-    };
-    /**
-     * TiKuesionerItemRead
-     * @description Responden Task Inventory diperkaya info sesi — dipakai /kuesioner/saya.
-     */
-    TiKuesionerItemRead: {
-      /**
-       * Id
-       * @description ID responden.
-       * @example trsp_a1b2c3d4
-       */
-      id: string;
-      /**
-       * Sesi Id
-       * @description ID sesi Task Inventory.
-       * @example tises_a1b2c3d4
-       */
-      sesi_id: string;
-      /**
-       * Tahap1 Submit
-       * @description True jika seleksi Tahap 1 sudah disubmit.
-       */
-      tahap1_submit: boolean;
-      /**
-       * Tahap1 Submitted At
-       * @description Waktu submit Tahap 1.
-       */
-      tahap1_submitted_at?: string | null;
-      /**
-       * Tahap2 Submit
-       * @description True jika detail Tahap 2 sudah disubmit.
-       */
-      tahap2_submit: boolean;
-      /**
-       * Tahap2 Submitted At
-       * @description Waktu submit Tahap 2.
-       */
-      tahap2_submitted_at?: string | null;
-      /**
-       * Created At
-       * Format: date-time
-       * @description Waktu pendaftaran.
-       */
-      created_at: string;
-      /**
-       * Sesi Status
-       * @description Status sesi: DRAFT | TAHAP1 | TAHAP2 | CLOSED | ANALYZED.
-       * @example TAHAP1
-       */
-      sesi_status: string;
-      /**
-       * Sesi Unit
-       * @description Unit/jenjang yang dikaji.
-       * @example TK
-       */
-      sesi_unit: string;
-      /**
-       * Sesi Kategori Jabatan
-       * @description Kategori jabatan yang dikaji.
-       * @example Kepala Sekolah
-       */
-      sesi_kategori_jabatan: string;
-      /**
-       * Sesi Periode
-       * @description Periode sesi (YYYY-MM).
-       * @example 2026-06
-       */
-      sesi_periode: string;
-    };
-    /**
-     * TiRespondenCreate
-     * @description Payload pendaftaran responden ke sesi Task Inventory.
-     */
-    TiRespondenCreate: {
-      /**
-       * Nama
-       * @description Nama responden (opsional, boleh anonim).
-       * @example Budi Santoso, S.Pd.
-       */
-      nama?: string | null;
-      /**
-       * Partisipan Id
-       * @description ID partisipan terhubung (opsional, untuk fitur 'Kuesioner Saya').
-       * @example p_a1b2c3d4
-       */
-      partisipan_id?: string | null;
-    };
-    /**
-     * TiRespondenRead
-     * @description Representasi responden yang dikembalikan API.
-     */
-    TiRespondenRead: {
-      /**
-       * Id
-       * @description ID responden.
-       * @example trsp_a1b2c3d4
-       */
-      id: string;
-      /**
-       * Sesi Id
-       * @description ID sesi induk.
-       * @example tises_a1b2c3d4
-       */
-      sesi_id: string;
-      /**
-       * Nama
-       * @description Nama responden.
-       */
-      nama?: string | null;
-      /**
-       * Partisipan Id
-       * @description ID partisipan terhubung.
-       */
-      partisipan_id?: string | null;
-      /**
-       * Tahap1 Submit
-       * @description True jika seleksi Tahap 1 sudah disubmit.
-       */
-      tahap1_submit: boolean;
-      /**
-       * Tahap1 Submitted At
-       * @description Waktu submit Tahap 1.
-       */
-      tahap1_submitted_at?: string | null;
-      /**
-       * Tahap2 Submit
-       * @description True jika detail Tahap 2 sudah disubmit.
-       */
-      tahap2_submit: boolean;
-      /**
-       * Tahap2 Submitted At
-       * @description Waktu submit Tahap 2.
-       */
-      tahap2_submitted_at?: string | null;
-      /**
-       * Created At
-       * Format: date-time
-       * @description Waktu pendaftaran (UTC, ISO-8601).
-       */
-      created_at: string;
-    };
-    /**
-     * TiSeleksiRead
-     * @description Representasi seleksi Tahap 1 satu responden.
-     */
-    TiSeleksiRead: {
-      /**
-       * Responden Id
-       * @description ID responden.
-       * @example trsp_a1b2c3d4
-       */
-      responden_id: string;
-      /**
-       * Sesi Id
-       * @description ID sesi.
-       * @example tises_a1b2c3d4
-       */
-      sesi_id: string;
-      /**
-       * Task Kode
-       * @description Daftar kode task yang dipilih relevan.
-       */
-      task_kode: string[];
-      /**
-       * Submitted At
-       * @description Waktu submit.
-       */
-      submitted_at?: string | null;
-    };
-    /**
-     * TiSeleksiSubmit
-     * @description Payload submit seleksi relevansi Tahap 1: daftar kode task yang relevan.
-     */
-    TiSeleksiSubmit: {
-      /**
-       * Task Kode
-       * @description Daftar kode task yang relevan untuk responden ini (≥1).
-       * @example [
-       *       "TIf0b59714",
-       *       "TIa1b2c3d4"
-       *     ]
-       */
-      task_kode: string[];
-    };
-    /**
-     * TiSesiCreate
-     * @description Payload pembuatan sesi Task Inventory.
-     */
-    TiSesiCreate: {
-      /**
-       * Unit
-       * @description Unit/jenjang yang dikaji (TK/SD/SMP/SMA).
-       * @example TK
-       */
-      unit: string;
-      /**
-       * Kategori Jabatan
-       * @description Kategori jabatan yang dikaji.
-       * @example Kepala Sekolah
-       */
-      kategori_jabatan: string;
-      /**
-       * Periode
-       * @description Periode kajian format YYYY-MM.
-       * @example 2026-06
-       */
-      periode: string;
-      /**
-       * Min Responden
-       * @description Jumlah minimum responden.
-       * @default 3
-       * @example 3
-       */
-      min_responden: number;
-      /**
-       * Max Responden
-       * @description Jumlah maksimum responden.
-       * @default 10
-       * @example 10
-       */
-      max_responden: number;
-      /**
-       * Catatan
-       * @description Catatan opsional untuk sesi ini.
-       */
-      catatan?: string | null;
-    };
-    /**
-     * TiSesiRead
-     * @description Representasi sesi Task Inventory yang dikembalikan API.
-     */
-    TiSesiRead: {
-      /**
-       * Id
-       * @description ID sesi.
-       * @example tises_a1b2c3d4
-       */
-      id: string;
-      /**
-       * Unit
-       * @description Unit/jenjang.
-       * @example TK
-       */
-      unit: string;
-      /**
-       * Kategori Jabatan
-       * @description Kategori jabatan.
-       * @example Kepala Sekolah
-       */
-      kategori_jabatan: string;
-      /**
-       * Periode
-       * @description Periode kajian (YYYY-MM).
-       * @example 2026-06
-       */
-      periode: string;
-      /**
-       * Status
-       * @description Status sesi.
-       * @example DRAFT
-       * @enum {string}
-       */
-      status: "DRAFT" | "TAHAP1" | "TAHAP2" | "CLOSED" | "ANALYZED";
-      /**
-       * Min Responden
-       * @description Minimum responden.
-       */
-      min_responden: number;
-      /**
-       * Max Responden
-       * @description Maksimum responden.
-       */
-      max_responden: number;
-      /**
-       * Jumlah Task Terpilih
-       * @description Jumlah task relevan yang dibekukan saat masuk TAHAP2 (None bila belum).
-       */
-      jumlah_task_terpilih?: number | null;
-      /**
-       * Catatan
-       * @description Catatan.
-       */
-      catatan?: string | null;
-      /**
-       * Created At
-       * Format: date-time
-       * @description Waktu pembuatan (UTC, ISO-8601).
-       */
-      created_at: string;
-    };
-    /**
-     * TiSesiUpdate
-     * @description Payload pembaruan sesi Task Inventory (hanya saat DRAFT).
-     */
-    TiSesiUpdate: {
-      /** Periode */
-      periode?: string | null;
-      /** Min Responden */
-      min_responden?: number | null;
-      /** Max Responden */
-      max_responden?: number | null;
-      /** Catatan */
-      catatan?: string | null;
-    };
-    /**
-     * TiTaskTerpilihRead
-     * @description Satu task pada himpunan terpilih (beku setelah TAHAP2) + statistik relevansi.
-     */
-    TiTaskTerpilihRead: {
-      /**
-       * Kode
-       * @description Kode task.
-       * @example TIf0b59714
-       */
-      kode: string;
-      /**
-       * Tugas Pokok
-       * @description Tugas pokok.
-       */
-      tugas_pokok: string;
-      /**
-       * Detil Tugas
-       * @description Detil tugas.
-       */
-      detil_tugas: string;
-      /**
-       * Uraian Tugas
-       * @description Uraian tugas.
-       */
-      uraian_tugas: string;
-      /**
-       * N Relevan
-       * @description Jumlah partisipan yang menandai task ini relevan.
-       */
-      n_relevan: number;
-      /**
-       * Pct Relevan
-       * @description Persentase partisipan (terhadap submit Tahap 1).
-       */
-      pct_relevan: number;
-    };
-    /** ValidationError */
-    ValidationError: {
-      /** Location */
-      loc: (string | number)[];
-      /** Message */
-      msg: string;
-      /** Error Type */
-      type: string;
-      /** Input */
-      input?: unknown;
-      /** Context */
-      ctx?: Record<string, never>;
-    };
-    /**
-     * WcpDimensiRead
-     * @description Representasi dimensi WCP tanpa item.
-     */
-    WcpDimensiRead: {
-      /**
-       * Id
-       * @description ID dimensi.
-       * @example wdim_SC
-       */
-      id: string;
-      /**
-       * Kode
-       * @description Kode dimensi.
-       * @example SC
-       */
-      kode: string;
-      /**
-       * Nama
-       * @description Nama dimensi.
-       * @example Stability of Change
-       */
-      nama: string;
-      /**
-       * Urutan
-       * @description Urutan dimensi (1–12).
-       * @example 1
-       */
-      urutan: number;
-      /**
-       * Is Risk
-       * @description True jika dimensi risiko (CH/SD/PI); skor tinggi = risiko tinggi.
-       */
-      is_risk: boolean;
-    };
-    /**
-     * WcpDimensiWithItemsRead
-     * @description Representasi dimensi WCP beserta 6 item-nya.
-     */
-    WcpDimensiWithItemsRead: {
-      /**
-       * Id
-       * @description ID dimensi.
-       * @example wdim_SC
-       */
-      id: string;
-      /**
-       * Kode
-       * @description Kode dimensi.
-       * @example SC
-       */
-      kode: string;
-      /**
-       * Nama
-       * @description Nama dimensi.
-       * @example Stability of Change
-       */
-      nama: string;
-      /**
-       * Urutan
-       * @description Urutan dimensi (1–12).
-       * @example 1
-       */
-      urutan: number;
-      /**
-       * Is Risk
-       * @description True jika dimensi risiko (CH/SD/PI); skor tinggi = risiko tinggi.
-       */
-      is_risk: boolean;
-      /**
-       * Items
-       * @description Daftar 6 item dimensi ini.
-       */
-      items: components["schemas"]["WcpItemRead"][];
-    };
-    /**
-     * WcpHasilDimensiRespondenRead
-     * @description Skor satu dimensi untuk satu responden.
-     */
-    WcpHasilDimensiRespondenRead: {
-      /**
-       * Dimensi Kode
-       * @description Kode dimensi.
-       * @example SC
-       */
-      dimensi_kode: string;
-      /**
-       * Dimensi Nama
-       * @description Nama dimensi.
-       * @example Stability of Change
-       */
-      dimensi_nama: string;
-      /**
-       * Is Risk
-       * @description True jika dimensi risiko.
-       */
-      is_risk: boolean;
-      /**
-       * Skor
-       * @description Rata-rata 6 item setelah reverse scoring.
-       * @example 3.83
-       */
-      skor: number;
-      /**
-       * Interpretasi
-       * @description Interpretasi skor.
-       * @example CUKUP
-       * @enum {string}
-       */
-      interpretasi: "BAIK" | "CUKUP" | "PERLU_PERHATIAN" | "AMAN" | "WASPADA" | "RISIKO_TINGGI";
-    };
-    /**
-     * WcpHasilDimensiSesiRead
-     * @description Hasil agregat satu dimensi untuk satu sesi (seluruh responden).
-     */
-    WcpHasilDimensiSesiRead: {
-      /**
-       * Dimensi Kode
-       * @description Kode dimensi.
-       * @example SC
-       */
-      dimensi_kode: string;
-      /**
-       * Dimensi Nama
-       * @description Nama dimensi.
-       * @example Stability of Change
-       */
-      dimensi_nama: string;
-      /**
-       * Is Risk
-       * @description True jika dimensi risiko.
-       */
-      is_risk: boolean;
-      /**
-       * N Responden
-       * @description Jumlah responden yang dianalisis.
-       * @example 7
-       */
-      n_responden: number;
-      /**
-       * Skor Mean
-       * @description Rata-rata skor dimensi antar responden.
-       * @example 3.71
-       */
-      skor_mean: number;
-      /**
-       * Skor Std
-       * @description Standar deviasi skor dimensi.
-       * @example 0.42
-       */
-      skor_std: number;
-      /**
-       * Cronbach Alpha
-       * @description Cronbach's alpha (None jika responden < 2).
-       * @example 0.78
-       */
-      cronbach_alpha: number | null;
-      /**
-       * Interpretasi
-       * @description Interpretasi skor.
-       * @example CUKUP
-       * @enum {string}
-       */
-      interpretasi: "BAIK" | "CUKUP" | "PERLU_PERHATIAN" | "AMAN" | "WASPADA" | "RISIKO_TINGGI";
-    };
-    /**
-     * WcpHasilRespondenRead
-     * @description Hasil analisis untuk satu responden (12 dimensi).
-     */
-    WcpHasilRespondenRead: {
-      /**
-       * Responden Id
-       * @description ID responden.
-       */
-      responden_id: string;
-      /**
-       * Dimensi
-       * @description Skor per dimensi (12 entri).
-       */
-      dimensi: components["schemas"]["WcpHasilDimensiRespondenRead"][];
-    };
-    /**
-     * WcpHasilSesiRead
-     * @description Hasil analisis lengkap satu sesi WCP (seluruh dimensi).
-     */
-    WcpHasilSesiRead: {
-      /**
-       * Sesi Id
-       * @description ID sesi.
-       */
-      sesi_id: string;
-      /**
-       * Jabatan Id
-       * @description ID jabatan yang dikaji.
-       */
-      jabatan_id: string;
-      /**
-       * Periode
-       * @description Periode survei.
-       */
-      periode: string;
-      /**
-       * N Responden
-       * @description Total responden yang submit.
-       */
-      n_responden: number;
-      /**
-       * Dimensi
-       * @description Hasil per dimensi (12 entri).
-       */
-      dimensi: components["schemas"]["WcpHasilDimensiSesiRead"][];
-    };
-    /**
-     * WcpItemRead
-     * @description Representasi satu item pernyataan WCP.
-     */
-    WcpItemRead: {
-      /**
-       * Id
-       * @description ID item.
-       * @example witm_SC1a
-       */
-      id: string;
-      /**
-       * Item Id
-       * @description Kode item orisinal.
-       * @example SC1a
-       */
-      item_id: string;
-      /**
-       * Dimensi Kode
-       * @description Kode dimensi.
-       * @example SC
-       */
-      dimensi_kode: string;
-      /**
-       * Indikator Kode
-       * @description Kode indikator (1/2/3).
-       * @example 1
-       */
-      indikator_kode: string;
-      /**
-       * Indikator Label
-       * @description Label indikator.
-       * @example Frekuensi perubahan kebijakan
-       */
-      indikator_label: string;
-      /**
-       * Pernyataan
-       * @description Teks pernyataan.
-       * @example Kebijakan dan prosedur kerja di unit saya berubah terlalu sering.
-       */
-      pernyataan: string;
-      /**
-       * Reverse Type
-       * @description Tipe scoring: NONE | R | UF | R_STAR.
-       * @example R
-       */
-      reverse_type: string;
-      /**
-       * Urutan
-       * @description Urutan global item (1–72).
-       * @example 1
-       */
-      urutan: number;
-    };
-    /**
-     * WcpItemUpdate
-     * @description Field item WCP yang dapat diubah admin (partial; field kosong diabaikan).
-     */
-    WcpItemUpdate: {
-      /**
-       * Pernyataan
-       * @description Teks pernyataan baru.
-       */
-      pernyataan?: string | null;
-      /**
-       * Reverse Type
-       * @description Tipe scoring: NONE | R | UF | R_STAR.
-       */
-      reverse_type?: ("NONE" | "R" | "UF" | "R_STAR") | null;
-      /**
-       * Urutan
-       * @description Urutan global item (1–72).
-       */
-      urutan?: number | null;
-    };
-    /**
-     * WcpJawabanBulkCreate
-     * @description Payload bulk submission 72 jawaban untuk satu responden.
-     */
-    WcpJawabanBulkCreate: {
-      /**
-       * Jawaban
-       * @description Tepat 72 jawaban, satu per item WCP.
-       */
-      jawaban: components["schemas"]["WcpJawabanItem"][];
-    };
-    /**
-     * WcpJawabanItem
-     * @description Satu jawaban item dalam bulk submission.
-     */
-    WcpJawabanItem: {
-      /**
-       * Item Id
-       * @description Kode item orisinal (mis. SC1a).
-       * @example SC1a
-       */
-      item_id: string;
-      /**
-       * Skor Raw
-       * @description Skor mentah 1–5 dari responden.
-       * @example 4
-       */
-      skor_raw: number;
-    };
-    /**
-     * WcpJawabanRead
-     * @description Representasi satu jawaban yang dikembalikan API.
-     */
-    WcpJawabanRead: {
-      /**
-       * Id
-       * @description ID jawaban.
-       * @example wjwb_a1b2c3d4
-       */
-      id: string;
-      /**
-       * Responden Id
-       * @description ID responden.
-       * @example wrsp_a1b2c3d4
-       */
-      responden_id: string;
-      /**
-       * Item Id
-       * @description Kode item orisinal.
-       * @example SC1a
-       */
-      item_id: string;
-      /**
-       * Skor Raw
-       * @description Skor mentah 1–5.
-       */
-      skor_raw: number;
-    };
-    /**
-     * WcpKuesionerItemRead
-     * @description Responden WCP diperkaya info sesi — dipakai endpoint /kuesioner/saya.
-     */
-    WcpKuesionerItemRead: {
-      /**
-       * Id
-       * @description ID responden.
-       * @example wrsp_a1b2c3d4
-       */
-      id: string;
-      /**
-       * Sesi Id
-       * @description ID sesi WCP.
-       * @example wses_a1b2c3d4
-       */
-      sesi_id: string;
-      /**
-       * Jabatan Label
-       * @description Label jabatan responden.
-       */
-      jabatan_label: string;
-      /**
-       * Sudah Submit
-       * @description True jika jawaban sudah disubmit.
-       */
-      sudah_submit: boolean;
-      /**
-       * Submitted At
-       * @description Waktu submit.
-       */
-      submitted_at?: string | null;
-      /**
-       * Created At
-       * Format: date-time
-       * @description Waktu pendaftaran.
-       */
-      created_at: string;
-      /**
-       * Sesi Status
-       * @description Status sesi: DRAFT | OPEN | CLOSED | ANALYZED.
-       * @example OPEN
-       */
-      sesi_status: string;
-      /**
-       * Sesi Periode
-       * @description Periode sesi (YYYY-MM).
-       * @example 2025-06
-       */
-      sesi_periode: string;
-      /**
-       * Sesi Jabatan Id
-       * @description ID jabatan yang dikaji.
-       */
-      sesi_jabatan_id: string;
-    };
-    /**
-     * WcpRespondenCreate
-     * @description Payload pendaftaran responden ke dalam sesi WCP.
-     */
-    WcpRespondenCreate: {
-      /**
-       * Nama
-       * @description Nama responden (opsional, boleh anonim).
-       * @example Budi Santoso, S.Pd.
-       */
-      nama?: string | null;
-      /**
-       * Jabatan Label
-       * @description Label jabatan responden (teks bebas).
-       * @example Guru Matematika
-       */
-      jabatan_label: string;
-      /**
-       * Partisipan Id
-       * @description ID partisipan yang terhubung (opsional, untuk fitur 'Kuesioner Saya').
-       * @example par_a1b2c3d4
-       */
-      partisipan_id?: string | null;
-    };
-    /**
-     * WcpRespondenRead
-     * @description Representasi responden yang dikembalikan API.
-     */
-    WcpRespondenRead: {
-      /**
-       * Id
-       * @description ID responden.
-       * @example wrsp_a1b2c3d4
-       */
-      id: string;
-      /**
-       * Sesi Id
-       * @description ID sesi induk.
-       * @example wses_a1b2c3d4
-       */
-      sesi_id: string;
-      /**
-       * Nama
-       * @description Nama responden.
-       */
-      nama?: string | null;
-      /**
-       * Jabatan Label
-       * @description Label jabatan responden.
-       */
-      jabatan_label: string;
-      /**
-       * Partisipan Id
-       * @description ID partisipan yang terhubung, bila ada.
-       */
-      partisipan_id?: string | null;
-      /**
-       * Sudah Submit
-       * @description True jika jawaban sudah disubmit.
-       */
-      sudah_submit: boolean;
-      /**
-       * Submitted At
-       * @description Waktu submit jawaban.
-       */
-      submitted_at?: string | null;
-      /**
-       * Created At
-       * Format: date-time
-       * @description Waktu pendaftaran (UTC, ISO-8601).
-       */
-      created_at: string;
-    };
-    /**
-     * WcpSesiCreate
-     * @description Payload pembuatan sesi WCP.
-     */
-    WcpSesiCreate: {
-      /**
-       * Jabatan Id
-       * @description ID jabatan yang dikaji.
-       * @example jbt_a1b2c3d4
-       */
-      jabatan_id: string;
-      /**
-       * Periode
-       * @description Periode survei format YYYY-MM.
-       * @example 2025-06
-       */
-      periode: string;
-      /**
-       * Min Responden
-       * @description Jumlah minimum responden.
-       * @default 6
-       * @example 6
-       */
-      min_responden: number;
-      /**
-       * Max Responden
-       * @description Jumlah maksimum responden.
-       * @default 8
-       * @example 8
-       */
-      max_responden: number;
-      /**
-       * Catatan
-       * @description Catatan opsional untuk sesi ini.
-       */
-      catatan?: string | null;
-    };
-    /**
-     * WcpSesiRead
-     * @description Representasi sesi WCP yang dikembalikan API.
-     */
-    WcpSesiRead: {
-      /**
-       * Id
-       * @description ID sesi.
-       * @example wses_a1b2c3d4
-       */
-      id: string;
-      /**
-       * Jabatan Id
-       * @description ID jabatan.
-       * @example jbt_a1b2c3d4
-       */
-      jabatan_id: string;
-      /**
-       * Periode
-       * @description Periode survei (YYYY-MM).
-       * @example 2025-06
-       */
-      periode: string;
-      /**
-       * Status
-       * @description Status sesi.
-       * @example DRAFT
-       * @enum {string}
-       */
-      status: "DRAFT" | "OPEN" | "CLOSED" | "ANALYZED";
-      /**
-       * Min Responden
-       * @description Minimum responden.
-       */
-      min_responden: number;
-      /**
-       * Max Responden
-       * @description Maksimum responden.
-       */
-      max_responden: number;
-      /**
-       * Catatan
-       * @description Catatan.
-       */
-      catatan?: string | null;
-      /**
-       * Created At
-       * Format: date-time
-       * @description Waktu pembuatan (UTC, ISO-8601).
-       */
-      created_at: string;
-    };
-    /**
-     * WcpSesiUpdate
-     * @description Payload pembaruan sesi WCP (hanya saat DRAFT).
-     */
-    WcpSesiUpdate: {
-      /**
-       * Periode
-       * @description Periode baru.
-       */
-      periode?: string | null;
-      /**
-       * Min Responden
-       * @description Minimum responden baru.
-       */
-      min_responden?: number | null;
-      /**
-       * Max Responden
-       * @description Maksimum responden baru.
-       */
-      max_responden?: number | null;
-      /**
-       * Catatan
-       * @description Catatan baru.
-       */
-      catatan?: string | null;
-    };
-  };
-  responses: never;
-  parameters: never;
-  requestBodies: never;
-  headers: never;
-  pathItems: never;
+    schemas: {
+        /**
+         * DcsHasilRespondenRead
+         * @description Hasil analisis untuk satu responden (3 sub-skala).
+         */
+        DcsHasilRespondenRead: {
+            /**
+             * Responden Id
+             * @description ID responden.
+             */
+            responden_id: string;
+            /**
+             * Sub Skala
+             * @description Skor per sub-skala (3 entri).
+             */
+            sub_skala: components["schemas"]["DcsHasilSubSkalaRespondenRead"][];
+            /**
+             * Risk Flag
+             * @description Flag risiko DCS responden ini.
+             * @example MODERATE
+             * @enum {string}
+             */
+            risk_flag: "HIGH" | "MODERATE" | "LOW";
+        };
+        /**
+         * DcsHasilSesiRead
+         * @description Hasil analisis lengkap satu sesi DCS (seluruh sub-skala + risk flag + K-Index).
+         */
+        DcsHasilSesiRead: {
+            /**
+             * Sesi Id
+             * @description ID sesi.
+             */
+            sesi_id: string;
+            /**
+             * Jabatan Id
+             * @description ID jabatan yang dikaji.
+             */
+            jabatan_id: string;
+            /**
+             * Periode
+             * @description Periode survei.
+             */
+            periode: string;
+            /**
+             * N Responden
+             * @description Total responden yang submit.
+             */
+            n_responden: number;
+            /**
+             * Sub Skala
+             * @description Hasil per sub-skala (3 entri).
+             */
+            sub_skala: components["schemas"]["DcsHasilSubSkalaSesiRead"][];
+            /**
+             * Risk Flag
+             * @description Flag risiko DCS: HIGH = demand tinggi + control/support rendah; MODERATE = salah satu kondisi; LOW = tidak ada kondisi.
+             * @example MODERATE
+             * @enum {string}
+             */
+            risk_flag: "HIGH" | "MODERATE" | "LOW";
+            /**
+             * K Index
+             * @description K-Index psikososial (0–1). None jika wcp_sesi_id tidak disertakan. Rumus: 0,40×DemandPressure + 0,25×ControlDeficit + 0,25×SupportDeficit + 0,10×WCPRisk.
+             * @example 0.42
+             */
+            k_index?: number | null;
+            /**
+             * K Index Wcp Risk
+             * @description Komponen WCP risk yang dipakai dalam K-Index (0–1). None jika tidak ada.
+             * @example 0.65
+             */
+            k_index_wcp_risk?: number | null;
+        };
+        /**
+         * DcsHasilSubSkalaRespondenRead
+         * @description Skor satu sub-skala untuk satu responden.
+         */
+        DcsHasilSubSkalaRespondenRead: {
+            /**
+             * Subskala Kode
+             * @description Kode sub-skala.
+             * @example DEMAND
+             */
+            subskala_kode: string;
+            /**
+             * Subskala Nama
+             * @description Nama sub-skala.
+             * @example Demand (Tuntutan Kerja)
+             */
+            subskala_nama: string;
+            /**
+             * Skor
+             * @description Rata-rata 14 item setelah reverse UF.
+             * @example 3.71
+             */
+            skor: number;
+        };
+        /**
+         * DcsHasilSubSkalaSesiRead
+         * @description Hasil agregat satu sub-skala untuk satu sesi (seluruh responden).
+         */
+        DcsHasilSubSkalaSesiRead: {
+            /**
+             * Subskala Kode
+             * @description Kode sub-skala.
+             * @example DEMAND
+             */
+            subskala_kode: string;
+            /**
+             * Subskala Nama
+             * @description Nama sub-skala.
+             * @example Demand (Tuntutan Kerja)
+             */
+            subskala_nama: string;
+            /**
+             * N Responden
+             * @description Jumlah responden yang dianalisis.
+             * @example 7
+             */
+            n_responden: number;
+            /**
+             * Skor Mean
+             * @description Rata-rata skor sub-skala antar responden.
+             * @example 3.71
+             */
+            skor_mean: number;
+            /**
+             * Skor Std
+             * @description Standar deviasi skor sub-skala.
+             * @example 0.42
+             */
+            skor_std: number;
+            /**
+             * Cronbach Alpha
+             * @description Cronbach's alpha (None jika responden < 2).
+             * @example 0.78
+             */
+            cronbach_alpha: number | null;
+        };
+        /**
+         * DcsItemRead
+         * @description Representasi satu item pernyataan DCS.
+         */
+        DcsItemRead: {
+            /**
+             * Id
+             * @description ID item.
+             * @example ditm_D1a
+             */
+            id: string;
+            /**
+             * Item Id
+             * @description Kode item orisinal.
+             * @example D1a
+             */
+            item_id: string;
+            /**
+             * Subskala Kode
+             * @description Kode sub-skala.
+             * @example DEMAND
+             */
+            subskala_kode: string;
+            /**
+             * Sub Dimensi
+             * @description Sub-dimensi item.
+             * @example Volume
+             */
+            sub_dimensi: string;
+            /**
+             * Pernyataan
+             * @description Teks pernyataan.
+             * @example Saya harus menyelesaikan banyak tugas dalam waktu yang sangat terbatas.
+             */
+            pernyataan: string;
+            /**
+             * Arah
+             * @description Arah item: F (Favorable) atau UF (Unfavorable, reverse-scored).
+             * @example UF
+             * @enum {string}
+             */
+            arah: "F" | "UF";
+            /**
+             * Urutan
+             * @description Urutan global item (1–42).
+             * @example 1
+             */
+            urutan: number;
+        };
+        /**
+         * DcsItemUpdate
+         * @description Field item DCS yang dapat diubah admin (partial; field kosong diabaikan).
+         */
+        DcsItemUpdate: {
+            /**
+             * Pernyataan
+             * @description Teks pernyataan baru.
+             */
+            pernyataan?: string | null;
+            /**
+             * Arah
+             * @description Arah item: F (Favorable) atau UF (Unfavorable, reverse-scored).
+             */
+            arah?: ("F" | "UF") | null;
+            /**
+             * Urutan
+             * @description Urutan global item (1–42).
+             */
+            urutan?: number | null;
+        };
+        /**
+         * DcsJawabanBulkCreate
+         * @description Payload bulk submission 42 jawaban untuk satu responden.
+         */
+        DcsJawabanBulkCreate: {
+            /**
+             * Jawaban
+             * @description Tepat 42 jawaban, satu per item DCS.
+             */
+            jawaban: components["schemas"]["DcsJawabanItem"][];
+        };
+        /**
+         * DcsJawabanItem
+         * @description Satu jawaban item dalam bulk submission.
+         */
+        DcsJawabanItem: {
+            /**
+             * Item Id
+             * @description Kode item orisinal (mis. D1a).
+             * @example D1a
+             */
+            item_id: string;
+            /**
+             * Skor Raw
+             * @description Skor mentah 1–5 dari responden.
+             * @example 4
+             */
+            skor_raw: number;
+        };
+        /**
+         * DcsJawabanRead
+         * @description Representasi satu jawaban yang dikembalikan API.
+         */
+        DcsJawabanRead: {
+            /**
+             * Id
+             * @description ID jawaban.
+             * @example djwb_a1b2c3d4
+             */
+            id: string;
+            /**
+             * Responden Id
+             * @description ID responden.
+             * @example drsp_a1b2c3d4
+             */
+            responden_id: string;
+            /**
+             * Item Id
+             * @description Kode item orisinal.
+             * @example D1a
+             */
+            item_id: string;
+            /**
+             * Skor Raw
+             * @description Skor mentah 1–5.
+             */
+            skor_raw: number;
+        };
+        /**
+         * DcsKuesionerItemRead
+         * @description Responden DCS diperkaya info sesi — dipakai endpoint /kuesioner/saya.
+         */
+        DcsKuesionerItemRead: {
+            /**
+             * Id
+             * @description ID responden.
+             * @example drsp_a1b2c3d4
+             */
+            id: string;
+            /**
+             * Sesi Id
+             * @description ID sesi DCS.
+             * @example dses_a1b2c3d4
+             */
+            sesi_id: string;
+            /**
+             * Jabatan Label
+             * @description Label jabatan responden.
+             */
+            jabatan_label: string;
+            /**
+             * Sudah Submit
+             * @description True jika jawaban sudah disubmit.
+             */
+            sudah_submit: boolean;
+            /**
+             * Submitted At
+             * @description Waktu submit.
+             */
+            submitted_at?: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             * @description Waktu pendaftaran.
+             */
+            created_at: string;
+            /**
+             * Sesi Status
+             * @description Status sesi: DRAFT | OPEN | CLOSED | ANALYZED.
+             * @example OPEN
+             */
+            sesi_status: string;
+            /**
+             * Sesi Periode
+             * @description Periode sesi (YYYY-MM).
+             * @example 2025-06
+             */
+            sesi_periode: string;
+            /**
+             * Sesi Jabatan Id
+             * @description ID jabatan yang dikaji.
+             */
+            sesi_jabatan_id: string;
+        };
+        /**
+         * DcsRespondenCreate
+         * @description Payload pendaftaran responden ke dalam sesi DCS.
+         */
+        DcsRespondenCreate: {
+            /**
+             * Nama
+             * @description Nama responden (opsional, boleh anonim).
+             * @example Budi Santoso, S.Pd.
+             */
+            nama?: string | null;
+            /**
+             * Jabatan Label
+             * @description Label jabatan responden (teks bebas).
+             * @example Guru Matematika
+             */
+            jabatan_label: string;
+            /**
+             * Partisipan Id
+             * @description ID partisipan yang terhubung (opsional, untuk fitur 'Kuesioner Saya').
+             * @example par_a1b2c3d4
+             */
+            partisipan_id?: string | null;
+        };
+        /**
+         * DcsRespondenRead
+         * @description Representasi responden yang dikembalikan API.
+         */
+        DcsRespondenRead: {
+            /**
+             * Id
+             * @description ID responden.
+             * @example drsp_a1b2c3d4
+             */
+            id: string;
+            /**
+             * Sesi Id
+             * @description ID sesi induk.
+             * @example dses_a1b2c3d4
+             */
+            sesi_id: string;
+            /**
+             * Nama
+             * @description Nama responden.
+             */
+            nama?: string | null;
+            /**
+             * Jabatan Label
+             * @description Label jabatan responden.
+             */
+            jabatan_label: string;
+            /**
+             * Partisipan Id
+             * @description ID partisipan yang terhubung, bila ada.
+             */
+            partisipan_id?: string | null;
+            /**
+             * Sudah Submit
+             * @description True jika jawaban sudah disubmit.
+             */
+            sudah_submit: boolean;
+            /**
+             * Submitted At
+             * @description Waktu submit jawaban.
+             */
+            submitted_at?: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             * @description Waktu pendaftaran (UTC, ISO-8601).
+             */
+            created_at: string;
+        };
+        /**
+         * DcsSesiCreate
+         * @description Payload pembuatan sesi DCS.
+         */
+        DcsSesiCreate: {
+            /**
+             * Jabatan Id
+             * @description ID jabatan yang dikaji.
+             * @example jbt_a1b2c3d4
+             */
+            jabatan_id: string;
+            /**
+             * Periode
+             * @description Periode survei format YYYY-MM.
+             * @example 2025-06
+             */
+            periode: string;
+            /**
+             * Min Responden
+             * @description Jumlah minimum responden.
+             * @default 6
+             * @example 6
+             */
+            min_responden: number;
+            /**
+             * Max Responden
+             * @description Jumlah maksimum responden.
+             * @default 8
+             * @example 8
+             */
+            max_responden: number;
+            /**
+             * Catatan
+             * @description Catatan opsional untuk sesi ini.
+             */
+            catatan?: string | null;
+        };
+        /**
+         * DcsSesiRead
+         * @description Representasi sesi DCS yang dikembalikan API.
+         */
+        DcsSesiRead: {
+            /**
+             * Id
+             * @description ID sesi.
+             * @example dses_a1b2c3d4
+             */
+            id: string;
+            /**
+             * Jabatan Id
+             * @description ID jabatan.
+             * @example jbt_a1b2c3d4
+             */
+            jabatan_id: string;
+            /**
+             * Periode
+             * @description Periode survei (YYYY-MM).
+             * @example 2025-06
+             */
+            periode: string;
+            /**
+             * Status
+             * @description Status sesi.
+             * @example DRAFT
+             * @enum {string}
+             */
+            status: "DRAFT" | "OPEN" | "CLOSED" | "ANALYZED";
+            /**
+             * Min Responden
+             * @description Minimum responden.
+             */
+            min_responden: number;
+            /**
+             * Max Responden
+             * @description Maksimum responden.
+             */
+            max_responden: number;
+            /**
+             * Catatan
+             * @description Catatan.
+             */
+            catatan?: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             * @description Waktu pembuatan (UTC, ISO-8601).
+             */
+            created_at: string;
+        };
+        /**
+         * DcsSesiUpdate
+         * @description Payload pembaruan sesi DCS (hanya saat DRAFT).
+         */
+        DcsSesiUpdate: {
+            /**
+             * Periode
+             * @description Periode baru.
+             */
+            periode?: string | null;
+            /**
+             * Min Responden
+             * @description Minimum responden baru.
+             */
+            min_responden?: number | null;
+            /**
+             * Max Responden
+             * @description Maksimum responden baru.
+             */
+            max_responden?: number | null;
+            /**
+             * Catatan
+             * @description Catatan baru.
+             */
+            catatan?: string | null;
+        };
+        /**
+         * DcsSubSkalaRead
+         * @description Representasi sub-skala DCS tanpa item.
+         */
+        DcsSubSkalaRead: {
+            /**
+             * Id
+             * @description ID sub-skala.
+             * @example dsk_DEMAND
+             */
+            id: string;
+            /**
+             * Kode
+             * @description Kode sub-skala.
+             * @example DEMAND
+             */
+            kode: string;
+            /**
+             * Nama
+             * @description Nama sub-skala.
+             * @example Demand (Tuntutan Kerja)
+             */
+            nama: string;
+            /**
+             * Urutan
+             * @description Urutan sub-skala (1–3).
+             * @example 1
+             */
+            urutan: number;
+        };
+        /**
+         * DcsSubSkalaWithItemsRead
+         * @description Representasi sub-skala DCS beserta 14 item-nya.
+         */
+        DcsSubSkalaWithItemsRead: {
+            /**
+             * Id
+             * @description ID sub-skala.
+             * @example dsk_DEMAND
+             */
+            id: string;
+            /**
+             * Kode
+             * @description Kode sub-skala.
+             * @example DEMAND
+             */
+            kode: string;
+            /**
+             * Nama
+             * @description Nama sub-skala.
+             * @example Demand (Tuntutan Kerja)
+             */
+            nama: string;
+            /**
+             * Urutan
+             * @description Urutan sub-skala (1–3).
+             * @example 1
+             */
+            urutan: number;
+            /**
+             * Items
+             * @description Daftar 14 item sub-skala ini.
+             */
+            items: components["schemas"]["DcsItemRead"][];
+        };
+        /** ErrorDetail */
+        ErrorDetail: {
+            /**
+             * Loc
+             * @description Lokasi field penyebab.
+             */
+            loc?: string[] | null;
+            /**
+             * Msg
+             * @description Penjelasan singkat.
+             */
+            msg: string;
+            /**
+             * Type
+             * @description Tipe error Pydantic.
+             */
+            type: string;
+            /**
+             * Code
+             * @description Kode mesin-terbaca stabil.
+             * @example not_allowed
+             */
+            code?: string | null;
+        };
+        /** ErrorResponse */
+        ErrorResponse: {
+            /**
+             * Error
+             * @description Kode error stabil.
+             * @example not_found
+             */
+            error: string;
+            /**
+             * Message
+             * @description Pesan ramah-manusia.
+             * @example Data tidak ditemukan.
+             */
+            message: string;
+            /**
+             * Request Id
+             * @description Korelasi dengan log.
+             */
+            request_id?: string | null;
+            /**
+             * Details
+             * @description Rincian validasi.
+             */
+            details?: components["schemas"]["ErrorDetail"][] | null;
+        };
+        /** HTTPValidationError */
+        HTTPValidationError: {
+            /** Detail */
+            detail?: components["schemas"]["ValidationError"][];
+        };
+        /** Health */
+        Health: {
+            /**
+             * Status
+             * @description Status ringkas.
+             * @example ok
+             */
+            status: string;
+            /**
+             * Version
+             * @description Versi aplikasi.
+             * @example 0.1.0
+             */
+            version: string;
+        };
+        /**
+         * JabatanCreate
+         * @description Payload pembuatan jabatan.
+         */
+        JabatanCreate: {
+            /**
+             * Kode
+             * @description Kode jabatan (unik).
+             * @example KS-001
+             */
+            kode: string;
+            /**
+             * Nama
+             * @description Nama jabatan.
+             * @example Kepala Sekolah
+             */
+            nama: string;
+            /**
+             * Jenis
+             * @description Jenis jabatan.
+             * @example struktural
+             * @enum {string}
+             */
+            jenis: "struktural" | "fungsional" | "teknisi";
+            /**
+             * Unit Kerja Id
+             * @description ID unit kerja / sekolah tempat jabatan ini berada.
+             * @example skl_a1b2c3d4
+             */
+            unit_kerja_id?: string | null;
+            /**
+             * Deskripsi
+             * @description Deskripsi singkat jabatan.
+             */
+            deskripsi?: string | null;
+            /**
+             * Aktif
+             * @description Status aktif jabatan.
+             * @default true
+             */
+            aktif: boolean;
+        };
+        /**
+         * JabatanRead
+         * @description Representasi jabatan yang dikembalikan API.
+         */
+        JabatanRead: {
+            /**
+             * Id
+             * @description ID unik jabatan.
+             * @example jbt_a1b2c3d4
+             */
+            id: string;
+            /**
+             * Kode
+             * @description Kode jabatan.
+             * @example KS-001
+             */
+            kode: string;
+            /**
+             * Nama
+             * @description Nama jabatan.
+             * @example Kepala Sekolah
+             */
+            nama: string;
+            /**
+             * Jenis
+             * @description Jenis jabatan.
+             * @example struktural
+             * @enum {string}
+             */
+            jenis: "struktural" | "fungsional" | "teknisi";
+            /**
+             * Unit Kerja Id
+             * @description ID unit kerja.
+             */
+            unit_kerja_id?: string | null;
+            /**
+             * Deskripsi
+             * @description Deskripsi jabatan.
+             */
+            deskripsi?: string | null;
+            /**
+             * Aktif
+             * @description Status aktif.
+             */
+            aktif: boolean;
+            /**
+             * Created At
+             * Format: date-time
+             * @description Waktu pembuatan (UTC, ISO-8601).
+             */
+            created_at: string;
+        };
+        /**
+         * JabatanUpdate
+         * @description Payload pembaruan sebagian jabatan.
+         */
+        JabatanUpdate: {
+            /**
+             * Kode
+             * @description Kode baru.
+             */
+            kode?: string | null;
+            /**
+             * Nama
+             * @description Nama baru.
+             */
+            nama?: string | null;
+            /**
+             * Jenis
+             * @description Jenis baru.
+             */
+            jenis?: ("struktural" | "fungsional" | "teknisi") | null;
+            /**
+             * Unit Kerja Id
+             * @description ID unit kerja baru.
+             */
+            unit_kerja_id?: string | null;
+            /**
+             * Deskripsi
+             * @description Deskripsi baru.
+             */
+            deskripsi?: string | null;
+            /**
+             * Aktif
+             * @description Status aktif baru.
+             */
+            aktif?: boolean | null;
+        };
+        /**
+         * JenjangPendidikanCreate
+         * @description Payload pembuatan jenjang pendidikan.
+         */
+        JenjangPendidikanCreate: {
+            /**
+             * Kode
+             * @description Kode jenjang (unik), mis. SD, SMP, SMA, SMK.
+             * @example SD
+             */
+            kode: string;
+            /**
+             * Nama
+             * @description Nama lengkap jenjang pendidikan.
+             * @example Sekolah Dasar
+             */
+            nama: string;
+            /**
+             * Urutan
+             * @description Urutan tampilan (makin kecil makin atas).
+             * @default 0
+             * @example 3
+             */
+            urutan: number;
+            /**
+             * Aktif
+             * @description Status aktif jenjang.
+             * @default true
+             */
+            aktif: boolean;
+        };
+        /**
+         * JenjangPendidikanRead
+         * @description Representasi jenjang pendidikan yang dikembalikan API.
+         */
+        JenjangPendidikanRead: {
+            /**
+             * Id
+             * @description ID unik jenjang pendidikan.
+             * @example jp_a1b2c3d4
+             */
+            id: string;
+            /**
+             * Kode
+             * @description Kode jenjang.
+             * @example SD
+             */
+            kode: string;
+            /**
+             * Nama
+             * @description Nama lengkap.
+             * @example Sekolah Dasar
+             */
+            nama: string;
+            /**
+             * Urutan
+             * @description Urutan tampilan.
+             * @example 3
+             */
+            urutan: number;
+            /**
+             * Aktif
+             * @description Status aktif.
+             */
+            aktif: boolean;
+        };
+        /**
+         * JenjangPendidikanUpdate
+         * @description Payload pembaruan sebagian jenjang pendidikan.
+         */
+        JenjangPendidikanUpdate: {
+            /**
+             * Kode
+             * @description Kode baru.
+             */
+            kode?: string | null;
+            /**
+             * Nama
+             * @description Nama baru.
+             */
+            nama?: string | null;
+            /**
+             * Urutan
+             * @description Urutan baru.
+             */
+            urutan?: number | null;
+            /**
+             * Aktif
+             * @description Status aktif baru.
+             */
+            aktif?: boolean | null;
+        };
+        /**
+         * MataPelajaranCreate
+         * @description Payload pembuatan mata pelajaran.
+         */
+        MataPelajaranCreate: {
+            /**
+             * Kode
+             * @description Kode mata pelajaran (unik).
+             * @example MTK
+             */
+            kode: string;
+            /**
+             * Nama
+             * @description Nama mata pelajaran.
+             * @example Matematika
+             */
+            nama: string;
+            /**
+             * Kelompok
+             * @description Kelompok mata pelajaran.
+             * @example umum
+             * @enum {string}
+             */
+            kelompok: "umum" | "peminatan" | "muatan_lokal" | "kejuruan";
+            /**
+             * Deskripsi
+             * @description Deskripsi singkat.
+             */
+            deskripsi?: string | null;
+            /**
+             * Aktif
+             * @description Status aktif mata pelajaran.
+             * @default true
+             */
+            aktif: boolean;
+        };
+        /**
+         * MataPelajaranRead
+         * @description Representasi mata pelajaran yang dikembalikan API.
+         */
+        MataPelajaranRead: {
+            /**
+             * Id
+             * @description ID unik mata pelajaran.
+             * @example mp_a1b2c3d4
+             */
+            id: string;
+            /**
+             * Kode
+             * @description Kode mata pelajaran.
+             * @example MTK
+             */
+            kode: string;
+            /**
+             * Nama
+             * @description Nama mata pelajaran.
+             * @example Matematika
+             */
+            nama: string;
+            /**
+             * Kelompok
+             * @description Kelompok mata pelajaran.
+             * @example umum
+             * @enum {string}
+             */
+            kelompok: "umum" | "peminatan" | "muatan_lokal" | "kejuruan";
+            /**
+             * Deskripsi
+             * @description Deskripsi singkat.
+             */
+            deskripsi?: string | null;
+            /**
+             * Aktif
+             * @description Status aktif.
+             */
+            aktif: boolean;
+        };
+        /**
+         * MataPelajaranUpdate
+         * @description Payload pembaruan sebagian mata pelajaran.
+         */
+        MataPelajaranUpdate: {
+            /**
+             * Kode
+             * @description Kode baru.
+             */
+            kode?: string | null;
+            /**
+             * Nama
+             * @description Nama baru.
+             */
+            nama?: string | null;
+            /**
+             * Kelompok
+             * @description Kelompok baru.
+             */
+            kelompok?: ("umum" | "peminatan" | "muatan_lokal" | "kejuruan") | null;
+            /**
+             * Deskripsi
+             * @description Deskripsi baru.
+             */
+            deskripsi?: string | null;
+            /**
+             * Aktif
+             * @description Status aktif baru.
+             */
+            aktif?: boolean | null;
+        };
+        /** Page[DcsSesiRead] */
+        Page_DcsSesiRead_: {
+            /**
+             * Items
+             * @description Item pada halaman ini.
+             */
+            items: components["schemas"]["DcsSesiRead"][];
+            /**
+             * Total
+             * @description Total item tersedia.
+             * @example 42
+             */
+            total: number;
+            /**
+             * Limit
+             * @description Maksimum item per halaman.
+             * @example 20
+             */
+            limit: number;
+            /**
+             * Offset
+             * @description Jumlah item yang dilewati.
+             * @example 0
+             */
+            offset: number;
+        };
+        /** Page[JabatanRead] */
+        Page_JabatanRead_: {
+            /**
+             * Items
+             * @description Item pada halaman ini.
+             */
+            items: components["schemas"]["JabatanRead"][];
+            /**
+             * Total
+             * @description Total item tersedia.
+             * @example 42
+             */
+            total: number;
+            /**
+             * Limit
+             * @description Maksimum item per halaman.
+             * @example 20
+             */
+            limit: number;
+            /**
+             * Offset
+             * @description Jumlah item yang dilewati.
+             * @example 0
+             */
+            offset: number;
+        };
+        /** Page[JenjangPendidikanRead] */
+        Page_JenjangPendidikanRead_: {
+            /**
+             * Items
+             * @description Item pada halaman ini.
+             */
+            items: components["schemas"]["JenjangPendidikanRead"][];
+            /**
+             * Total
+             * @description Total item tersedia.
+             * @example 42
+             */
+            total: number;
+            /**
+             * Limit
+             * @description Maksimum item per halaman.
+             * @example 20
+             */
+            limit: number;
+            /**
+             * Offset
+             * @description Jumlah item yang dilewati.
+             * @example 0
+             */
+            offset: number;
+        };
+        /** Page[MataPelajaranRead] */
+        Page_MataPelajaranRead_: {
+            /**
+             * Items
+             * @description Item pada halaman ini.
+             */
+            items: components["schemas"]["MataPelajaranRead"][];
+            /**
+             * Total
+             * @description Total item tersedia.
+             * @example 42
+             */
+            total: number;
+            /**
+             * Limit
+             * @description Maksimum item per halaman.
+             * @example 20
+             */
+            limit: number;
+            /**
+             * Offset
+             * @description Jumlah item yang dilewati.
+             * @example 0
+             */
+            offset: number;
+        };
+        /** Page[PartisipanRead] */
+        Page_PartisipanRead_: {
+            /**
+             * Items
+             * @description Item pada halaman ini.
+             */
+            items: components["schemas"]["PartisipanRead"][];
+            /**
+             * Total
+             * @description Total item tersedia.
+             * @example 42
+             */
+            total: number;
+            /**
+             * Limit
+             * @description Maksimum item per halaman.
+             * @example 20
+             */
+            limit: number;
+            /**
+             * Offset
+             * @description Jumlah item yang dilewati.
+             * @example 0
+             */
+            offset: number;
+        };
+        /** Page[SMEPanelRead] */
+        Page_SMEPanelRead_: {
+            /**
+             * Items
+             * @description Item pada halaman ini.
+             */
+            items: components["schemas"]["SMEPanelRead"][];
+            /**
+             * Total
+             * @description Total item tersedia.
+             * @example 42
+             */
+            total: number;
+            /**
+             * Limit
+             * @description Maksimum item per halaman.
+             * @example 20
+             */
+            limit: number;
+            /**
+             * Offset
+             * @description Jumlah item yang dilewati.
+             * @example 0
+             */
+            offset: number;
+        };
+        /** Page[SekolahRead] */
+        Page_SekolahRead_: {
+            /**
+             * Items
+             * @description Item pada halaman ini.
+             */
+            items: components["schemas"]["SekolahRead"][];
+            /**
+             * Total
+             * @description Total item tersedia.
+             * @example 42
+             */
+            total: number;
+            /**
+             * Limit
+             * @description Maksimum item per halaman.
+             * @example 20
+             */
+            limit: number;
+            /**
+             * Offset
+             * @description Jumlah item yang dilewati.
+             * @example 0
+             */
+            offset: number;
+        };
+        /** Page[TiSesiRead] */
+        Page_TiSesiRead_: {
+            /**
+             * Items
+             * @description Item pada halaman ini.
+             */
+            items: components["schemas"]["TiSesiRead"][];
+            /**
+             * Total
+             * @description Total item tersedia.
+             * @example 42
+             */
+            total: number;
+            /**
+             * Limit
+             * @description Maksimum item per halaman.
+             * @example 20
+             */
+            limit: number;
+            /**
+             * Offset
+             * @description Jumlah item yang dilewati.
+             * @example 0
+             */
+            offset: number;
+        };
+        /** Page[WcpSesiRead] */
+        Page_WcpSesiRead_: {
+            /**
+             * Items
+             * @description Item pada halaman ini.
+             */
+            items: components["schemas"]["WcpSesiRead"][];
+            /**
+             * Total
+             * @description Total item tersedia.
+             * @example 42
+             */
+            total: number;
+            /**
+             * Limit
+             * @description Maksimum item per halaman.
+             * @example 20
+             */
+            limit: number;
+            /**
+             * Offset
+             * @description Jumlah item yang dilewati.
+             * @example 0
+             */
+            offset: number;
+        };
+        /**
+         * PartisipanCreate
+         * @description Payload pembuatan partisipan.
+         */
+        PartisipanCreate: {
+            /**
+             * Nama
+             * @description Nama lengkap partisipan.
+             * @example Siti Rahayu, S.Pd.
+             */
+            nama: string;
+            /**
+             * Email
+             * @description Alamat email partisipan — digunakan untuk akun Authentik.
+             * @example siti.rahayu@sekolah.id
+             */
+            email: string;
+            /**
+             * Sekolah Id
+             * @description ID sekolah / satuan pendidikan tempat partisipan bertugas.
+             * @example skl_a1b2c3d4
+             */
+            sekolah_id: string;
+            /**
+             * Jabatan Utama Id
+             * @description ID jabatan utama partisipan.
+             * @example jbt_a1b2c3d4
+             */
+            jabatan_utama_id: string;
+            /**
+             * Jabatan Tambahan Ids
+             * @description Daftar ID jabatan tambahan (boleh kosong).
+             * @example [
+             *       "jbt_b2c3d4e5",
+             *       "jbt_c3d4e5f6"
+             *     ]
+             */
+            jabatan_tambahan_ids?: string[];
+            /**
+             * Masa Kerja Tahun
+             * @description Masa kerja dalam tahun.
+             * @example 5
+             */
+            masa_kerja_tahun: number;
+            /**
+             * Masa Kerja Bulan
+             * @description Sisa masa kerja dalam bulan (0–11).
+             * @default 0
+             * @example 3
+             */
+            masa_kerja_bulan: number;
+            /**
+             * Mata Pelajaran Utama Id
+             * @description ID mata pelajaran utama (opsional, relevan untuk guru).
+             * @example mp_a1b2c3d4
+             */
+            mata_pelajaran_utama_id?: string | null;
+            /**
+             * Aktif
+             * @description Status aktif partisipan.
+             * @default true
+             */
+            aktif: boolean;
+        };
+        /**
+         * PartisipanRead
+         * @description Representasi partisipan yang dikembalikan API.
+         */
+        PartisipanRead: {
+            /**
+             * Id
+             * @description ID unik partisipan.
+             * @example par_a1b2c3d4
+             */
+            id: string;
+            /**
+             * Nama
+             * @description Nama lengkap partisipan.
+             * @example Siti Rahayu, S.Pd.
+             */
+            nama: string;
+            /**
+             * Email
+             * @description Alamat email partisipan.
+             * @example siti.rahayu@sekolah.id
+             */
+            email: string;
+            /**
+             * Authentik User Id
+             * @description ID pengguna di Authentik (pk). None bila provisioning belum dikonfigurasi.
+             * @example 42
+             */
+            authentik_user_id?: string | null;
+            /**
+             * Sekolah Id
+             * @description ID sekolah tempat bertugas.
+             */
+            sekolah_id: string;
+            /**
+             * Jabatan Utama Id
+             * @description ID jabatan utama.
+             */
+            jabatan_utama_id: string;
+            /**
+             * Jabatan Tambahan Ids
+             * @description Daftar ID jabatan tambahan.
+             */
+            jabatan_tambahan_ids: string[];
+            /**
+             * Masa Kerja Tahun
+             * @description Masa kerja dalam tahun.
+             */
+            masa_kerja_tahun: number;
+            /**
+             * Masa Kerja Bulan
+             * @description Sisa masa kerja dalam bulan (0–11).
+             */
+            masa_kerja_bulan: number;
+            /**
+             * Mata Pelajaran Utama Id
+             * @description ID mata pelajaran utama (opsional).
+             */
+            mata_pelajaran_utama_id?: string | null;
+            /**
+             * Aktif
+             * @description Status aktif.
+             */
+            aktif: boolean;
+            /**
+             * Created At
+             * Format: date-time
+             * @description Waktu pembuatan (UTC, ISO-8601).
+             */
+            created_at: string;
+        };
+        /**
+         * PartisipanUpdate
+         * @description Payload pembaruan sebagian partisipan.
+         */
+        PartisipanUpdate: {
+            /**
+             * Nama
+             * @description Nama baru.
+             */
+            nama?: string | null;
+            /**
+             * Email
+             * @description Alamat email baru.
+             */
+            email?: string | null;
+            /**
+             * Sekolah Id
+             * @description ID sekolah baru.
+             */
+            sekolah_id?: string | null;
+            /**
+             * Jabatan Utama Id
+             * @description ID jabatan utama baru.
+             */
+            jabatan_utama_id?: string | null;
+            /**
+             * Jabatan Tambahan Ids
+             * @description Daftar ID jabatan tambahan baru (menggantikan seluruhnya).
+             */
+            jabatan_tambahan_ids?: string[] | null;
+            /**
+             * Masa Kerja Tahun
+             * @description Masa kerja tahun baru.
+             */
+            masa_kerja_tahun?: number | null;
+            /**
+             * Masa Kerja Bulan
+             * @description Masa kerja bulan baru (0–11).
+             */
+            masa_kerja_bulan?: number | null;
+            /**
+             * Mata Pelajaran Utama Id
+             * @description ID mata pelajaran utama baru.
+             */
+            mata_pelajaran_utama_id?: string | null;
+            /**
+             * Aktif
+             * @description Status aktif baru.
+             */
+            aktif?: boolean | null;
+        };
+        /**
+         * Principal
+         * @description Identitas yang sudah terverifikasi dari token.
+         */
+        Principal: {
+            /**
+             * Subject
+             * @description Subject (sub) token.
+             * @example user-123
+             */
+            subject: string;
+            /**
+             * Username
+             * @description Nama pengguna.
+             */
+            username?: string | null;
+            /**
+             * Groups
+             * @description Grup Authentik.
+             */
+            groups?: string[];
+            /**
+             * Scopes
+             * @description Scope/izin pada token.
+             */
+            scopes?: string[];
+        };
+        /**
+         * SMEPanelAnggotaAdd
+         * @description Payload penambahan anggota ke SME panel.
+         */
+        SMEPanelAnggotaAdd: {
+            /**
+             * Partisipan Id
+             * @description ID partisipan yang akan ditambahkan ke panel.
+             * @example par_a1b2c3d4
+             */
+            partisipan_id: string;
+        };
+        /**
+         * SMEPanelCreate
+         * @description Payload pembuatan SME panel.
+         */
+        SMEPanelCreate: {
+            /**
+             * Jabatan Id
+             * @description ID jabatan yang menjadi dasar panel SME ini.
+             * @example jbt_a1b2c3d4
+             */
+            jabatan_id: string;
+            /**
+             * Aktif
+             * @description Status aktif panel.
+             * @default true
+             */
+            aktif: boolean;
+        };
+        /**
+         * SMEPanelRead
+         * @description Representasi SME panel yang dikembalikan API.
+         */
+        SMEPanelRead: {
+            /**
+             * Id
+             * @description ID unik SME panel.
+             * @example sme_a1b2c3d4
+             */
+            id: string;
+            /**
+             * Jabatan Id
+             * @description ID jabatan yang menjadi dasar panel ini.
+             */
+            jabatan_id: string;
+            /**
+             * Partisipan Ids
+             * @description Daftar ID partisipan anggota panel.
+             */
+            partisipan_ids?: string[];
+            /**
+             * Koordinator Id
+             * @description ID partisipan yang menjadi koordinator panel. Harus merupakan anggota panel.
+             */
+            koordinator_id?: string | null;
+            /**
+             * Aktif
+             * @description Status aktif.
+             */
+            aktif: boolean;
+            /**
+             * Created At
+             * Format: date-time
+             * @description Waktu pembuatan (UTC, ISO-8601).
+             */
+            created_at: string;
+        };
+        /**
+         * SMEPanelUpdate
+         * @description Payload pembaruan sebagian SME panel.
+         */
+        SMEPanelUpdate: {
+            /**
+             * Aktif
+             * @description Status aktif baru.
+             */
+            aktif?: boolean | null;
+            /**
+             * Koordinator Id
+             * @description ID partisipan yang menjadi koordinator panel. Harus anggota panel. Kirim null untuk menghapus koordinator.
+             */
+            koordinator_id?: string | null;
+        };
+        /**
+         * SearchRequest
+         * @example {
+         *       "domain": [
+         *         [
+         *           "nama",
+         *           "ilike",
+         *           "dasar"
+         *         ]
+         *       ],
+         *       "limit": 20,
+         *       "offset": 0,
+         *       "order": [
+         *         [
+         *           "nama",
+         *           "asc"
+         *         ]
+         *       ]
+         *     }
+         */
+        SearchRequest: {
+            /**
+             * Domain
+             * @description Kriteria pencarian bergaya domain Odoo (notasi prefix). Maks 50 term.
+             */
+            domain?: (("&" | "|" | "!") | [
+                string,
+                "=" | "!=" | ">" | ">=" | "<" | "<=" | "like" | "ilike" | "not like" | "not ilike" | "=like" | "=ilike" | "in" | "not in",
+                unknown
+            ])[];
+            /**
+             * Order
+             * @description Urutan hasil: daftar (field, 'asc'|'desc'). Maks 10 kunci.
+             */
+            order?: [
+                string,
+                "asc" | "desc"
+            ][];
+            /**
+             * Limit
+             * @description Maks item per halaman.
+             * @default 20
+             */
+            limit: number;
+            /**
+             * Offset
+             * @description Jumlah item yang dilewati.
+             * @default 0
+             */
+            offset: number;
+        };
+        /**
+         * SekolahCreate
+         * @description Payload pembuatan sekolah / satuan pendidikan.
+         */
+        SekolahCreate: {
+            /**
+             * Nama
+             * @description Nama sekolah.
+             * @example SD Negeri 1 Bandung
+             */
+            nama: string;
+            /**
+             * Npsn
+             * @description Nomor Pokok Sekolah Nasional (8 digit angka).
+             * @example 20201234
+             */
+            npsn?: string | null;
+            /**
+             * Jenjang Pendidikan Id
+             * @description ID jenjang pendidikan.
+             * @example jp_a1b2c3d4
+             */
+            jenjang_pendidikan_id: string;
+            /**
+             * Kota
+             * @description Kota lokasi sekolah.
+             * @example Bandung
+             */
+            kota?: string | null;
+            /**
+             * Provinsi
+             * @description Provinsi lokasi sekolah.
+             * @example Jawa Barat
+             */
+            provinsi?: string | null;
+            /**
+             * Aktif
+             * @description Status aktif sekolah.
+             * @default true
+             */
+            aktif: boolean;
+        };
+        /**
+         * SekolahRead
+         * @description Representasi sekolah yang dikembalikan API.
+         */
+        SekolahRead: {
+            /**
+             * Id
+             * @description ID unik sekolah.
+             * @example skl_a1b2c3d4
+             */
+            id: string;
+            /**
+             * Nama
+             * @description Nama sekolah.
+             * @example SD Negeri 1 Bandung
+             */
+            nama: string;
+            /**
+             * Npsn
+             * @description Nomor Pokok Sekolah Nasional.
+             */
+            npsn?: string | null;
+            /**
+             * Jenjang Pendidikan Id
+             * @description ID jenjang pendidikan.
+             */
+            jenjang_pendidikan_id: string;
+            /**
+             * Kota
+             * @description Kota.
+             */
+            kota?: string | null;
+            /**
+             * Provinsi
+             * @description Provinsi.
+             */
+            provinsi?: string | null;
+            /**
+             * Aktif
+             * @description Status aktif.
+             */
+            aktif: boolean;
+            /**
+             * Created At
+             * Format: date-time
+             * @description Waktu pembuatan (UTC, ISO-8601).
+             */
+            created_at: string;
+        };
+        /**
+         * SekolahUpdate
+         * @description Payload pembaruan sebagian sekolah.
+         */
+        SekolahUpdate: {
+            /**
+             * Nama
+             * @description Nama baru.
+             */
+            nama?: string | null;
+            /**
+             * Npsn
+             * @description NPSN baru.
+             */
+            npsn?: string | null;
+            /**
+             * Jenjang Pendidikan Id
+             * @description ID jenjang pendidikan baru.
+             */
+            jenjang_pendidikan_id?: string | null;
+            /**
+             * Kota
+             * @description Kota baru.
+             */
+            kota?: string | null;
+            /**
+             * Provinsi
+             * @description Provinsi baru.
+             */
+            provinsi?: string | null;
+            /**
+             * Aktif
+             * @description Status aktif baru.
+             */
+            aktif?: boolean | null;
+        };
+        /**
+         * TiCatalogRead
+         * @description Satu item catalog task yang dikembalikan API.
+         */
+        TiCatalogRead: {
+            /**
+             * Kode
+             * @description Kode task deterministik.
+             * @example TIf0b59714
+             */
+            kode: string;
+            /**
+             * Unit
+             * @description Unit/jenjang (TK/SD/SMP/SMA).
+             * @example TK
+             */
+            unit: string;
+            /**
+             * Kategori Jabatan
+             * @description Kategori jabatan.
+             * @example Kepala Sekolah
+             */
+            kategori_jabatan: string;
+            /**
+             * Tugas Pokok
+             * @description Tugas pokok (klaster).
+             * @example Pengelolaan SDM
+             */
+            tugas_pokok: string;
+            /**
+             * Detil Tugas
+             * @description Detil tugas (kelompok).
+             * @example Mengevaluasi Kinerja Karyawan
+             */
+            detil_tugas: string;
+            /**
+             * Uraian Tugas
+             * @description Uraian tugas (task statement).
+             * @example Menyusun evaluasi karyawan
+             */
+            uraian_tugas: string;
+            /**
+             * Urutan
+             * @description Urutan dalam kombinasi unit×kategori.
+             * @example 1
+             */
+            urutan: number;
+        };
+        /**
+         * TiDetailItem
+         * @description Field detail CalHR untuk satu task relevan.
+         */
+        TiDetailItem: {
+            /**
+             * Task Kode
+             * @description Kode task (harus ada di himpunan terpilih).
+             */
+            task_kode: string;
+            /**
+             * Sumber Bukti
+             * @description Formal/Aktual/Keduanya.
+             * @enum {string}
+             */
+            sumber_bukti: "Formal" | "Aktual" | "Keduanya";
+            /**
+             * Kondisi
+             * @description Baseline/Peak/Both.
+             * @enum {string}
+             */
+            kondisi: "Baseline" | "Peak" | "Both";
+            /**
+             * Frekuensi Teks
+             * @description Frekuensi (Harian/Mingguan/Bulanan/dst).
+             */
+            frekuensi_teks: string;
+            /**
+             * Durasi Per Kali
+             * @description Durasi per pelaksanaan (menit).
+             */
+            durasi_per_kali: number;
+            /**
+             * Jam Per Minggu
+             * @description Estimasi jam per minggu.
+             */
+            jam_per_minggu: number;
+            /**
+             * Peak4W Hours
+             * @description Jam pada 4 minggu peak.
+             * @default 0
+             */
+            peak4w_hours: number;
+            /**
+             * Ai Mode
+             * @description Human-led/Co-Pilot/AI-assisted.
+             * @enum {string}
+             */
+            ai_mode: "Human-led" | "Co-Pilot" | "AI-assisted";
+            /**
+             * Va Type
+             * @description VA-Core/VA-Enable/NVA-Residual.
+             * @enum {string}
+             */
+            va_type: "VA-Core" | "VA-Enable" | "NVA-Residual";
+            /**
+             * Dcs Flag
+             * @description True bila ada risiko DCS.
+             * @default false
+             */
+            dcs_flag: boolean;
+            /**
+             * Catatan
+             * @description Catatan ambiguitas.
+             */
+            catatan?: string | null;
+        };
+        /**
+         * TiDetailRead
+         * @description Representasi satu entri detail Tahap 2.
+         */
+        TiDetailRead: {
+            /**
+             * Id
+             * @description ID entri detail.
+             * @example tdet_a1b2c3d4
+             */
+            id: string;
+            /**
+             * Responden Id
+             * @description ID responden.
+             */
+            responden_id: string;
+            /**
+             * Sesi Id
+             * @description ID sesi.
+             */
+            sesi_id: string;
+            /**
+             * Task Kode
+             * @description Kode task.
+             */
+            task_kode: string;
+            /**
+             * Sumber Bukti
+             * @enum {string}
+             */
+            sumber_bukti: "Formal" | "Aktual" | "Keduanya";
+            /**
+             * Kondisi
+             * @enum {string}
+             */
+            kondisi: "Baseline" | "Peak" | "Both";
+            /** Frekuensi Teks */
+            frekuensi_teks: string;
+            /** Durasi Per Kali */
+            durasi_per_kali: number;
+            /** Jam Per Minggu */
+            jam_per_minggu: number;
+            /** Peak4W Hours */
+            peak4w_hours: number;
+            /**
+             * Ai Mode
+             * @enum {string}
+             */
+            ai_mode: "Human-led" | "Co-Pilot" | "AI-assisted";
+            /**
+             * Va Type
+             * @enum {string}
+             */
+            va_type: "VA-Core" | "VA-Enable" | "NVA-Residual";
+            /** Dcs Flag */
+            dcs_flag: boolean;
+            /** Catatan */
+            catatan?: string | null;
+        };
+        /**
+         * TiDetailSubmit
+         * @description Payload submit detail Tahap 2 untuk satu responden.
+         *
+         *     Boleh subset dari himpunan terpilih (hanya task yang benar-benar dikerjakan responden),
+         *     tetapi setiap `task_kode` wajib termasuk himpunan terpilih sesi.
+         */
+        TiDetailSubmit: {
+            /**
+             * Detail
+             * @description Daftar entri detail, satu per task relevan.
+             */
+            detail: components["schemas"]["TiDetailItem"][];
+        };
+        /**
+         * TiHasilSesiRead
+         * @description Hasil analisis lengkap satu sesi Task Inventory.
+         */
+        TiHasilSesiRead: {
+            /**
+             * Sesi Id
+             * @description ID sesi.
+             */
+            sesi_id: string;
+            /**
+             * Unit
+             * @description Unit/jenjang.
+             */
+            unit: string;
+            /**
+             * Kategori Jabatan
+             * @description Kategori jabatan.
+             */
+            kategori_jabatan: string;
+            /**
+             * Periode
+             * @description Periode.
+             */
+            periode: string;
+            /**
+             * N Responden Tahap1
+             * @description Jumlah responden yang submit Tahap 1.
+             */
+            n_responden_tahap1: number;
+            /**
+             * N Responden Tahap3
+             * @description Jumlah responden yang submit Tahap 3 (detail).
+             */
+            n_responden_tahap3: number;
+            /**
+             * Jumlah Task Terpilih
+             * @description Jumlah task pada himpunan terpilih.
+             */
+            jumlah_task_terpilih: number;
+            /**
+             * Total Jam Per Minggu
+             * @description Total rata-rata jam/minggu seluruh task.
+             */
+            total_jam_per_minggu: number;
+            /**
+             * Total Jam Per Tahun
+             * @description Total rata-rata jam/tahun seluruh task.
+             */
+            total_jam_per_tahun: number;
+            /**
+             * Tasks
+             * @description Hasil agregasi per task.
+             */
+            tasks: components["schemas"]["TiHasilTaskRead"][];
+        };
+        /**
+         * TiHasilTaskRead
+         * @description Hasil agregasi satu task lintas responden (masukan ABK).
+         */
+        TiHasilTaskRead: {
+            /**
+             * Kode
+             * @description Kode task.
+             */
+            kode: string;
+            /**
+             * Tugas Pokok
+             * @description Tugas pokok.
+             */
+            tugas_pokok: string;
+            /**
+             * Detil Tugas
+             * @description Detil tugas.
+             */
+            detil_tugas: string;
+            /**
+             * Uraian Tugas
+             * @description Uraian tugas.
+             */
+            uraian_tugas: string;
+            /**
+             * N Relevan
+             * @description Jumlah partisipan yang menandai relevan (Tahap 1).
+             */
+            n_relevan: number;
+            /**
+             * Pct Relevan
+             * @description Persentase relevansi (terhadap submit Tahap 1).
+             */
+            pct_relevan: number;
+            /**
+             * N Detail
+             * @description Jumlah partisipan yang mengisi detail (Tahap 3).
+             */
+            n_detail: number;
+            /**
+             * Jam Per Minggu Mean
+             * @description Rata-rata jam/minggu antar responden.
+             */
+            jam_per_minggu_mean: number;
+            /**
+             * Jam Per Tahun Mean
+             * @description Rata-rata jam/tahun (jam/minggu × 45).
+             */
+            jam_per_tahun_mean: number;
+            /**
+             * Durasi Per Kali Mean
+             * @description Rata-rata durasi per pelaksanaan (menit).
+             */
+            durasi_per_kali_mean: number;
+            /**
+             * Peak4W Hours Mean
+             * @description Rata-rata jam pada 4 minggu peak.
+             */
+            peak4w_hours_mean: number;
+            /**
+             * Ai Mode Dist
+             * @description Distribusi AI_Mode.
+             */
+            ai_mode_dist: {
+                [key: string]: number;
+            };
+            /**
+             * Va Type Dist
+             * @description Distribusi VA_Type.
+             */
+            va_type_dist: {
+                [key: string]: number;
+            };
+            /**
+             * Dcs Flag Count
+             * @description Jumlah responden yang menandai risiko DCS.
+             */
+            dcs_flag_count: number;
+        };
+        /**
+         * TiKombinasiRead
+         * @description Satu kombinasi (unit × kategori jabatan) beserta jumlah task.
+         */
+        TiKombinasiRead: {
+            /**
+             * Unit
+             * @description Unit/jenjang.
+             * @example TK
+             */
+            unit: string;
+            /**
+             * Kategori Jabatan
+             * @description Kategori jabatan.
+             * @example Kepala Sekolah
+             */
+            kategori_jabatan: string;
+            /**
+             * Jumlah Task
+             * @description Jumlah task pada kombinasi ini.
+             * @example 42
+             */
+            jumlah_task: number;
+        };
+        /**
+         * TiKuesionerItemRead
+         * @description Responden Task Inventory diperkaya info sesi — dipakai /kuesioner/saya.
+         */
+        TiKuesionerItemRead: {
+            /**
+             * Id
+             * @description ID responden.
+             * @example trsp_a1b2c3d4
+             */
+            id: string;
+            /**
+             * Sesi Id
+             * @description ID sesi Task Inventory.
+             * @example tises_a1b2c3d4
+             */
+            sesi_id: string;
+            /**
+             * Tahap1 Submit
+             * @description True jika seleksi Tahap 1 sudah disubmit.
+             */
+            tahap1_submit: boolean;
+            /**
+             * Tahap1 Submitted At
+             * @description Waktu submit Tahap 1.
+             */
+            tahap1_submitted_at?: string | null;
+            /**
+             * Tahap3 Submit
+             * @description True jika detail Tahap 3 sudah disubmit.
+             */
+            tahap3_submit: boolean;
+            /**
+             * Tahap3 Submitted At
+             * @description Waktu submit Tahap 3.
+             */
+            tahap3_submitted_at?: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             * @description Waktu pendaftaran.
+             */
+            created_at: string;
+            /**
+             * Sesi Status
+             * @description Status sesi: DRAFT | TAHAP1 | TAHAP2 | TAHAP3 | CLOSED | ANALYZED.
+             * @example TAHAP1
+             */
+            sesi_status: string;
+            /**
+             * Sesi Unit
+             * @description Unit/jenjang yang dikaji.
+             * @example TK
+             */
+            sesi_unit: string;
+            /**
+             * Sesi Kategori Jabatan
+             * @description Kategori jabatan yang dikaji.
+             * @example Kepala Sekolah
+             */
+            sesi_kategori_jabatan: string;
+            /**
+             * Sesi Periode
+             * @description Periode sesi (YYYY-MM).
+             * @example 2026-06
+             */
+            sesi_periode: string;
+        };
+        /**
+         * TiRespondenCreate
+         * @description Payload pendaftaran responden ke sesi Task Inventory.
+         */
+        TiRespondenCreate: {
+            /**
+             * Nama
+             * @description Nama responden (opsional, boleh anonim).
+             * @example Budi Santoso, S.Pd.
+             */
+            nama?: string | null;
+            /**
+             * Partisipan Id
+             * @description ID partisipan terhubung (opsional, untuk fitur 'Kuesioner Saya').
+             * @example p_a1b2c3d4
+             */
+            partisipan_id?: string | null;
+        };
+        /**
+         * TiRespondenRead
+         * @description Representasi responden yang dikembalikan API.
+         */
+        TiRespondenRead: {
+            /**
+             * Id
+             * @description ID responden.
+             * @example trsp_a1b2c3d4
+             */
+            id: string;
+            /**
+             * Sesi Id
+             * @description ID sesi induk.
+             * @example tises_a1b2c3d4
+             */
+            sesi_id: string;
+            /**
+             * Nama
+             * @description Nama responden.
+             */
+            nama?: string | null;
+            /**
+             * Partisipan Id
+             * @description ID partisipan terhubung.
+             */
+            partisipan_id?: string | null;
+            /**
+             * Tahap1 Submit
+             * @description True jika seleksi Tahap 1 sudah disubmit.
+             */
+            tahap1_submit: boolean;
+            /**
+             * Tahap1 Submitted At
+             * @description Waktu submit Tahap 1.
+             */
+            tahap1_submitted_at?: string | null;
+            /**
+             * Tahap3 Submit
+             * @description True jika detail Tahap 3 sudah disubmit.
+             */
+            tahap3_submit: boolean;
+            /**
+             * Tahap3 Submitted At
+             * @description Waktu submit Tahap 3.
+             */
+            tahap3_submitted_at?: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             * @description Waktu pendaftaran (UTC, ISO-8601).
+             */
+            created_at: string;
+        };
+        /**
+         * TiSeleksiRead
+         * @description Representasi seleksi Tahap 1 satu responden.
+         */
+        TiSeleksiRead: {
+            /**
+             * Responden Id
+             * @description ID responden.
+             * @example trsp_a1b2c3d4
+             */
+            responden_id: string;
+            /**
+             * Sesi Id
+             * @description ID sesi.
+             * @example tises_a1b2c3d4
+             */
+            sesi_id: string;
+            /**
+             * Task Kode
+             * @description Daftar kode task yang dipilih relevan.
+             */
+            task_kode: string[];
+            /**
+             * Submitted At
+             * @description Waktu submit.
+             */
+            submitted_at?: string | null;
+        };
+        /**
+         * TiSeleksiSubmit
+         * @description Payload submit seleksi relevansi Tahap 1: daftar kode task yang relevan.
+         */
+        TiSeleksiSubmit: {
+            /**
+             * Task Kode
+             * @description Daftar kode task yang relevan untuk responden ini (≥1).
+             * @example [
+             *       "TIf0b59714",
+             *       "TIa1b2c3d4"
+             *     ]
+             */
+            task_kode: string[];
+        };
+        /**
+         * TiSesiCreate
+         * @description Payload pembuatan sesi Task Inventory.
+         */
+        TiSesiCreate: {
+            /**
+             * Unit
+             * @description Unit/jenjang yang dikaji (TK/SD/SMP/SMA).
+             * @example TK
+             */
+            unit: string;
+            /**
+             * Kategori Jabatan
+             * @description Kategori jabatan yang dikaji.
+             * @example Kepala Sekolah
+             */
+            kategori_jabatan: string;
+            /**
+             * Periode
+             * @description Periode kajian format YYYY-MM.
+             * @example 2026-06
+             */
+            periode: string;
+            /**
+             * Min Responden
+             * @description Jumlah minimum responden.
+             * @default 3
+             * @example 3
+             */
+            min_responden: number;
+            /**
+             * Max Responden
+             * @description Jumlah maksimum responden.
+             * @default 10
+             * @example 10
+             */
+            max_responden: number;
+            /**
+             * Koordinator Id
+             * @description ID partisipan yang menjadi koordinator SME panel (Tahap 2).
+             * @example p_a1b2c3d4
+             */
+            koordinator_id?: string | null;
+            /**
+             * Catatan
+             * @description Catatan opsional untuk sesi ini.
+             */
+            catatan?: string | null;
+        };
+        /**
+         * TiSesiRead
+         * @description Representasi sesi Task Inventory yang dikembalikan API.
+         */
+        TiSesiRead: {
+            /**
+             * Id
+             * @description ID sesi.
+             * @example tises_a1b2c3d4
+             */
+            id: string;
+            /**
+             * Unit
+             * @description Unit/jenjang.
+             * @example TK
+             */
+            unit: string;
+            /**
+             * Kategori Jabatan
+             * @description Kategori jabatan.
+             * @example Kepala Sekolah
+             */
+            kategori_jabatan: string;
+            /**
+             * Periode
+             * @description Periode kajian (YYYY-MM).
+             * @example 2026-06
+             */
+            periode: string;
+            /**
+             * Status
+             * @description Status sesi.
+             * @example DRAFT
+             * @enum {string}
+             */
+            status: "DRAFT" | "TAHAP1" | "TAHAP2" | "TAHAP3" | "CLOSED" | "ANALYZED";
+            /**
+             * Min Responden
+             * @description Minimum responden.
+             */
+            min_responden: number;
+            /**
+             * Max Responden
+             * @description Maksimum responden.
+             */
+            max_responden: number;
+            /**
+             * Koordinator Id
+             * @description ID koordinator SME panel yang bertanggung jawab Tahap 2.
+             */
+            koordinator_id?: string | null;
+            /**
+             * Jumlah Task Terpilih
+             * @description Jumlah task relevan yang dibekukan saat masuk TAHAP3 (None bila belum).
+             */
+            jumlah_task_terpilih?: number | null;
+            /**
+             * Catatan
+             * @description Catatan.
+             */
+            catatan?: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             * @description Waktu pembuatan (UTC, ISO-8601).
+             */
+            created_at: string;
+        };
+        /**
+         * TiSesiUpdate
+         * @description Payload pembaruan sesi Task Inventory (hanya saat DRAFT).
+         */
+        TiSesiUpdate: {
+            /** Periode */
+            periode?: string | null;
+            /**
+             * Koordinator Id
+             * @description ID koordinator SME panel.
+             */
+            koordinator_id?: string | null;
+            /** Min Responden */
+            min_responden?: number | null;
+            /** Max Responden */
+            max_responden?: number | null;
+            /** Catatan */
+            catatan?: string | null;
+        };
+        /**
+         * TiTahap2KeputusanItem
+         * @description Satu keputusan koordinator untuk satu task.
+         */
+        TiTahap2KeputusanItem: {
+            /**
+             * Task Kode
+             * @description Kode task.
+             * @example TIf0b59714
+             */
+            task_kode: string;
+            /**
+             * Disetujui
+             * @description True jika koordinator menyetujui task ini masuk Tahap 3.
+             */
+            disetujui: boolean;
+        };
+        /**
+         * TiTahap2ReviewRead
+         * @description Status review Tahap 2 koordinator untuk satu sesi.
+         */
+        TiTahap2ReviewRead: {
+            /**
+             * Sesi Id
+             * @description ID sesi.
+             * @example tises_a1b2c3d4
+             */
+            sesi_id: string;
+            /**
+             * Tasks
+             * @description Task yang perlu diputuskan koordinator.
+             */
+            tasks: components["schemas"]["TiTahap2TaskRead"][];
+            /**
+             * Jumlah Belum Diputuskan
+             * @description Jumlah task yang belum ada keputusan koordinator.
+             */
+            jumlah_belum_diputuskan: number;
+            /**
+             * Submitted At
+             * @description Waktu terakhir keputusan disubmit.
+             */
+            submitted_at?: string | null;
+        };
+        /**
+         * TiTahap2Submit
+         * @description Payload submit keputusan koordinator untuk seluruh task Tahap 2.
+         */
+        TiTahap2Submit: {
+            /**
+             * Keputusan
+             * @description Daftar keputusan koordinator per task.
+             */
+            keputusan: components["schemas"]["TiTahap2KeputusanItem"][];
+        };
+        /**
+         * TiTahap2TaskRead
+         * @description Satu task yang perlu diputuskan koordinator di Tahap 2.
+         */
+        TiTahap2TaskRead: {
+            /**
+             * Task Kode
+             * @description Kode task.
+             * @example TIf0b59714
+             */
+            task_kode: string;
+            /**
+             * N Relevan
+             * @description Jumlah anggota yang memilih task ini sebagai relevan.
+             */
+            n_relevan: number;
+            /**
+             * N Total
+             * @description Total anggota panel yang sudah submit Tahap 1.
+             */
+            n_total: number;
+            /**
+             * Disetujui
+             * @description Keputusan koordinator: True=disetujui, False=ditolak, None=belum diputuskan.
+             */
+            disetujui?: boolean | null;
+        };
+        /**
+         * TiTaskTerpilihRead
+         * @description Satu task pada himpunan terpilih (beku setelah TAHAP2) + statistik relevansi.
+         */
+        TiTaskTerpilihRead: {
+            /**
+             * Kode
+             * @description Kode task.
+             * @example TIf0b59714
+             */
+            kode: string;
+            /**
+             * Tugas Pokok
+             * @description Tugas pokok.
+             */
+            tugas_pokok: string;
+            /**
+             * Detil Tugas
+             * @description Detil tugas.
+             */
+            detil_tugas: string;
+            /**
+             * Uraian Tugas
+             * @description Uraian tugas.
+             */
+            uraian_tugas: string;
+            /**
+             * N Relevan
+             * @description Jumlah partisipan yang menandai task ini relevan.
+             */
+            n_relevan: number;
+            /**
+             * Pct Relevan
+             * @description Persentase partisipan (terhadap submit Tahap 1).
+             */
+            pct_relevan: number;
+        };
+        /** ValidationError */
+        ValidationError: {
+            /** Location */
+            loc: (string | number)[];
+            /** Message */
+            msg: string;
+            /** Error Type */
+            type: string;
+            /** Input */
+            input?: unknown;
+            /** Context */
+            ctx?: Record<string, never>;
+        };
+        /**
+         * WcpDimensiRead
+         * @description Representasi dimensi WCP tanpa item.
+         */
+        WcpDimensiRead: {
+            /**
+             * Id
+             * @description ID dimensi.
+             * @example wdim_SC
+             */
+            id: string;
+            /**
+             * Kode
+             * @description Kode dimensi.
+             * @example SC
+             */
+            kode: string;
+            /**
+             * Nama
+             * @description Nama dimensi.
+             * @example Stability of Change
+             */
+            nama: string;
+            /**
+             * Urutan
+             * @description Urutan dimensi (1–12).
+             * @example 1
+             */
+            urutan: number;
+            /**
+             * Is Risk
+             * @description True jika dimensi risiko (CH/SD/PI); skor tinggi = risiko tinggi.
+             */
+            is_risk: boolean;
+        };
+        /**
+         * WcpDimensiWithItemsRead
+         * @description Representasi dimensi WCP beserta 6 item-nya.
+         */
+        WcpDimensiWithItemsRead: {
+            /**
+             * Id
+             * @description ID dimensi.
+             * @example wdim_SC
+             */
+            id: string;
+            /**
+             * Kode
+             * @description Kode dimensi.
+             * @example SC
+             */
+            kode: string;
+            /**
+             * Nama
+             * @description Nama dimensi.
+             * @example Stability of Change
+             */
+            nama: string;
+            /**
+             * Urutan
+             * @description Urutan dimensi (1–12).
+             * @example 1
+             */
+            urutan: number;
+            /**
+             * Is Risk
+             * @description True jika dimensi risiko (CH/SD/PI); skor tinggi = risiko tinggi.
+             */
+            is_risk: boolean;
+            /**
+             * Items
+             * @description Daftar 6 item dimensi ini.
+             */
+            items: components["schemas"]["WcpItemRead"][];
+        };
+        /**
+         * WcpHasilDimensiRespondenRead
+         * @description Skor satu dimensi untuk satu responden.
+         */
+        WcpHasilDimensiRespondenRead: {
+            /**
+             * Dimensi Kode
+             * @description Kode dimensi.
+             * @example SC
+             */
+            dimensi_kode: string;
+            /**
+             * Dimensi Nama
+             * @description Nama dimensi.
+             * @example Stability of Change
+             */
+            dimensi_nama: string;
+            /**
+             * Is Risk
+             * @description True jika dimensi risiko.
+             */
+            is_risk: boolean;
+            /**
+             * Skor
+             * @description Rata-rata 6 item setelah reverse scoring.
+             * @example 3.83
+             */
+            skor: number;
+            /**
+             * Interpretasi
+             * @description Interpretasi skor.
+             * @example CUKUP
+             * @enum {string}
+             */
+            interpretasi: "BAIK" | "CUKUP" | "PERLU_PERHATIAN" | "AMAN" | "WASPADA" | "RISIKO_TINGGI";
+        };
+        /**
+         * WcpHasilDimensiSesiRead
+         * @description Hasil agregat satu dimensi untuk satu sesi (seluruh responden).
+         */
+        WcpHasilDimensiSesiRead: {
+            /**
+             * Dimensi Kode
+             * @description Kode dimensi.
+             * @example SC
+             */
+            dimensi_kode: string;
+            /**
+             * Dimensi Nama
+             * @description Nama dimensi.
+             * @example Stability of Change
+             */
+            dimensi_nama: string;
+            /**
+             * Is Risk
+             * @description True jika dimensi risiko.
+             */
+            is_risk: boolean;
+            /**
+             * N Responden
+             * @description Jumlah responden yang dianalisis.
+             * @example 7
+             */
+            n_responden: number;
+            /**
+             * Skor Mean
+             * @description Rata-rata skor dimensi antar responden.
+             * @example 3.71
+             */
+            skor_mean: number;
+            /**
+             * Skor Std
+             * @description Standar deviasi skor dimensi.
+             * @example 0.42
+             */
+            skor_std: number;
+            /**
+             * Cronbach Alpha
+             * @description Cronbach's alpha (None jika responden < 2).
+             * @example 0.78
+             */
+            cronbach_alpha: number | null;
+            /**
+             * Interpretasi
+             * @description Interpretasi skor.
+             * @example CUKUP
+             * @enum {string}
+             */
+            interpretasi: "BAIK" | "CUKUP" | "PERLU_PERHATIAN" | "AMAN" | "WASPADA" | "RISIKO_TINGGI";
+        };
+        /**
+         * WcpHasilRespondenRead
+         * @description Hasil analisis untuk satu responden (12 dimensi).
+         */
+        WcpHasilRespondenRead: {
+            /**
+             * Responden Id
+             * @description ID responden.
+             */
+            responden_id: string;
+            /**
+             * Dimensi
+             * @description Skor per dimensi (12 entri).
+             */
+            dimensi: components["schemas"]["WcpHasilDimensiRespondenRead"][];
+        };
+        /**
+         * WcpHasilSesiRead
+         * @description Hasil analisis lengkap satu sesi WCP (seluruh dimensi).
+         */
+        WcpHasilSesiRead: {
+            /**
+             * Sesi Id
+             * @description ID sesi.
+             */
+            sesi_id: string;
+            /**
+             * Jabatan Id
+             * @description ID jabatan yang dikaji.
+             */
+            jabatan_id: string;
+            /**
+             * Periode
+             * @description Periode survei.
+             */
+            periode: string;
+            /**
+             * N Responden
+             * @description Total responden yang submit.
+             */
+            n_responden: number;
+            /**
+             * Dimensi
+             * @description Hasil per dimensi (12 entri).
+             */
+            dimensi: components["schemas"]["WcpHasilDimensiSesiRead"][];
+        };
+        /**
+         * WcpItemRead
+         * @description Representasi satu item pernyataan WCP.
+         */
+        WcpItemRead: {
+            /**
+             * Id
+             * @description ID item.
+             * @example witm_SC1a
+             */
+            id: string;
+            /**
+             * Item Id
+             * @description Kode item orisinal.
+             * @example SC1a
+             */
+            item_id: string;
+            /**
+             * Dimensi Kode
+             * @description Kode dimensi.
+             * @example SC
+             */
+            dimensi_kode: string;
+            /**
+             * Indikator Kode
+             * @description Kode indikator (1/2/3).
+             * @example 1
+             */
+            indikator_kode: string;
+            /**
+             * Indikator Label
+             * @description Label indikator.
+             * @example Frekuensi perubahan kebijakan
+             */
+            indikator_label: string;
+            /**
+             * Pernyataan
+             * @description Teks pernyataan.
+             * @example Kebijakan dan prosedur kerja di unit saya berubah terlalu sering.
+             */
+            pernyataan: string;
+            /**
+             * Reverse Type
+             * @description Tipe scoring: NONE | R | UF | R_STAR.
+             * @example R
+             */
+            reverse_type: string;
+            /**
+             * Urutan
+             * @description Urutan global item (1–72).
+             * @example 1
+             */
+            urutan: number;
+        };
+        /**
+         * WcpItemUpdate
+         * @description Field item WCP yang dapat diubah admin (partial; field kosong diabaikan).
+         */
+        WcpItemUpdate: {
+            /**
+             * Pernyataan
+             * @description Teks pernyataan baru.
+             */
+            pernyataan?: string | null;
+            /**
+             * Reverse Type
+             * @description Tipe scoring: NONE | R | UF | R_STAR.
+             */
+            reverse_type?: ("NONE" | "R" | "UF" | "R_STAR") | null;
+            /**
+             * Urutan
+             * @description Urutan global item (1–72).
+             */
+            urutan?: number | null;
+        };
+        /**
+         * WcpJawabanBulkCreate
+         * @description Payload bulk submission 72 jawaban untuk satu responden.
+         */
+        WcpJawabanBulkCreate: {
+            /**
+             * Jawaban
+             * @description Tepat 72 jawaban, satu per item WCP.
+             */
+            jawaban: components["schemas"]["WcpJawabanItem"][];
+        };
+        /**
+         * WcpJawabanItem
+         * @description Satu jawaban item dalam bulk submission.
+         */
+        WcpJawabanItem: {
+            /**
+             * Item Id
+             * @description Kode item orisinal (mis. SC1a).
+             * @example SC1a
+             */
+            item_id: string;
+            /**
+             * Skor Raw
+             * @description Skor mentah 1–5 dari responden.
+             * @example 4
+             */
+            skor_raw: number;
+        };
+        /**
+         * WcpJawabanRead
+         * @description Representasi satu jawaban yang dikembalikan API.
+         */
+        WcpJawabanRead: {
+            /**
+             * Id
+             * @description ID jawaban.
+             * @example wjwb_a1b2c3d4
+             */
+            id: string;
+            /**
+             * Responden Id
+             * @description ID responden.
+             * @example wrsp_a1b2c3d4
+             */
+            responden_id: string;
+            /**
+             * Item Id
+             * @description Kode item orisinal.
+             * @example SC1a
+             */
+            item_id: string;
+            /**
+             * Skor Raw
+             * @description Skor mentah 1–5.
+             */
+            skor_raw: number;
+        };
+        /**
+         * WcpKuesionerItemRead
+         * @description Responden WCP diperkaya info sesi — dipakai endpoint /kuesioner/saya.
+         */
+        WcpKuesionerItemRead: {
+            /**
+             * Id
+             * @description ID responden.
+             * @example wrsp_a1b2c3d4
+             */
+            id: string;
+            /**
+             * Sesi Id
+             * @description ID sesi WCP.
+             * @example wses_a1b2c3d4
+             */
+            sesi_id: string;
+            /**
+             * Jabatan Label
+             * @description Label jabatan responden.
+             */
+            jabatan_label: string;
+            /**
+             * Sudah Submit
+             * @description True jika jawaban sudah disubmit.
+             */
+            sudah_submit: boolean;
+            /**
+             * Submitted At
+             * @description Waktu submit.
+             */
+            submitted_at?: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             * @description Waktu pendaftaran.
+             */
+            created_at: string;
+            /**
+             * Sesi Status
+             * @description Status sesi: DRAFT | OPEN | CLOSED | ANALYZED.
+             * @example OPEN
+             */
+            sesi_status: string;
+            /**
+             * Sesi Periode
+             * @description Periode sesi (YYYY-MM).
+             * @example 2025-06
+             */
+            sesi_periode: string;
+            /**
+             * Sesi Jabatan Id
+             * @description ID jabatan yang dikaji.
+             */
+            sesi_jabatan_id: string;
+        };
+        /**
+         * WcpRespondenCreate
+         * @description Payload pendaftaran responden ke dalam sesi WCP.
+         */
+        WcpRespondenCreate: {
+            /**
+             * Nama
+             * @description Nama responden (opsional, boleh anonim).
+             * @example Budi Santoso, S.Pd.
+             */
+            nama?: string | null;
+            /**
+             * Jabatan Label
+             * @description Label jabatan responden (teks bebas).
+             * @example Guru Matematika
+             */
+            jabatan_label: string;
+            /**
+             * Partisipan Id
+             * @description ID partisipan yang terhubung (opsional, untuk fitur 'Kuesioner Saya').
+             * @example par_a1b2c3d4
+             */
+            partisipan_id?: string | null;
+        };
+        /**
+         * WcpRespondenRead
+         * @description Representasi responden yang dikembalikan API.
+         */
+        WcpRespondenRead: {
+            /**
+             * Id
+             * @description ID responden.
+             * @example wrsp_a1b2c3d4
+             */
+            id: string;
+            /**
+             * Sesi Id
+             * @description ID sesi induk.
+             * @example wses_a1b2c3d4
+             */
+            sesi_id: string;
+            /**
+             * Nama
+             * @description Nama responden.
+             */
+            nama?: string | null;
+            /**
+             * Jabatan Label
+             * @description Label jabatan responden.
+             */
+            jabatan_label: string;
+            /**
+             * Partisipan Id
+             * @description ID partisipan yang terhubung, bila ada.
+             */
+            partisipan_id?: string | null;
+            /**
+             * Sudah Submit
+             * @description True jika jawaban sudah disubmit.
+             */
+            sudah_submit: boolean;
+            /**
+             * Submitted At
+             * @description Waktu submit jawaban.
+             */
+            submitted_at?: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             * @description Waktu pendaftaran (UTC, ISO-8601).
+             */
+            created_at: string;
+        };
+        /**
+         * WcpSesiCreate
+         * @description Payload pembuatan sesi WCP.
+         */
+        WcpSesiCreate: {
+            /**
+             * Jabatan Id
+             * @description ID jabatan yang dikaji.
+             * @example jbt_a1b2c3d4
+             */
+            jabatan_id: string;
+            /**
+             * Periode
+             * @description Periode survei format YYYY-MM.
+             * @example 2025-06
+             */
+            periode: string;
+            /**
+             * Min Responden
+             * @description Jumlah minimum responden.
+             * @default 6
+             * @example 6
+             */
+            min_responden: number;
+            /**
+             * Max Responden
+             * @description Jumlah maksimum responden.
+             * @default 8
+             * @example 8
+             */
+            max_responden: number;
+            /**
+             * Catatan
+             * @description Catatan opsional untuk sesi ini.
+             */
+            catatan?: string | null;
+        };
+        /**
+         * WcpSesiRead
+         * @description Representasi sesi WCP yang dikembalikan API.
+         */
+        WcpSesiRead: {
+            /**
+             * Id
+             * @description ID sesi.
+             * @example wses_a1b2c3d4
+             */
+            id: string;
+            /**
+             * Jabatan Id
+             * @description ID jabatan.
+             * @example jbt_a1b2c3d4
+             */
+            jabatan_id: string;
+            /**
+             * Periode
+             * @description Periode survei (YYYY-MM).
+             * @example 2025-06
+             */
+            periode: string;
+            /**
+             * Status
+             * @description Status sesi.
+             * @example DRAFT
+             * @enum {string}
+             */
+            status: "DRAFT" | "OPEN" | "CLOSED" | "ANALYZED";
+            /**
+             * Min Responden
+             * @description Minimum responden.
+             */
+            min_responden: number;
+            /**
+             * Max Responden
+             * @description Maksimum responden.
+             */
+            max_responden: number;
+            /**
+             * Catatan
+             * @description Catatan.
+             */
+            catatan?: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             * @description Waktu pembuatan (UTC, ISO-8601).
+             */
+            created_at: string;
+        };
+        /**
+         * WcpSesiUpdate
+         * @description Payload pembaruan sesi WCP (hanya saat DRAFT).
+         */
+        WcpSesiUpdate: {
+            /**
+             * Periode
+             * @description Periode baru.
+             */
+            periode?: string | null;
+            /**
+             * Min Responden
+             * @description Minimum responden baru.
+             */
+            min_responden?: number | null;
+            /**
+             * Max Responden
+             * @description Maksimum responden baru.
+             */
+            max_responden?: number | null;
+            /**
+             * Catatan
+             * @description Catatan baru.
+             */
+            catatan?: string | null;
+        };
+    };
+    responses: never;
+    parameters: never;
+    requestBodies: never;
+    headers: never;
+    pathItems: never;
 }
 export type $defs = Record<string, never>;
 export interface operations {
-  health_api_v1_health_get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["Health"];
-        };
-      };
-    };
-  };
-  ready_api_v1_ready_get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["Health"];
-        };
-      };
-      /** @description Service belum siap. */
-      503: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  version_api_v1_version_get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["Health"];
-        };
-      };
-    };
-  };
-  me_api_v1_me_get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["Principal"];
-        };
-      };
-      /** @description Token tidak ada/invalid. */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  jenjang_pendidikan_list: {
-    parameters: {
-      query?: {
-        /** @description Maks item per halaman. */
-        limit?: number;
-        /** @description Jumlah item yang dilewati. */
-        offset?: number;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["Page_JenjangPendidikanRead_"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  jenjang_pendidikan_create: {
-    parameters: {
-      query?: never;
-      header?: {
-        /** @description Kunci idempotency opsional. */
-        "Idempotency-Key"?: string | null;
-      };
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["JenjangPendidikanCreate"];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["JenjangPendidikanRead"];
-        };
-      };
-      /** @description Token tidak ada/invalid. */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Kode jenjang sudah ada. */
-      409: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-      /** @description Terlalu banyak permintaan. */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  jenjang_pendidikan_search: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["SearchRequest"];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["Page_JenjangPendidikanRead_"];
-        };
-      };
-      /** @description Domain/field tidak valid. */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  jenjang_pendidikan_get: {
-    parameters: {
-      query?: never;
-      header?: {
-        /** @description ETag klien untuk conditional GET. */
-        "If-None-Match"?: string | null;
-      };
-      path: {
-        /** @description ID jenjang pendidikan. */
-        jp_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["JenjangPendidikanRead"];
-        };
-      };
-      /** @description Not Modified. */
-      304: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Jenjang pendidikan tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  jenjang_pendidikan_delete: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description ID jenjang pendidikan. */
-        jp_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      204: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Token tidak ada/invalid. */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Jenjang pendidikan tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-      /** @description Terlalu banyak permintaan. */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  jenjang_pendidikan_update: {
-    parameters: {
-      query?: never;
-      header?: {
-        /** @description ETag untuk concurrency control. */
-        "If-Match"?: string | null;
-      };
-      path: {
-        /** @description ID jenjang pendidikan. */
-        jp_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["JenjangPendidikanUpdate"];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["JenjangPendidikanRead"];
-        };
-      };
-      /** @description Token tidak ada/invalid. */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Jenjang pendidikan tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description If-Match tidak cocok. */
-      412: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-      /** @description If-Match wajib. */
-      428: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Terlalu banyak permintaan. */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  sekolah_list: {
-    parameters: {
-      query?: {
-        /** @description Maks item per halaman. */
-        limit?: number;
-        /** @description Jumlah item yang dilewati. */
-        offset?: number;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["Page_SekolahRead_"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  sekolah_create: {
-    parameters: {
-      query?: never;
-      header?: {
-        /** @description Kunci idempotency opsional. */
-        "Idempotency-Key"?: string | null;
-      };
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["SekolahCreate"];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["SekolahRead"];
-        };
-      };
-      /** @description Token tidak ada/invalid. */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description NPSN sudah terdaftar. */
-      409: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-      /** @description Terlalu banyak permintaan. */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  sekolah_search: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["SearchRequest"];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["Page_SekolahRead_"];
-        };
-      };
-      /** @description Domain/field tidak valid. */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  sekolah_get: {
-    parameters: {
-      query?: never;
-      header?: {
-        /** @description ETag klien untuk conditional GET. */
-        "If-None-Match"?: string | null;
-      };
-      path: {
-        /** @description ID sekolah. */
-        sekolah_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["SekolahRead"];
-        };
-      };
-      /** @description Not Modified. */
-      304: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Sekolah tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  sekolah_delete: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description ID sekolah. */
-        sekolah_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      204: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Token tidak ada/invalid. */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Sekolah tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-      /** @description Terlalu banyak permintaan. */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  sekolah_update: {
-    parameters: {
-      query?: never;
-      header?: {
-        /** @description ETag untuk concurrency control. */
-        "If-Match"?: string | null;
-      };
-      path: {
-        /** @description ID sekolah. */
-        sekolah_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["SekolahUpdate"];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["SekolahRead"];
-        };
-      };
-      /** @description Token tidak ada/invalid. */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Sekolah tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description If-Match tidak cocok. */
-      412: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-      /** @description If-Match wajib. */
-      428: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Terlalu banyak permintaan. */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  mata_pelajaran_list: {
-    parameters: {
-      query?: {
-        /** @description Maks item per halaman. */
-        limit?: number;
-        /** @description Jumlah item yang dilewati. */
-        offset?: number;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["Page_MataPelajaranRead_"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  mata_pelajaran_create: {
-    parameters: {
-      query?: never;
-      header?: {
-        /** @description Kunci idempotency opsional. */
-        "Idempotency-Key"?: string | null;
-      };
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["MataPelajaranCreate"];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["MataPelajaranRead"];
-        };
-      };
-      /** @description Token tidak ada/invalid. */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Kode mata pelajaran sudah ada. */
-      409: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-      /** @description Terlalu banyak permintaan. */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  mata_pelajaran_search: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["SearchRequest"];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["Page_MataPelajaranRead_"];
-        };
-      };
-      /** @description Domain/field tidak valid. */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  mata_pelajaran_get: {
-    parameters: {
-      query?: never;
-      header?: {
-        /** @description ETag klien untuk conditional GET. */
-        "If-None-Match"?: string | null;
-      };
-      path: {
-        /** @description ID mata pelajaran. */
-        mp_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["MataPelajaranRead"];
-        };
-      };
-      /** @description Not Modified. */
-      304: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Mata pelajaran tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  mata_pelajaran_delete: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description ID mata pelajaran. */
-        mp_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      204: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Token tidak ada/invalid. */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Mata pelajaran tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-      /** @description Terlalu banyak permintaan. */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  mata_pelajaran_update: {
-    parameters: {
-      query?: never;
-      header?: {
-        /** @description ETag untuk concurrency control. */
-        "If-Match"?: string | null;
-      };
-      path: {
-        /** @description ID mata pelajaran. */
-        mp_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["MataPelajaranUpdate"];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["MataPelajaranRead"];
-        };
-      };
-      /** @description Token tidak ada/invalid. */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Mata pelajaran tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description If-Match tidak cocok. */
-      412: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-      /** @description If-Match wajib. */
-      428: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Terlalu banyak permintaan. */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  partisipan_list: {
-    parameters: {
-      query?: {
-        /** @description Maks item per halaman. */
-        limit?: number;
-        /** @description Jumlah item yang dilewati. */
-        offset?: number;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["Page_PartisipanRead_"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  partisipan_create: {
-    parameters: {
-      query?: never;
-      header?: {
-        /** @description Kunci idempotency opsional. */
-        "Idempotency-Key"?: string | null;
-      };
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["PartisipanCreate"];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["PartisipanRead"];
-        };
-      };
-      /** @description Token tidak ada/invalid. */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-      /** @description Terlalu banyak permintaan. */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  partisipan_search: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["SearchRequest"];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["Page_PartisipanRead_"];
-        };
-      };
-      /** @description Domain/field tidak valid. */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  partisipan_get: {
-    parameters: {
-      query?: never;
-      header?: {
-        /** @description ETag klien untuk conditional GET. */
-        "If-None-Match"?: string | null;
-      };
-      path: {
-        /** @description ID partisipan. */
-        partisipan_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["PartisipanRead"];
-        };
-      };
-      /** @description Not Modified. */
-      304: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Partisipan tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  partisipan_delete: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description ID partisipan. */
-        partisipan_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      204: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Token tidak ada/invalid. */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Partisipan tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-      /** @description Terlalu banyak permintaan. */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  partisipan_update: {
-    parameters: {
-      query?: never;
-      header?: {
-        /** @description ETag untuk concurrency control. */
-        "If-Match"?: string | null;
-      };
-      path: {
-        /** @description ID partisipan. */
-        partisipan_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["PartisipanUpdate"];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["PartisipanRead"];
-        };
-      };
-      /** @description Token tidak ada/invalid. */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Partisipan tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description If-Match tidak cocok. */
-      412: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-      /** @description If-Match wajib. */
-      428: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Terlalu banyak permintaan. */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  jabatan_list: {
-    parameters: {
-      query?: {
-        /** @description Maks item per halaman. */
-        limit?: number;
-        /** @description Jumlah item yang dilewati. */
-        offset?: number;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["Page_JabatanRead_"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  jabatan_create: {
-    parameters: {
-      query?: never;
-      header?: {
-        /** @description Kunci idempotency opsional. */
-        "Idempotency-Key"?: string | null;
-      };
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["JabatanCreate"];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["JabatanRead"];
-        };
-      };
-      /** @description Token tidak ada/invalid. */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Kode jabatan sudah ada. */
-      409: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-      /** @description Terlalu banyak permintaan. */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  jabatan_search: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["SearchRequest"];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["Page_JabatanRead_"];
-        };
-      };
-      /** @description Domain/field tidak valid. */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  jabatan_get: {
-    parameters: {
-      query?: never;
-      header?: {
-        /** @description ETag klien untuk conditional GET. */
-        "If-None-Match"?: string | null;
-      };
-      path: {
-        /** @description ID jabatan. */
-        jabatan_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["JabatanRead"];
-        };
-      };
-      /** @description Not Modified. */
-      304: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Jabatan tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  jabatan_delete: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description ID jabatan. */
-        jabatan_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      204: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Token tidak ada/invalid. */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Jabatan tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-      /** @description Terlalu banyak permintaan. */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  jabatan_update: {
-    parameters: {
-      query?: never;
-      header?: {
-        /** @description ETag untuk concurrency control. */
-        "If-Match"?: string | null;
-      };
-      path: {
-        /** @description ID jabatan. */
-        jabatan_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["JabatanUpdate"];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["JabatanRead"];
-        };
-      };
-      /** @description Token tidak ada/invalid. */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Jabatan tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description If-Match tidak cocok. */
-      412: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-      /** @description If-Match wajib. */
-      428: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Terlalu banyak permintaan. */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  sme_panel_list: {
-    parameters: {
-      query?: {
-        /** @description Maks item per halaman. */
-        limit?: number;
-        /** @description Jumlah item yang dilewati. */
-        offset?: number;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["Page_SMEPanelRead_"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  sme_panel_create: {
-    parameters: {
-      query?: never;
-      header?: {
-        /** @description Kunci idempotency opsional. */
-        "Idempotency-Key"?: string | null;
-      };
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["SMEPanelCreate"];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["SMEPanelRead"];
-        };
-      };
-      /** @description Token tidak ada/invalid. */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Panel untuk jabatan ini sudah ada. */
-      409: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-      /** @description Terlalu banyak permintaan. */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  sme_panel_search: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["SearchRequest"];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["Page_SMEPanelRead_"];
-        };
-      };
-      /** @description Domain/field tidak valid. */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  sme_panel_get: {
-    parameters: {
-      query?: never;
-      header?: {
-        /** @description ETag klien untuk conditional GET. */
-        "If-None-Match"?: string | null;
-      };
-      path: {
-        /** @description ID SME panel. */
-        panel_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["SMEPanelRead"];
-        };
-      };
-      /** @description Not Modified. */
-      304: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description SME panel tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  sme_panel_delete: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description ID SME panel. */
-        panel_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      204: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Token tidak ada/invalid. */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description SME panel tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-      /** @description Terlalu banyak permintaan. */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  sme_panel_update: {
-    parameters: {
-      query?: never;
-      header?: {
-        /** @description ETag untuk concurrency control. */
-        "If-Match"?: string | null;
-      };
-      path: {
-        /** @description ID SME panel. */
-        panel_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["SMEPanelUpdate"];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["SMEPanelRead"];
-        };
-      };
-      /** @description Token tidak ada/invalid. */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description SME panel tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description If-Match tidak cocok. */
-      412: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Koordinator bukan anggota panel. */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description If-Match wajib. */
-      428: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Terlalu banyak permintaan. */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  sme_panel_add_anggota: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description ID SME panel. */
-        panel_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["SMEPanelAnggotaAdd"];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["SMEPanelRead"];
-        };
-      };
-      /** @description Token tidak ada/invalid. */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description SME panel tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Partisipan sudah anggota panel ini. */
-      409: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Jabatan partisipan tidak sesuai dengan panel ini. */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Terlalu banyak permintaan. */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  sme_panel_remove_anggota: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description ID SME panel. */
-        panel_id: string;
-        /** @description ID partisipan yang akan dihapus dari panel. */
-        partisipan_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["SMEPanelRead"];
-        };
-      };
-      /** @description Token tidak ada/invalid. */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description SME panel tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-      /** @description Terlalu banyak permintaan. */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  dcs_kuesioner_saya: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["DcsKuesionerItemRead"][];
-        };
-      };
-      /** @description Token tidak ada/invalid. */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  wcp_kuesioner_saya: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["WcpKuesionerItemRead"][];
-        };
-      };
-      /** @description Token tidak ada/invalid. */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  wcp_dimensi_list: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["WcpDimensiRead"][];
-        };
-      };
-    };
-  };
-  wcp_dimensi_get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description Kode dimensi (SC/TM/AS/RC/DA/WP/PC/SS/CH/SD/PI/RA). */
-        kode: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["WcpDimensiWithItemsRead"];
-        };
-      };
-      /** @description Dimensi tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  wcp_dimensi_items: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description Kode dimensi. */
-        kode: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["WcpItemRead"][];
-        };
-      };
-      /** @description Dimensi tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  wcp_item_update: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description Kode item orisinal, mis. SC1a. */
-        item_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["WcpItemUpdate"];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["WcpItemRead"];
-        };
-      };
-      /** @description Token tidak ada/invalid. */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Hanya admin yang diizinkan. */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Item tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  wcp_sesi_list: {
-    parameters: {
-      query?: {
-        /** @description Maks item per halaman. */
-        limit?: number;
-        /** @description Jumlah item yang dilewati. */
-        offset?: number;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["Page_WcpSesiRead_"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  wcp_sesi_create: {
-    parameters: {
-      query?: never;
-      header?: {
-        /** @description Kunci idempotency opsional. */
-        "Idempotency-Key"?: string | null;
-      };
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["WcpSesiCreate"];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["WcpSesiRead"];
-        };
-      };
-      /** @description Token tidak ada/invalid. */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Sesi untuk jabatan+periode sudah ada. */
-      409: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-      /** @description Terlalu banyak permintaan. */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  wcp_sesi_search: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["SearchRequest"];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["Page_WcpSesiRead_"];
-        };
-      };
-      /** @description Domain/field tidak valid. */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  wcp_sesi_get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description ID sesi WCP. */
-        sesi_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["WcpSesiRead"];
-        };
-      };
-      /** @description Sesi WCP tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  wcp_sesi_delete: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description ID sesi WCP. */
-        sesi_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      204: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Token tidak ada/invalid. */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Sesi WCP tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-      /** @description Terlalu banyak permintaan. */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  wcp_sesi_update: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description ID sesi WCP. */
-        sesi_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["WcpSesiUpdate"];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["WcpSesiRead"];
-        };
-      };
-      /** @description Token tidak ada/invalid. */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Sesi WCP tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-      /** @description Terlalu banyak permintaan. */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  wcp_sesi_buka: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description ID sesi WCP. */
-        sesi_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["WcpSesiRead"];
-        };
-      };
-      /** @description Token tidak ada/invalid. */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Sesi WCP tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-      /** @description Terlalu banyak permintaan. */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  wcp_sesi_tutup: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description ID sesi WCP. */
-        sesi_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["WcpSesiRead"];
-        };
-      };
-      /** @description Token tidak ada/invalid. */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Sesi WCP tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-      /** @description Terlalu banyak permintaan. */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  wcp_responden_list: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description ID sesi WCP. */
-        sesi_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["WcpRespondenRead"][];
-        };
-      };
-      /** @description Sesi WCP tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  wcp_responden_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description ID sesi WCP. */
-        sesi_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["WcpRespondenCreate"];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["WcpRespondenRead"];
-        };
-      };
-      /** @description Token tidak ada/invalid. */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Sesi WCP tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Partisipan sudah terdaftar sebagai responden WCP. */
-      409: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-      /** @description Terlalu banyak permintaan. */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  wcp_responden_get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description ID responden. */
-        responden_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["WcpRespondenRead"];
-        };
-      };
-      /** @description Responden tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  wcp_responden_delete: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description ID responden. */
-        responden_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      204: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Token tidak ada/invalid. */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Responden tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-      /** @description Terlalu banyak permintaan. */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  wcp_jawaban_list: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description ID responden. */
-        responden_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["WcpJawabanRead"][];
-        };
-      };
-      /** @description Responden tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  wcp_jawaban_submit: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description ID responden. */
-        responden_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["WcpJawabanBulkCreate"];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["WcpJawabanRead"][];
-        };
-      };
-      /** @description Token tidak ada/invalid. */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Responden tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Jawaban sudah ada atau item tidak valid. */
-      409: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-      /** @description Terlalu banyak permintaan. */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  wcp_analisis_run: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description ID sesi WCP. */
-        sesi_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["WcpHasilSesiRead"];
-        };
-      };
-      /** @description Token tidak ada/invalid. */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Sesi WCP tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-      /** @description Terlalu banyak permintaan. */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  wcp_hasil_sesi_get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description ID sesi WCP. */
-        sesi_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["WcpHasilSesiRead"];
-        };
-      };
-      /** @description Sesi WCP tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  wcp_hasil_responden_get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description ID responden. */
-        responden_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["WcpHasilRespondenRead"];
-        };
-      };
-      /** @description Responden tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  dcs_subskala_list: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["DcsSubSkalaRead"][];
-        };
-      };
-    };
-  };
-  dcs_subskala_get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description Kode sub-skala (DEMAND/CONTROL/SUPPORT). */
-        kode: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["DcsSubSkalaWithItemsRead"];
-        };
-      };
-      /** @description Sub-skala tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  dcs_subskala_items: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description Kode sub-skala. */
-        kode: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["DcsItemRead"][];
-        };
-      };
-      /** @description Sub-skala tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  dcs_item_update: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description Kode item orisinal, mis. D1a. */
-        item_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["DcsItemUpdate"];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["DcsItemRead"];
-        };
-      };
-      /** @description Token tidak ada/invalid. */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Hanya admin yang diizinkan. */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Item tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  dcs_sesi_list: {
-    parameters: {
-      query?: {
-        /** @description Maks item per halaman. */
-        limit?: number;
-        /** @description Jumlah item yang dilewati. */
-        offset?: number;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["Page_DcsSesiRead_"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  dcs_sesi_create: {
-    parameters: {
-      query?: never;
-      header?: {
-        /** @description Kunci idempotency opsional. */
-        "Idempotency-Key"?: string | null;
-      };
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["DcsSesiCreate"];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["DcsSesiRead"];
-        };
-      };
-      /** @description Token tidak ada/invalid. */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Sesi untuk jabatan+periode sudah ada. */
-      409: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-      /** @description Terlalu banyak permintaan. */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  dcs_sesi_search: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["SearchRequest"];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["Page_DcsSesiRead_"];
-        };
-      };
-      /** @description Domain/field tidak valid. */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  dcs_sesi_get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description ID sesi DCS. */
-        sesi_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["DcsSesiRead"];
-        };
-      };
-      /** @description Sesi DCS tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  dcs_sesi_delete: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description ID sesi DCS. */
-        sesi_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      204: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Token tidak ada/invalid. */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Sesi DCS tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-      /** @description Terlalu banyak permintaan. */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  dcs_sesi_update: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description ID sesi DCS. */
-        sesi_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["DcsSesiUpdate"];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["DcsSesiRead"];
-        };
-      };
-      /** @description Token tidak ada/invalid. */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Sesi DCS tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-      /** @description Terlalu banyak permintaan. */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  dcs_sesi_buka: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description ID sesi DCS. */
-        sesi_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["DcsSesiRead"];
-        };
-      };
-      /** @description Token tidak ada/invalid. */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Sesi DCS tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-      /** @description Terlalu banyak permintaan. */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  dcs_sesi_tutup: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description ID sesi DCS. */
-        sesi_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["DcsSesiRead"];
-        };
-      };
-      /** @description Token tidak ada/invalid. */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Sesi DCS tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-      /** @description Terlalu banyak permintaan. */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  dcs_responden_list: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description ID sesi DCS. */
-        sesi_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["DcsRespondenRead"][];
-        };
-      };
-      /** @description Sesi DCS tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  dcs_responden_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description ID sesi DCS. */
-        sesi_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["DcsRespondenCreate"];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["DcsRespondenRead"];
-        };
-      };
-      /** @description Token tidak ada/invalid. */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Sesi DCS tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Partisipan sudah terdaftar sebagai responden DCS. */
-      409: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-      /** @description Terlalu banyak permintaan. */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  dcs_responden_get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description ID responden. */
-        responden_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["DcsRespondenRead"];
-        };
-      };
-      /** @description Responden tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  dcs_responden_delete: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description ID responden. */
-        responden_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      204: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Token tidak ada/invalid. */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Responden tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-      /** @description Terlalu banyak permintaan. */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  dcs_jawaban_list: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description ID responden. */
-        responden_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["DcsJawabanRead"][];
-        };
-      };
-      /** @description Responden tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  dcs_jawaban_submit: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description ID responden. */
-        responden_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["DcsJawabanBulkCreate"];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["DcsJawabanRead"][];
-        };
-      };
-      /** @description Token tidak ada/invalid. */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Responden tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Jawaban sudah ada atau item tidak valid. */
-      409: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-      /** @description Terlalu banyak permintaan. */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  dcs_analisis_run: {
-    parameters: {
-      query?: {
-        /** @description ID sesi WCP yang bersesuaian untuk menghitung K-Index. Jika tidak disertakan, k_index akan bernilai null. */
-        wcp_sesi_id?: string | null;
-      };
-      header?: never;
-      path: {
-        /** @description ID sesi DCS. */
-        sesi_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["DcsHasilSesiRead"];
-        };
-      };
-      /** @description Token tidak ada/invalid. */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Sesi DCS tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-      /** @description Terlalu banyak permintaan. */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  dcs_hasil_sesi_get: {
-    parameters: {
-      query?: {
-        /** @description ID sesi WCP untuk menyertakan K-Index dalam respons. */
-        wcp_sesi_id?: string | null;
-      };
-      header?: never;
-      path: {
-        /** @description ID sesi DCS. */
-        sesi_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["DcsHasilSesiRead"];
-        };
-      };
-      /** @description Sesi DCS tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  dcs_hasil_responden_get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description ID responden. */
-        responden_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["DcsHasilRespondenRead"];
-        };
-      };
-      /** @description Responden tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  taskinv_kuesioner_saya: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["TiKuesionerItemRead"][];
-        };
-      };
-      /** @description Token tidak ada/invalid. */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  taskinv_catalog_kombinasi: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["TiKombinasiRead"][];
-        };
-      };
-    };
-  };
-  taskinv_catalog_list: {
-    parameters: {
-      query: {
-        /** @description Unit/jenjang (TK/SD/SMP/SMA). */
-        unit: string;
-        /** @description Kategori jabatan. */
-        kategori_jabatan: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["TiCatalogRead"][];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  taskinv_sesi_list: {
-    parameters: {
-      query?: {
-        /** @description Maks item per halaman. */
-        limit?: number;
-        /** @description Jumlah item yang dilewati. */
-        offset?: number;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["Page_TiSesiRead_"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  taskinv_sesi_create: {
-    parameters: {
-      query?: never;
-      header?: {
-        /** @description Kunci idempotency opsional. */
-        "Idempotency-Key"?: string | null;
-      };
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["TiSesiCreate"];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["TiSesiRead"];
-        };
-      };
-      /** @description Token tidak ada/invalid. */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Sesi untuk unit+jabatan+periode sudah ada. */
-      409: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-      /** @description Terlalu banyak permintaan. */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  taskinv_sesi_search: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["SearchRequest"];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["Page_TiSesiRead_"];
-        };
-      };
-      /** @description Domain/field tidak valid. */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  taskinv_sesi_get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description ID sesi. */
-        sesi_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["TiSesiRead"];
-        };
-      };
-      /** @description Sesi Task Inventory tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  taskinv_sesi_delete: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description ID sesi. */
-        sesi_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      204: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Token tidak ada/invalid. */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Sesi Task Inventory tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-      /** @description Terlalu banyak permintaan. */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  taskinv_sesi_update: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description ID sesi. */
-        sesi_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["TiSesiUpdate"];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["TiSesiRead"];
-        };
-      };
-      /** @description Token tidak ada/invalid. */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Sesi Task Inventory tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-      /** @description Terlalu banyak permintaan. */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  taskinv_sesi_mulai_tahap1: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description ID sesi. */
-        sesi_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["TiSesiRead"];
-        };
-      };
-      /** @description Token tidak ada/invalid. */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Sesi Task Inventory tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-      /** @description Terlalu banyak permintaan. */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  taskinv_sesi_mulai_tahap2: {
-    parameters: {
-      query?: {
-        /** @description Paksa lanjut walau belum semua partisipan submit Tahap 1. */
-        paksa?: boolean;
-      };
-      header?: never;
-      path: {
-        /** @description ID sesi. */
-        sesi_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["TiSesiRead"];
-        };
-      };
-      /** @description Token tidak ada/invalid. */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Sesi Task Inventory tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Belum semua submit / tidak ada task relevan. */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Terlalu banyak permintaan. */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  taskinv_sesi_tutup: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description ID sesi. */
-        sesi_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["TiSesiRead"];
-        };
-      };
-      /** @description Token tidak ada/invalid. */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Sesi Task Inventory tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-      /** @description Terlalu banyak permintaan. */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  taskinv_responden_list: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description ID sesi. */
-        sesi_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["TiRespondenRead"][];
-        };
-      };
-      /** @description Sesi tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  taskinv_responden_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description ID sesi. */
-        sesi_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["TiRespondenCreate"];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["TiRespondenRead"];
-        };
-      };
-      /** @description Token tidak ada/invalid. */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Sesi tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-      /** @description Terlalu banyak permintaan. */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  taskinv_responden_get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description ID responden. */
-        responden_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["TiRespondenRead"];
-        };
-      };
-      /** @description Responden tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  taskinv_responden_delete: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description ID responden. */
-        responden_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      204: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Token tidak ada/invalid. */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Responden tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-      /** @description Terlalu banyak permintaan. */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  taskinv_seleksi_get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description ID responden. */
-        responden_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["TiSeleksiRead"];
-        };
-      };
-      /** @description Responden tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  taskinv_seleksi_submit: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description ID responden. */
-        responden_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["TiSeleksiSubmit"];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["TiSeleksiRead"];
-        };
-      };
-      /** @description Token tidak ada/invalid. */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Responden tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Seleksi sudah disubmit. */
-      409: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Kode task tidak valid / sesi bukan TAHAP1. */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Terlalu banyak permintaan. */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  taskinv_detail_list: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description ID responden. */
-        responden_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["TiDetailRead"][];
-        };
-      };
-      /** @description Responden tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  taskinv_detail_submit: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description ID responden. */
-        responden_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["TiDetailSubmit"];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["TiDetailRead"][];
-        };
-      };
-      /** @description Token tidak ada/invalid. */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Responden tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Detail sudah disubmit. */
-      409: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description task_kode di luar himpunan terpilih. */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Terlalu banyak permintaan. */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  taskinv_task_terpilih: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description ID sesi. */
-        sesi_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["TiTaskTerpilihRead"][];
-        };
-      };
-      /** @description Sesi tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Unprocessable Entity */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  taskinv_analisis_run: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description ID sesi. */
-        sesi_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["TiHasilSesiRead"];
-        };
-      };
-      /** @description Token tidak ada/invalid. */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Sesi tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Unprocessable Entity */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Terlalu banyak permintaan. */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  taskinv_hasil_get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description ID sesi. */
-        sesi_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["TiHasilSesiRead"];
-        };
-      };
-      /** @description Sesi tidak ditemukan. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Unprocessable Entity */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
+    health_api_v1_health_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Health"];
+                };
+            };
+        };
+    };
+    ready_api_v1_ready_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Health"];
+                };
+            };
+            /** @description Service belum siap. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    version_api_v1_version_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Health"];
+                };
+            };
+        };
+    };
+    me_api_v1_me_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Principal"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    jenjang_pendidikan_list: {
+        parameters: {
+            query?: {
+                /** @description Maks item per halaman. */
+                limit?: number;
+                /** @description Jumlah item yang dilewati. */
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Page_JenjangPendidikanRead_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    jenjang_pendidikan_create: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["JenjangPendidikanCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["JenjangPendidikanRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Kode jenjang sudah ada. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    jenjang_pendidikan_search: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SearchRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Page_JenjangPendidikanRead_"];
+                };
+            };
+            /** @description Domain/field tidak valid. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    jenjang_pendidikan_get: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description ETag klien untuk conditional GET. */
+                "If-None-Match"?: string | null;
+            };
+            path: {
+                /** @description ID jenjang pendidikan. */
+                jp_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["JenjangPendidikanRead"];
+                };
+            };
+            /** @description Not Modified. */
+            304: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Jenjang pendidikan tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    jenjang_pendidikan_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID jenjang pendidikan. */
+                jp_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Jenjang pendidikan tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    jenjang_pendidikan_update: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description ETag untuk concurrency control. */
+                "If-Match"?: string | null;
+            };
+            path: {
+                /** @description ID jenjang pendidikan. */
+                jp_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["JenjangPendidikanUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["JenjangPendidikanRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Jenjang pendidikan tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description If-Match tidak cocok. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description If-Match wajib. */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    sekolah_list: {
+        parameters: {
+            query?: {
+                /** @description Maks item per halaman. */
+                limit?: number;
+                /** @description Jumlah item yang dilewati. */
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Page_SekolahRead_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    sekolah_create: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SekolahCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SekolahRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description NPSN sudah terdaftar. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    sekolah_search: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SearchRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Page_SekolahRead_"];
+                };
+            };
+            /** @description Domain/field tidak valid. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    sekolah_get: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description ETag klien untuk conditional GET. */
+                "If-None-Match"?: string | null;
+            };
+            path: {
+                /** @description ID sekolah. */
+                sekolah_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SekolahRead"];
+                };
+            };
+            /** @description Not Modified. */
+            304: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sekolah tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    sekolah_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID sekolah. */
+                sekolah_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Sekolah tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    sekolah_update: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description ETag untuk concurrency control. */
+                "If-Match"?: string | null;
+            };
+            path: {
+                /** @description ID sekolah. */
+                sekolah_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SekolahUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SekolahRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Sekolah tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description If-Match tidak cocok. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description If-Match wajib. */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    mata_pelajaran_list: {
+        parameters: {
+            query?: {
+                /** @description Maks item per halaman. */
+                limit?: number;
+                /** @description Jumlah item yang dilewati. */
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Page_MataPelajaranRead_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    mata_pelajaran_create: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MataPelajaranCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MataPelajaranRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Kode mata pelajaran sudah ada. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    mata_pelajaran_search: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SearchRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Page_MataPelajaranRead_"];
+                };
+            };
+            /** @description Domain/field tidak valid. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    mata_pelajaran_get: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description ETag klien untuk conditional GET. */
+                "If-None-Match"?: string | null;
+            };
+            path: {
+                /** @description ID mata pelajaran. */
+                mp_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MataPelajaranRead"];
+                };
+            };
+            /** @description Not Modified. */
+            304: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Mata pelajaran tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    mata_pelajaran_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID mata pelajaran. */
+                mp_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Mata pelajaran tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    mata_pelajaran_update: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description ETag untuk concurrency control. */
+                "If-Match"?: string | null;
+            };
+            path: {
+                /** @description ID mata pelajaran. */
+                mp_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MataPelajaranUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MataPelajaranRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Mata pelajaran tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description If-Match tidak cocok. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description If-Match wajib. */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    partisipan_list: {
+        parameters: {
+            query?: {
+                /** @description Maks item per halaman. */
+                limit?: number;
+                /** @description Jumlah item yang dilewati. */
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Page_PartisipanRead_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    partisipan_create: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PartisipanCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PartisipanRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    partisipan_search: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SearchRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Page_PartisipanRead_"];
+                };
+            };
+            /** @description Domain/field tidak valid. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    partisipan_get: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description ETag klien untuk conditional GET. */
+                "If-None-Match"?: string | null;
+            };
+            path: {
+                /** @description ID partisipan. */
+                partisipan_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PartisipanRead"];
+                };
+            };
+            /** @description Not Modified. */
+            304: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Partisipan tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    partisipan_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID partisipan. */
+                partisipan_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Partisipan tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    partisipan_update: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description ETag untuk concurrency control. */
+                "If-Match"?: string | null;
+            };
+            path: {
+                /** @description ID partisipan. */
+                partisipan_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PartisipanUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PartisipanRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Partisipan tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description If-Match tidak cocok. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description If-Match wajib. */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    jabatan_list: {
+        parameters: {
+            query?: {
+                /** @description Maks item per halaman. */
+                limit?: number;
+                /** @description Jumlah item yang dilewati. */
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Page_JabatanRead_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    jabatan_create: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["JabatanCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["JabatanRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Kode jabatan sudah ada. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    jabatan_search: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SearchRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Page_JabatanRead_"];
+                };
+            };
+            /** @description Domain/field tidak valid. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    jabatan_get: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description ETag klien untuk conditional GET. */
+                "If-None-Match"?: string | null;
+            };
+            path: {
+                /** @description ID jabatan. */
+                jabatan_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["JabatanRead"];
+                };
+            };
+            /** @description Not Modified. */
+            304: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Jabatan tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    jabatan_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID jabatan. */
+                jabatan_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Jabatan tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    jabatan_update: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description ETag untuk concurrency control. */
+                "If-Match"?: string | null;
+            };
+            path: {
+                /** @description ID jabatan. */
+                jabatan_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["JabatanUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["JabatanRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Jabatan tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description If-Match tidak cocok. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description If-Match wajib. */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    sme_panel_list: {
+        parameters: {
+            query?: {
+                /** @description Maks item per halaman. */
+                limit?: number;
+                /** @description Jumlah item yang dilewati. */
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Page_SMEPanelRead_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    sme_panel_create: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SMEPanelCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SMEPanelRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Panel untuk jabatan ini sudah ada. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    sme_panel_search: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SearchRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Page_SMEPanelRead_"];
+                };
+            };
+            /** @description Domain/field tidak valid. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    sme_panel_get: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description ETag klien untuk conditional GET. */
+                "If-None-Match"?: string | null;
+            };
+            path: {
+                /** @description ID SME panel. */
+                panel_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SMEPanelRead"];
+                };
+            };
+            /** @description Not Modified. */
+            304: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description SME panel tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    sme_panel_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID SME panel. */
+                panel_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description SME panel tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    sme_panel_update: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description ETag untuk concurrency control. */
+                "If-Match"?: string | null;
+            };
+            path: {
+                /** @description ID SME panel. */
+                panel_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SMEPanelUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SMEPanelRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description SME panel tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description If-Match tidak cocok. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Koordinator bukan anggota panel. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description If-Match wajib. */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    sme_panel_add_anggota: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID SME panel. */
+                panel_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SMEPanelAnggotaAdd"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SMEPanelRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description SME panel tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Partisipan sudah anggota panel ini. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Jabatan partisipan tidak sesuai dengan panel ini. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    sme_panel_remove_anggota: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID SME panel. */
+                panel_id: string;
+                /** @description ID partisipan yang akan dihapus dari panel. */
+                partisipan_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SMEPanelRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description SME panel tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    dcs_kuesioner_saya: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DcsKuesionerItemRead"][];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    wcp_kuesioner_saya: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WcpKuesionerItemRead"][];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    wcp_dimensi_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WcpDimensiRead"][];
+                };
+            };
+        };
+    };
+    wcp_dimensi_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Kode dimensi (SC/TM/AS/RC/DA/WP/PC/SS/CH/SD/PI/RA). */
+                kode: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WcpDimensiWithItemsRead"];
+                };
+            };
+            /** @description Dimensi tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    wcp_dimensi_items: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Kode dimensi. */
+                kode: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WcpItemRead"][];
+                };
+            };
+            /** @description Dimensi tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    wcp_item_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Kode item orisinal, mis. SC1a. */
+                item_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WcpItemUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WcpItemRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Hanya admin yang diizinkan. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Item tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    wcp_sesi_list: {
+        parameters: {
+            query?: {
+                /** @description Maks item per halaman. */
+                limit?: number;
+                /** @description Jumlah item yang dilewati. */
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Page_WcpSesiRead_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    wcp_sesi_create: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WcpSesiCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WcpSesiRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Sesi untuk jabatan+periode sudah ada. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    wcp_sesi_search: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SearchRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Page_WcpSesiRead_"];
+                };
+            };
+            /** @description Domain/field tidak valid. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    wcp_sesi_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID sesi WCP. */
+                sesi_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WcpSesiRead"];
+                };
+            };
+            /** @description Sesi WCP tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    wcp_sesi_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID sesi WCP. */
+                sesi_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Sesi WCP tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    wcp_sesi_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID sesi WCP. */
+                sesi_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WcpSesiUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WcpSesiRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Sesi WCP tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    wcp_sesi_buka: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID sesi WCP. */
+                sesi_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WcpSesiRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Sesi WCP tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    wcp_sesi_tutup: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID sesi WCP. */
+                sesi_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WcpSesiRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Sesi WCP tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    wcp_responden_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID sesi WCP. */
+                sesi_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WcpRespondenRead"][];
+                };
+            };
+            /** @description Sesi WCP tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    wcp_responden_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID sesi WCP. */
+                sesi_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WcpRespondenCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WcpRespondenRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Sesi WCP tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Partisipan sudah terdaftar sebagai responden WCP. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    wcp_responden_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID responden. */
+                responden_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WcpRespondenRead"];
+                };
+            };
+            /** @description Responden tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    wcp_responden_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID responden. */
+                responden_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Responden tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    wcp_jawaban_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID responden. */
+                responden_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WcpJawabanRead"][];
+                };
+            };
+            /** @description Responden tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    wcp_jawaban_submit: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID responden. */
+                responden_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WcpJawabanBulkCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WcpJawabanRead"][];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Responden tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Jawaban sudah ada atau item tidak valid. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    wcp_analisis_run: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID sesi WCP. */
+                sesi_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WcpHasilSesiRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Sesi WCP tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    wcp_hasil_sesi_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID sesi WCP. */
+                sesi_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WcpHasilSesiRead"];
+                };
+            };
+            /** @description Sesi WCP tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    wcp_hasil_responden_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID responden. */
+                responden_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WcpHasilRespondenRead"];
+                };
+            };
+            /** @description Responden tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    dcs_subskala_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DcsSubSkalaRead"][];
+                };
+            };
+        };
+    };
+    dcs_subskala_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Kode sub-skala (DEMAND/CONTROL/SUPPORT). */
+                kode: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DcsSubSkalaWithItemsRead"];
+                };
+            };
+            /** @description Sub-skala tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    dcs_subskala_items: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Kode sub-skala. */
+                kode: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DcsItemRead"][];
+                };
+            };
+            /** @description Sub-skala tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    dcs_item_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Kode item orisinal, mis. D1a. */
+                item_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DcsItemUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DcsItemRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Hanya admin yang diizinkan. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Item tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    dcs_sesi_list: {
+        parameters: {
+            query?: {
+                /** @description Maks item per halaman. */
+                limit?: number;
+                /** @description Jumlah item yang dilewati. */
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Page_DcsSesiRead_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    dcs_sesi_create: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DcsSesiCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DcsSesiRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Sesi untuk jabatan+periode sudah ada. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    dcs_sesi_search: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SearchRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Page_DcsSesiRead_"];
+                };
+            };
+            /** @description Domain/field tidak valid. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    dcs_sesi_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID sesi DCS. */
+                sesi_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DcsSesiRead"];
+                };
+            };
+            /** @description Sesi DCS tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    dcs_sesi_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID sesi DCS. */
+                sesi_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Sesi DCS tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    dcs_sesi_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID sesi DCS. */
+                sesi_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DcsSesiUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DcsSesiRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Sesi DCS tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    dcs_sesi_buka: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID sesi DCS. */
+                sesi_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DcsSesiRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Sesi DCS tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    dcs_sesi_tutup: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID sesi DCS. */
+                sesi_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DcsSesiRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Sesi DCS tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    dcs_responden_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID sesi DCS. */
+                sesi_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DcsRespondenRead"][];
+                };
+            };
+            /** @description Sesi DCS tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    dcs_responden_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID sesi DCS. */
+                sesi_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DcsRespondenCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DcsRespondenRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Sesi DCS tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Partisipan sudah terdaftar sebagai responden DCS. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    dcs_responden_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID responden. */
+                responden_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DcsRespondenRead"];
+                };
+            };
+            /** @description Responden tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    dcs_responden_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID responden. */
+                responden_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Responden tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    dcs_jawaban_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID responden. */
+                responden_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DcsJawabanRead"][];
+                };
+            };
+            /** @description Responden tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    dcs_jawaban_submit: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID responden. */
+                responden_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DcsJawabanBulkCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DcsJawabanRead"][];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Responden tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Jawaban sudah ada atau item tidak valid. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    dcs_analisis_run: {
+        parameters: {
+            query?: {
+                /** @description ID sesi WCP yang bersesuaian untuk menghitung K-Index. Jika tidak disertakan, k_index akan bernilai null. */
+                wcp_sesi_id?: string | null;
+            };
+            header?: never;
+            path: {
+                /** @description ID sesi DCS. */
+                sesi_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DcsHasilSesiRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Sesi DCS tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    dcs_hasil_sesi_get: {
+        parameters: {
+            query?: {
+                /** @description ID sesi WCP untuk menyertakan K-Index dalam respons. */
+                wcp_sesi_id?: string | null;
+            };
+            header?: never;
+            path: {
+                /** @description ID sesi DCS. */
+                sesi_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DcsHasilSesiRead"];
+                };
+            };
+            /** @description Sesi DCS tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    dcs_hasil_responden_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID responden. */
+                responden_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DcsHasilRespondenRead"];
+                };
+            };
+            /** @description Responden tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    taskinv_kuesioner_saya: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TiKuesionerItemRead"][];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    taskinv_catalog_kombinasi: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TiKombinasiRead"][];
+                };
+            };
+        };
+    };
+    taskinv_catalog_list: {
+        parameters: {
+            query: {
+                /** @description Unit/jenjang (TK/SD/SMP/SMA). */
+                unit: string;
+                /** @description Kategori jabatan. */
+                kategori_jabatan: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TiCatalogRead"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    taskinv_sesi_list: {
+        parameters: {
+            query?: {
+                /** @description Maks item per halaman. */
+                limit?: number;
+                /** @description Jumlah item yang dilewati. */
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Page_TiSesiRead_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    taskinv_sesi_create: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TiSesiCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TiSesiRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Sesi untuk unit+jabatan+periode sudah ada. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    taskinv_sesi_search: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SearchRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Page_TiSesiRead_"];
+                };
+            };
+            /** @description Domain/field tidak valid. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    taskinv_sesi_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID sesi. */
+                sesi_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TiSesiRead"];
+                };
+            };
+            /** @description Sesi Task Inventory tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    taskinv_sesi_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID sesi. */
+                sesi_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Sesi Task Inventory tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    taskinv_sesi_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID sesi. */
+                sesi_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TiSesiUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TiSesiRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Sesi Task Inventory tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    taskinv_sesi_mulai_tahap1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID sesi. */
+                sesi_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TiSesiRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Sesi Task Inventory tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    taskinv_sesi_mulai_tahap2: {
+        parameters: {
+            query?: {
+                /** @description Paksa lanjut walau belum semua partisipan submit Tahap 1. */
+                paksa?: boolean;
+            };
+            header?: never;
+            path: {
+                /** @description ID sesi. */
+                sesi_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TiSesiRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Sesi Task Inventory tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Belum ada responden yang submit Tahap 1. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    taskinv_sesi_mulai_tahap3: {
+        parameters: {
+            query?: {
+                /** @description Paksa lanjut walau masih ada task partial yang belum diputuskan koordinator. */
+                paksa?: boolean;
+            };
+            header?: never;
+            path: {
+                /** @description ID sesi. */
+                sesi_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TiSesiRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Sesi Task Inventory tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Belum semua task diputuskan koordinator / tidak ada task relevan. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    taskinv_sesi_tutup: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID sesi. */
+                sesi_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TiSesiRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Sesi Task Inventory tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    taskinv_responden_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID sesi. */
+                sesi_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TiRespondenRead"][];
+                };
+            };
+            /** @description Sesi tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    taskinv_responden_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID sesi. */
+                sesi_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TiRespondenCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TiRespondenRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Sesi tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    taskinv_responden_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID responden. */
+                responden_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TiRespondenRead"];
+                };
+            };
+            /** @description Responden tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    taskinv_responden_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID responden. */
+                responden_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Responden tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    taskinv_seleksi_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID responden. */
+                responden_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TiSeleksiRead"];
+                };
+            };
+            /** @description Responden tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    taskinv_seleksi_submit: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID responden. */
+                responden_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TiSeleksiSubmit"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TiSeleksiRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Responden tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Seleksi sudah disubmit. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Kode task tidak valid / sesi bukan TAHAP1. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    taskinv_detail_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID responden. */
+                responden_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TiDetailRead"][];
+                };
+            };
+            /** @description Responden tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    taskinv_detail_submit: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID responden. */
+                responden_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TiDetailSubmit"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TiDetailRead"][];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Responden tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Detail sudah disubmit. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description task_kode di luar himpunan terpilih. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    taskinv_tahap2_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID sesi. */
+                sesi_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TiTahap2ReviewRead"];
+                };
+            };
+            /** @description Sesi tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Unprocessable Entity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    taskinv_tahap2_submit: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID sesi. */
+                sesi_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TiTahap2Submit"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TiTahap2ReviewRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Sesi tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Sesi bukan TAHAP2 / kode task tidak valid. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    taskinv_task_terpilih: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID sesi. */
+                sesi_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TiTaskTerpilihRead"][];
+                };
+            };
+            /** @description Sesi tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Unprocessable Entity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    taskinv_analisis_run: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID sesi. */
+                sesi_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TiHasilSesiRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Sesi tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Unprocessable Entity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    taskinv_hasil_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID sesi. */
+                sesi_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TiHasilSesiRead"];
+                };
+            };
+            /** @description Sesi tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Unprocessable Entity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
 }
 
-// Convenience re-exports so consuming code can import named types directly.
-// Regenerate schema.ts with `npm run gen:api`, then re-append this section.
+// Convenience re-exports — do not edit; regenerate via `npm run gen:api`
 export type DcsArahItem = "F" | "UF";
 export type WcpReverseType = "NONE" | "R" | "UF" | "R_STAR";
 export type DcsItemRead = components["schemas"]["DcsItemRead"];
 export type DcsJawabanRead = components["schemas"]["DcsJawabanRead"];
+export type DcsKuesionerItemRead = components["schemas"]["DcsKuesionerItemRead"];
 export type DcsRespondenRead = components["schemas"]["DcsRespondenRead"];
 export type DcsSesiRead = components["schemas"]["DcsSesiRead"];
 export type DcsSubSkalaRead = components["schemas"]["DcsSubSkalaRead"];
@@ -9725,19 +10009,20 @@ export type SekolahRead = components["schemas"]["SekolahRead"];
 export type SMEPanelRead = components["schemas"]["SMEPanelRead"];
 export type TiCatalogRead = components["schemas"]["TiCatalogRead"];
 export type TiDetailItem = components["schemas"]["TiDetailItem"];
+export type TiHasilSesiRead = components["schemas"]["TiHasilSesiRead"];
+export type TiHasilTaskRead = components["schemas"]["TiHasilTaskRead"];
 export type TiKombinasiRead = components["schemas"]["TiKombinasiRead"];
+export type TiKuesionerItemRead = components["schemas"]["TiKuesionerItemRead"];
 export type TiRespondenRead = components["schemas"]["TiRespondenRead"];
 export type TiSeleksiRead = components["schemas"]["TiSeleksiRead"];
 export type TiSesiRead = components["schemas"]["TiSesiRead"];
+export type TiTahap2ReviewRead = components["schemas"]["TiTahap2ReviewRead"];
+export type TiTahap2TaskRead = components["schemas"]["TiTahap2TaskRead"];
 export type TiTaskTerpilihRead = components["schemas"]["TiTaskTerpilihRead"];
 export type WcpDimensiRead = components["schemas"]["WcpDimensiRead"];
 export type WcpDimensiWithItemsRead = components["schemas"]["WcpDimensiWithItemsRead"];
 export type WcpItemRead = components["schemas"]["WcpItemRead"];
 export type WcpJawabanRead = components["schemas"]["WcpJawabanRead"];
+export type WcpKuesionerItemRead = components["schemas"]["WcpKuesionerItemRead"];
 export type WcpRespondenRead = components["schemas"]["WcpRespondenRead"];
 export type WcpSesiRead = components["schemas"]["WcpSesiRead"];
-export type DcsKuesionerItemRead = components["schemas"]["DcsKuesionerItemRead"];
-export type TiKuesionerItemRead = components["schemas"]["TiKuesionerItemRead"];
-export type WcpKuesionerItemRead = components["schemas"]["WcpKuesionerItemRead"];
-export type TiHasilSesiRead = components["schemas"]["TiHasilSesiRead"];
-export type TiHasilTaskRead = components["schemas"]["TiHasilTaskRead"];

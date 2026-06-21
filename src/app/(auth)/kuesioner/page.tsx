@@ -16,7 +16,8 @@ const STATUS_LABEL: Record<string, string> = {
   DRAFT: "Draft",
   ANALYZED: "Teranalisis",
   TAHAP1: "Tahap 1",
-  TAHAP2: "Tahap 2",
+  TAHAP2: "Tahap 2 — Review Koordinator",
+  TAHAP3: "Tahap 3",
 };
 
 async function fetchKuesioner(accessToken: string | undefined) {
@@ -37,7 +38,7 @@ async function fetchKuesioner(accessToken: string | undefined) {
 function tiPerluDiisi(k: TiKuesionerItemRead): boolean {
   return (
     (k.sesi_status === "TAHAP1" && !k.tahap1_submit) ||
-    (k.sesi_status === "TAHAP2" && !k.tahap2_submit)
+    (k.sesi_status === "TAHAP3" && !k.tahap3_submit)
   );
 }
 
@@ -199,23 +200,23 @@ function KuesionerCard({
 }
 
 function TiKuesionerCard({ item }: { item: TiKuesionerItemRead }) {
-  const { sesi_status, tahap1_submit, tahap2_submit } = item;
+  const { sesi_status, tahap1_submit, tahap3_submit } = item;
 
   // Tentukan fase aktif yang harus dikerjakan partisipan.
-  const fase: 1 | 2 | null =
+  const fase: 1 | 3 | null =
     sesi_status === "TAHAP1" && !tahap1_submit
       ? 1
-      : sesi_status === "TAHAP2" && !tahap2_submit
-        ? 2
+      : sesi_status === "TAHAP3" && !tahap3_submit
+        ? 3
         : null;
   const href =
-    fase === 1 ? `/task-inventory/tahap1/${item.id}` : `/task-inventory/tahap2/${item.id}`;
-  const aktif = sesi_status === "TAHAP1" || sesi_status === "TAHAP2";
+    fase === 1 ? `/task-inventory/tahap1/${item.id}` : `/task-inventory/tahap3/${item.id}`;
+  const aktif = sesi_status === "TAHAP1" || sesi_status === "TAHAP2" || sesi_status === "TAHAP3";
   const canFill = fase !== null;
 
   // "Sudah diisi" untuk fase yang sedang berjalan.
   const faseSelesai =
-    (sesi_status === "TAHAP1" && tahap1_submit) || (sesi_status === "TAHAP2" && tahap2_submit);
+    (sesi_status === "TAHAP1" && tahap1_submit) || (sesi_status === "TAHAP3" && tahap3_submit);
 
   return (
     <div className="flex items-center justify-between rounded-lg border border-gray-200 bg-white p-4">
@@ -249,11 +250,15 @@ function TiKuesionerCard({ item }: { item: TiKuesionerItemRead }) {
             href={href}
             className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
           >
-            Isi {fase === 1 ? "Tahap 1" : "Tahap 2"}
+            Isi {fase === 1 ? "Tahap 1" : "Tahap 3"}
           </Link>
         ) : (
           <span className="rounded-md border border-gray-200 px-4 py-2 text-sm text-gray-400">
-            {faseSelesai ? "Menunggu tahap berikutnya" : (STATUS_LABEL[sesi_status] ?? sesi_status)}
+            {sesi_status === "TAHAP2"
+              ? "Menunggu review koordinator"
+              : faseSelesai
+                ? "Menunggu tahap berikutnya"
+                : (STATUS_LABEL[sesi_status] ?? sesi_status)}
           </span>
         )}
       </div>
