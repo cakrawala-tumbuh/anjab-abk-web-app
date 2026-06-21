@@ -77,7 +77,7 @@ entries:
         - authentik_flows.flow
         - [slug, default-provider-invalidation-flow]
       issuer_mode: per_provider
-      sub_mode: hashed_user_id
+      sub_mode: user_email
       access_code_validity: "minutes=1"
       access_token_validity: "minutes=5"
       refresh_token_validity: "days=30"

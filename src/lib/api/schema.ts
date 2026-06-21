@@ -538,6 +538,255 @@ export type paths = {
       };
     };
   };
+
+  // ── DCS & WCP: Jawaban & Kuesioner ────────────────────────────────────────
+  "/api/v1/dcs/sesi/responden/{responden_id}/jawaban": {
+    get: {
+      parameters: { path: { responden_id: string } };
+      responses: {
+        200: { content: { "application/json": DcsJawabanRead[] } };
+        404: { content: { "application/json": ErrorEnvelope } };
+      };
+    };
+    post: {
+      parameters: { path: { responden_id: string } };
+      requestBody: { content: { "application/json": DcsJawabanBulkCreate } };
+      responses: {
+        201: { content: { "application/json": DcsJawabanRead[] } };
+        404: { content: { "application/json": ErrorEnvelope } };
+        409: { content: { "application/json": ErrorEnvelope } };
+      };
+    };
+  };
+  "/api/v1/wcp/sesi/responden/{responden_id}/jawaban": {
+    get: {
+      parameters: { path: { responden_id: string } };
+      responses: {
+        200: { content: { "application/json": WcpJawabanRead[] } };
+        404: { content: { "application/json": ErrorEnvelope } };
+      };
+    };
+    post: {
+      parameters: { path: { responden_id: string } };
+      requestBody: { content: { "application/json": WcpJawabanBulkCreate } };
+      responses: {
+        201: { content: { "application/json": WcpJawabanRead[] } };
+        404: { content: { "application/json": ErrorEnvelope } };
+        409: { content: { "application/json": ErrorEnvelope } };
+      };
+    };
+  };
+  "/api/v1/dcs/kuesioner/saya": {
+    get: {
+      responses: {
+        200: { content: { "application/json": DcsKuesionerItemRead[] } };
+      };
+    };
+  };
+  "/api/v1/wcp/kuesioner/saya": {
+    get: {
+      responses: {
+        200: { content: { "application/json": WcpKuesionerItemRead[] } };
+      };
+    };
+  };
+
+  // ── Task Inventory: Catalog (master data) ─────────────────────────────────
+  "/api/v1/task-inventory/catalog/kombinasi": {
+    get: {
+      responses: {
+        200: { content: { "application/json": TiKombinasiRead[] } };
+      };
+    };
+  };
+  "/api/v1/task-inventory/catalog": {
+    get: {
+      parameters: { query: { unit: string; kategori_jabatan: string } };
+      responses: {
+        200: { content: { "application/json": TiCatalogRead[] } };
+      };
+    };
+  };
+
+  // ── Task Inventory: Sesi ──────────────────────────────────────────────────
+  "/api/v1/task-inventory/sesi": {
+    get: {
+      parameters: { query?: { limit?: number; offset?: number } };
+      responses: {
+        200: {
+          content: {
+            "application/json": {
+              items: TiSesiRead[];
+              total: number;
+              limit: number;
+              offset: number;
+            };
+          };
+        };
+      };
+    };
+    post: {
+      requestBody: { content: { "application/json": TiSesiCreate } };
+      responses: {
+        201: { content: { "application/json": TiSesiRead } };
+        409: { content: { "application/json": ErrorEnvelope } };
+        422: { content: { "application/json": ErrorEnvelope } };
+      };
+    };
+  };
+  "/api/v1/task-inventory/sesi/{sesi_id}": {
+    get: {
+      parameters: { path: { sesi_id: string } };
+      responses: {
+        200: { content: { "application/json": TiSesiRead } };
+        404: { content: { "application/json": ErrorEnvelope } };
+      };
+    };
+    patch: {
+      parameters: { path: { sesi_id: string } };
+      requestBody: { content: { "application/json": TiSesiUpdate } };
+      responses: {
+        200: { content: { "application/json": TiSesiRead } };
+        404: { content: { "application/json": ErrorEnvelope } };
+      };
+    };
+    delete: {
+      parameters: { path: { sesi_id: string } };
+      responses: {
+        204: { content: never };
+        404: { content: { "application/json": ErrorEnvelope } };
+      };
+    };
+  };
+  "/api/v1/task-inventory/sesi/{sesi_id}/mulai-tahap1": {
+    post: {
+      parameters: { path: { sesi_id: string } };
+      responses: {
+        200: { content: { "application/json": TiSesiRead } };
+        404: { content: { "application/json": ErrorEnvelope } };
+      };
+    };
+  };
+  "/api/v1/task-inventory/sesi/{sesi_id}/mulai-tahap2": {
+    post: {
+      parameters: { path: { sesi_id: string }; query?: { paksa?: boolean } };
+      responses: {
+        200: { content: { "application/json": TiSesiRead } };
+        404: { content: { "application/json": ErrorEnvelope } };
+        422: { content: { "application/json": ErrorEnvelope } };
+      };
+    };
+  };
+  "/api/v1/task-inventory/sesi/{sesi_id}/tutup": {
+    post: {
+      parameters: { path: { sesi_id: string } };
+      responses: {
+        200: { content: { "application/json": TiSesiRead } };
+        404: { content: { "application/json": ErrorEnvelope } };
+      };
+    };
+  };
+  "/api/v1/task-inventory/sesi/{sesi_id}/task-terpilih": {
+    get: {
+      parameters: { path: { sesi_id: string } };
+      responses: {
+        200: { content: { "application/json": TiTaskTerpilihRead[] } };
+        404: { content: { "application/json": ErrorEnvelope } };
+        422: { content: { "application/json": ErrorEnvelope } };
+      };
+    };
+  };
+  "/api/v1/task-inventory/sesi/{sesi_id}/analisis": {
+    post: {
+      parameters: { path: { sesi_id: string } };
+      responses: {
+        200: { content: { "application/json": TiHasilSesiRead } };
+        404: { content: { "application/json": ErrorEnvelope } };
+        422: { content: { "application/json": ErrorEnvelope } };
+      };
+    };
+  };
+  "/api/v1/task-inventory/sesi/{sesi_id}/hasil": {
+    get: {
+      parameters: { path: { sesi_id: string } };
+      responses: {
+        200: { content: { "application/json": TiHasilSesiRead } };
+        404: { content: { "application/json": ErrorEnvelope } };
+        422: { content: { "application/json": ErrorEnvelope } };
+      };
+    };
+  };
+  "/api/v1/task-inventory/sesi/{sesi_id}/responden": {
+    get: {
+      parameters: { path: { sesi_id: string } };
+      responses: {
+        200: { content: { "application/json": TiRespondenRead[] } };
+        404: { content: { "application/json": ErrorEnvelope } };
+      };
+    };
+    post: {
+      parameters: { path: { sesi_id: string } };
+      requestBody: { content: { "application/json": TiRespondenCreate } };
+      responses: {
+        201: { content: { "application/json": TiRespondenRead } };
+        404: { content: { "application/json": ErrorEnvelope } };
+      };
+    };
+  };
+  "/api/v1/task-inventory/sesi/responden/{responden_id}": {
+    get: {
+      parameters: { path: { responden_id: string } };
+      responses: {
+        200: { content: { "application/json": TiRespondenRead } };
+        404: { content: { "application/json": ErrorEnvelope } };
+      };
+    };
+    delete: {
+      parameters: { path: { responden_id: string } };
+      responses: {
+        204: { content: never };
+        404: { content: { "application/json": ErrorEnvelope } };
+      };
+    };
+  };
+  "/api/v1/task-inventory/sesi/responden/{responden_id}/seleksi": {
+    get: {
+      parameters: { path: { responden_id: string } };
+      responses: {
+        200: { content: { "application/json": TiSeleksiRead } };
+        404: { content: { "application/json": ErrorEnvelope } };
+      };
+    };
+    post: {
+      parameters: { path: { responden_id: string } };
+      requestBody: { content: { "application/json": TiSeleksiSubmit } };
+      responses: {
+        201: { content: { "application/json": TiSeleksiRead } };
+        404: { content: { "application/json": ErrorEnvelope } };
+        409: { content: { "application/json": ErrorEnvelope } };
+        422: { content: { "application/json": ErrorEnvelope } };
+      };
+    };
+  };
+  "/api/v1/task-inventory/sesi/responden/{responden_id}/detail": {
+    get: {
+      parameters: { path: { responden_id: string } };
+      responses: {
+        200: { content: { "application/json": TiDetailRead[] } };
+        404: { content: { "application/json": ErrorEnvelope } };
+      };
+    };
+    post: {
+      parameters: { path: { responden_id: string } };
+      requestBody: { content: { "application/json": TiDetailSubmit } };
+      responses: {
+        201: { content: { "application/json": TiDetailRead[] } };
+        404: { content: { "application/json": ErrorEnvelope } };
+        409: { content: { "application/json": ErrorEnvelope } };
+        422: { content: { "application/json": ErrorEnvelope } };
+      };
+    };
+  };
 };
 
 // ── Tipe domain ───────────────────────────────────────────────────────────────
@@ -850,6 +1099,219 @@ export interface ErrorEnvelope {
     message: string;
     details?: unknown[];
   };
+}
+
+// ── DCS & WCP — Jawaban & Kuesioner ─────────────────────────────────────────
+
+export interface DcsJawabanItem {
+  item_id: string;
+  skor_raw: number;
+}
+
+export interface DcsJawabanBulkCreate {
+  jawaban: DcsJawabanItem[];
+}
+
+export interface DcsJawabanRead {
+  id: string;
+  responden_id: string;
+  item_id: string;
+  skor_raw: number;
+}
+
+export interface WcpJawabanItem {
+  item_id: string;
+  skor_raw: number;
+}
+
+export interface WcpJawabanBulkCreate {
+  jawaban: WcpJawabanItem[];
+}
+
+export interface WcpJawabanRead {
+  id: string;
+  responden_id: string;
+  item_id: string;
+  skor_raw: number;
+}
+
+export interface DcsKuesionerItemRead {
+  id: string;
+  sesi_id: string;
+  jabatan_label: string;
+  sudah_submit: boolean;
+  submitted_at: string | null;
+  created_at: string;
+  sesi_status: string;
+  sesi_periode: string;
+  sesi_jabatan_id: string;
+}
+
+export interface WcpKuesionerItemRead {
+  id: string;
+  sesi_id: string;
+  jabatan_label: string;
+  sudah_submit: boolean;
+  submitted_at: string | null;
+  created_at: string;
+  sesi_status: string;
+  sesi_periode: string;
+  sesi_jabatan_id: string;
+}
+
+// ── Task Inventory — Inventori Tugas (CalHR 5-komponen, 2 tahap) ────────────
+
+export type TiStatusSesi = "DRAFT" | "TAHAP1" | "TAHAP2" | "CLOSED" | "ANALYZED";
+export type TiSumberBukti = "Formal" | "Aktual" | "Keduanya";
+export type TiKondisi = "Baseline" | "Peak" | "Both";
+export type TiAiMode = "Human-led" | "Co-Pilot" | "AI-assisted";
+export type TiVaType = "VA-Core" | "VA-Enable" | "NVA-Residual";
+
+export interface TiKombinasiRead {
+  unit: string;
+  kategori_jabatan: string;
+  jumlah_task: number;
+}
+
+export interface TiCatalogRead {
+  kode: string;
+  unit: string;
+  kategori_jabatan: string;
+  tugas_pokok: string;
+  detil_tugas: string;
+  uraian_tugas: string;
+  urutan: number;
+}
+
+export interface TiSesiCreate {
+  unit: string;
+  kategori_jabatan: string;
+  periode: string;
+  min_responden?: number;
+  max_responden?: number;
+  catatan?: string | null;
+}
+
+export interface TiSesiUpdate {
+  periode?: string;
+  min_responden?: number;
+  max_responden?: number;
+  catatan?: string | null;
+}
+
+export interface TiSesiRead {
+  id: string;
+  unit: string;
+  kategori_jabatan: string;
+  periode: string;
+  status: TiStatusSesi;
+  min_responden: number;
+  max_responden: number;
+  jumlah_task_terpilih: number | null;
+  catatan: string | null;
+  created_at: string;
+}
+
+export interface TiRespondenCreate {
+  nama?: string | null;
+  partisipan_id?: string | null;
+}
+
+export interface TiRespondenRead {
+  id: string;
+  sesi_id: string;
+  nama: string | null;
+  partisipan_id: string | null;
+  tahap1_submit: boolean;
+  tahap1_submitted_at: string | null;
+  tahap2_submit: boolean;
+  tahap2_submitted_at: string | null;
+  created_at: string;
+}
+
+export interface TiSeleksiSubmit {
+  task_kode: string[];
+}
+
+export interface TiSeleksiRead {
+  responden_id: string;
+  sesi_id: string;
+  task_kode: string[];
+  submitted_at: string | null;
+}
+
+export interface TiDetailItem {
+  task_kode: string;
+  sumber_bukti: TiSumberBukti;
+  kondisi: TiKondisi;
+  frekuensi_teks: string;
+  durasi_per_kali: number;
+  jam_per_minggu: number;
+  peak4w_hours?: number;
+  ai_mode: TiAiMode;
+  va_type: TiVaType;
+  dcs_flag?: boolean;
+  catatan?: string | null;
+}
+
+export interface TiDetailSubmit {
+  detail: TiDetailItem[];
+}
+
+export interface TiDetailRead {
+  id: string;
+  responden_id: string;
+  sesi_id: string;
+  task_kode: string;
+  sumber_bukti: TiSumberBukti;
+  kondisi: TiKondisi;
+  frekuensi_teks: string;
+  durasi_per_kali: number;
+  jam_per_minggu: number;
+  peak4w_hours: number;
+  ai_mode: TiAiMode;
+  va_type: TiVaType;
+  dcs_flag: boolean;
+  catatan: string | null;
+}
+
+export interface TiTaskTerpilihRead {
+  kode: string;
+  tugas_pokok: string;
+  detil_tugas: string;
+  uraian_tugas: string;
+  n_relevan: number;
+  pct_relevan: number;
+}
+
+export interface TiHasilTaskRead {
+  kode: string;
+  tugas_pokok: string;
+  detil_tugas: string;
+  uraian_tugas: string;
+  n_relevan: number;
+  pct_relevan: number;
+  n_detail: number;
+  jam_per_minggu_mean: number;
+  jam_per_tahun_mean: number;
+  durasi_per_kali_mean: number;
+  peak4w_hours_mean: number;
+  ai_mode_dist: Record<string, number>;
+  va_type_dist: Record<string, number>;
+  dcs_flag_count: number;
+}
+
+export interface TiHasilSesiRead {
+  sesi_id: string;
+  unit: string;
+  kategori_jabatan: string;
+  periode: string;
+  n_responden_tahap1: number;
+  n_responden_tahap2: number;
+  jumlah_task_terpilih: number;
+  total_jam_per_minggu: number;
+  total_jam_per_tahun: number;
+  tasks: TiHasilTaskRead[];
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type

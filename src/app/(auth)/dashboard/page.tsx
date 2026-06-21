@@ -25,11 +25,25 @@ export default async function DashboardPage() {
             <p className="mt-1 text-sm text-gray-500">Tambah dan kelola partisipan ANJAB-ABK.</p>
           </Link>
         )}
+        {admin && (
+          <Link
+            href="/task-inventory"
+            className="rounded-lg border border-gray-200 bg-white p-6 hover:border-blue-300 hover:shadow-sm"
+          >
+            <h2 className="font-medium text-gray-900">Task Inventory</h2>
+            <p className="mt-1 text-sm text-gray-500">
+              Inventori tugas 2 tahap: seleksi relevansi lalu detailing beban kerja.
+            </p>
+          </Link>
+        )}
         {partisipan && !admin && (
-          <div className="rounded-lg border border-gray-200 bg-white p-6">
+          <Link
+            href="/kuesioner"
+            className="rounded-lg border border-gray-200 bg-white p-6 hover:border-blue-300 hover:shadow-sm"
+          >
             <h2 className="font-medium text-gray-900">Kuesioner Saya</h2>
             <p className="mt-1 text-sm text-gray-500">Lihat dan isi kuesioner yang ditugaskan.</p>
-          </div>
+          </Link>
         )}
       </div>
 

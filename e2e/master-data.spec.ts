@@ -66,7 +66,9 @@ test.describe.serial("Master Data — Sekolah", () => {
 
     await page.goto("/master-data/sekolah/tambah");
     await page.getByLabel("Nama Sekolah").fill("Sekolah E2E Test");
-    await page.getByLabel("Jenjang Pendidikan").selectOption({ label: "E2E-JENJANG — Jenjang E2E Test" });
+    await page
+      .getByLabel("Jenjang Pendidikan")
+      .selectOption({ label: "E2E-JENJANG — Jenjang E2E Test" });
     await page.getByRole("button", { name: "Tambah Sekolah" }).click();
     await page.waitForURL(/\/master-data\/sekolah$/, { timeout: 15_000 });
     await expect(page.getByText("Sekolah E2E Test")).toBeVisible();
@@ -134,9 +136,7 @@ test.describe("Master Data — Instrumen DCS dan WCP", () => {
     await loginViaAuthentik(page, "admin-e2e", "AdminE2e123!");
     await page.goto("/master-data/dcs");
     await page.waitForLoadState("networkidle");
-    await expect(
-      page.getByText("Instrumen DCS — Demand·Control·Support"),
-    ).toBeVisible();
+    await expect(page.getByText("Instrumen DCS — Demand·Control·Support")).toBeVisible();
     // Sub-skala DCS di-seed oleh backend — harus ada minimal satu
     await expect(page.getByText("Kelola item →").first()).toBeVisible();
   });
@@ -145,9 +145,7 @@ test.describe("Master Data — Instrumen DCS dan WCP", () => {
     await loginViaAuthentik(page, "admin-e2e", "AdminE2e123!");
     await page.goto("/master-data/wcp");
     await page.waitForLoadState("networkidle");
-    await expect(
-      page.getByText("Instrumen WCP — Workplace Climate Profile"),
-    ).toBeVisible();
+    await expect(page.getByText("Instrumen WCP — Workplace Climate Profile")).toBeVisible();
     // Dimensi WCP di-seed oleh backend — harus ada minimal satu
     await expect(page.getByText("Kelola item →").first()).toBeVisible();
   });

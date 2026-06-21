@@ -14,9 +14,7 @@ test.describe("Partisipan — Navigasi", () => {
     await loginViaAuthentik(page, "admin-e2e", "AdminE2e123!");
     await page.goto("/partisipan/tambah");
     await page.waitForLoadState("networkidle");
-    await expect(
-      page.getByRole("heading", { name: "Tambah Partisipan" }),
-    ).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Tambah Partisipan" })).toBeVisible();
     await expect(page.getByRole("button", { name: "Tambah Partisipan" })).toBeVisible();
   });
 

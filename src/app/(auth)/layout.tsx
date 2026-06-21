@@ -35,6 +35,9 @@ export default async function AuthLayout({ children }: { children: ReactNode }) 
                 <Link href="/wcp" className="text-sm text-gray-600 hover:text-gray-900">
                   WCP
                 </Link>
+                <Link href="/task-inventory" className="text-sm text-gray-600 hover:text-gray-900">
+                  Task Inventory
+                </Link>
               </>
             )}
             <div className="flex items-center gap-2">

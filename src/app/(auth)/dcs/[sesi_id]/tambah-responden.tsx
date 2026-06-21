@@ -66,6 +66,7 @@ export function TambahResponden({ sesiId, partisipan, jabatan, accessToken }: Pr
         body: {
           nama: values.nama || null,
           jabatan_label: values.jabatan_label,
+          partisipan_id: values.partisipan_id || null,
         },
       });
       const reqId = response.headers.get("x-request-id");

@@ -7,12 +7,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
-import type { JabatanRead, PartisipanRead } from "@/lib/api/schema";
+import type { PartisipanRead } from "@/lib/api/schema";
 
 const schema = z.object({
   partisipan_id: z.string().optional(),
   nama: z.string().max(200).optional(),
-  jabatan_label: z.string().min(1, "Label jabatan wajib diisi").max(200),
 });
 
 type FormValues = z.infer<typeof schema>;
@@ -20,55 +19,45 @@ type FormValues = z.infer<typeof schema>;
 interface Props {
   sesiId: string;
   partisipan: PartisipanRead[];
-  jabatan: JabatanRead[];
   accessToken: string | undefined;
 }
 
-export function TambahResponden({ sesiId, partisipan, jabatan, accessToken }: Props) {
+export function TambahResponden({ sesiId, partisipan, accessToken }: Props) {
   const router = useRouter();
   const [serverError, setServerError] = useState<string | null>(null);
-
-  const jabatanMap = Object.fromEntries(jabatan.map((j) => [j.id, j.nama]));
 
   const {
     register,
     handleSubmit,
     reset,
     setValue,
-    formState: { errors, isSubmitting },
+    formState: { isSubmitting },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
-    defaultValues: { partisipan_id: "", nama: "", jabatan_label: "" },
+    defaultValues: { partisipan_id: "", nama: "" },
   });
 
   function onSelectPartisipan(e: React.ChangeEvent<HTMLSelectElement>) {
     const id = e.target.value;
     setValue("partisipan_id", id);
-    if (!id) {
-      setValue("nama", "");
-      setValue("jabatan_label", "");
-      return;
-    }
     const p = partisipan.find((x) => x.id === id);
-    if (p) {
-      setValue("nama", p.nama);
-      const jabatanNama = jabatanMap[p.jabatan_utama_id] ?? "";
-      setValue("jabatan_label", jabatanNama, { shouldValidate: true });
-    }
+    setValue("nama", p ? p.nama : "");
   }
 
   async function onSubmit(values: FormValues) {
     setServerError(null);
     try {
       const client = withServerAuth(accessToken);
-      const { error, response } = await client.POST("/api/v1/wcp/sesi/{sesi_id}/responden", {
-        params: { path: { sesi_id: sesiId } },
-        body: {
-          nama: values.nama || null,
-          jabatan_label: values.jabatan_label,
-          partisipan_id: values.partisipan_id || null,
+      const { error, response } = await client.POST(
+        "/api/v1/task-inventory/sesi/{sesi_id}/responden",
+        {
+          params: { path: { sesi_id: sesiId } },
+          body: {
+            nama: values.nama || null,
+            partisipan_id: values.partisipan_id || null,
+          },
         },
-      });
+      );
       const reqId = response.headers.get("x-request-id");
       if (error) throw toApiError(error, reqId);
       reset();
@@ -90,11 +79,9 @@ export function TambahResponden({ sesiId, partisipan, jabatan, accessToken }: Pr
       )}
 
       <div className="grid gap-4 sm:grid-cols-3">
-        {/* Pilih Partisipan */}
-        <div className="sm:col-span-3">
+        <div className="sm:col-span-1">
           <label htmlFor="partisipan_select" className="block text-sm font-medium text-gray-700">
-            Pilih dari Partisipan{" "}
-            <span className="font-normal text-gray-400">(opsional — pre-isi nama & jabatan)</span>
+            Pilih Partisipan <span className="font-normal text-gray-400">(opsional)</span>
           </label>
           <select
             id="partisipan_select"
@@ -104,17 +91,13 @@ export function TambahResponden({ sesiId, partisipan, jabatan, accessToken }: Pr
             <option value="">-- Pilih partisipan --</option>
             {partisipan.map((p) => (
               <option key={p.id} value={p.id}>
-                {p.nama} — {jabatanMap[p.jabatan_utama_id] ?? "?"}
+                {p.nama}
               </option>
             ))}
           </select>
-          <p className="mt-1 text-xs text-gray-400">
-            Memilih partisipan akan mengisi nama dan label jabatan secara otomatis.
-          </p>
         </div>
 
-        {/* Nama */}
-        <div>
+        <div className="sm:col-span-1">
           <label htmlFor="resp-nama" className="block text-sm font-medium text-gray-700">
             Nama <span className="font-normal text-gray-400">(opsional)</span>
           </label>
@@ -127,27 +110,6 @@ export function TambahResponden({ sesiId, partisipan, jabatan, accessToken }: Pr
           />
         </div>
 
-        {/* Jabatan Label */}
-        <div>
-          <label htmlFor="resp-jabatan" className="block text-sm font-medium text-gray-700">
-            Label Jabatan <span aria-hidden>*</span>
-          </label>
-          <input
-            id="resp-jabatan"
-            type="text"
-            {...register("jabatan_label")}
-            placeholder="cth. Guru Matematika"
-            className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-            aria-invalid={!!errors.jabatan_label}
-          />
-          {errors.jabatan_label && (
-            <p className="mt-1 text-xs text-red-600" role="alert">
-              {errors.jabatan_label.message}
-            </p>
-          )}
-        </div>
-
-        {/* Submit */}
         <div className="flex items-end">
           <button
             type="submit"
