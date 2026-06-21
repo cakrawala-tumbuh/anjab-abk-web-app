@@ -590,6 +590,13 @@ export type paths = {
       };
     };
   };
+  "/api/v1/task-inventory/kuesioner/saya": {
+    get: {
+      responses: {
+        200: { content: { "application/json": TiKuesionerItemRead[] } };
+      };
+    };
+  };
 
   // ── Task Inventory: Catalog (master data) ─────────────────────────────────
   "/api/v1/task-inventory/catalog/kombinasi": {
@@ -1160,6 +1167,20 @@ export interface WcpKuesionerItemRead {
 }
 
 // ── Task Inventory — Inventori Tugas (CalHR 5-komponen, 2 tahap) ────────────
+
+export interface TiKuesionerItemRead {
+  id: string;
+  sesi_id: string;
+  tahap1_submit: boolean;
+  tahap1_submitted_at: string | null;
+  tahap2_submit: boolean;
+  tahap2_submitted_at: string | null;
+  created_at: string;
+  sesi_status: string;
+  sesi_unit: string;
+  sesi_kategori_jabatan: string;
+  sesi_periode: string;
+}
 
 export type TiStatusSesi = "DRAFT" | "TAHAP1" | "TAHAP2" | "CLOSED" | "ANALYZED";
 export type TiSumberBukti = "Formal" | "Aktual" | "Keduanya";

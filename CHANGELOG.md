@@ -7,6 +7,21 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [0.7.0] - 2026-06-21
+
+### Ditambahkan
+
+- **Kuesioner Saya — Task Inventory**: halaman `kuesioner/` kini menampilkan section
+  **Task Inventory** (2 fase: Tahap 1 seleksi / Tahap 2 detail) selain DCS & WCP,
+  mengonsumsi endpoint `/api/v1/task-inventory/kuesioner/saya`.
+- Tipe `TiKuesionerItemRead` dan path Task Inventory "Kuesioner Saya" pada
+  `src/lib/api/schema.ts`; `openapi/openapi.json` diselaraskan dengan backend.
+
+### Diubah
+
+- "Kuesioner Saya" mengikuti model enrollment otomatis backend — alat ukur muncul tanpa
+  penugasan manual; ringkasan jumlah alat ukur & empty-state disesuaikan.
+
 ## [0.6.0] - 2026-06-21
 
 ### Ditambahkan

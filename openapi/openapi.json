@@ -3,7 +3,7 @@
   "info": {
     "title": "ANJAB-ABK Backend",
     "summary": "Backend REST API ANJAB & ABK yayasan pendidikan.",
-    "description": "## Ringkasan\nBackend REST API untuk **ANJAB** (Analisis Jabatan) dan **ABK** (Analisis Beban Kerja) pada yayasan pendidikan.\n\n- Format error seragam (lihat skema `ErrorResponse`).\n- Autentikasi via Bearer token Authentik \u2014 gunakan tombol **Authorize**.\n- Paginasi konsisten lewat amplop `Page`.\n- Search memakai domain bergaya Odoo via `POST .../search`.\n",
+    "description": "## Ringkasan\nBackend REST API untuk **ANJAB** (Analisis Jabatan) dan **ABK** (Analisis Beban Kerja) pada yayasan pendidikan.\n\n- Format error seragam (lihat skema `ErrorResponse`).\n- Autentikasi via Bearer token Authentik — gunakan tombol **Authorize**.\n- Paginasi konsisten lewat amplop `Page`.\n- Search memakai domain bergaya Odoo via `POST .../search`.\n",
     "contact": {
       "name": "Tim Pengembang",
       "email": "dev@example.com"
@@ -2469,6 +2469,7 @@
       "get": {
         "tags": ["dcs.kuesioner"],
         "summary": "Daftar kuesioner DCS milik pengguna yang sedang login",
+        "description": "Enrollment otomatis: kembalikan sesi DCS yang berlaku untuk jabatan utama\npartisipan dan berstatus OPEN, sambil membuat record responden bila belum ada.\n\nTiap partisipan mengisi tepat satu DCS sesuai ``jabatan_utama_id``-nya.",
         "operationId": "dcs_kuesioner_saya",
         "responses": {
           "200": {
@@ -2507,6 +2508,7 @@
       "get": {
         "tags": ["wcp.kuesioner"],
         "summary": "Daftar kuesioner WCP milik pengguna yang sedang login",
+        "description": "Enrollment otomatis: kembalikan sesi WCP yang berlaku untuk jabatan utama\npartisipan dan berstatus OPEN, sambil membuat record responden bila belum ada.\n\nTiap partisipan mengisi tepat satu WCP sesuai ``jabatan_utama_id``-nya.",
         "operationId": "wcp_kuesioner_saya",
         "responses": {
           "200": {
@@ -3167,7 +3169,7 @@
     "/api/v1/wcp/sesi/{sesi_id}/buka": {
       "post": {
         "tags": ["wcp.sesi"],
-        "summary": "Buka sesi WCP (DRAFT \u2192 OPEN)",
+        "summary": "Buka sesi WCP (DRAFT → OPEN)",
         "operationId": "wcp_sesi_buka",
         "security": [
           {
@@ -3244,7 +3246,7 @@
     "/api/v1/wcp/sesi/{sesi_id}/tutup": {
       "post": {
         "tags": ["wcp.sesi"],
-        "summary": "Tutup sesi WCP (OPEN \u2192 CLOSED)",
+        "summary": "Tutup sesi WCP (OPEN → CLOSED)",
         "operationId": "wcp_sesi_tutup",
         "security": [
           {
@@ -3737,7 +3739,7 @@
     "/api/v1/wcp/sesi/{sesi_id}/analisis": {
       "post": {
         "tags": ["wcp.hasil"],
-        "summary": "Jalankan analisis WCP (CLOSED \u2192 ANALYZED)",
+        "summary": "Jalankan analisis WCP (CLOSED → ANALYZED)",
         "operationId": "wcp_analisis_run",
         "security": [
           {
@@ -4541,7 +4543,7 @@
     "/api/v1/dcs/sesi/{sesi_id}/buka": {
       "post": {
         "tags": ["dcs.sesi"],
-        "summary": "Buka sesi DCS (DRAFT \u2192 OPEN)",
+        "summary": "Buka sesi DCS (DRAFT → OPEN)",
         "operationId": "dcs_sesi_buka",
         "security": [
           {
@@ -4618,7 +4620,7 @@
     "/api/v1/dcs/sesi/{sesi_id}/tutup": {
       "post": {
         "tags": ["dcs.sesi"],
-        "summary": "Tutup sesi DCS (OPEN \u2192 CLOSED)",
+        "summary": "Tutup sesi DCS (OPEN → CLOSED)",
         "operationId": "dcs_sesi_tutup",
         "security": [
           {
@@ -5111,7 +5113,7 @@
     "/api/v1/dcs/sesi/{sesi_id}/analisis": {
       "post": {
         "tags": ["dcs.hasil"],
-        "summary": "Jalankan analisis DCS (CLOSED \u2192 ANALYZED)",
+        "summary": "Jalankan analisis DCS (CLOSED → ANALYZED)",
         "operationId": "dcs_analisis_run",
         "security": [
           {
@@ -5325,10 +5327,49 @@
         }
       }
     },
+    "/api/v1/task-inventory/kuesioner/saya": {
+      "get": {
+        "tags": ["taskinv.kuesioner"],
+        "summary": "Daftar kuesioner Task Inventory milik pengguna yang sedang login",
+        "description": "Enrollment otomatis: Task Inventory bersifat universal — tiap partisipan\nmengisi SEMUA sesi aktif (TAHAP1/TAHAP2) tanpa filter jabatan, sambil membuat\nrecord responden bila belum ada.",
+        "operationId": "taskinv_kuesioner_saya",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/TiKuesionerItemRead"
+                  },
+                  "type": "array",
+                  "title": "Response Taskinv Kuesioner Saya"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
     "/api/v1/task-inventory/catalog/kombinasi": {
       "get": {
         "tags": ["taskinv.catalog"],
-        "summary": "Daftar kombinasi unit \u00d7 kategori jabatan beserta jumlah task",
+        "summary": "Daftar kombinasi unit × kategori jabatan beserta jumlah task",
         "operationId": "taskinv_catalog_kombinasi",
         "responses": {
           "200": {
@@ -5351,7 +5392,7 @@
     "/api/v1/task-inventory/catalog": {
       "get": {
         "tags": ["taskinv.catalog"],
-        "summary": "Daftar task catalog untuk satu kombinasi unit \u00d7 kategori jabatan",
+        "summary": "Daftar task catalog untuk satu kombinasi unit × kategori jabatan",
         "operationId": "taskinv_catalog_list",
         "parameters": [
           {
@@ -5814,7 +5855,7 @@
     "/api/v1/task-inventory/sesi/{sesi_id}/mulai-tahap1": {
       "post": {
         "tags": ["taskinv.sesi"],
-        "summary": "Mulai Tahap 1 \u2014 Seleksi Relevansi (DRAFT \u2192 TAHAP1)",
+        "summary": "Mulai Tahap 1 — Seleksi Relevansi (DRAFT → TAHAP1)",
         "operationId": "taskinv_sesi_mulai_tahap1",
         "security": [
           {
@@ -5891,7 +5932,7 @@
     "/api/v1/task-inventory/sesi/{sesi_id}/mulai-tahap2": {
       "post": {
         "tags": ["taskinv.sesi"],
-        "summary": "Mulai Tahap 2 \u2014 Detailing (TAHAP1 \u2192 TAHAP2), bekukan task relevan (\u22651 partisipan)",
+        "summary": "Mulai Tahap 2 — Detailing (TAHAP1 → TAHAP2), bekukan task relevan (≥1 partisipan)",
         "operationId": "taskinv_sesi_mulai_tahap2",
         "security": [
           {
@@ -5980,7 +6021,7 @@
     "/api/v1/task-inventory/sesi/{sesi_id}/tutup": {
       "post": {
         "tags": ["taskinv.sesi"],
-        "summary": "Tutup sesi (TAHAP2 \u2192 CLOSED)",
+        "summary": "Tutup sesi (TAHAP2 → CLOSED)",
         "operationId": "taskinv_sesi_tutup",
         "security": [
           {
@@ -6676,7 +6717,7 @@
     "/api/v1/task-inventory/sesi/{sesi_id}/analisis": {
       "post": {
         "tags": ["taskinv.hasil"],
-        "summary": "Jalankan analisis Task Inventory (CLOSED \u2192 ANALYZED)",
+        "summary": "Jalankan analisis Task Inventory (CLOSED → ANALYZED)",
         "operationId": "taskinv_analisis_run",
         "security": [
           {
@@ -6880,7 +6921,7 @@
               }
             ],
             "title": "K Index",
-            "description": "K-Index psikososial (0\u20131). None jika wcp_sesi_id tidak disertakan. Rumus: 0,40\u00d7DemandPressure + 0,25\u00d7ControlDeficit + 0,25\u00d7SupportDeficit + 0,10\u00d7WCPRisk.",
+            "description": "K-Index psikososial (0–1). None jika wcp_sesi_id tidak disertakan. Rumus: 0,40×DemandPressure + 0,25×ControlDeficit + 0,25×SupportDeficit + 0,10×WCPRisk.",
             "examples": [0.42]
           },
           "k_index_wcp_risk": {
@@ -6893,7 +6934,7 @@
               }
             ],
             "title": "K Index Wcp Risk",
-            "description": "Komponen WCP risk yang dipakai dalam K-Index (0\u20131). None jika tidak ada.",
+            "description": "Komponen WCP risk yang dipakai dalam K-Index (0–1). None jika tidak ada.",
             "examples": [0.65]
           }
         },
@@ -7028,7 +7069,7 @@
           "urutan": {
             "type": "integer",
             "title": "Urutan",
-            "description": "Urutan global item (1\u201342).",
+            "description": "Urutan global item (1–42).",
             "examples": [1]
           }
         },
@@ -7086,7 +7127,7 @@
               }
             ],
             "title": "Urutan",
-            "description": "Urutan global item (1\u201342)."
+            "description": "Urutan global item (1–42)."
           }
         },
         "type": "object",
@@ -7125,7 +7166,7 @@
             "maximum": 5.0,
             "minimum": 1.0,
             "title": "Skor Raw",
-            "description": "Skor mentah 1\u20135 dari responden.",
+            "description": "Skor mentah 1–5 dari responden.",
             "examples": [4]
           }
         },
@@ -7158,7 +7199,7 @@
           "skor_raw": {
             "type": "integer",
             "title": "Skor Raw",
-            "description": "Skor mentah 1\u20135."
+            "description": "Skor mentah 1–5."
           }
         },
         "type": "object",
@@ -7239,7 +7280,7 @@
           "sesi_jabatan_id"
         ],
         "title": "DcsKuesionerItemRead",
-        "description": "Responden DCS diperkaya info sesi \u2014 dipakai endpoint /kuesioner/saya."
+        "description": "Responden DCS diperkaya info sesi — dipakai endpoint /kuesioner/saya."
       },
       "DcsRespondenCreate": {
         "properties": {
@@ -7565,7 +7606,7 @@
           "urutan": {
             "type": "integer",
             "title": "Urutan",
-            "description": "Urutan sub-skala (1\u20133).",
+            "description": "Urutan sub-skala (1–3).",
             "examples": [1]
           }
         },
@@ -7597,7 +7638,7 @@
           "urutan": {
             "type": "integer",
             "title": "Urutan",
-            "description": "Urutan sub-skala (1\u20133).",
+            "description": "Urutan sub-skala (1–3).",
             "examples": [1]
           },
           "items": {
@@ -8545,7 +8586,7 @@
             "type": "string",
             "pattern": "^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$",
             "title": "Email",
-            "description": "Alamat email partisipan \u2014 digunakan untuk akun Authentik.",
+            "description": "Alamat email partisipan — digunakan untuk akun Authentik.",
             "examples": ["siti.rahayu@sekolah.id"]
           },
           "sekolah_id": {
@@ -8581,7 +8622,7 @@
             "maximum": 11.0,
             "minimum": 0.0,
             "title": "Masa Kerja Bulan",
-            "description": "Sisa masa kerja dalam bulan (0\u201311).",
+            "description": "Sisa masa kerja dalam bulan (0–11).",
             "default": 0,
             "examples": [3]
           },
@@ -8670,7 +8711,7 @@
           "masa_kerja_bulan": {
             "type": "integer",
             "title": "Masa Kerja Bulan",
-            "description": "Sisa masa kerja dalam bulan (0\u201311)."
+            "description": "Sisa masa kerja dalam bulan (0–11)."
           },
           "mata_pelajaran_utama_id": {
             "anyOf": [
@@ -8805,7 +8846,7 @@
               }
             ],
             "title": "Masa Kerja Bulan",
-            "description": "Masa kerja bulan baru (0\u201311)."
+            "description": "Masa kerja bulan baru (0–11)."
           },
           "mata_pelajaran_utama_id": {
             "anyOf": [
@@ -9246,7 +9287,7 @@
           "urutan": {
             "type": "integer",
             "title": "Urutan",
-            "description": "Urutan dalam kombinasi unit\u00d7kategori.",
+            "description": "Urutan dalam kombinasi unit×kategori.",
             "examples": [1]
           }
         },
@@ -9584,7 +9625,7 @@
           "jam_per_tahun_mean": {
             "type": "number",
             "title": "Jam Per Tahun Mean",
-            "description": "Rata-rata jam/tahun (jam/minggu \u00d7 45)."
+            "description": "Rata-rata jam/tahun (jam/minggu × 45)."
           },
           "durasi_per_kali_mean": {
             "type": "number",
@@ -9662,7 +9703,103 @@
         "type": "object",
         "required": ["unit", "kategori_jabatan", "jumlah_task"],
         "title": "TiKombinasiRead",
-        "description": "Satu kombinasi (unit \u00d7 kategori jabatan) beserta jumlah task."
+        "description": "Satu kombinasi (unit × kategori jabatan) beserta jumlah task."
+      },
+      "TiKuesionerItemRead": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id",
+            "description": "ID responden.",
+            "examples": ["trsp_a1b2c3d4"]
+          },
+          "sesi_id": {
+            "type": "string",
+            "title": "Sesi Id",
+            "description": "ID sesi Task Inventory.",
+            "examples": ["tises_a1b2c3d4"]
+          },
+          "tahap1_submit": {
+            "type": "boolean",
+            "title": "Tahap1 Submit",
+            "description": "True jika seleksi Tahap 1 sudah disubmit."
+          },
+          "tahap1_submitted_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tahap1 Submitted At",
+            "description": "Waktu submit Tahap 1."
+          },
+          "tahap2_submit": {
+            "type": "boolean",
+            "title": "Tahap2 Submit",
+            "description": "True jika detail Tahap 2 sudah disubmit."
+          },
+          "tahap2_submitted_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tahap2 Submitted At",
+            "description": "Waktu submit Tahap 2."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At",
+            "description": "Waktu pendaftaran."
+          },
+          "sesi_status": {
+            "type": "string",
+            "title": "Sesi Status",
+            "description": "Status sesi: DRAFT | TAHAP1 | TAHAP2 | CLOSED | ANALYZED.",
+            "examples": ["TAHAP1"]
+          },
+          "sesi_unit": {
+            "type": "string",
+            "title": "Sesi Unit",
+            "description": "Unit/jenjang yang dikaji.",
+            "examples": ["TK"]
+          },
+          "sesi_kategori_jabatan": {
+            "type": "string",
+            "title": "Sesi Kategori Jabatan",
+            "description": "Kategori jabatan yang dikaji.",
+            "examples": ["Kepala Sekolah"]
+          },
+          "sesi_periode": {
+            "type": "string",
+            "title": "Sesi Periode",
+            "description": "Periode sesi (YYYY-MM).",
+            "examples": ["2026-06"]
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "sesi_id",
+          "tahap1_submit",
+          "tahap2_submit",
+          "created_at",
+          "sesi_status",
+          "sesi_unit",
+          "sesi_kategori_jabatan",
+          "sesi_periode"
+        ],
+        "title": "TiKuesionerItemRead",
+        "description": "Responden Task Inventory diperkaya info sesi — dipakai /kuesioner/saya."
       },
       "TiRespondenCreate": {
         "properties": {
@@ -9835,7 +9972,7 @@
             "type": "array",
             "minItems": 1,
             "title": "Task Kode",
-            "description": "Daftar kode task yang relevan untuk responden ini (\u22651).",
+            "description": "Daftar kode task yang relevan untuk responden ini (≥1).",
             "examples": [["TIf0b59714", "TIa1b2c3d4"]]
           }
         },
@@ -10159,7 +10296,7 @@
           "urutan": {
             "type": "integer",
             "title": "Urutan",
-            "description": "Urutan dimensi (1\u201312).",
+            "description": "Urutan dimensi (1–12).",
             "examples": [1]
           },
           "is_risk": {
@@ -10196,7 +10333,7 @@
           "urutan": {
             "type": "integer",
             "title": "Urutan",
-            "description": "Urutan dimensi (1\u201312).",
+            "description": "Urutan dimensi (1–12).",
             "examples": [1]
           },
           "is_risk": {
@@ -10432,7 +10569,7 @@
           "urutan": {
             "type": "integer",
             "title": "Urutan",
-            "description": "Urutan global item (1\u201372).",
+            "description": "Urutan global item (1–72).",
             "examples": [1]
           }
         },
@@ -10491,7 +10628,7 @@
               }
             ],
             "title": "Urutan",
-            "description": "Urutan global item (1\u201372)."
+            "description": "Urutan global item (1–72)."
           }
         },
         "type": "object",
@@ -10530,7 +10667,7 @@
             "maximum": 5.0,
             "minimum": 1.0,
             "title": "Skor Raw",
-            "description": "Skor mentah 1\u20135 dari responden.",
+            "description": "Skor mentah 1–5 dari responden.",
             "examples": [4]
           }
         },
@@ -10563,7 +10700,7 @@
           "skor_raw": {
             "type": "integer",
             "title": "Skor Raw",
-            "description": "Skor mentah 1\u20135."
+            "description": "Skor mentah 1–5."
           }
         },
         "type": "object",
@@ -10644,7 +10781,7 @@
           "sesi_jabatan_id"
         ],
         "title": "WcpKuesionerItemRead",
-        "description": "Responden WCP diperkaya info sesi \u2014 dipakai endpoint /kuesioner/saya."
+        "description": "Responden WCP diperkaya info sesi — dipakai endpoint /kuesioner/saya."
       },
       "WcpRespondenCreate": {
         "properties": {
@@ -10975,11 +11112,11 @@
     },
     {
       "name": "core.partisipan",
-      "description": "Partisipan \u2014 pegawai yang dianalisis dalam ANJAB/ABK."
+      "description": "Partisipan — pegawai yang dianalisis dalam ANJAB/ABK."
     },
     {
       "name": "anjab.jabatan",
-      "description": "Jabatan \u2014 entitas utama Analisis Jabatan (ANJAB)."
+      "description": "Jabatan — entitas utama Analisis Jabatan (ANJAB)."
     },
     {
       "name": "wcp.dimensi",
@@ -10987,7 +11124,7 @@
     },
     {
       "name": "wcp.sesi",
-      "description": "Sesi survei WCP per jabatan \u2014 CRUD dan transisi status (DRAFT\u2192OPEN\u2192CLOSED\u2192ANALYZED)."
+      "description": "Sesi survei WCP per jabatan — CRUD dan transisi status (DRAFT→OPEN→CLOSED→ANALYZED)."
     },
     {
       "name": "wcp.responden",
@@ -11003,7 +11140,7 @@
     },
     {
       "name": "dcs.sesi",
-      "description": "Sesi survei DCS per jabatan \u2014 CRUD dan transisi status (DRAFT\u2192OPEN\u2192CLOSED\u2192ANALYZED)."
+      "description": "Sesi survei DCS per jabatan — CRUD dan transisi status (DRAFT→OPEN→CLOSED→ANALYZED)."
     },
     {
       "name": "dcs.responden",
