@@ -70,8 +70,9 @@ async function buatDcsSesiOpen(page: Page): Promise<string> {
   await page.goto("/dcs");
   await page.waitForLoadState("networkidle");
 
-  // Jika sudah ada sesi untuk jabatan ini, cukup pastikan statusnya OPEN
-  const existingLink = page.getByRole("link", { name: JABATAN_NAMA }).first();
+  // Jika sudah ada sesi untuk periode ini, cukup pastikan statusnya OPEN
+  // Link teks = catatan ?? periode; tanpa catatan, teks = PERIODE
+  const existingLink = page.getByRole("link", { name: PERIODE }).first();
   if (await existingLink.isVisible({ timeout: 2_000 }).catch(() => false)) {
     await existingLink.click();
     await page.waitForURL(/\/dcs\/dses_/);
@@ -91,7 +92,6 @@ async function buatDcsSesiOpen(page: Page): Promise<string> {
 
   // Buat sesi baru
   await page.goto("/dcs/buat");
-  await page.getByLabel("Jabatan").selectOption({ label: JABATAN_NAMA });
   await page.getByLabel("Periode").fill(PERIODE);
   await page.getByRole("button", { name: "Buat Sesi" }).click();
   await page.waitForURL(/\/dcs\/dses_/, { timeout: 15_000 });

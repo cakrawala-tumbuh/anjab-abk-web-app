@@ -7,6 +7,27 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [1.4.0] - 2026-06-21
+
+### Diubah
+
+- **DCS & WCP: form buat sesi tidak lagi memiliki dropdown jabatan** — field `jabatan_id`
+  dihapus dari form `/dcs/buat` dan `/wcp/buat`. Partisipan dengan jabatan apapun dapat
+  di-assign ke sesi yang sama.
+- **DCS & WCP: halaman list sesi** — kolom "Jabatan" diganti "Keterangan"; teks link
+  menampilkan `sesi.catatan` (jika diisi) atau `sesi.periode` sebagai fallback.
+- **DCS & WCP: halaman detail sesi** — heading dan breadcrumb menggunakan
+  `sesi.catatan ?? sesi.periode` sebagai label (sebelumnya menggunakan nama jabatan).
+- OpenAPI schema (`openapi/openapi.json`) dan tipe TypeScript (`src/lib/api/schema.ts`)
+  di-generate ulang menyesuaikan skema backend v0.11.0.
+- **E2E test sesi** (`e2e/sesi.spec.ts`): dihapus helper `buatJabatan`, dihapus
+  langkah pilih jabatan dari form, dihapus tes "jabatan wajib dipilih", diperbarui
+  idempotency check berbasis periode (bukan nama jabatan).
+- **E2E test kuesioner** (`e2e/kuesioner.spec.ts`): `buatDcsSesiOpen` diperbarui —
+  langkah pilih jabatan di form buat sesi dihapus; idempotency check menggunakan
+  link teks periode.
+- Unit test form (`src/test/sesi-form-schema.test.ts`): dihapus test kasus `jabatan_id`.
+
 ## [1.3.0] - 2026-06-21
 
 ### Ditambahkan

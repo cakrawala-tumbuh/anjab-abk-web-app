@@ -65,8 +65,7 @@ export default async function DcsSesiDetailPage({ params }: Props) {
     sesi_id,
   );
 
-  const jabatanMap = Object.fromEntries(jabatan.map((j) => [j.id, j.nama]));
-  const jabatanNama = jabatanMap[sesi.jabatan_id] ?? sesi.jabatan_id;
+  const sesiLabel = sesi.catatan ?? sesi.periode;
   const st = STATUS_LABEL[sesi.status] ?? {
     label: sesi.status,
     cls: "bg-gray-100 text-gray-500",
@@ -83,13 +82,13 @@ export default async function DcsSesiDetailPage({ params }: Props) {
           Sesi DCS
         </Link>
         <span>/</span>
-        <span className="text-gray-900">{jabatanNama}</span>
+        <span className="text-gray-900">{sesiLabel}</span>
       </div>
 
       {/* Header */}
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h1 className="page-heading">{jabatanNama}</h1>
+          <h1 className="page-heading">{sesiLabel}</h1>
           <p className="mt-1 font-mono text-sm text-gray-500">{sesi.periode}</p>
           {sesi.catatan && <p className="mt-2 text-sm text-gray-600 italic">{sesi.catatan}</p>}
         </div>

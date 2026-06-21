@@ -2,30 +2,6 @@ import { test, expect } from "@playwright/test";
 import { loginViaAuthentik } from "./helpers";
 
 /**
- * Buat jabatan via halaman master data (idempoten — lewati jika sudah ada).
- * Diperlukan sebagai prasyarat sebelum membuat sesi DCS / WCP.
- */
-async function buatJabatan(
-  page: Parameters<typeof loginViaAuthentik>[0],
-  kode: string,
-  nama: string,
-): Promise<void> {
-  // Cek apakah jabatan sudah ada di daftar (pakai content() agar tidak bergantung pada role matching)
-  await page.goto("/master-data/jabatan");
-  await page.waitForLoadState("networkidle");
-  const sudahAda = (await page.content()).includes(kode);
-  if (sudahAda) return;
-
-  await page.goto("/master-data/jabatan/tambah");
-  await page.getByLabel("Kode").fill(kode);
-  await page.getByLabel("Nama Jabatan").fill(nama);
-  await page.getByLabel("Jenis Jabatan").selectOption("fungsional");
-  await page.getByRole("button", { name: "Tambah Jabatan" }).click();
-  await page.waitForURL(/\/master-data\/jabatan$/, { timeout: 15_000 });
-  await expect(page.getByText(nama)).toBeVisible();
-}
-
-/**
  * Klik tombol transisi sesi (Buka/Tutup), tunggu API 200, lalu reload halaman agar
  * mendapat server render terbaru (menghindari router.refresh() race di Next.js 15).
  */
@@ -60,18 +36,16 @@ async function doTransisi(
 // ─── Sesi DCS ────────────────────────────────────────────────────────────────
 
 test.describe.serial("Sesi DCS — Alur Admin", () => {
-  const JABATAN_KODE = "E2E-DCS-01";
-  const JABATAN_NAMA = "Guru DCS E2E";
   const PERIODE = "2025-06";
 
   test("buat sesi DCS baru dan verifikasi status DRAFT", async ({ page }) => {
     await loginViaAuthentik(page, "admin-e2e", "AdminE2e123!");
-    await buatJabatan(page, JABATAN_KODE, JABATAN_NAMA);
 
     // Cek apakah sesi sudah ada (idempoten — backend in-memory persists antar run)
+    // Link teks = catatan ?? periode; tanpa catatan, teks = PERIODE
     await page.goto("/dcs");
     await page.waitForLoadState("networkidle");
-    const sesiLink = page.getByRole("link", { name: JABATAN_NAMA }).first();
+    const sesiLink = page.getByRole("link", { name: PERIODE }).first();
     if (await sesiLink.isVisible()) {
       await sesiLink.click();
       await page.waitForURL(/\/dcs\/dses_/);
@@ -82,8 +56,6 @@ test.describe.serial("Sesi DCS — Alur Admin", () => {
 
     await page.goto("/dcs/buat");
 
-    // Pilih jabatan dari dropdown
-    await page.getByLabel("Jabatan").selectOption({ label: JABATAN_NAMA });
     await page.getByLabel("Periode").fill(PERIODE);
 
     await page.getByRole("button", { name: "Buat Sesi" }).click();
@@ -102,7 +74,7 @@ test.describe.serial("Sesi DCS — Alur Admin", () => {
     await loginViaAuthentik(page, "admin-e2e", "AdminE2e123!");
 
     await page.goto("/dcs");
-    await page.getByRole("link", { name: JABATAN_NAMA }).first().click();
+    await page.getByRole("link", { name: PERIODE }).first().click();
     await page.waitForURL(/\/dcs\/dses_/);
     await page.waitForLoadState("networkidle");
 
@@ -120,34 +92,19 @@ test.describe.serial("Sesi DCS — Alur Admin", () => {
     await expect(page.getByRole("button", { name: "Tutup Sesi" })).not.toBeVisible();
   });
 
-  test("sesi DCS muncul di daftar dengan jabatan dan periode", async ({ page }) => {
+  test("sesi DCS muncul di daftar dengan periode", async ({ page }) => {
     await loginViaAuthentik(page, "admin-e2e", "AdminE2e123!");
 
     await page.goto("/dcs");
 
-    // Jabatan dan periode harus terlihat di tabel
-    await expect(page.getByRole("link", { name: JABATAN_NAMA })).toBeVisible();
-    await expect(page.getByText(PERIODE)).toBeVisible();
-  });
-
-  test("validasi form: jabatan wajib dipilih", async ({ page }) => {
-    await loginViaAuthentik(page, "admin-e2e", "AdminE2e123!");
-
-    await page.goto("/dcs/buat");
-
-    // Coba submit tanpa mengisi jabatan
-    await page.getByLabel("Periode").fill(PERIODE);
-    await page.getByRole("button", { name: "Buat Sesi" }).click();
-
-    // Pesan error harus muncul
-    await expect(page.getByText("Jabatan wajib dipilih")).toBeVisible();
+    // Periode tampil sebagai teks link di kolom Keterangan (catatan null → fallback ke periode)
+    await expect(page.getByRole("link", { name: PERIODE })).toBeVisible();
   });
 
   test("validasi form: format periode harus YYYY-MM", async ({ page }) => {
     await loginViaAuthentik(page, "admin-e2e", "AdminE2e123!");
 
     await page.goto("/dcs/buat");
-    await page.getByLabel("Jabatan").selectOption({ label: JABATAN_NAMA });
     await page.getByLabel("Periode").fill("06-2025"); // format salah
     await page.getByRole("button", { name: "Buat Sesi" }).click();
 
@@ -158,18 +115,15 @@ test.describe.serial("Sesi DCS — Alur Admin", () => {
 // ─── Sesi WCP ────────────────────────────────────────────────────────────────
 
 test.describe.serial("Sesi WCP — Alur Admin", () => {
-  const JABATAN_KODE = "E2E-WCP-01";
-  const JABATAN_NAMA = "Staf WCP E2E";
   const PERIODE = "2025-06";
 
   test("buat sesi WCP baru dan verifikasi status DRAFT", async ({ page }) => {
     await loginViaAuthentik(page, "admin-e2e", "AdminE2e123!");
-    await buatJabatan(page, JABATAN_KODE, JABATAN_NAMA);
 
     // Cek apakah sesi sudah ada (idempoten)
     await page.goto("/wcp");
     await page.waitForLoadState("networkidle");
-    const sesiLink = page.getByRole("link", { name: JABATAN_NAMA }).first();
+    const sesiLink = page.getByRole("link", { name: PERIODE }).first();
     if (await sesiLink.isVisible()) {
       await sesiLink.click();
       await page.waitForURL(/\/wcp\/wses_/);
@@ -179,7 +133,6 @@ test.describe.serial("Sesi WCP — Alur Admin", () => {
 
     await page.goto("/wcp/buat");
 
-    await page.getByLabel("Jabatan").selectOption({ label: JABATAN_NAMA });
     await page.getByLabel("Periode").fill(PERIODE);
 
     await page.getByRole("button", { name: "Buat Sesi" }).click();
@@ -194,7 +147,7 @@ test.describe.serial("Sesi WCP — Alur Admin", () => {
     await loginViaAuthentik(page, "admin-e2e", "AdminE2e123!");
 
     await page.goto("/wcp");
-    await page.getByRole("link", { name: JABATAN_NAMA }).first().click();
+    await page.getByRole("link", { name: PERIODE }).first().click();
     await page.waitForURL(/\/wcp\/wses_/);
     await page.waitForLoadState("networkidle");
 
@@ -210,30 +163,19 @@ test.describe.serial("Sesi WCP — Alur Admin", () => {
     await expect(page.getByRole("button", { name: "Tutup Sesi" })).not.toBeVisible();
   });
 
-  test("sesi WCP muncul di daftar dengan jabatan dan periode", async ({ page }) => {
+  test("sesi WCP muncul di daftar dengan periode", async ({ page }) => {
     await loginViaAuthentik(page, "admin-e2e", "AdminE2e123!");
 
     await page.goto("/wcp");
 
-    await expect(page.getByRole("link", { name: JABATAN_NAMA })).toBeVisible();
-    await expect(page.getByText(PERIODE)).toBeVisible();
-  });
-
-  test("validasi form: jabatan wajib dipilih", async ({ page }) => {
-    await loginViaAuthentik(page, "admin-e2e", "AdminE2e123!");
-
-    await page.goto("/wcp/buat");
-    await page.getByLabel("Periode").fill(PERIODE);
-    await page.getByRole("button", { name: "Buat Sesi" }).click();
-
-    await expect(page.getByText("Jabatan wajib dipilih")).toBeVisible();
+    // Periode tampil sebagai teks link di kolom Keterangan (catatan null → fallback ke periode)
+    await expect(page.getByRole("link", { name: PERIODE })).toBeVisible();
   });
 
   test("validasi form: format periode harus YYYY-MM", async ({ page }) => {
     await loginViaAuthentik(page, "admin-e2e", "AdminE2e123!");
 
     await page.goto("/wcp/buat");
-    await page.getByLabel("Jabatan").selectOption({ label: JABATAN_NAMA });
     await page.getByLabel("Periode").fill("06-2025"); // format salah
     await page.getByRole("button", { name: "Buat Sesi" }).click();
 

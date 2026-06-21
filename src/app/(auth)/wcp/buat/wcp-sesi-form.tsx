@@ -8,11 +8,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
-import type { JabatanRead } from "@/lib/api/schema";
 
 export const schema = z
   .object({
-    jabatan_id: z.string().min(1, "Jabatan wajib dipilih"),
     periode: z
       .string()
       .regex(/^\d{4}-\d{2}$/, "Format periode: YYYY-MM (cth. 2025-06)")
@@ -38,11 +36,10 @@ export const schema = z
 type FormValues = z.infer<typeof schema>;
 
 interface Props {
-  jabatan: JabatanRead[];
   accessToken: string | undefined;
 }
 
-export function WcpSesiForm({ jabatan, accessToken }: Props) {
+export function WcpSesiForm({ accessToken }: Props) {
   const router = useRouter();
   const [serverError, setServerError] = useState<string | null>(null);
 
@@ -61,7 +58,6 @@ export function WcpSesiForm({ jabatan, accessToken }: Props) {
       const client = withServerAuth(accessToken);
       const { data, error, response } = await client.POST("/api/v1/wcp/sesi", {
         body: {
-          jabatan_id: values.jabatan_id,
           periode: values.periode,
           min_responden: values.min_responden,
           max_responden: values.max_responden,
@@ -83,31 +79,6 @@ export function WcpSesiForm({ jabatan, accessToken }: Props) {
           {serverError}
         </div>
       )}
-
-      {/* Jabatan */}
-      <div>
-        <label htmlFor="jabatan_id" className="form-label">
-          Jabatan <span aria-hidden>*</span>
-        </label>
-        <select
-          id="jabatan_id"
-          {...register("jabatan_id")}
-          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-          aria-invalid={!!errors.jabatan_id}
-        >
-          <option value="">-- Pilih jabatan --</option>
-          {jabatan.map((j) => (
-            <option key={j.id} value={j.id}>
-              {j.nama}
-            </option>
-          ))}
-        </select>
-        {errors.jabatan_id && (
-          <p className="form-error" role="alert">
-            {errors.jabatan_id.message}
-          </p>
-        )}
-      </div>
 
       {/* Periode */}
       <div>

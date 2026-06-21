@@ -3,14 +3,12 @@ import { schema as dcsSesiSchema } from "@/app/(auth)/dcs/buat/dcs-sesi-form";
 import { schema as wcpSesiSchema } from "@/app/(auth)/wcp/buat/wcp-sesi-form";
 
 const VALID_DCS = {
-  jabatan_id: "jbt_a1b2c3d4",
   periode: "2025-06",
   min_responden: 6,
   max_responden: 8,
 };
 
 const VALID_WCP = {
-  jabatan_id: "jbt_a1b2c3d4",
   periode: "2025-06",
   min_responden: 6,
   max_responden: 8,
@@ -19,15 +17,6 @@ const VALID_WCP = {
 describe("DcsSesiSchema", () => {
   it("menerima payload valid", () => {
     expect(dcsSesiSchema.safeParse(VALID_DCS).success).toBe(true);
-  });
-
-  it("menolak jabatan_id kosong", () => {
-    const result = dcsSesiSchema.safeParse({ ...VALID_DCS, jabatan_id: "" });
-    expect(result.success).toBe(false);
-    if (!result.success) {
-      const paths = result.error.issues.map((i) => i.path[0]);
-      expect(paths).toContain("jabatan_id");
-    }
   });
 
   it("menolak format periode yang salah", () => {
@@ -79,15 +68,6 @@ describe("DcsSesiSchema", () => {
 describe("WcpSesiSchema", () => {
   it("menerima payload valid", () => {
     expect(wcpSesiSchema.safeParse(VALID_WCP).success).toBe(true);
-  });
-
-  it("menolak jabatan_id kosong", () => {
-    const result = wcpSesiSchema.safeParse({ ...VALID_WCP, jabatan_id: "" });
-    expect(result.success).toBe(false);
-    if (!result.success) {
-      const paths = result.error.issues.map((i) => i.path[0]);
-      expect(paths).toContain("jabatan_id");
-    }
   });
 
   it("menolak format periode yang salah", () => {

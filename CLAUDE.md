@@ -60,6 +60,16 @@ src/
 - Saat transisi TAHAP2→TAHAP3, task dibekukan = unanimous ∪ koordinator-disetujui.
 - `src/lib/api/schema.ts` memiliki convenience re-exports di akhir file yang harus dipertahankan saat `gen:api` (append setelah generate ulang).
 
+### [2026-06-21] DCS & WCP: Sesi tidak terikat jabatan
+
+Sesi DCS dan WCP tidak lagi memerlukan pilihan jabatan saat pembuatan.
+Partisipan dengan jabatan apapun dapat di-assign ke sesi yang sama.
+- Form buat sesi (`/dcs/buat`, `/wcp/buat`): dropdown jabatan dihapus.
+- Page list sesi: kolom "Jabatan" diganti "Keterangan" (tampilkan `catatan` atau `periode` sebagai fallback).
+- Page detail sesi: heading/breadcrumb menggunakan `sesi.catatan ?? sesi.periode` sebagai label.
+- `JabatanRead` tidak lagi di-fetch di halaman buat dan list sesi DCS/WCP.
+  Fetch jabatan tetap ada di halaman detail sesi (untuk auto-fill label jabatan di form TambahResponden).
+
 ### [2026-06-21] DCS & WCP: Kuesioner berbasis Assignment
 
 - Halaman `/kuesioner` hanya menampilkan DCS/WCP yang sudah di-assign admin

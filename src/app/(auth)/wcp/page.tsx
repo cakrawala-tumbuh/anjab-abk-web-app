@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { auth, isAdmin } from "@/lib/auth/auth";
 import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
-import type { JabatanRead, WcpSesiRead } from "@/lib/api/schema";
+import type { WcpSesiRead } from "@/lib/api/schema";
 
 export const metadata = { title: "Sesi WCP — ANJAB-ABK" };
 
@@ -14,35 +14,28 @@ const STATUS_LABEL: Record<string, { label: string; cls: string }> = {
   ANALYZED: { label: "Teranalisis", cls: "bg-green-100 text-green-700" },
 };
 
-async function fetchPageData(accessToken: string | undefined) {
+async function fetchSesi(accessToken: string | undefined): Promise<WcpSesiRead[]> {
   const client = withServerAuth(accessToken);
-  const [sesiRes, jabatanRes] = await Promise.all([
-    client.GET("/api/v1/wcp/sesi", { params: { query: { limit: 100 } } }),
-    client.GET("/api/v1/jabatan", { params: { query: { limit: 100 } } }),
-  ]);
-  const reqId = sesiRes.response.headers.get("x-request-id");
-  if (!sesiRes.data) throw toApiError(null, reqId);
-  return {
-    sesi: (sesiRes.data.items ?? []) as WcpSesiRead[],
-    jabatan: (jabatanRes.data?.items ?? []) as JabatanRead[],
-  };
+  const { data, response } = await client.GET("/api/v1/wcp/sesi", {
+    params: { query: { limit: 100 } },
+  });
+  const reqId = response.headers.get("x-request-id");
+  if (!data) throw toApiError(null, reqId);
+  return (data.items ?? []) as WcpSesiRead[];
 }
 
 export default async function WcpSesiPage() {
   const session = await auth();
   if (!isAdmin(session)) notFound();
 
-  const { sesi, jabatan } = await fetchPageData(session?.accessToken);
-  const jabatanMap = Object.fromEntries(jabatan.map((j) => [j.id, j.nama]));
+  const sesi = await fetchSesi(session?.accessToken);
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="page-heading">Sesi WCP</h1>
-          <p className="page-subtext">
-            Workplace Characteristics Profile — kelola sesi survei per jabatan.
-          </p>
+          <p className="page-subtext">Workplace Characteristics Profile — kelola sesi survei.</p>
         </div>
         <Link
           href="/wcp/buat"
@@ -70,7 +63,7 @@ export default async function WcpSesiPage() {
             <thead className="bg-gray-50 dark:bg-gray-800">
               <tr>
                 <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
-                  Jabatan
+                  Keterangan
                 </th>
                 <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
                   Periode
@@ -99,7 +92,7 @@ export default async function WcpSesiPage() {
                         href={`/wcp/${s.id}`}
                         className="font-medium text-blue-600 hover:text-blue-800 hover:underline"
                       >
-                        {jabatanMap[s.jabatan_id] ?? s.jabatan_id}
+                        {s.catatan ?? s.periode}
                       </Link>
                     </td>
                     <td className="px-4 py-3 font-mono text-gray-700">{s.periode}</td>

@@ -1540,11 +1540,6 @@ export interface components {
              */
             sesi_id: string;
             /**
-             * Jabatan Id
-             * @description ID jabatan yang dikaji.
-             */
-            jabatan_id: string;
-            /**
              * Periode
              * @description Periode survei.
              */
@@ -1823,11 +1818,6 @@ export interface components {
              * @example 2025-06
              */
             sesi_periode: string;
-            /**
-             * Sesi Jabatan Id
-             * @description ID jabatan yang dikaji.
-             */
-            sesi_jabatan_id: string;
         };
         /**
          * DcsRespondenCreate
@@ -1908,12 +1898,6 @@ export interface components {
          */
         DcsSesiCreate: {
             /**
-             * Jabatan Id
-             * @description ID jabatan yang dikaji.
-             * @example jbt_a1b2c3d4
-             */
-            jabatan_id: string;
-            /**
              * Periode
              * @description Periode survei format YYYY-MM.
              * @example 2025-06
@@ -1950,12 +1934,6 @@ export interface components {
              * @example dses_a1b2c3d4
              */
             id: string;
-            /**
-             * Jabatan Id
-             * @description ID jabatan.
-             * @example jbt_a1b2c3d4
-             */
-            jabatan_id: string;
             /**
              * Periode
              * @description Periode survei (YYYY-MM).
@@ -4617,11 +4595,6 @@ export interface components {
              */
             sesi_id: string;
             /**
-             * Jabatan Id
-             * @description ID jabatan yang dikaji.
-             */
-            jabatan_id: string;
-            /**
              * Periode
              * @description Periode survei.
              */
@@ -4820,11 +4793,6 @@ export interface components {
              * @example 2025-06
              */
             sesi_periode: string;
-            /**
-             * Sesi Jabatan Id
-             * @description ID jabatan yang dikaji.
-             */
-            sesi_jabatan_id: string;
         };
         /**
          * WcpRespondenCreate
@@ -4905,12 +4873,6 @@ export interface components {
          */
         WcpSesiCreate: {
             /**
-             * Jabatan Id
-             * @description ID jabatan yang dikaji.
-             * @example jbt_a1b2c3d4
-             */
-            jabatan_id: string;
-            /**
              * Periode
              * @description Periode survei format YYYY-MM.
              * @example 2025-06
@@ -4947,12 +4909,6 @@ export interface components {
              * @example wses_a1b2c3d4
              */
             id: string;
-            /**
-             * Jabatan Id
-             * @description ID jabatan.
-             * @example jbt_a1b2c3d4
-             */
-            jabatan_id: string;
             /**
              * Periode
              * @description Periode survei (YYYY-MM).
@@ -11494,16 +11450,13 @@ export interface operations {
     };
 }
 
-// ---------------------------------------------------------------------------
 // Convenience re-exports — dipertahankan setelah `npm run gen:api`
-// ---------------------------------------------------------------------------
 export type JabatanRead = components["schemas"]["JabatanRead"];
 export type JenjangPendidikanRead = components["schemas"]["JenjangPendidikanRead"];
 export type MataPelajaranRead = components["schemas"]["MataPelajaranRead"];
 export type PartisipanRead = components["schemas"]["PartisipanRead"];
 export type SekolahRead = components["schemas"]["SekolahRead"];
 export type SMEPanelRead = components["schemas"]["SMEPanelRead"];
-
 export type DcsItemRead = components["schemas"]["DcsItemRead"];
 export type DcsJawabanRead = components["schemas"]["DcsJawabanRead"];
 export type DcsKuesionerItemRead = components["schemas"]["DcsKuesionerItemRead"];
@@ -11512,7 +11465,6 @@ export type DcsSesiRead = components["schemas"]["DcsSesiRead"];
 export type DcsSubSkalaRead = components["schemas"]["DcsSubSkalaRead"];
 export type DcsSubSkalaWithItemsRead = components["schemas"]["DcsSubSkalaWithItemsRead"];
 export type DcsArahItem = components["schemas"]["DcsItemRead"]["arah"];
-
 export type WcpDimensiRead = components["schemas"]["WcpDimensiRead"];
 export type WcpDimensiWithItemsRead = components["schemas"]["WcpDimensiWithItemsRead"];
 export type WcpItemRead = components["schemas"]["WcpItemRead"];
@@ -11521,7 +11473,6 @@ export type WcpKuesionerItemRead = components["schemas"]["WcpKuesionerItemRead"]
 export type WcpRespondenRead = components["schemas"]["WcpRespondenRead"];
 export type WcpSesiRead = components["schemas"]["WcpSesiRead"];
 export type WcpReverseType = "NONE" | "R" | "UF" | "R_STAR";
-
 export type TiCatalogRead = components["schemas"]["TiCatalogRead"];
 export type TiDetailItem = components["schemas"]["TiDetailItem"];
 export type TiHasilSesiRead = components["schemas"]["TiHasilSesiRead"];
@@ -11534,7 +11485,6 @@ export type TiSesiRead = components["schemas"]["TiSesiRead"];
 export type TiTahap2ReviewRead = components["schemas"]["TiTahap2ReviewRead"];
 export type TiTahap2TaskRead = components["schemas"]["TiTahap2TaskRead"];
 export type TiTaskTerpilihRead = components["schemas"]["TiTaskTerpilihRead"];
-
 export type TsSesiRead = components["schemas"]["TsSesiRead"];
 export type TsRespondenRead = components["schemas"]["TsRespondenRead"];
 export type TsLogRead = components["schemas"]["TsLogRead"];

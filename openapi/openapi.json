@@ -9262,11 +9262,6 @@
             "title": "Sesi Id",
             "description": "ID sesi."
           },
-          "jabatan_id": {
-            "type": "string",
-            "title": "Jabatan Id",
-            "description": "ID jabatan yang dikaji."
-          },
           "periode": {
             "type": "string",
             "title": "Periode",
@@ -9332,7 +9327,6 @@
         "type": "object",
         "required": [
           "sesi_id",
-          "jabatan_id",
           "periode",
           "n_responden",
           "sub_skala",
@@ -9729,11 +9723,6 @@
             "examples": [
               "2025-06"
             ]
-          },
-          "sesi_jabatan_id": {
-            "type": "string",
-            "title": "Sesi Jabatan Id",
-            "description": "ID jabatan yang dikaji."
           }
         },
         "type": "object",
@@ -9744,8 +9733,7 @@
           "sudah_submit",
           "created_at",
           "sesi_status",
-          "sesi_periode",
-          "sesi_jabatan_id"
+          "sesi_periode"
         ],
         "title": "DcsKuesionerItemRead",
         "description": "Responden DCS diperkaya info sesi — dipakai endpoint /kuesioner/saya."
@@ -9887,14 +9875,6 @@
       },
       "DcsSesiCreate": {
         "properties": {
-          "jabatan_id": {
-            "type": "string",
-            "title": "Jabatan Id",
-            "description": "ID jabatan yang dikaji.",
-            "examples": [
-              "jbt_a1b2c3d4"
-            ]
-          },
           "periode": {
             "type": "string",
             "maxLength": 7,
@@ -9943,7 +9923,6 @@
         "additionalProperties": false,
         "type": "object",
         "required": [
-          "jabatan_id",
           "periode"
         ],
         "title": "DcsSesiCreate",
@@ -9957,14 +9936,6 @@
             "description": "ID sesi.",
             "examples": [
               "dses_a1b2c3d4"
-            ]
-          },
-          "jabatan_id": {
-            "type": "string",
-            "title": "Jabatan Id",
-            "description": "ID jabatan.",
-            "examples": [
-              "jbt_a1b2c3d4"
             ]
           },
           "periode": {
@@ -10021,7 +9992,6 @@
         "type": "object",
         "required": [
           "id",
-          "jabatan_id",
           "periode",
           "status",
           "min_responden",
@@ -14640,11 +14610,6 @@
             "title": "Sesi Id",
             "description": "ID sesi."
           },
-          "jabatan_id": {
-            "type": "string",
-            "title": "Jabatan Id",
-            "description": "ID jabatan yang dikaji."
-          },
           "periode": {
             "type": "string",
             "title": "Periode",
@@ -14667,7 +14632,6 @@
         "type": "object",
         "required": [
           "sesi_id",
-          "jabatan_id",
           "periode",
           "n_responden",
           "dimensi"
@@ -14964,11 +14928,6 @@
             "examples": [
               "2025-06"
             ]
-          },
-          "sesi_jabatan_id": {
-            "type": "string",
-            "title": "Sesi Jabatan Id",
-            "description": "ID jabatan yang dikaji."
           }
         },
         "type": "object",
@@ -14979,8 +14938,7 @@
           "sudah_submit",
           "created_at",
           "sesi_status",
-          "sesi_periode",
-          "sesi_jabatan_id"
+          "sesi_periode"
         ],
         "title": "WcpKuesionerItemRead",
         "description": "Responden WCP diperkaya info sesi — dipakai endpoint /kuesioner/saya."
@@ -15122,14 +15080,6 @@
       },
       "WcpSesiCreate": {
         "properties": {
-          "jabatan_id": {
-            "type": "string",
-            "title": "Jabatan Id",
-            "description": "ID jabatan yang dikaji.",
-            "examples": [
-              "jbt_a1b2c3d4"
-            ]
-          },
           "periode": {
             "type": "string",
             "maxLength": 7,
@@ -15178,7 +15128,6 @@
         "additionalProperties": false,
         "type": "object",
         "required": [
-          "jabatan_id",
           "periode"
         ],
         "title": "WcpSesiCreate",
@@ -15192,14 +15141,6 @@
             "description": "ID sesi.",
             "examples": [
               "wses_a1b2c3d4"
-            ]
-          },
-          "jabatan_id": {
-            "type": "string",
-            "title": "Jabatan Id",
-            "description": "ID jabatan.",
-            "examples": [
-              "jbt_a1b2c3d4"
             ]
           },
           "periode": {
@@ -15256,7 +15197,6 @@
         "type": "object",
         "required": [
           "id",
-          "jabatan_id",
           "periode",
           "status",
           "min_responden",
