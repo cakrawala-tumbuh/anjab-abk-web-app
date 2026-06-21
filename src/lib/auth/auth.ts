@@ -19,6 +19,7 @@ import { config } from "@/lib/config";
 declare module "next-auth" {
   interface Session {
     accessToken?: string;
+    idToken?: string;
     user: {
       groups: string[];
     } & DefaultSession["user"];
@@ -28,6 +29,7 @@ declare module "next-auth" {
 declare module "@auth/core/jwt" {
   interface JWT {
     accessToken?: string;
+    idToken?: string;
     groups?: string[];
   }
 }
@@ -51,6 +53,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (account?.access_token) {
         token.accessToken = account.access_token;
       }
+      if (account?.id_token) {
+        token.idToken = account.id_token;
+      }
       // Authentik menaruh klaim `groups` di profile (id_token)
       if (profile && Array.isArray((profile as Record<string, unknown>).groups)) {
         token.groups = (profile as Record<string, unknown>).groups as string[];
@@ -59,6 +64,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
     async session({ session, token }) {
       session.accessToken = token.accessToken;
+      session.idToken = token.idToken;
       session.user.groups = token.groups ?? [];
       return session;
     },

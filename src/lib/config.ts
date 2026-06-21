@@ -23,4 +23,6 @@ export const config = {
     /** Public client id (PKCE, tanpa client_secret). */
     clientId: process.env.AUTHENTIK_CLIENT_ID,
   },
+  /** URL publik aplikasi ini — dipakai sebagai post_logout_redirect_uri saat logout OIDC. */
+  appUrl: process.env.AUTH_URL ?? process.env.NEXTAUTH_URL,
 } as const;

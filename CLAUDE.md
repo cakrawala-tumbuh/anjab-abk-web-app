@@ -64,6 +64,7 @@ src/
 
 Sesi DCS dan WCP tidak lagi memerlukan pilihan jabatan saat pembuatan.
 Partisipan dengan jabatan apapun dapat di-assign ke sesi yang sama.
+
 - Form buat sesi (`/dcs/buat`, `/wcp/buat`): dropdown jabatan dihapus.
 - Page list sesi: kolom "Jabatan" diganti "Keterangan" (tampilkan `catatan` atau `periode` sebagai fallback).
 - Page detail sesi: heading/breadcrumb menggunakan `sesi.catatan ?? sesi.periode` sebagai label.

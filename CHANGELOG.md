@@ -7,6 +7,29 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [1.5.0] - 2026-06-21
+
+### Ditambahkan
+
+- **Route handler logout OIDC** (`GET /api/auth/logout`) — melakukan RP-initiated logout
+  ke Authentik end-session endpoint dengan `id_token_hint` dan `post_logout_redirect_uri`,
+  menggantikan server action yang tidak mendukung redirect lintas-origin di Auth.js v5 beta.
+- **`idToken` di JWT dan session** — disimpan dari `account.id_token` saat login untuk
+  dipakai sebagai `id_token_hint` saat logout OIDC.
+- **`appUrl` di config** — membaca `AUTH_URL` / `NEXTAUTH_URL` untuk dipakai sebagai
+  `post_logout_redirect_uri` saat logout.
+- **E2E: describe "Alur Logout (Keluar)"** di `auth.spec.ts` — 2 test baru: verifikasi
+  tautan Keluar tampil setelah login, dan redirect 303 ke Authentik end-session.
+
+### Diperbaiki
+
+- **Tombol "Keluar" tidak benar-benar logout** — sesi SSO Authentik tetap aktif karena
+  Auth.js v5 beta tidak mendukung `redirectTo` lintas-origin dari server action. Diperbaiki
+  dengan mengganti `<form>` server action menjadi `<Link>` ke `/api/auth/logout`.
+- **Race condition `buatSekolah` di `kuesioner.spec.ts`** — `selectOption` dipanggil
+  sebelum opsi dropdown jenjang selesai di-fetch async. Diperbaiki dengan menunggu
+  `option.nth(1)` ter-attach sebelum memanggil `selectOption`.
+
 ## [1.4.1] - 2026-06-21
 
 ### Diperbaiki

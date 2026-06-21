@@ -32,9 +32,10 @@ async function buatSekolah(page: Page): Promise<void> {
   if ((await page.content()).includes(SEKOLAH_NAMA)) return;
   await page.goto("/master-data/sekolah/tambah");
   await page.getByLabel("Nama Sekolah").fill(SEKOLAH_NAMA);
-  await page
-    .getByLabel("Jenjang Pendidikan")
-    .selectOption({ label: `${JENJANG_KODE} — ${JENJANG_NAMA}` });
+  const jenjangSelect = page.getByLabel("Jenjang Pendidikan");
+  // Tunggu hingga minimal 1 opsi jenjang ter-load (async fetch) sebelum selectOption
+  await expect(jenjangSelect.locator("option").nth(1)).toBeAttached({ timeout: 10_000 });
+  await jenjangSelect.selectOption({ label: `${JENJANG_KODE} — ${JENJANG_NAMA}` });
   await page.getByRole("button", { name: "Tambah Sekolah" }).click();
   await page.waitForURL(/\/master-data\/sekolah$/, { timeout: 15_000 });
 }
