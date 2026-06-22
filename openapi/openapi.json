@@ -12,7 +12,7 @@
       "name": "MIT",
       "identifier": "MIT"
     },
-    "version": "0.3.0"
+    "version": "0.12.0"
   },
   "paths": {
     "/api/v1/health": {
@@ -142,7 +142,7 @@
             "required": false,
             "schema": {
               "type": "integer",
-              "maximum": 100,
+              "maximum": 500,
               "minimum": 1,
               "description": "Maks item per halaman.",
               "default": 20,
@@ -625,7 +625,7 @@
             "required": false,
             "schema": {
               "type": "integer",
-              "maximum": 100,
+              "maximum": 500,
               "minimum": 1,
               "description": "Maks item per halaman.",
               "default": 20,
@@ -1102,7 +1102,7 @@
             "required": false,
             "schema": {
               "type": "integer",
-              "maximum": 100,
+              "maximum": 500,
               "minimum": 1,
               "description": "Maks item per halaman.",
               "default": 20,
@@ -1585,7 +1585,7 @@
             "required": false,
             "schema": {
               "type": "integer",
-              "maximum": 100,
+              "maximum": 500,
               "minimum": 1,
               "description": "Maks item per halaman.",
               "default": 20,
@@ -2069,7 +2069,7 @@
             "required": false,
             "schema": {
               "type": "integer",
-              "maximum": 100,
+              "maximum": 500,
               "minimum": 1,
               "description": "Maks item per halaman.",
               "default": 20,
@@ -2553,7 +2553,7 @@
             "required": false,
             "schema": {
               "type": "integer",
-              "maximum": 100,
+              "maximum": 500,
               "minimum": 1,
               "description": "Maks item per halaman.",
               "default": 20,
@@ -3100,11 +3100,11 @@
             }
           },
           "422": {
-            "description": "Jabatan partisipan tidak sesuai dengan panel ini.",
+            "description": "Validation Error",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "#/components/schemas/HTTPValidationError"
                 }
               }
             }
@@ -3524,7 +3524,7 @@
             "required": false,
             "schema": {
               "type": "integer",
-              "maximum": 100,
+              "maximum": 500,
               "minimum": 1,
               "description": "Maks item per halaman.",
               "default": 20,
@@ -4950,7 +4950,7 @@
             "required": false,
             "schema": {
               "type": "integer",
-              "maximum": 100,
+              "maximum": 500,
               "minimum": 1,
               "description": "Maks item per halaman.",
               "default": 20,
@@ -6243,7 +6243,7 @@
         "tags": [
           "taskinv.catalog"
         ],
-        "summary": "Daftar task catalog untuk satu kombinasi unit × kategori jabatan",
+        "summary": "Daftar task catalog untuk kombinasi unit × kategori jabatan",
         "operationId": "taskinv_catalog_list",
         "parameters": [
           {
@@ -6273,7 +6273,7 @@
               "description": "Unit/jenjang (TK/SD/SMP/SMA). Opsional; bila tidak diisi, kembalikan semua task untuk kategori jabatan ini lintas unit.",
               "title": "Unit"
             },
-            "description": "Unit/jenjang (TK/SD/SMP/SMA). Opsional."
+            "description": "Unit/jenjang (TK/SD/SMP/SMA). Opsional; bila tidak diisi, kembalikan semua task untuk kategori jabatan ini lintas unit."
           }
         ],
         "responses": {
@@ -6318,7 +6318,7 @@
             "required": false,
             "schema": {
               "type": "integer",
-              "maximum": 100,
+              "maximum": 500,
               "minimum": 1,
               "description": "Maks item per halaman.",
               "default": 20,
@@ -7195,11 +7195,11 @@
             }
           },
           "422": {
-            "description": "Validation Error",
+            "description": "Partisipan bukan anggota SME panel jabatan sesi ini.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -8028,7 +8028,7 @@
             "required": false,
             "schema": {
               "type": "integer",
-              "maximum": 100,
+              "maximum": 500,
               "minimum": 1,
               "description": "Maks item per halaman.",
               "default": 20,
@@ -9235,7 +9235,7 @@
             "required": false,
             "schema": {
               "type": "integer",
-              "maximum": 100,
+              "maximum": 500,
               "minimum": 1,
               "description": "Maks item per halaman.",
               "default": 20,
@@ -9708,7 +9708,7 @@
             "required": false,
             "schema": {
               "type": "integer",
-              "maximum": 100,
+              "maximum": 500,
               "minimum": 1,
               "description": "Maks item per halaman.",
               "default": 20,
@@ -10182,7 +10182,7 @@
             "required": false,
             "schema": {
               "type": "integer",
-              "maximum": 100,
+              "maximum": 500,
               "minimum": 1,
               "description": "Maks item per halaman.",
               "default": 20,
@@ -13967,9 +13967,16 @@
             ]
           },
           "detil_tugas": {
-            "type": "string",
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
             "title": "Detil Tugas",
-            "description": "Detil tugas (kelompok).",
+            "description": "Detil tugas (kelompok); null bila task langsung di bawah tugas pokok.",
             "examples": [
               "Mengevaluasi Kinerja Karyawan"
             ]
@@ -13997,7 +14004,6 @@
           "unit",
           "kategori_jabatan",
           "tugas_pokok",
-          "detil_tugas",
           "uraian_tugas",
           "urutan"
         ],
@@ -14948,6 +14954,18 @@
             "title": "Max Responden",
             "description": "Maksimum responden."
           },
+          "jabatan_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Jabatan Id",
+            "description": "ID jabatan (opsional)."
+          },
           "koordinator_id": {
             "anyOf": [
               {
@@ -14971,18 +14989,6 @@
             ],
             "title": "Jumlah Task Terpilih",
             "description": "Jumlah task relevan yang dibekukan saat masuk TAHAP3 (None bila belum)."
-          },
-          "jabatan_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Jabatan Id",
-            "description": "ID jabatan (opsional)."
           },
           "catatan": {
             "anyOf": [
@@ -15044,6 +15050,18 @@
             "title": "Koordinator Id",
             "description": "ID koordinator SME panel."
           },
+          "jabatan_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Jabatan Id",
+            "description": "ID jabatan."
+          },
           "min_responden": {
             "anyOf": [
               {
@@ -15067,18 +15085,6 @@
               }
             ],
             "title": "Max Responden"
-          },
-          "jabatan_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Jabatan Id",
-            "description": "ID jabatan."
           },
           "catatan": {
             "anyOf": [

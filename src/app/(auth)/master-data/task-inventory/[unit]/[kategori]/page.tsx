@@ -36,9 +36,10 @@ export default async function TiKombinasiDetailPage({ params }: PageProps) {
   if (catalog.length === 0) notFound();
 
   const grouped = catalog.reduce<Record<string, Record<string, TiCatalogRead[]>>>((acc, item) => {
+    const dtKey = item.detil_tugas ?? "";
     if (!acc[item.tugas_pokok]) acc[item.tugas_pokok] = {};
-    if (!acc[item.tugas_pokok][item.detil_tugas]) acc[item.tugas_pokok][item.detil_tugas] = [];
-    acc[item.tugas_pokok][item.detil_tugas].push(item);
+    if (!acc[item.tugas_pokok][dtKey]) acc[item.tugas_pokok][dtKey] = [];
+    acc[item.tugas_pokok][dtKey].push(item);
     return acc;
   }, {});
 
@@ -84,9 +85,11 @@ export default async function TiKombinasiDetailPage({ params }: PageProps) {
               <div className="divide-y divide-gray-100 border-t border-gray-100 dark:divide-gray-700 dark:border-gray-700">
                 {Object.entries(detilMap).map(([detilTugas, items]) => (
                   <div key={detilTugas} className="px-4 py-3">
-                    <p className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-                      {detilTugas}
-                    </p>
+                    {detilTugas && (
+                      <p className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+                        {detilTugas}
+                      </p>
+                    )}
                     <ul className="space-y-1.5">
                       {items.map((item) => (
                         <li key={item.kode} className="flex items-start gap-3 text-sm">

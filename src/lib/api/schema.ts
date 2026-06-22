@@ -1046,7 +1046,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Daftar task catalog untuk satu kombinasi unit × kategori jabatan */
+        /** Daftar task catalog untuk kombinasi unit × kategori jabatan */
         get: operations["taskinv_catalog_list"];
         put?: never;
         post?: never;
@@ -3529,10 +3529,10 @@ export interface components {
             tugas_pokok: string;
             /**
              * Detil Tugas
-             * @description Detil tugas (kelompok).
+             * @description Detil tugas (kelompok); null bila task langsung di bawah tugas pokok.
              * @example Mengevaluasi Kinerja Karyawan
              */
-            detil_tugas: string;
+            detil_tugas?: string | null;
             /**
              * Uraian Tugas
              * @description Uraian tugas (task statement).
@@ -4131,6 +4131,11 @@ export interface components {
              */
             max_responden: number;
             /**
+             * Jabatan Id
+             * @description ID jabatan (opsional).
+             */
+            jabatan_id?: string | null;
+            /**
              * Koordinator Id
              * @description ID koordinator SME panel yang bertanggung jawab Tahap 2.
              */
@@ -4140,11 +4145,6 @@ export interface components {
              * @description Jumlah task relevan yang dibekukan saat masuk TAHAP3 (None bila belum).
              */
             jumlah_task_terpilih?: number | null;
-            /**
-             * Jabatan Id
-             * @description ID jabatan (opsional).
-             */
-            jabatan_id?: string | null;
             /**
              * Catatan
              * @description Catatan.
@@ -4169,15 +4169,15 @@ export interface components {
              * @description ID koordinator SME panel.
              */
             koordinator_id?: string | null;
-            /** Min Responden */
-            min_responden?: number | null;
-            /** Max Responden */
-            max_responden?: number | null;
             /**
              * Jabatan Id
              * @description ID jabatan.
              */
             jabatan_id?: string | null;
+            /** Min Responden */
+            min_responden?: number | null;
+            /** Max Responden */
+            max_responden?: number | null;
             /** Catatan */
             catatan?: string | null;
         };
@@ -7568,13 +7568,13 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
-            /** @description Jabatan partisipan tidak sesuai dengan panel ini. */
+            /** @description Validation Error */
             422: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
             /** @description Terlalu banyak permintaan. */
@@ -9845,7 +9845,7 @@ export interface operations {
             query: {
                 /** @description Kategori jabatan. */
                 kategori_jabatan: string;
-                /** @description Unit/jenjang (TK/SD/SMP/SMA). Opsional. */
+                /** @description Unit/jenjang (TK/SD/SMP/SMA). Opsional; bila tidak diisi, kembalikan semua task untuk kategori jabatan ini lintas unit. */
                 unit?: string | null;
             };
             header?: never;
@@ -10491,13 +10491,13 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
-            /** @description Validation Error */
+            /** @description Partisipan bukan anggota SME panel jabatan sesi ini. */
             422: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
             /** @description Terlalu banyak permintaan. */

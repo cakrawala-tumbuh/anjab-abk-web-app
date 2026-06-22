@@ -7,6 +7,27 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [1.8.0] - 2026-06-22
+
+### Ditambahkan
+
+- **Sesi TI tanpa unit kerja** — `TiSesiRead.unit` kini opsional; form buat sesi tidak
+  mewajibkan isian unit. Catalog task ditampilkan lintas unit bila sesi tidak punya unit.
+- **SME panel bebas jabatan** — halaman tambah anggota panel tidak lagi memfilter partisipan
+  berdasarkan jabatan.
+- **Schema API diperbarui** — `openapi.json` dan `schema.ts` diregenerasi dari backend v0.13.0;
+  `TiCatalogRead.detil_tugas` kini `string | null`.
+
+### Diperbaiki
+
+- Halaman **Tugas Pokok**, **Detil Tugas**, dan **Uraian Tugas** gagal render (Server Components
+  error) karena frontend meminta `limit=200`/`500` sedangkan backend hanya menerima `limit≤100`.
+  Diperbaiki dengan menaikkan batas backend ke 500.
+- Breadcrumb `/task-inventory/tahap1/{id}` menampilkan teks "null" saat `sesi.unit` kosong;
+  kini menampilkan "—".
+- Halaman detail catalog (`/master-data/task-inventory/[unit]/[kategori]`) gagal saat ada task
+  dengan `detil_tugas=null`; diperbaiki dengan menggunakan string kosong sebagai kunci grup.
+
 ## [1.7.0] - 2026-06-22
 
 ### Ditambahkan
