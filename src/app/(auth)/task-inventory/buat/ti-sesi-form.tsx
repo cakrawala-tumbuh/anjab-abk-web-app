@@ -12,7 +12,7 @@ import type { TiKombinasiRead } from "@/lib/api/schema";
 
 export const schema = z
   .object({
-    unit: z.string().min(1, "Unit wajib dipilih"),
+    unit: z.string().optional(),
     kategori_jabatan: z.string().min(1, "Kategori jabatan wajib dipilih"),
     periode: z
       .string()
@@ -52,13 +52,17 @@ export function TiSesiForm({ kombinasi, accessToken }: Props) {
     () => Array.from(new Set(kombinasi.map((k) => k.unit))).sort(),
     [kombinasi],
   );
-  const kategoriOptions = useMemo(
-    () =>
-      kombinasi
-        .filter((k) => k.unit === unit)
-        .sort((a, b) => a.kategori_jabatan.localeCompare(b.kategori_jabatan)),
-    [kombinasi, unit],
-  );
+  const kategoriOptions = useMemo(() => {
+    const filtered = unit ? kombinasi.filter((k) => k.unit === unit) : kombinasi;
+    const seen = new Set<string>();
+    return filtered
+      .filter((k) => {
+        if (seen.has(k.kategori_jabatan)) return false;
+        seen.add(k.kategori_jabatan);
+        return true;
+      })
+      .sort((a, b) => a.kategori_jabatan.localeCompare(b.kategori_jabatan));
+  }, [kombinasi, unit]);
 
   const {
     register,
@@ -76,7 +80,7 @@ export function TiSesiForm({ kombinasi, accessToken }: Props) {
       const client = withServerAuth(accessToken);
       const { data, error, response } = await client.POST("/api/v1/task-inventory/sesi", {
         body: {
-          unit: values.unit,
+          unit: values.unit || null,
           kategori_jabatan: values.kategori_jabatan,
           periode: values.periode,
           min_responden: values.min_responden,
@@ -117,7 +121,7 @@ export function TiSesiForm({ kombinasi, accessToken }: Props) {
             className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             aria-invalid={!!errors.unit}
           >
-            <option value="">-- Pilih unit --</option>
+            <option value="">-- Semua unit --</option>
             {units.map((u) => (
               <option key={u} value={u}>
                 {u}
@@ -139,8 +143,7 @@ export function TiSesiForm({ kombinasi, accessToken }: Props) {
           <select
             id="kategori_jabatan"
             {...register("kategori_jabatan")}
-            disabled={!unit}
-            className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:bg-gray-50"
+            className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             aria-invalid={!!errors.kategori_jabatan}
           >
             <option value="">-- Pilih kategori jabatan --</option>

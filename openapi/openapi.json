@@ -6247,17 +6247,6 @@
         "operationId": "taskinv_catalog_list",
         "parameters": [
           {
-            "name": "unit",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "description": "Unit/jenjang (TK/SD/SMP/SMA).",
-              "title": "Unit"
-            },
-            "description": "Unit/jenjang (TK/SD/SMP/SMA)."
-          },
-          {
             "name": "kategori_jabatan",
             "in": "query",
             "required": true,
@@ -6267,6 +6256,24 @@
               "title": "Kategori Jabatan"
             },
             "description": "Kategori jabatan."
+          },
+          {
+            "name": "unit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Unit/jenjang (TK/SD/SMP/SMA). Opsional; bila tidak diisi, kembalikan semua task untuk kategori jabatan ini lintas unit.",
+              "title": "Unit"
+            },
+            "description": "Unit/jenjang (TK/SD/SMP/SMA). Opsional."
           }
         ],
         "responses": {
@@ -14765,11 +14772,17 @@
       "TiSesiCreate": {
         "properties": {
           "unit": {
-            "type": "string",
-            "maxLength": 50,
-            "minLength": 1,
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 50
+              },
+              {
+                "type": "null"
+              }
+            ],
             "title": "Unit",
-            "description": "Unit/jenjang yang dikaji (TK/SD/SMP/SMA).",
+            "description": "Unit/jenjang yang dikaji (TK/SD/SMP/SMA). Opsional; bila tidak diisi, sesi berlaku lintas unit.",
             "examples": [
               "TK"
             ]
@@ -14830,6 +14843,21 @@
               "p_a1b2c3d4"
             ]
           },
+          "jabatan_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Jabatan Id",
+            "description": "ID jabatan (opsional); bila diisi, hanya partisipan anggota SME panel jabatan ini yang dapat didaftarkan sebagai responden.",
+            "examples": [
+              "jbt_a1b2c3d4"
+            ]
+          },
           "catatan": {
             "anyOf": [
               {
@@ -14847,7 +14875,6 @@
         "additionalProperties": false,
         "type": "object",
         "required": [
-          "unit",
           "kategori_jabatan",
           "periode"
         ],
@@ -14865,7 +14892,14 @@
             ]
           },
           "unit": {
-            "type": "string",
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
             "title": "Unit",
             "description": "Unit/jenjang.",
             "examples": [
@@ -14938,6 +14972,18 @@
             "title": "Jumlah Task Terpilih",
             "description": "Jumlah task relevan yang dibekukan saat masuk TAHAP3 (None bila belum)."
           },
+          "jabatan_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Jabatan Id",
+            "description": "ID jabatan (opsional)."
+          },
           "catatan": {
             "anyOf": [
               {
@@ -14960,7 +15006,6 @@
         "type": "object",
         "required": [
           "id",
-          "unit",
           "kategori_jabatan",
           "periode",
           "status",
@@ -15022,6 +15067,18 @@
               }
             ],
             "title": "Max Responden"
+          },
+          "jabatan_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Jabatan Id",
+            "description": "ID jabatan."
           },
           "catatan": {
             "anyOf": [

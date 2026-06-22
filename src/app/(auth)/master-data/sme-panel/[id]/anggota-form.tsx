@@ -52,7 +52,7 @@ function TambahForm({ panelId, partisipanBelumAnggota, accessToken }: TambahProp
   if (partisipanBelumAnggota.length === 0) {
     return (
       <p className="text-sm text-gray-500 dark:text-gray-400">
-        Semua partisipan yang sesuai jabatan sudah menjadi anggota panel ini.
+        Semua partisipan sudah menjadi anggota panel ini.
       </p>
     );
   }
@@ -196,7 +196,6 @@ export function SetKoordinatorButton({
 
 interface AnggotaSectionProps {
   panelId: string;
-  panelJabatanId: string;
   partisipanIds: string[];
   koordinatorId: string | null;
   jabatanMap: Record<string, { nama: string }>;
@@ -205,7 +204,6 @@ interface AnggotaSectionProps {
 
 export function AnggotaSection({
   panelId,
-  panelJabatanId,
   partisipanIds,
   koordinatorId,
   jabatanMap,
@@ -229,11 +227,7 @@ export function AnggotaSection({
     .map((pid) => partisipanMap[pid])
     .filter(Boolean) as PartisipanRead[];
 
-  const partisipanTersedia = partisipanList.filter((p) => {
-    const jabatanIds = new Set([p.jabatan_utama_id, ...(p.jabatan_tambahan_ids ?? [])]);
-    return jabatanIds.has(panelJabatanId);
-  });
-  const partisipanBelumAnggota = partisipanTersedia.filter((p) => !partisipanIds.includes(p.id));
+  const partisipanBelumAnggota = partisipanList.filter((p) => !partisipanIds.includes(p.id));
 
   return (
     <>

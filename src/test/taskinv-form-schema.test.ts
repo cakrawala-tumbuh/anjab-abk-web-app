@@ -28,9 +28,9 @@ describe("TiSesiSchema", () => {
     expect(tiSesiSchema.safeParse(VALID_SESI).success).toBe(true);
   });
 
-  it("menolak unit kosong", () => {
+  it("mengizinkan unit kosong", () => {
     const result = tiSesiSchema.safeParse({ ...VALID_SESI, unit: "" });
-    expect(result.success).toBe(false);
+    expect(result.success).toBe(true);
   });
 
   it("menolak kategori_jabatan kosong", () => {

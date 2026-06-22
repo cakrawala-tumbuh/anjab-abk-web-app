@@ -4036,10 +4036,10 @@ export interface components {
         TiSesiCreate: {
             /**
              * Unit
-             * @description Unit/jenjang yang dikaji (TK/SD/SMP/SMA).
+             * @description Unit/jenjang yang dikaji (TK/SD/SMP/SMA). Opsional; bila tidak diisi, sesi berlaku lintas unit.
              * @example TK
              */
-            unit: string;
+            unit?: string | null;
             /**
              * Kategori Jabatan
              * @description Kategori jabatan yang dikaji.
@@ -4073,6 +4073,12 @@ export interface components {
              */
             koordinator_id?: string | null;
             /**
+             * Jabatan Id
+             * @description ID jabatan (opsional); bila diisi, hanya partisipan anggota SME panel jabatan ini yang dapat didaftarkan sebagai responden.
+             * @example jbt_a1b2c3d4
+             */
+            jabatan_id?: string | null;
+            /**
              * Catatan
              * @description Catatan opsional untuk sesi ini.
              */
@@ -4094,7 +4100,7 @@ export interface components {
              * @description Unit/jenjang.
              * @example TK
              */
-            unit: string;
+            unit?: string | null;
             /**
              * Kategori Jabatan
              * @description Kategori jabatan.
@@ -4135,6 +4141,11 @@ export interface components {
              */
             jumlah_task_terpilih?: number | null;
             /**
+             * Jabatan Id
+             * @description ID jabatan (opsional).
+             */
+            jabatan_id?: string | null;
+            /**
              * Catatan
              * @description Catatan.
              */
@@ -4162,6 +4173,11 @@ export interface components {
             min_responden?: number | null;
             /** Max Responden */
             max_responden?: number | null;
+            /**
+             * Jabatan Id
+             * @description ID jabatan.
+             */
+            jabatan_id?: string | null;
             /** Catatan */
             catatan?: string | null;
         };
@@ -9827,10 +9843,10 @@ export interface operations {
     taskinv_catalog_list: {
         parameters: {
             query: {
-                /** @description Unit/jenjang (TK/SD/SMP/SMA). */
-                unit: string;
                 /** @description Kategori jabatan. */
                 kategori_jabatan: string;
+                /** @description Unit/jenjang (TK/SD/SMP/SMA). Opsional. */
+                unit?: string | null;
             };
             header?: never;
             path?: never;
@@ -12915,8 +12931,6 @@ export interface operations {
         };
     };
 }
-
-// Convenience re-exports — dipertahankan setelah `npm run gen:api`
 export type JabatanRead = components["schemas"]["JabatanRead"];
 export type JenjangPendidikanRead = components["schemas"]["JenjangPendidikanRead"];
 export type MataPelajaranRead = components["schemas"]["MataPelajaranRead"];

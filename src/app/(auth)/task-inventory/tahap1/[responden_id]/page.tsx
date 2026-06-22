@@ -28,7 +28,7 @@ async function fetchPageData(accessToken: string | undefined, respondenId: strin
   const sesi = sesiRes.data as TiSesiRead;
 
   const catalogRes = await client.GET("/api/v1/task-inventory/catalog", {
-    params: { query: { unit: sesi.unit, kategori_jabatan: sesi.kategori_jabatan } },
+    params: { query: { unit: sesi.unit ?? undefined, kategori_jabatan: sesi.kategori_jabatan } },
   });
   const catalog = (catalogRes.data ?? []) as TiCatalogRead[];
 
