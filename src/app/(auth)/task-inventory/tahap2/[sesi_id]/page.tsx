@@ -46,7 +46,7 @@ export default async function Tahap2KoordinatorPage({ params }: Props) {
         </Link>
         <span>/</span>
         <Link href={`/task-inventory/${sesi.id}`} className="hover:text-gray-700">
-          {sesi.unit} · {sesi.kategori_jabatan}
+          {sesi.unit} · {sesi.jabatan_id}
         </Link>
         <span>/</span>
         <span className="text-gray-900">Review Koordinator Tahap 2</span>

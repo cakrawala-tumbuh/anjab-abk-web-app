@@ -7,6 +7,31 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [1.9.0] - 2026-06-22
+
+### Diubah (Breaking)
+
+- **Jabatan melekat pada TugasPokok, bukan TiSesi** — form buat TiSesi tidak lagi
+  memilih jabatan; jabatan kini dipilih saat membuat TugasPokok.
+- **Form TugasPokok** (`/master-data/tugas-pokok/tambah`): tambah dropdown `jabatan_id`
+  (wajib); hapus dropdown `unit` dan `kategori_jabatan`.
+- **Form TiSesi** (`/task-inventory/buat`): hapus dropdown `jabatan_id`; field `unit`
+  kini opsional.
+- **Form UraianTugas**: hapus field `jabatan_id` eksplisit (diwarisi dari TugasPokok).
+- **Halaman catalog TI** (`/master-data/task-inventory`): dikelompokkan berdasarkan
+  `jabatan_id` menggantikan `kategori_jabatan`.
+- **Schema API** (`schema.ts`) diregenerasi dari backend v0.14.0; `TiCatalogRead`,
+  `TiKombinasiRead`, dan `TiKuesionerItemRead` merefleksikan perubahan jabatan.
+
+### Diperbaiki
+
+- **E2E `kuesioner.spec.ts`**: tes idempoten untuk DCS yang sudah pernah disubmit pada
+  run sebelumnya (`"Belum diisi"` → `"Sudah diisi"`); gunakan `.or()` untuk menerima
+  kedua status, dan return early jika sudah diisi.
+- **E2E `master-data.spec.ts`**: idempoten check uraian tugas gagal karena daftar UI
+  dibatasi 500 item sedangkan item E2E berada di posisi >500 (sort by jabatan_id).
+  Diganti dengan query langsung ke search API backend (`POST /uraian-tugas/search`).
+
 ## [1.8.1] - 2026-06-22
 
 ### Ditambahkan

@@ -13,12 +13,12 @@ export const metadata = { title: "Catalog Task — Master Data" };
 
 async function fetchCatalog(
   unit: string,
-  kategori_jabatan: string,
+  jabatan_id: string,
   accessToken: string | undefined,
 ): Promise<TiCatalogRead[]> {
   const client = withServerAuth(accessToken);
   const { data, response } = await client.GET("/api/v1/task-inventory/catalog", {
-    params: { query: { unit, kategori_jabatan } },
+    params: { query: { unit, jabatan_id } },
   });
   const requestId = response.headers.get("x-request-id");
   if (!data) throw toApiError(null, requestId);
@@ -30,8 +30,8 @@ export default async function TiKombinasiDetailPage({ params }: PageProps) {
   if (!isAdmin(session)) notFound();
 
   const { unit, kategori } = await params;
-  const kategori_jabatan = decodeURIComponent(kategori);
-  const catalog = await fetchCatalog(unit, kategori_jabatan, session?.accessToken);
+  const jabatan_id = decodeURIComponent(kategori);
+  const catalog = await fetchCatalog(unit, jabatan_id, session?.accessToken);
 
   if (catalog.length === 0) notFound();
 
@@ -58,7 +58,7 @@ export default async function TiKombinasiDetailPage({ params }: PageProps) {
           <span className="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-base dark:bg-gray-700">
             {unit}
           </span>{" "}
-          — {kategori_jabatan}
+          — {jabatan_id}
         </h2>
         <p className="page-subtext">
           {catalog.length} task dalam {tugasPokokList.length} tugas pokok. Data bersumber dari

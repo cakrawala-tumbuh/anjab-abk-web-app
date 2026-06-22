@@ -14,10 +14,6 @@ const schema = z.object({
   kode: z.string().min(1, "Kode wajib diisi").max(20, "Kode terlalu panjang"),
   uraian: z.string().min(1, "Uraian wajib diisi").max(500, "Uraian terlalu panjang"),
   unit: z.string().min(1, "Unit wajib diisi").max(20, "Unit terlalu panjang"),
-  kategori_jabatan: z
-    .string()
-    .min(1, "Kategori jabatan wajib diisi")
-    .max(200, "Kategori jabatan terlalu panjang"),
   urutan: z
     .number({ invalid_type_error: "Isi angka urutan" })
     .int("Urutan harus bilangan bulat")
@@ -59,7 +55,6 @@ export function TambahUraianTugasForm({
       kode: "",
       uraian: "",
       unit: "",
-      kategori_jabatan: "",
       urutan: 1,
       tugas_pokok_id: "",
       detil_tugas_id: "",
@@ -83,7 +78,6 @@ export function TambahUraianTugasForm({
         kode: values.kode,
         uraian: values.uraian,
         unit: values.unit,
-        kategori_jabatan: values.kategori_jabatan,
         urutan: values.urutan,
         tugas_pokok_id: values.tugas_pokok_id,
         detil_tugas_id: values.detil_tugas_id || null,
@@ -105,7 +99,6 @@ export function TambahUraianTugasForm({
             kode: values.kode,
             uraian: values.uraian,
             unit: values.unit,
-            kategori_jabatan: values.kategori_jabatan,
             urutan: values.urutan,
             tugas_pokok_id: values.tugas_pokok_id,
             detil_tugas_id: values.detil_tugas_id || null,
@@ -186,24 +179,6 @@ export function TambahUraianTugasForm({
           {errors.unit && (
             <p className="form-error" role="alert">
               {errors.unit.message}
-            </p>
-          )}
-        </div>
-        <div className="flex-1">
-          <label htmlFor="kategori_jabatan" className="form-label">
-            Kategori Jabatan <span aria-hidden>*</span>
-          </label>
-          <input
-            id="kategori_jabatan"
-            type="text"
-            {...register("kategori_jabatan")}
-            placeholder="cth. Kepala Sekolah"
-            className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-            aria-invalid={!!errors.kategori_jabatan}
-          />
-          {errors.kategori_jabatan && (
-            <p className="form-error" role="alert">
-              {errors.kategori_jabatan.message}
             </p>
           )}
         </div>

@@ -375,6 +375,7 @@ test.describe.serial("Master Data — Tugas Pokok", () => {
 
   test("admin dapat tambah tugas pokok baru", async ({ page }) => {
     await loginViaAuthentik(page, "admin-e2e", "AdminE2e123!");
+    await buatJabatan(page, "E2E-TP-DIR", "Jabatan TP Langsung E2E");
 
     // Idempoten — lewati jika sudah ada
     await page.goto("/master-data/tugas-pokok");
@@ -382,31 +383,46 @@ test.describe.serial("Master Data — Tugas Pokok", () => {
     if ((await page.content()).includes("Pengelolaan SDM E2E")) return;
 
     await page.goto("/master-data/tugas-pokok/tambah");
+    await page.waitForLoadState("networkidle");
+    const jabatanSelect = page.getByLabel("Jabatan");
+    await expect(jabatanSelect.locator("option").nth(1)).toBeAttached({ timeout: 10_000 });
+    await jabatanSelect.selectOption({ label: "Jabatan TP Langsung E2E (E2E-TP-DIR)" });
     await page.getByLabel("Nama Tugas Pokok").fill("Pengelolaan SDM E2E");
     await page.getByRole("button", { name: "Tambah Tugas Pokok" }).click();
     await page.waitForURL(/\/master-data\/tugas-pokok$/, { timeout: 15_000 });
     await expect(page.getByText("Pengelolaan SDM E2E")).toBeVisible();
   });
 
-  test("validasi form: nama wajib diisi", async ({ page }) => {
+  test("validasi form: jabatan dan nama wajib diisi", async ({ page }) => {
     await loginViaAuthentik(page, "admin-e2e", "AdminE2e123!");
     await page.goto("/master-data/tugas-pokok/tambah");
+    await page.waitForLoadState("networkidle");
     await page.getByRole("button", { name: "Tambah Tugas Pokok" }).click();
+    await expect(page.getByText("Jabatan wajib dipilih")).toBeVisible();
     await expect(page.getByText("Nama wajib diisi")).toBeVisible();
   });
 });
 
 // ─── Detil Tugas ─────────────────────────────────────────────────────────────
 
+const TP_JABATAN_KODE = "E2E-TP-JBT";
+const TP_JABATAN_NAMA = "Jabatan TugasPokok E2E";
+
 async function buatTugasPokok(
   page: Parameters<typeof loginViaAuthentik>[0],
   nama: string,
 ): Promise<void> {
+  await buatJabatan(page, TP_JABATAN_KODE, TP_JABATAN_NAMA);
+
   await page.goto("/master-data/tugas-pokok");
   await page.waitForLoadState("networkidle");
   if ((await page.content()).includes(nama)) return;
 
   await page.goto("/master-data/tugas-pokok/tambah");
+  await page.waitForLoadState("networkidle");
+  const jabatanSelect = page.getByLabel("Jabatan");
+  await expect(jabatanSelect.locator("option").nth(1)).toBeAttached({ timeout: 10_000 });
+  await jabatanSelect.selectOption({ label: `${TP_JABATAN_NAMA} (${TP_JABATAN_KODE})` });
   await page.getByLabel("Nama Tugas Pokok").fill(nama);
   await page.getByRole("button", { name: "Tambah Tugas Pokok" }).click();
   await page.waitForURL(/\/master-data\/tugas-pokok$/, { timeout: 15_000 });
@@ -463,17 +479,23 @@ test.describe.serial("Master Data — Uraian Tugas", () => {
     await loginViaAuthentik(page, "admin-e2e", "AdminE2e123!");
     await buatTugasPokok(page, "Pengelolaan SDM E2E");
 
-    // Idempoten — lewati jika sudah ada
-    await page.goto("/master-data/uraian-tugas");
-    await page.waitForLoadState("networkidle");
-    if ((await page.content()).includes("E2E-UT-001")) return;
+    // Idempoten — cek via API search (list UI dibatasi 500 dari 2000+ item seed)
+    const backendUrl = (process.env.E2E_BASE_URL ?? "http://localhost:9100").replace(
+      ":9100",
+      ":9200",
+    );
+    const searchResp = await page.request.post(
+      `${backendUrl}/api/v1/task-inventory/uraian-tugas/search`,
+      { data: { domain: [["kode", "=", "E2E-UT-001"]], limit: 1 } },
+    );
+    const searchData = await searchResp.json();
+    if ((searchData.total ?? 0) > 0) return;
 
     await page.goto("/master-data/uraian-tugas/tambah");
     await page.waitForLoadState("networkidle");
     await page.getByLabel("Kode").fill("E2E-UT-001");
     await page.getByLabel("Uraian Tugas").fill("Menyusun laporan kinerja tahunan E2E");
     await page.getByLabel("Unit / Jenjang").fill("SD");
-    await page.getByLabel("Kategori Jabatan").fill("Kepala Sekolah");
     await page.getByLabel("Urutan").fill("1");
     await page.getByLabel("Tugas Pokok").selectOption({ label: "Pengelolaan SDM E2E" });
     await page.getByRole("button", { name: "Tambah Uraian Tugas" }).click();
@@ -481,7 +503,7 @@ test.describe.serial("Master Data — Uraian Tugas", () => {
     await expect(page.getByText("E2E-UT-001")).toBeVisible();
   });
 
-  test("validasi form: kode, uraian, unit, kategori jabatan, urutan, tugas pokok wajib", async ({
+  test("validasi form: kode, uraian, unit, urutan, tugas pokok wajib", async ({
     page,
   }) => {
     await loginViaAuthentik(page, "admin-e2e", "AdminE2e123!");
@@ -491,7 +513,6 @@ test.describe.serial("Master Data — Uraian Tugas", () => {
     await expect(page.getByText("Kode wajib diisi")).toBeVisible();
     await expect(page.getByText("Uraian wajib diisi")).toBeVisible();
     await expect(page.getByText("Unit wajib diisi")).toBeVisible();
-    await expect(page.getByText("Kategori jabatan wajib diisi")).toBeVisible();
     await expect(page.getByText("Tugas pokok wajib dipilih")).toBeVisible();
   });
 });

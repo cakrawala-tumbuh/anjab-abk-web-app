@@ -54,7 +54,6 @@ export default async function EditUraianTugasPage({ params }: { params: Promise<
             kode: uraianTugas.kode,
             uraian: uraianTugas.uraian,
             unit: uraianTugas.unit,
-            kategori_jabatan: uraianTugas.kategori_jabatan,
             urutan: uraianTugas.urutan,
             tugas_pokok_id: uraianTugas.tugas_pokok_id,
             detil_tugas_id: uraianTugas.detil_tugas_id ?? "",

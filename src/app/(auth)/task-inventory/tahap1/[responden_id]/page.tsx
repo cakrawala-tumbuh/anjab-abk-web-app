@@ -28,7 +28,7 @@ async function fetchPageData(accessToken: string | undefined, respondenId: strin
   const sesi = sesiRes.data as TiSesiRead;
 
   const catalogRes = await client.GET("/api/v1/task-inventory/catalog", {
-    params: { query: { unit: sesi.unit ?? undefined, kategori_jabatan: sesi.kategori_jabatan } },
+    params: { query: { unit: sesi.unit ?? undefined, jabatan_id: sesi.jabatan_id } },
   });
   const catalog = (catalogRes.data ?? []) as TiCatalogRead[];
 
@@ -58,7 +58,7 @@ export default async function Tahap1Page({ params }: Props) {
     <div className="space-y-6">
       <div className="flex items-center gap-2 text-sm text-gray-500">
         <Link href={`/task-inventory/${sesi.id}`} className="hover:text-gray-700">
-          {sesi.unit ?? "—"} · {sesi.kategori_jabatan}
+          {sesi.unit ?? "—"} · {sesi.jabatan_id}
         </Link>
         <span>/</span>
         <span className="text-gray-900">Tahap 1 — Seleksi</span>

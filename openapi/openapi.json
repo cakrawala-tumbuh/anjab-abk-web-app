@@ -12,7 +12,7 @@
       "name": "MIT",
       "identifier": "MIT"
     },
-    "version": "0.12.0"
+    "version": "0.13.1"
   },
   "paths": {
     "/api/v1/health": {
@@ -6218,7 +6218,7 @@
         "tags": [
           "taskinv.catalog"
         ],
-        "summary": "Daftar kombinasi unit × kategori jabatan beserta jumlah task",
+        "summary": "Daftar kombinasi unit × jabatan beserta jumlah task",
         "operationId": "taskinv_catalog_kombinasi",
         "responses": {
           "200": {
@@ -6243,19 +6243,19 @@
         "tags": [
           "taskinv.catalog"
         ],
-        "summary": "Daftar task catalog untuk kombinasi unit × kategori jabatan",
+        "summary": "Daftar task catalog untuk kombinasi unit × jabatan",
         "operationId": "taskinv_catalog_list",
         "parameters": [
           {
-            "name": "kategori_jabatan",
+            "name": "jabatan_id",
             "in": "query",
             "required": true,
             "schema": {
               "type": "string",
-              "description": "Kategori jabatan.",
-              "title": "Kategori Jabatan"
+              "description": "ID jabatan.",
+              "title": "Jabatan Id"
             },
-            "description": "Kategori jabatan."
+            "description": "ID jabatan."
           },
           {
             "name": "unit",
@@ -6270,10 +6270,10 @@
                   "type": "null"
                 }
               ],
-              "description": "Unit/jenjang (TK/SD/SMP/SMA). Opsional; bila tidak diisi, kembalikan semua task untuk kategori jabatan ini lintas unit.",
+              "description": "Unit/jenjang (TK/SD/SMP/SMA). Opsional; bila tidak diisi, kembalikan semua task untuk jabatan ini lintas unit.",
               "title": "Unit"
             },
-            "description": "Unit/jenjang (TK/SD/SMP/SMA). Opsional; bila tidak diisi, kembalikan semua task untuk kategori jabatan ini lintas unit."
+            "description": "Unit/jenjang (TK/SD/SMP/SMA). Opsional; bila tidak diisi, kembalikan semua task untuk jabatan ini lintas unit."
           }
         ],
         "responses": {
@@ -6406,7 +6406,7 @@
                   "summary": "Sesi TI Kepala Sekolah TK",
                   "value": {
                     "unit": "TK",
-                    "kategori_jabatan": "Kepala Sekolah",
+                    "jabatan_id": "jbt_a1b2c3d4",
                     "periode": "2026-06",
                     "min_responden": 3,
                     "max_responden": 10
@@ -9322,6 +9322,7 @@
                 "pengelolaan_sdm": {
                   "summary": "Pengelolaan SDM",
                   "value": {
+                    "jabatan_id": "jbt_a1b2c3d4",
                     "nama": "Pengelolaan SDM"
                   }
                 }
@@ -10272,7 +10273,6 @@
                     "kode": "TIf0b59714",
                     "uraian": "Menyusun evaluasi karyawan",
                     "unit": "TK",
-                    "kategori_jabatan": "Kepala Sekolah",
                     "urutan": 1,
                     "detil_tugas_id": "dt_a1b2c3d4",
                     "tugas_pokok_id": "tp_a1b2c3d4"
@@ -13950,12 +13950,12 @@
               "TK"
             ]
           },
-          "kategori_jabatan": {
+          "jabatan_id": {
             "type": "string",
-            "title": "Kategori Jabatan",
-            "description": "Kategori jabatan.",
+            "title": "Jabatan Id",
+            "description": "ID jabatan.",
             "examples": [
-              "Kepala Sekolah"
+              "jbt_a1b2c3d4"
             ]
           },
           "tugas_pokok": {
@@ -13992,7 +13992,7 @@
           "urutan": {
             "type": "integer",
             "title": "Urutan",
-            "description": "Urutan dalam kombinasi unit×kategori.",
+            "description": "Urutan dalam kombinasi unit × jabatan.",
             "examples": [
               1
             ]
@@ -14002,7 +14002,7 @@
         "required": [
           "kode",
           "unit",
-          "kategori_jabatan",
+          "jabatan_id",
           "tugas_pokok",
           "uraian_tugas",
           "urutan"
@@ -14257,15 +14257,22 @@
             "title": "Sesi Id",
             "description": "ID sesi."
           },
-          "unit": {
+          "jabatan_id": {
             "type": "string",
+            "title": "Jabatan Id",
+            "description": "ID jabatan yang dikaji."
+          },
+          "unit": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
             "title": "Unit",
             "description": "Unit/jenjang."
-          },
-          "kategori_jabatan": {
-            "type": "string",
-            "title": "Kategori Jabatan",
-            "description": "Kategori jabatan."
           },
           "periode": {
             "type": "string",
@@ -14309,8 +14316,7 @@
         "type": "object",
         "required": [
           "sesi_id",
-          "unit",
-          "kategori_jabatan",
+          "jabatan_id",
           "periode",
           "n_responden_tahap1",
           "n_responden_tahap3",
@@ -14431,12 +14437,12 @@
               "TK"
             ]
           },
-          "kategori_jabatan": {
+          "jabatan_id": {
             "type": "string",
-            "title": "Kategori Jabatan",
-            "description": "Kategori jabatan.",
+            "title": "Jabatan Id",
+            "description": "ID jabatan.",
             "examples": [
-              "Kepala Sekolah"
+              "jbt_a1b2c3d4"
             ]
           },
           "jumlah_task": {
@@ -14451,11 +14457,11 @@
         "type": "object",
         "required": [
           "unit",
-          "kategori_jabatan",
+          "jabatan_id",
           "jumlah_task"
         ],
         "title": "TiKombinasiRead",
-        "description": "Satu kombinasi (unit × kategori jabatan) beserta jumlah task."
+        "description": "Satu kombinasi (unit × jabatan) beserta jumlah task."
       },
       "TiKuesionerItemRead": {
         "properties": {
@@ -14525,20 +14531,27 @@
               "TAHAP1"
             ]
           },
-          "sesi_unit": {
+          "sesi_jabatan_id": {
             "type": "string",
+            "title": "Sesi Jabatan Id",
+            "description": "ID jabatan yang dikaji dalam sesi.",
+            "examples": [
+              "jbt_a1b2c3d4"
+            ]
+          },
+          "sesi_unit": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
             "title": "Sesi Unit",
             "description": "Unit/jenjang yang dikaji.",
             "examples": [
               "TK"
-            ]
-          },
-          "sesi_kategori_jabatan": {
-            "type": "string",
-            "title": "Sesi Kategori Jabatan",
-            "description": "Kategori jabatan yang dikaji.",
-            "examples": [
-              "Kepala Sekolah"
             ]
           },
           "sesi_periode": {
@@ -14558,8 +14571,7 @@
           "tahap3_submit",
           "created_at",
           "sesi_status",
-          "sesi_unit",
-          "sesi_kategori_jabatan",
+          "sesi_jabatan_id",
           "sesi_periode"
         ],
         "title": "TiKuesionerItemRead",
@@ -14777,6 +14789,15 @@
       },
       "TiSesiCreate": {
         "properties": {
+          "jabatan_id": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Jabatan Id",
+            "description": "ID jabatan yang dikaji (FK ke Jabatan).",
+            "examples": [
+              "jbt_a1b2c3d4"
+            ]
+          },
           "unit": {
             "anyOf": [
               {
@@ -14791,16 +14812,6 @@
             "description": "Unit/jenjang yang dikaji (TK/SD/SMP/SMA). Opsional; bila tidak diisi, sesi berlaku lintas unit.",
             "examples": [
               "TK"
-            ]
-          },
-          "kategori_jabatan": {
-            "type": "string",
-            "maxLength": 200,
-            "minLength": 1,
-            "title": "Kategori Jabatan",
-            "description": "Kategori jabatan yang dikaji.",
-            "examples": [
-              "Kepala Sekolah"
             ]
           },
           "periode": {
@@ -14849,21 +14860,6 @@
               "p_a1b2c3d4"
             ]
           },
-          "jabatan_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Jabatan Id",
-            "description": "ID jabatan (opsional); bila diisi, hanya partisipan anggota SME panel jabatan ini yang dapat didaftarkan sebagai responden.",
-            "examples": [
-              "jbt_a1b2c3d4"
-            ]
-          },
           "catatan": {
             "anyOf": [
               {
@@ -14881,7 +14877,7 @@
         "additionalProperties": false,
         "type": "object",
         "required": [
-          "kategori_jabatan",
+          "jabatan_id",
           "periode"
         ],
         "title": "TiSesiCreate",
@@ -14897,6 +14893,14 @@
               "tises_a1b2c3d4"
             ]
           },
+          "jabatan_id": {
+            "type": "string",
+            "title": "Jabatan Id",
+            "description": "ID jabatan yang dikaji.",
+            "examples": [
+              "jbt_a1b2c3d4"
+            ]
+          },
           "unit": {
             "anyOf": [
               {
@@ -14910,14 +14914,6 @@
             "description": "Unit/jenjang.",
             "examples": [
               "TK"
-            ]
-          },
-          "kategori_jabatan": {
-            "type": "string",
-            "title": "Kategori Jabatan",
-            "description": "Kategori jabatan.",
-            "examples": [
-              "Kepala Sekolah"
             ]
           },
           "periode": {
@@ -14953,18 +14949,6 @@
             "type": "integer",
             "title": "Max Responden",
             "description": "Maksimum responden."
-          },
-          "jabatan_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Jabatan Id",
-            "description": "ID jabatan (opsional)."
           },
           "koordinator_id": {
             "anyOf": [
@@ -15012,7 +14996,7 @@
         "type": "object",
         "required": [
           "id",
-          "kategori_jabatan",
+          "jabatan_id",
           "periode",
           "status",
           "min_responden",
@@ -15049,18 +15033,6 @@
             ],
             "title": "Koordinator Id",
             "description": "ID koordinator SME panel."
-          },
-          "jabatan_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Jabatan Id",
-            "description": "ID jabatan."
           },
           "min_responden": {
             "anyOf": [
@@ -16006,6 +15978,15 @@
       },
       "TugasPokokCreate": {
         "properties": {
+          "jabatan_id": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Jabatan Id",
+            "description": "ID jabatan yang menjadi induk tugas pokok ini.",
+            "examples": [
+              "jbt_a1b2c3d4"
+            ]
+          },
           "nama": {
             "type": "string",
             "maxLength": 300,
@@ -16020,6 +16001,7 @@
         "additionalProperties": false,
         "type": "object",
         "required": [
+          "jabatan_id",
           "nama"
         ],
         "title": "TugasPokokCreate",
@@ -16033,6 +16015,14 @@
             "description": "ID unik tugas pokok.",
             "examples": [
               "tp_a1b2c3d4"
+            ]
+          },
+          "jabatan_id": {
+            "type": "string",
+            "title": "Jabatan Id",
+            "description": "ID jabatan induk.",
+            "examples": [
+              "jbt_a1b2c3d4"
             ]
           },
           "nama": {
@@ -16053,6 +16043,7 @@
         "type": "object",
         "required": [
           "id",
+          "jabatan_id",
           "nama",
           "created_at"
         ],
@@ -16061,6 +16052,19 @@
       },
       "TugasPokokUpdate": {
         "properties": {
+          "jabatan_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Jabatan Id",
+            "description": "ID jabatan baru."
+          },
           "nama": {
             "anyOf": [
               {
@@ -16113,21 +16117,11 @@
               "TK"
             ]
           },
-          "kategori_jabatan": {
-            "type": "string",
-            "maxLength": 200,
-            "minLength": 1,
-            "title": "Kategori Jabatan",
-            "description": "Kategori jabatan.",
-            "examples": [
-              "Kepala Sekolah"
-            ]
-          },
           "urutan": {
             "type": "integer",
             "minimum": 1.0,
             "title": "Urutan",
-            "description": "Urutan dalam kombinasi unit × kategori jabatan.",
+            "description": "Urutan dalam kombinasi unit × jabatan.",
             "examples": [
               1
             ]
@@ -16150,7 +16144,7 @@
           "tugas_pokok_id": {
             "type": "string",
             "title": "Tugas Pokok Id",
-            "description": "ID tugas pokok induk (M2O, denormalisasi untuk efisiensi query).",
+            "description": "ID tugas pokok induk (M2O). Jabatan diwarisi dari TugasPokok ini.",
             "examples": [
               "tp_a1b2c3d4"
             ]
@@ -16162,7 +16156,6 @@
           "kode",
           "uraian",
           "unit",
-          "kategori_jabatan",
           "urutan",
           "tugas_pokok_id"
         ],
@@ -16203,18 +16196,18 @@
               "TK"
             ]
           },
-          "kategori_jabatan": {
+          "jabatan_id": {
             "type": "string",
-            "title": "Kategori Jabatan",
-            "description": "Kategori jabatan.",
+            "title": "Jabatan Id",
+            "description": "ID jabatan (diwarisi dari TugasPokok).",
             "examples": [
-              "Kepala Sekolah"
+              "jbt_a1b2c3d4"
             ]
           },
           "urutan": {
             "type": "integer",
             "title": "Urutan",
-            "description": "Urutan dalam kombinasi unit × kategori jabatan.",
+            "description": "Urutan dalam kombinasi unit × jabatan.",
             "examples": [
               1
             ]
@@ -16255,13 +16248,13 @@
           "kode",
           "uraian",
           "unit",
-          "kategori_jabatan",
+          "jabatan_id",
           "urutan",
           "tugas_pokok_id",
           "created_at"
         ],
         "title": "UraianTugasRead",
-        "description": "Representasi uraian tugas yang dikembalikan API."
+        "description": "Representasi uraian tugas yang dikembalikan API.\n\njabatan_id adalah nilai turunan (inherited) dari TugasPokok induk."
       },
       "UraianTugasUpdate": {
         "properties": {
@@ -16306,20 +16299,6 @@
             ],
             "title": "Unit",
             "description": "Unit baru."
-          },
-          "kategori_jabatan": {
-            "anyOf": [
-              {
-                "type": "string",
-                "maxLength": 200,
-                "minLength": 1
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Kategori Jabatan",
-            "description": "Kategori jabatan baru."
           },
           "urutan": {
             "anyOf": [

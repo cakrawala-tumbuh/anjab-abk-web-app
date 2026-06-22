@@ -1029,7 +1029,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Daftar kombinasi unit × kategori jabatan beserta jumlah task */
+        /** Daftar kombinasi unit × jabatan beserta jumlah task */
         get: operations["taskinv_catalog_kombinasi"];
         put?: never;
         post?: never;
@@ -1046,7 +1046,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Daftar task catalog untuk kombinasi unit × kategori jabatan */
+        /** Daftar task catalog untuk kombinasi unit × jabatan */
         get: operations["taskinv_catalog_list"];
         put?: never;
         post?: never;
@@ -3516,11 +3516,11 @@ export interface components {
              */
             unit: string;
             /**
-             * Kategori Jabatan
-             * @description Kategori jabatan.
-             * @example Kepala Sekolah
+             * Jabatan Id
+             * @description ID jabatan.
+             * @example jbt_a1b2c3d4
              */
-            kategori_jabatan: string;
+            jabatan_id: string;
             /**
              * Tugas Pokok
              * @description Tugas pokok (klaster).
@@ -3541,7 +3541,7 @@ export interface components {
             uraian_tugas: string;
             /**
              * Urutan
-             * @description Urutan dalam kombinasi unit×kategori.
+             * @description Urutan dalam kombinasi unit × jabatan.
              * @example 1
              */
             urutan: number;
@@ -3697,15 +3697,15 @@ export interface components {
              */
             sesi_id: string;
             /**
+             * Jabatan Id
+             * @description ID jabatan yang dikaji.
+             */
+            jabatan_id: string;
+            /**
              * Unit
              * @description Unit/jenjang.
              */
-            unit: string;
-            /**
-             * Kategori Jabatan
-             * @description Kategori jabatan.
-             */
-            kategori_jabatan: string;
+            unit?: string | null;
             /**
              * Periode
              * @description Periode.
@@ -3824,7 +3824,7 @@ export interface components {
         };
         /**
          * TiKombinasiRead
-         * @description Satu kombinasi (unit × kategori jabatan) beserta jumlah task.
+         * @description Satu kombinasi (unit × jabatan) beserta jumlah task.
          */
         TiKombinasiRead: {
             /**
@@ -3834,11 +3834,11 @@ export interface components {
              */
             unit: string;
             /**
-             * Kategori Jabatan
-             * @description Kategori jabatan.
-             * @example Kepala Sekolah
+             * Jabatan Id
+             * @description ID jabatan.
+             * @example jbt_a1b2c3d4
              */
-            kategori_jabatan: string;
+            jabatan_id: string;
             /**
              * Jumlah Task
              * @description Jumlah task pada kombinasi ini.
@@ -3896,17 +3896,17 @@ export interface components {
              */
             sesi_status: string;
             /**
+             * Sesi Jabatan Id
+             * @description ID jabatan yang dikaji dalam sesi.
+             * @example jbt_a1b2c3d4
+             */
+            sesi_jabatan_id: string;
+            /**
              * Sesi Unit
              * @description Unit/jenjang yang dikaji.
              * @example TK
              */
-            sesi_unit: string;
-            /**
-             * Sesi Kategori Jabatan
-             * @description Kategori jabatan yang dikaji.
-             * @example Kepala Sekolah
-             */
-            sesi_kategori_jabatan: string;
+            sesi_unit?: string | null;
             /**
              * Sesi Periode
              * @description Periode sesi (YYYY-MM).
@@ -4035,17 +4035,17 @@ export interface components {
          */
         TiSesiCreate: {
             /**
+             * Jabatan Id
+             * @description ID jabatan yang dikaji (FK ke Jabatan).
+             * @example jbt_a1b2c3d4
+             */
+            jabatan_id: string;
+            /**
              * Unit
              * @description Unit/jenjang yang dikaji (TK/SD/SMP/SMA). Opsional; bila tidak diisi, sesi berlaku lintas unit.
              * @example TK
              */
             unit?: string | null;
-            /**
-             * Kategori Jabatan
-             * @description Kategori jabatan yang dikaji.
-             * @example Kepala Sekolah
-             */
-            kategori_jabatan: string;
             /**
              * Periode
              * @description Periode kajian format YYYY-MM.
@@ -4073,12 +4073,6 @@ export interface components {
              */
             koordinator_id?: string | null;
             /**
-             * Jabatan Id
-             * @description ID jabatan (opsional); bila diisi, hanya partisipan anggota SME panel jabatan ini yang dapat didaftarkan sebagai responden.
-             * @example jbt_a1b2c3d4
-             */
-            jabatan_id?: string | null;
-            /**
              * Catatan
              * @description Catatan opsional untuk sesi ini.
              */
@@ -4096,17 +4090,17 @@ export interface components {
              */
             id: string;
             /**
+             * Jabatan Id
+             * @description ID jabatan yang dikaji.
+             * @example jbt_a1b2c3d4
+             */
+            jabatan_id: string;
+            /**
              * Unit
              * @description Unit/jenjang.
              * @example TK
              */
             unit?: string | null;
-            /**
-             * Kategori Jabatan
-             * @description Kategori jabatan.
-             * @example Kepala Sekolah
-             */
-            kategori_jabatan: string;
             /**
              * Periode
              * @description Periode kajian (YYYY-MM).
@@ -4130,11 +4124,6 @@ export interface components {
              * @description Maksimum responden.
              */
             max_responden: number;
-            /**
-             * Jabatan Id
-             * @description ID jabatan (opsional).
-             */
-            jabatan_id?: string | null;
             /**
              * Koordinator Id
              * @description ID koordinator SME panel yang bertanggung jawab Tahap 2.
@@ -4169,11 +4158,6 @@ export interface components {
              * @description ID koordinator SME panel.
              */
             koordinator_id?: string | null;
-            /**
-             * Jabatan Id
-             * @description ID jabatan.
-             */
-            jabatan_id?: string | null;
             /** Min Responden */
             min_responden?: number | null;
             /** Max Responden */
@@ -4716,6 +4700,12 @@ export interface components {
          */
         TugasPokokCreate: {
             /**
+             * Jabatan Id
+             * @description ID jabatan yang menjadi induk tugas pokok ini.
+             * @example jbt_a1b2c3d4
+             */
+            jabatan_id: string;
+            /**
              * Nama
              * @description Nama tugas pokok (klaster tugas).
              * @example Pengelolaan SDM
@@ -4734,6 +4724,12 @@ export interface components {
              */
             id: string;
             /**
+             * Jabatan Id
+             * @description ID jabatan induk.
+             * @example jbt_a1b2c3d4
+             */
+            jabatan_id: string;
+            /**
              * Nama
              * @description Nama tugas pokok.
              * @example Pengelolaan SDM
@@ -4751,6 +4747,11 @@ export interface components {
          * @description Payload pembaruan sebagian tugas pokok.
          */
         TugasPokokUpdate: {
+            /**
+             * Jabatan Id
+             * @description ID jabatan baru.
+             */
+            jabatan_id?: string | null;
             /**
              * Nama
              * @description Nama baru.
@@ -4781,14 +4782,8 @@ export interface components {
              */
             unit: string;
             /**
-             * Kategori Jabatan
-             * @description Kategori jabatan.
-             * @example Kepala Sekolah
-             */
-            kategori_jabatan: string;
-            /**
              * Urutan
-             * @description Urutan dalam kombinasi unit × kategori jabatan.
+             * @description Urutan dalam kombinasi unit × jabatan.
              * @example 1
              */
             urutan: number;
@@ -4800,7 +4795,7 @@ export interface components {
             detil_tugas_id?: string | null;
             /**
              * Tugas Pokok Id
-             * @description ID tugas pokok induk (M2O, denormalisasi untuk efisiensi query).
+             * @description ID tugas pokok induk (M2O). Jabatan diwarisi dari TugasPokok ini.
              * @example tp_a1b2c3d4
              */
             tugas_pokok_id: string;
@@ -4808,6 +4803,8 @@ export interface components {
         /**
          * UraianTugasRead
          * @description Representasi uraian tugas yang dikembalikan API.
+         *
+         *     jabatan_id adalah nilai turunan (inherited) dari TugasPokok induk.
          */
         UraianTugasRead: {
             /**
@@ -4835,14 +4832,14 @@ export interface components {
              */
             unit: string;
             /**
-             * Kategori Jabatan
-             * @description Kategori jabatan.
-             * @example Kepala Sekolah
+             * Jabatan Id
+             * @description ID jabatan (diwarisi dari TugasPokok).
+             * @example jbt_a1b2c3d4
              */
-            kategori_jabatan: string;
+            jabatan_id: string;
             /**
              * Urutan
-             * @description Urutan dalam kombinasi unit × kategori jabatan.
+             * @description Urutan dalam kombinasi unit × jabatan.
              * @example 1
              */
             urutan: number;
@@ -4885,11 +4882,6 @@ export interface components {
              * @description Unit baru.
              */
             unit?: string | null;
-            /**
-             * Kategori Jabatan
-             * @description Kategori jabatan baru.
-             */
-            kategori_jabatan?: string | null;
             /**
              * Urutan
              * @description Urutan baru.
@@ -9843,9 +9835,9 @@ export interface operations {
     taskinv_catalog_list: {
         parameters: {
             query: {
-                /** @description Kategori jabatan. */
-                kategori_jabatan: string;
-                /** @description Unit/jenjang (TK/SD/SMP/SMA). Opsional; bila tidak diisi, kembalikan semua task untuk kategori jabatan ini lintas unit. */
+                /** @description ID jabatan. */
+                jabatan_id: string;
+                /** @description Unit/jenjang (TK/SD/SMP/SMA). Opsional; bila tidak diisi, kembalikan semua task untuk jabatan ini lintas unit. */
                 unit?: string | null;
             };
             header?: never;

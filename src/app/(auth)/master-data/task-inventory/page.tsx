@@ -36,8 +36,8 @@ export default async function TiMasterDataPage() {
           Instrumen Task Inventory
         </h2>
         <p className="page-subtext">
-          {kombinasi.length} kombinasi unit × kategori jabatan, total {totalTask} task. Pilih
-          kombinasi untuk melihat daftar task yang tersedia.
+          {kombinasi.length} kombinasi unit × jabatan, total {totalTask} task. Pilih kombinasi untuk
+          melihat daftar task yang tersedia.
         </p>
       </div>
 
@@ -49,12 +49,12 @@ export default async function TiMasterDataPage() {
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {grouped[unit].map((k) => (
               <Link
-                key={`${k.unit}-${k.kategori_jabatan}`}
-                href={`/master-data/task-inventory/${encodeURIComponent(k.unit)}/${encodeURIComponent(k.kategori_jabatan)}`}
+                key={`${k.unit}-${k.jabatan_id}`}
+                href={`/master-data/task-inventory/${encodeURIComponent(k.unit)}/${encodeURIComponent(k.jabatan_id)}`}
                 className="group rounded-lg border border-gray-200 bg-white p-4 transition-colors hover:border-blue-400 hover:bg-blue-50/40 dark:border-gray-700 dark:bg-gray-800 dark:hover:border-blue-500 dark:hover:bg-blue-900/20"
               >
                 <p className="font-medium text-gray-900 group-hover:text-blue-700 dark:text-gray-100 dark:group-hover:text-blue-400">
-                  {k.kategori_jabatan}
+                  {k.jabatan_id}
                 </p>
                 <div className="mt-2 flex items-center justify-between">
                   <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-600 dark:bg-gray-700 dark:text-gray-400">

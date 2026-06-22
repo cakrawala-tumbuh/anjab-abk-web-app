@@ -4,7 +4,7 @@ import { detailItemSchema } from "@/app/(auth)/task-inventory/tahap3/[responden_
 
 const VALID_SESI = {
   unit: "TK",
-  kategori_jabatan: "Kepala Sekolah",
+  jabatan_id: "jbt_test",
   periode: "2026-06",
   min_responden: 3,
   max_responden: 10,
@@ -33,8 +33,8 @@ describe("TiSesiSchema", () => {
     expect(result.success).toBe(true);
   });
 
-  it("menolak kategori_jabatan kosong", () => {
-    const result = tiSesiSchema.safeParse({ ...VALID_SESI, kategori_jabatan: "" });
+  it("menolak jabatan_id kosong", () => {
+    const result = tiSesiSchema.safeParse({ ...VALID_SESI, jabatan_id: "" });
     expect(result.success).toBe(false);
   });
 

@@ -13,7 +13,7 @@ import type { TiKombinasiRead } from "@/lib/api/schema";
 export const schema = z
   .object({
     unit: z.string().optional(),
-    kategori_jabatan: z.string().min(1, "Kategori jabatan wajib dipilih"),
+    jabatan_id: z.string().min(1, "Jabatan wajib dipilih"),
     periode: z
       .string()
       .regex(/^\d{4}-\d{2}$/, "Format periode: YYYY-MM (cth. 2026-06)")
@@ -52,16 +52,16 @@ export function TiSesiForm({ kombinasi, accessToken }: Props) {
     () => Array.from(new Set(kombinasi.map((k) => k.unit))).sort(),
     [kombinasi],
   );
-  const kategoriOptions = useMemo(() => {
+  const jabatanOptions = useMemo(() => {
     const filtered = unit ? kombinasi.filter((k) => k.unit === unit) : kombinasi;
     const seen = new Set<string>();
     return filtered
       .filter((k) => {
-        if (seen.has(k.kategori_jabatan)) return false;
-        seen.add(k.kategori_jabatan);
+        if (seen.has(k.jabatan_id)) return false;
+        seen.add(k.jabatan_id);
         return true;
       })
-      .sort((a, b) => a.kategori_jabatan.localeCompare(b.kategori_jabatan));
+      .sort((a, b) => a.jabatan_id.localeCompare(b.jabatan_id));
   }, [kombinasi, unit]);
 
   const {
@@ -81,7 +81,7 @@ export function TiSesiForm({ kombinasi, accessToken }: Props) {
       const { data, error, response } = await client.POST("/api/v1/task-inventory/sesi", {
         body: {
           unit: values.unit || null,
-          kategori_jabatan: values.kategori_jabatan,
+          jabatan_id: values.jabatan_id,
           periode: values.periode,
           min_responden: values.min_responden,
           max_responden: values.max_responden,
@@ -116,7 +116,7 @@ export function TiSesiForm({ kombinasi, accessToken }: Props) {
             onChange={(e) => {
               setUnit(e.target.value);
               setValue("unit", e.target.value, { shouldValidate: true });
-              setValue("kategori_jabatan", "");
+              setValue("jabatan_id", "");
             }}
             className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             aria-invalid={!!errors.unit}
@@ -135,27 +135,27 @@ export function TiSesiForm({ kombinasi, accessToken }: Props) {
           )}
         </div>
 
-        {/* Kategori Jabatan */}
+        {/* Jabatan */}
         <div>
-          <label htmlFor="kategori_jabatan" className="form-label">
-            Kategori Jabatan <span aria-hidden>*</span>
+          <label htmlFor="jabatan_id" className="form-label">
+            Jabatan <span aria-hidden>*</span>
           </label>
           <select
-            id="kategori_jabatan"
-            {...register("kategori_jabatan")}
+            id="jabatan_id"
+            {...register("jabatan_id")}
             className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-            aria-invalid={!!errors.kategori_jabatan}
+            aria-invalid={!!errors.jabatan_id}
           >
-            <option value="">-- Pilih kategori jabatan --</option>
-            {kategoriOptions.map((k) => (
-              <option key={k.kategori_jabatan} value={k.kategori_jabatan}>
-                {k.kategori_jabatan} ({k.jumlah_task} task)
+            <option value="">-- Pilih jabatan --</option>
+            {jabatanOptions.map((k) => (
+              <option key={k.jabatan_id} value={k.jabatan_id}>
+                {k.jabatan_id} ({k.jumlah_task} task)
               </option>
             ))}
           </select>
-          {errors.kategori_jabatan && (
+          {errors.jabatan_id && (
             <p className="form-error" role="alert">
-              {errors.kategori_jabatan.message}
+              {errors.jabatan_id.message}
             </p>
           )}
         </div>

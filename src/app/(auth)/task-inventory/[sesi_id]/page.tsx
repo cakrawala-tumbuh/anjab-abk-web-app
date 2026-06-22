@@ -120,14 +120,14 @@ export default async function TiSesiDetailPage({ params }: Props) {
         </Link>
         <span>/</span>
         <span className="text-gray-900">
-          {sesi.unit} · {sesi.kategori_jabatan}
+          {sesi.unit} · {sesi.jabatan_id}
         </span>
       </div>
 
       {/* Header */}
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h1 className="page-heading">{sesi.kategori_jabatan}</h1>
+          <h1 className="page-heading">{sesi.jabatan_id}</h1>
           <p className="page-subtext">
             Unit <span className="font-medium text-gray-700">{sesi.unit}</span> ·{" "}
             <span className="font-mono">{sesi.periode}</span>

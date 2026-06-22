@@ -61,7 +61,7 @@ export default async function UraianTugasPage() {
                   Unit
                 </th>
                 <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
-                  Kategori Jabatan
+                  Jabatan ID
                 </th>
                 <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
                   Tugas Pokok
@@ -85,9 +85,7 @@ export default async function UraianTugasPage() {
                       {ut.unit}
                     </span>
                   </td>
-                  <td className="px-4 py-3 text-gray-600 dark:text-gray-400">
-                    {ut.kategori_jabatan}
-                  </td>
+                  <td className="px-4 py-3 text-gray-600 dark:text-gray-400">{ut.jabatan_id}</td>
                   <td className="px-4 py-3 text-gray-600 dark:text-gray-400">
                     {pokokMap[ut.tugas_pokok_id] ?? ut.tugas_pokok_id}
                   </td>
