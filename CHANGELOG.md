@@ -7,6 +7,23 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [1.7.0] - 2026-06-22
+
+### Ditambahkan
+
+- **Master data Tugas Pokok** (`/master-data/tugas-pokok`) — daftar, tambah, edit, dan hapus
+  tugas pokok (klaster tugas). Sidebar navigasi master data diperbarui dengan tiga tab baru.
+- **Master data Detil Tugas** (`/master-data/detil-tugas`) — daftar, tambah, edit, dan hapus
+  detil tugas dengan relasi ke tugas pokok induk; dropdown detil tugas difilter sesuai tugas
+  pokok yang dipilih di form uraian tugas.
+- **Master data Uraian Tugas** (`/master-data/uraian-tugas`) — daftar, tambah, edit, dan hapus
+  uraian tugas (task statement individual) dengan field: kode, uraian, unit/jenjang,
+  kategori jabatan, urutan, tugas pokok, dan detil tugas (opsional).
+- **Regenerasi schema.ts** dari `openapi.json` backend versi terbaru; convenience re-exports
+  diperluas dengan `TugasPokokRead`, `DetilTugasRead`, `UraianTugasRead`.
+- **E2E tests** untuk ketiga halaman baru di `e2e/master-data.spec.ts` (CRUD dasar + validasi
+  form).
+
 ## [1.6.0] - 2026-06-22
 
 ### Ditambahkan

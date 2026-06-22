@@ -1502,6 +1502,168 @@ export interface paths {
         patch: operations["ts_log_update"];
         trace?: never;
     };
+    "/api/v1/task-inventory/tugas-pokok": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Daftar tugas pokok */
+        get: operations["tugas_pokok_list"];
+        put?: never;
+        /** Buat tugas pokok */
+        post: operations["tugas_pokok_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/task-inventory/tugas-pokok/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Cari tugas pokok (domain ala Odoo) */
+        post: operations["tugas_pokok_search"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/task-inventory/tugas-pokok/{tp_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Ambil tugas pokok */
+        get: operations["tugas_pokok_get"];
+        put?: never;
+        post?: never;
+        /** Hapus tugas pokok */
+        delete: operations["tugas_pokok_delete"];
+        options?: never;
+        head?: never;
+        /** Perbarui tugas pokok */
+        patch: operations["tugas_pokok_update"];
+        trace?: never;
+    };
+    "/api/v1/task-inventory/detil-tugas": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Daftar detil tugas */
+        get: operations["detil_tugas_list"];
+        put?: never;
+        /** Buat detil tugas */
+        post: operations["detil_tugas_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/task-inventory/detil-tugas/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Cari detil tugas (domain ala Odoo) */
+        post: operations["detil_tugas_search"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/task-inventory/detil-tugas/{dt_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Ambil detil tugas */
+        get: operations["detil_tugas_get"];
+        put?: never;
+        post?: never;
+        /** Hapus detil tugas */
+        delete: operations["detil_tugas_delete"];
+        options?: never;
+        head?: never;
+        /** Perbarui detil tugas */
+        patch: operations["detil_tugas_update"];
+        trace?: never;
+    };
+    "/api/v1/task-inventory/uraian-tugas": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Daftar uraian tugas */
+        get: operations["uraian_tugas_list"];
+        put?: never;
+        /** Buat uraian tugas */
+        post: operations["uraian_tugas_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/task-inventory/uraian-tugas/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Cari uraian tugas (domain ala Odoo) */
+        post: operations["uraian_tugas_search"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/task-inventory/uraian-tugas/{ut_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Ambil uraian tugas */
+        get: operations["uraian_tugas_get"];
+        put?: never;
+        post?: never;
+        /** Hapus uraian tugas */
+        delete: operations["uraian_tugas_delete"];
+        options?: never;
+        head?: never;
+        /** Perbarui uraian tugas */
+        patch: operations["uraian_tugas_update"];
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -2060,6 +2222,70 @@ export interface components {
              */
             items: components["schemas"]["DcsItemRead"][];
         };
+        /**
+         * DetilTugasCreate
+         * @description Payload pembuatan detil tugas.
+         */
+        DetilTugasCreate: {
+            /**
+             * Nama
+             * @description Nama detil tugas (kelompok tugas).
+             * @example Mengevaluasi Kinerja Karyawan
+             */
+            nama: string;
+            /**
+             * Tugas Pokok Id
+             * @description ID tugas pokok induk.
+             * @example tp_a1b2c3d4
+             */
+            tugas_pokok_id: string;
+        };
+        /**
+         * DetilTugasRead
+         * @description Representasi detil tugas yang dikembalikan API.
+         */
+        DetilTugasRead: {
+            /**
+             * Id
+             * @description ID unik detil tugas.
+             * @example dt_a1b2c3d4
+             */
+            id: string;
+            /**
+             * Nama
+             * @description Nama detil tugas.
+             * @example Mengevaluasi Kinerja Karyawan
+             */
+            nama: string;
+            /**
+             * Tugas Pokok Id
+             * @description ID tugas pokok induk.
+             * @example tp_a1b2c3d4
+             */
+            tugas_pokok_id: string;
+            /**
+             * Created At
+             * Format: date-time
+             * @description Waktu pembuatan (UTC, ISO-8601).
+             */
+            created_at: string;
+        };
+        /**
+         * DetilTugasUpdate
+         * @description Payload pembaruan sebagian detil tugas.
+         */
+        DetilTugasUpdate: {
+            /**
+             * Nama
+             * @description Nama baru.
+             */
+            nama?: string | null;
+            /**
+             * Tugas Pokok Id
+             * @description ID tugas pokok induk baru.
+             */
+            tugas_pokok_id?: string | null;
+        };
         /** ErrorDetail */
         ErrorDetail: {
             /**
@@ -2485,6 +2711,32 @@ export interface components {
              */
             offset: number;
         };
+        /** Page[DetilTugasRead] */
+        Page_DetilTugasRead_: {
+            /**
+             * Items
+             * @description Item pada halaman ini.
+             */
+            items: components["schemas"]["DetilTugasRead"][];
+            /**
+             * Total
+             * @description Total item tersedia.
+             * @example 42
+             */
+            total: number;
+            /**
+             * Limit
+             * @description Maksimum item per halaman.
+             * @example 20
+             */
+            limit: number;
+            /**
+             * Offset
+             * @description Jumlah item yang dilewati.
+             * @example 0
+             */
+            offset: number;
+        };
         /** Page[JabatanRead] */
         Page_JabatanRead_: {
             /**
@@ -2674,6 +2926,58 @@ export interface components {
              * @description Item pada halaman ini.
              */
             items: components["schemas"]["TsSesiRead"][];
+            /**
+             * Total
+             * @description Total item tersedia.
+             * @example 42
+             */
+            total: number;
+            /**
+             * Limit
+             * @description Maksimum item per halaman.
+             * @example 20
+             */
+            limit: number;
+            /**
+             * Offset
+             * @description Jumlah item yang dilewati.
+             * @example 0
+             */
+            offset: number;
+        };
+        /** Page[TugasPokokRead] */
+        Page_TugasPokokRead_: {
+            /**
+             * Items
+             * @description Item pada halaman ini.
+             */
+            items: components["schemas"]["TugasPokokRead"][];
+            /**
+             * Total
+             * @description Total item tersedia.
+             * @example 42
+             */
+            total: number;
+            /**
+             * Limit
+             * @description Maksimum item per halaman.
+             * @example 20
+             */
+            limit: number;
+            /**
+             * Offset
+             * @description Jumlah item yang dilewati.
+             * @example 0
+             */
+            offset: number;
+        };
+        /** Page[UraianTugasRead] */
+        Page_UraianTugasRead_: {
+            /**
+             * Items
+             * @description Item pada halaman ini.
+             */
+            items: components["schemas"]["UraianTugasRead"][];
             /**
              * Total
              * @description Total item tersedia.
@@ -4389,6 +4693,202 @@ export interface components {
              * @description Catatan baru.
              */
             catatan?: string | null;
+        };
+        /**
+         * TugasPokokCreate
+         * @description Payload pembuatan tugas pokok.
+         */
+        TugasPokokCreate: {
+            /**
+             * Nama
+             * @description Nama tugas pokok (klaster tugas).
+             * @example Pengelolaan SDM
+             */
+            nama: string;
+        };
+        /**
+         * TugasPokokRead
+         * @description Representasi tugas pokok yang dikembalikan API.
+         */
+        TugasPokokRead: {
+            /**
+             * Id
+             * @description ID unik tugas pokok.
+             * @example tp_a1b2c3d4
+             */
+            id: string;
+            /**
+             * Nama
+             * @description Nama tugas pokok.
+             * @example Pengelolaan SDM
+             */
+            nama: string;
+            /**
+             * Created At
+             * Format: date-time
+             * @description Waktu pembuatan (UTC, ISO-8601).
+             */
+            created_at: string;
+        };
+        /**
+         * TugasPokokUpdate
+         * @description Payload pembaruan sebagian tugas pokok.
+         */
+        TugasPokokUpdate: {
+            /**
+             * Nama
+             * @description Nama baru.
+             */
+            nama?: string | null;
+        };
+        /**
+         * UraianTugasCreate
+         * @description Payload pembuatan uraian tugas.
+         */
+        UraianTugasCreate: {
+            /**
+             * Kode
+             * @description Kode task deterministik (unik).
+             * @example TIf0b59714
+             */
+            kode: string;
+            /**
+             * Uraian
+             * @description Pernyataan tugas (task statement).
+             * @example Menyusun evaluasi karyawan
+             */
+            uraian: string;
+            /**
+             * Unit
+             * @description Unit/jenjang (TK, SD, SMP, SMA, SMK, dll.).
+             * @example TK
+             */
+            unit: string;
+            /**
+             * Kategori Jabatan
+             * @description Kategori jabatan.
+             * @example Kepala Sekolah
+             */
+            kategori_jabatan: string;
+            /**
+             * Urutan
+             * @description Urutan dalam kombinasi unit × kategori jabatan.
+             * @example 1
+             */
+            urutan: number;
+            /**
+             * Detil Tugas Id
+             * @description ID detil tugas induk (M2O). Null jika task tidak masuk detil tugas.
+             * @example dt_a1b2c3d4
+             */
+            detil_tugas_id?: string | null;
+            /**
+             * Tugas Pokok Id
+             * @description ID tugas pokok induk (M2O, denormalisasi untuk efisiensi query).
+             * @example tp_a1b2c3d4
+             */
+            tugas_pokok_id: string;
+        };
+        /**
+         * UraianTugasRead
+         * @description Representasi uraian tugas yang dikembalikan API.
+         */
+        UraianTugasRead: {
+            /**
+             * Id
+             * @description ID unik uraian tugas.
+             * @example ut_a1b2c3d4
+             */
+            id: string;
+            /**
+             * Kode
+             * @description Kode task deterministik.
+             * @example TIf0b59714
+             */
+            kode: string;
+            /**
+             * Uraian
+             * @description Pernyataan tugas (task statement).
+             * @example Menyusun evaluasi karyawan
+             */
+            uraian: string;
+            /**
+             * Unit
+             * @description Unit/jenjang.
+             * @example TK
+             */
+            unit: string;
+            /**
+             * Kategori Jabatan
+             * @description Kategori jabatan.
+             * @example Kepala Sekolah
+             */
+            kategori_jabatan: string;
+            /**
+             * Urutan
+             * @description Urutan dalam kombinasi unit × kategori jabatan.
+             * @example 1
+             */
+            urutan: number;
+            /**
+             * Detil Tugas Id
+             * @description ID detil tugas induk.
+             * @example dt_a1b2c3d4
+             */
+            detil_tugas_id?: string | null;
+            /**
+             * Tugas Pokok Id
+             * @description ID tugas pokok induk.
+             * @example tp_a1b2c3d4
+             */
+            tugas_pokok_id: string;
+            /**
+             * Created At
+             * Format: date-time
+             * @description Waktu pembuatan (UTC, ISO-8601).
+             */
+            created_at: string;
+        };
+        /**
+         * UraianTugasUpdate
+         * @description Payload pembaruan sebagian uraian tugas.
+         */
+        UraianTugasUpdate: {
+            /**
+             * Kode
+             * @description Kode baru.
+             */
+            kode?: string | null;
+            /**
+             * Uraian
+             * @description Pernyataan tugas baru.
+             */
+            uraian?: string | null;
+            /**
+             * Unit
+             * @description Unit baru.
+             */
+            unit?: string | null;
+            /**
+             * Kategori Jabatan
+             * @description Kategori jabatan baru.
+             */
+            kategori_jabatan?: string | null;
+            /**
+             * Urutan
+             * @description Urutan baru.
+             */
+            urutan?: number | null;
+            /**
+             * Detil Tugas Id
+             * @description ID detil tugas induk baru.
+             */
+            detil_tugas_id?: string | null;
+            /**
+             * Tugas Pokok Id
+             * @description ID tugas pokok induk baru.
+             */
+            tugas_pokok_id?: string | null;
         };
         /** ValidationError */
         ValidationError: {
@@ -11448,6 +11948,972 @@ export interface operations {
             };
         };
     };
+    tugas_pokok_list: {
+        parameters: {
+            query?: {
+                /** @description Maks item per halaman. */
+                limit?: number;
+                /** @description Jumlah item yang dilewati. */
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Page_TugasPokokRead_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    tugas_pokok_create: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TugasPokokCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TugasPokokRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Nama tugas pokok sudah ada. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    tugas_pokok_search: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SearchRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Page_TugasPokokRead_"];
+                };
+            };
+            /** @description Domain/field tidak valid. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    tugas_pokok_get: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description ETag klien untuk conditional GET. */
+                "If-None-Match"?: string | null;
+            };
+            path: {
+                /** @description ID tugas pokok. */
+                tp_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TugasPokokRead"];
+                };
+            };
+            /** @description Not Modified. */
+            304: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description TugasPokok tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    tugas_pokok_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID tugas pokok. */
+                tp_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description TugasPokok tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    tugas_pokok_update: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description ETag untuk concurrency control. */
+                "If-Match"?: string | null;
+            };
+            path: {
+                /** @description ID tugas pokok. */
+                tp_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TugasPokokUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TugasPokokRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description TugasPokok tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description If-Match tidak cocok. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description If-Match wajib. */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    detil_tugas_list: {
+        parameters: {
+            query?: {
+                /** @description Maks item per halaman. */
+                limit?: number;
+                /** @description Jumlah item yang dilewati. */
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Page_DetilTugasRead_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    detil_tugas_create: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DetilTugasCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DetilTugasRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description TugasPokok induk tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    detil_tugas_search: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SearchRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Page_DetilTugasRead_"];
+                };
+            };
+            /** @description Domain/field tidak valid. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    detil_tugas_get: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description ETag klien untuk conditional GET. */
+                "If-None-Match"?: string | null;
+            };
+            path: {
+                /** @description ID detil tugas. */
+                dt_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DetilTugasRead"];
+                };
+            };
+            /** @description Not Modified. */
+            304: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description DetilTugas tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    detil_tugas_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID detil tugas. */
+                dt_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description DetilTugas tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    detil_tugas_update: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description ETag untuk concurrency control. */
+                "If-Match"?: string | null;
+            };
+            path: {
+                /** @description ID detil tugas. */
+                dt_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DetilTugasUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DetilTugasRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description DetilTugas tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description If-Match tidak cocok. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description If-Match wajib. */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    uraian_tugas_list: {
+        parameters: {
+            query?: {
+                /** @description Maks item per halaman. */
+                limit?: number;
+                /** @description Jumlah item yang dilewati. */
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Page_UraianTugasRead_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    uraian_tugas_create: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UraianTugasCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UraianTugasRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Kode uraian tugas sudah ada. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    uraian_tugas_search: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SearchRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Page_UraianTugasRead_"];
+                };
+            };
+            /** @description Domain/field tidak valid. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    uraian_tugas_get: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description ETag klien untuk conditional GET. */
+                "If-None-Match"?: string | null;
+            };
+            path: {
+                /** @description ID uraian tugas. */
+                ut_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UraianTugasRead"];
+                };
+            };
+            /** @description Not Modified. */
+            304: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description UraianTugas tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    uraian_tugas_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID uraian tugas. */
+                ut_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description UraianTugas tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    uraian_tugas_update: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description ETag untuk concurrency control. */
+                "If-Match"?: string | null;
+            };
+            path: {
+                /** @description ID uraian tugas. */
+                ut_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UraianTugasUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UraianTugasRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description UraianTugas tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description If-Match tidak cocok. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description If-Match wajib. */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
 }
 
 // Convenience re-exports — dipertahankan setelah `npm run gen:api`
@@ -11489,3 +12955,6 @@ export type TsSesiRead = components["schemas"]["TsSesiRead"];
 export type TsRespondenRead = components["schemas"]["TsRespondenRead"];
 export type TsLogRead = components["schemas"]["TsLogRead"];
 export type TsKuesionerItemRead = components["schemas"]["TsKuesionerItemRead"];
+export type TugasPokokRead = components["schemas"]["TugasPokokRead"];
+export type DetilTugasRead = components["schemas"]["DetilTugasRead"];
+export type UraianTugasRead = components["schemas"]["UraianTugasRead"];

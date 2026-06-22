@@ -13,6 +13,9 @@ const NAV_ITEMS = [
   { href: "/master-data/dcs", label: "Instrumen DCS" },
   { href: "/master-data/wcp", label: "Instrumen WCP" },
   { href: "/master-data/task-inventory", label: "Instrumen TI" },
+  { href: "/master-data/tugas-pokok", label: "Tugas Pokok" },
+  { href: "/master-data/detil-tugas", label: "Detil Tugas" },
+  { href: "/master-data/uraian-tugas", label: "Uraian Tugas" },
 ];
 
 export default function MasterDataLayout({ children }: { children: ReactNode }) {
