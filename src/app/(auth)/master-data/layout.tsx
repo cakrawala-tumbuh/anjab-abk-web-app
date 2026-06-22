@@ -12,6 +12,7 @@ const NAV_ITEMS = [
   { href: "/master-data/mata-pelajaran", label: "Mata Pelajaran" },
   { href: "/master-data/dcs", label: "Instrumen DCS" },
   { href: "/master-data/wcp", label: "Instrumen WCP" },
+  { href: "/master-data/task-inventory", label: "Instrumen TI" },
 ];
 
 export default function MasterDataLayout({ children }: { children: ReactNode }) {

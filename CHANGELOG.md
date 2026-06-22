@@ -7,6 +7,16 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [1.6.0] - 2026-06-22
+
+### Ditambahkan
+
+- **Master data Instrumen TI** — tab "Instrumen TI" baru di navigasi Master Data (`/master-data/task-inventory`).
+  Menampilkan seluruh kombinasi unit × kategori jabatan dari catalog bawaan sistem, dikelompokkan per unit (TK, SD, SMP, SMA, dsb.) dalam bentuk grid card dengan jumlah task.
+- **Detail catalog per kombinasi** (`/master-data/task-inventory/[unit]/[kategori]`) — menelusuri
+  task secara hierarkis: tugas pokok (accordion) → detil tugas → uraian tugas + kode task.
+  Tampilan read-only; data bersumber dari catalog JSON bawaan sistem.
+
 ## [1.5.0] - 2026-06-21
 
 ### Ditambahkan
