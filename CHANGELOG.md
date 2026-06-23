@@ -7,6 +7,22 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [1.12.0] - 2026-06-23
+
+### Ditambahkan
+
+- **Dokumentasi penggunaan (user guide)** berbasis Material for MkDocs di `docs-usage/`
+  dengan konfigurasi terpisah `mkdocs-usage.yml` (tidak mengganggu dokumentasi teknis).
+  Konten dibagi menjadi **SOP** dan **Instruksi Kerja (IK)**:
+    - **SOP Persiapan** per alat ukur (Task Inventory, Time Study, DCS, WCP) dan
+      **SOP Pelaksanaan Pengambilan Data** lintas alat ukur.
+    - **IK** detail penginputan aplikasi: login & navigasi, master data, partisipan,
+      serta keempat alat ukur (TI, TS, DCS, WCP).
+    - Halaman Beranda, Memulai, dan FAQ.
+- **Workflow GitHub Pages** `.github/workflows/deploy-docs-usage.yml` — mem-build &
+  men-deploy dokumentasi penggunaan ke GitHub Pages saat tag `v*` di-push dari `master`
+  (atau via `workflow_dispatch`). Disertai `requirements-docs.txt`.
+
 ## [1.11.0] - 2026-06-23
 
 ### Diubah
