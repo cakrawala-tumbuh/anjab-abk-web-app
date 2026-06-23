@@ -7,6 +7,16 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [1.13.0] - 2026-06-23
+
+### Diubah
+
+- **SOP Pelaksanaan dipecah per alat ukur** (Task Inventory, Time Study, DCS, WCP)
+  menggantikan satu berkas gabungan `pelaksanaan-pengambilan-data.md`, karena pelaksanaan
+  pengambilan data tiap alat ukur dapat berlangsung pada waktu berbeda. Tiap SOP
+  Pelaksanaan kini menautkan ke IK terkait per langkah, dan nav, daftar SOP, serta
+  tautan dari SOP Persiapan & IK diperbarui.
+
 ## [1.12.1] - 2026-06-23
 
 ### Diperbaiki

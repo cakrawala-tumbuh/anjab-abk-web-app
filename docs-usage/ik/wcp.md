@@ -4,7 +4,7 @@ Langkah teknis menjalankan kuesioner **WCP** di aplikasi.
 
 Bagian **A–C** untuk **Administrator**, **D** untuk **Partisipan**. Untuk alur, lihat
 [SOP Persiapan WCP](../sop/persiapan-wcp.md) dan
-[SOP Pelaksanaan](../sop/pelaksanaan-pengambilan-data.md).
+[SOP Pelaksanaan WCP](../sop/pelaksanaan-wcp.md).
 
 WCP = 12 dimensi, 72 item, skala 1–5. Status sesi:
 `Draft → Terbuka → Tertutup → Teranalisis`.

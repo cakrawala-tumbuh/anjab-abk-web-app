@@ -75,7 +75,10 @@ nav:
     - "Persiapan: Time Study": sop/persiapan-time-study.md
     - "Persiapan: DCS": sop/persiapan-dcs.md
     - "Persiapan: WCP": sop/persiapan-wcp.md
-    - "Pelaksanaan Pengambilan Data": sop/pelaksanaan-pengambilan-data.md
+    - "Pelaksanaan: Task Inventory": sop/pelaksanaan-task-inventory.md
+    - "Pelaksanaan: Time Study": sop/pelaksanaan-time-study.md
+    - "Pelaksanaan: DCS": sop/pelaksanaan-dcs.md
+    - "Pelaksanaan: WCP": sop/pelaksanaan-wcp.md
   - Instruksi Kerja (IK):
     - Daftar IK: ik/index.md
     - "IK-01 Login & Navigasi": ik/login-navigasi.md

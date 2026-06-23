@@ -70,7 +70,7 @@ Identifikasi pegawai yang akan mencatat log untuk jabatan tersebut. Responden di
 
 !!! success "Selesai persiapan"
     Setelah sesi dibuat dan daftar responden disiapkan, lanjut ke
-    [SOP Pelaksanaan Pengambilan Data](pelaksanaan-pengambilan-data.md).
+    [SOP Pelaksanaan Time Study](pelaksanaan-time-study.md).
 
 ---
 

@@ -5,7 +5,7 @@ Langkah teknis menjalankan alat ukur **Task Inventory** di aplikasi.
 Bagian **A–C** untuk **Administrator**, **D** untuk **Koordinator**, **E–F** untuk
 **Partisipan**. Untuk alur & keputusan, lihat
 [SOP Persiapan TI](../sop/persiapan-task-inventory.md) dan
-[SOP Pelaksanaan](../sop/pelaksanaan-pengambilan-data.md).
+[SOP Pelaksanaan Task Inventory](../sop/pelaksanaan-task-inventory.md).
 
 Status sesi: `DRAFT → TAHAP1 → TAHAP2 → TAHAP3 → CLOSED → ANALYZED`.
 

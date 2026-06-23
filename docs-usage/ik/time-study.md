@@ -4,7 +4,7 @@ Langkah teknis menjalankan alat ukur **Time Study** di aplikasi.
 
 Bagian **A–D** untuk **Administrator**, **E–F** untuk **Partisipan**. Untuk alur, lihat
 [SOP Persiapan TS](../sop/persiapan-time-study.md) dan
-[SOP Pelaksanaan](../sop/pelaksanaan-pengambilan-data.md).
+[SOP Pelaksanaan Time Study](../sop/pelaksanaan-time-study.md).
 
 Status sesi: `Draft → Terbuka → Tertutup → Teranalisis`.
 

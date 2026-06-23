@@ -70,7 +70,7 @@ dibuka** (pada tahap pelaksanaan).
 
 !!! success "Selesai persiapan"
     Setelah instrumen ditinjau, sesi dibuat, dan daftar responden disiapkan, lanjut ke
-    [SOP Pelaksanaan Pengambilan Data](pelaksanaan-pengambilan-data.md).
+    [SOP Pelaksanaan DCS](pelaksanaan-dcs.md).
 
 ---
 

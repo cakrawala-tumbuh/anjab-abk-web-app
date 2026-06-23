@@ -84,7 +84,7 @@ Buat sesi dengan parameter berikut (detail langkah: [IK-04 Task Inventory](../ik
 !!! success "Selesai persiapan"
     Setelah catalog terverifikasi, panel & koordinator ditetapkan, sesi dibuat, dan
     responden terdaftar — sesi siap dibuka. Lanjut ke
-    [SOP Pelaksanaan Pengambilan Data](pelaksanaan-pengambilan-data.md).
+    [SOP Pelaksanaan Task Inventory](pelaksanaan-task-inventory.md).
 
 ---
 

@@ -4,7 +4,7 @@ Langkah teknis menjalankan kuesioner **DCS** di aplikasi.
 
 Bagian **A–C** untuk **Administrator**, **D** untuk **Partisipan**. Untuk alur, lihat
 [SOP Persiapan DCS](../sop/persiapan-dcs.md) dan
-[SOP Pelaksanaan](../sop/pelaksanaan-pengambilan-data.md).
+[SOP Pelaksanaan DCS](../sop/pelaksanaan-dcs.md).
 
 DCS = 3 sub-skala, 42 item, skala 1–5. Status sesi:
 `Draft → Terbuka → Tertutup → Teranalisis`.

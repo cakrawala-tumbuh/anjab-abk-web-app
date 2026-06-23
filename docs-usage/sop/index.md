@@ -18,11 +18,18 @@ dan pembuatan sesi.
 | [Persiapan DCS](persiapan-dcs.md) | DCS | Instrumen 3 sub-skala, partisipan, sesi survei |
 | [Persiapan WCP](persiapan-wcp.md) | WCP | Instrumen 12 dimensi, partisipan, sesi survei |
 
-## 2. SOP Pelaksanaan
+## 2. SOP Pelaksanaan Pengambilan Data (per Alat Ukur)
 
-| SOP | Ringkas |
-|---|---|
-| [Pelaksanaan Pengambilan Data](pelaksanaan-pengambilan-data.md) | Membuka sesi, menugaskan & memandu partisipan, memantau progres, menutup sesi, menjalankan analisis — berlaku untuk semua alat ukur |
+Prosedur menjalankan pengambilan data — membuka sesi, memandu partisipan, memantau,
+menutup sesi, dan analisis. Dibuat **terpisah per alat ukur** karena pelaksanaannya dapat
+berlangsung pada **waktu yang berbeda**.
+
+| SOP | Alat Ukur | Ringkas |
+|---|---|---|
+| [Pelaksanaan Task Inventory](pelaksanaan-task-inventory.md) | TI | 3 tahap: seleksi → review koordinator → detailing → analisis |
+| [Pelaksanaan Time Study](pelaksanaan-time-study.md) | TS | Pencatatan log harian sepanjang periode → analisis |
+| [Pelaksanaan DCS](pelaksanaan-dcs.md) | DCS | Pengisian kuesioner 42 item → hasil |
+| [Pelaksanaan WCP](pelaksanaan-wcp.md) | WCP | Pengisian kuesioner 72 item → hasil |
 
 ---
 
