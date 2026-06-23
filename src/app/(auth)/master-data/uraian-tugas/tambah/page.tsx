@@ -2,22 +2,24 @@ import { notFound } from "next/navigation";
 import { auth, isAdmin } from "@/lib/auth/auth";
 import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
-import type { DetilTugasRead, TugasPokokRead } from "@/lib/api/schema";
+import type { DetilTugasRead, JabatanRead, TugasPokokRead } from "@/lib/api/schema";
 import { TambahUraianTugasForm } from "./uraian-tugas-form";
 
 export const metadata = { title: "Tambah Uraian Tugas — Master Data" };
 
 async function fetchData(accessToken: string | undefined) {
   const client = withServerAuth(accessToken);
-  const [pokokRes, detilRes] = await Promise.all([
+  const [pokokRes, detilRes, jabatanRes] = await Promise.all([
     client.GET("/api/v1/task-inventory/tugas-pokok", { params: { query: { limit: 200 } } }),
     client.GET("/api/v1/task-inventory/detil-tugas", { params: { query: { limit: 500 } } }),
+    client.GET("/api/v1/jabatan", { params: { query: { limit: 200 } } }),
   ]);
   if (!pokokRes.data) throw toApiError(null, pokokRes.response.headers.get("x-request-id"));
   if (!detilRes.data) throw toApiError(null, detilRes.response.headers.get("x-request-id"));
   return {
-    tugasPokok: pokokRes.data.items ?? ([] as TugasPokokRead[]),
-    detilTugas: detilRes.data.items ?? ([] as DetilTugasRead[]),
+    tugasPokok: (pokokRes.data.items ?? []) as TugasPokokRead[],
+    detilTugas: (detilRes.data.items ?? []) as DetilTugasRead[],
+    jabatanList: (jabatanRes.data?.items ?? []) as JabatanRead[],
   };
 }
 
@@ -25,7 +27,7 @@ export default async function TambahUraianTugasPage() {
   const session = await auth();
   if (!isAdmin(session)) notFound();
 
-  const { tugasPokok, detilTugas } = await fetchData(session?.accessToken);
+  const { tugasPokok, detilTugas, jabatanList } = await fetchData(session?.accessToken);
 
   return (
     <div className="space-y-6">
@@ -41,6 +43,7 @@ export default async function TambahUraianTugasPage() {
         <TambahUraianTugasForm
           tugasPokok={tugasPokok}
           detilTugas={detilTugas}
+          jabatanList={jabatanList}
           accessToken={session?.accessToken}
         />
       </div>

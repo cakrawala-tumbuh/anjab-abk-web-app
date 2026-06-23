@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { auth, isAdmin } from "@/lib/auth/auth";
 import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
-import type { DetilTugasRead, TugasPokokRead } from "@/lib/api/schema";
+import type { DetilTugasRead, JabatanRead, TugasPokokRead } from "@/lib/api/schema";
 import { TambahDetilTugasForm } from "../tambah/detil-tugas-form";
 import { HapusDetilTugasButton } from "./hapus-button";
 
@@ -10,17 +10,19 @@ export const metadata = { title: "Edit Detil Tugas — Master Data" };
 
 async function fetchData(accessToken: string | undefined, id: string) {
   const client = withServerAuth(accessToken);
-  const [detilRes, pokokRes] = await Promise.all([
+  const [detilRes, pokokRes, jabatanRes] = await Promise.all([
     client.GET("/api/v1/task-inventory/detil-tugas/{dt_id}", {
       params: { path: { dt_id: id } },
     }),
     client.GET("/api/v1/task-inventory/tugas-pokok", { params: { query: { limit: 200 } } }),
+    client.GET("/api/v1/jabatan", { params: { query: { limit: 200 } } }),
   ]);
   if (!detilRes.data) throw toApiError(null, detilRes.response.headers.get("x-request-id"));
   if (!pokokRes.data) throw toApiError(null, pokokRes.response.headers.get("x-request-id"));
   return {
     detilTugas: detilRes.data as DetilTugasRead,
-    tugasPokok: pokokRes.data.items ?? ([] as TugasPokokRead[]),
+    tugasPokok: (pokokRes.data.items ?? []) as TugasPokokRead[],
+    jabatanList: (jabatanRes.data?.items ?? []) as JabatanRead[],
   };
 }
 
@@ -29,7 +31,7 @@ export default async function EditDetilTugasPage({ params }: { params: Promise<{
   if (!isAdmin(session)) notFound();
 
   const { id } = await params;
-  const { detilTugas, tugasPokok } = await fetchData(session?.accessToken, id);
+  const { detilTugas, tugasPokok, jabatanList } = await fetchData(session?.accessToken, id);
 
   return (
     <div className="space-y-6">
@@ -40,8 +42,13 @@ export default async function EditDetilTugasPage({ params }: { params: Promise<{
       <div className="max-w-xl space-y-4">
         <TambahDetilTugasForm
           tugasPokok={tugasPokok}
+          jabatanList={jabatanList}
           accessToken={session?.accessToken}
-          defaultValues={{ nama: detilTugas.nama, tugas_pokok_id: detilTugas.tugas_pokok_id }}
+          defaultValues={{
+            nama: detilTugas.nama,
+            tugas_pokok_id: detilTugas.tugas_pokok_id,
+            jabatan_ids: detilTugas.jabatan_ids,
+          }}
           editId={id}
         />
         <HapusDetilTugasButton id={id} nama={detilTugas.nama} accessToken={session?.accessToken} />

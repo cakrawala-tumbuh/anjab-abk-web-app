@@ -8,7 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
-import type { DetilTugasRead, TugasPokokRead } from "@/lib/api/schema";
+import type { DetilTugasRead, JabatanRead, TugasPokokRead } from "@/lib/api/schema";
 
 const schema = z.object({
   kode: z.string().min(1, "Kode wajib diisi").max(20, "Kode terlalu panjang"),
@@ -19,7 +19,8 @@ const schema = z.object({
     .int("Urutan harus bilangan bulat")
     .min(1, "Urutan minimal 1"),
   tugas_pokok_id: z.string().min(1, "Tugas pokok wajib dipilih"),
-  detil_tugas_id: z.string().optional().or(z.literal("")),
+  detil_tugas_id: z.string().min(1, "Detil tugas wajib dipilih"),
+  jabatan_id: z.string().min(1, "Jabatan wajib dipilih"),
 });
 
 type FormValues = z.infer<typeof schema>;
@@ -27,6 +28,7 @@ type FormValues = z.infer<typeof schema>;
 interface Props {
   tugasPokok: TugasPokokRead[];
   detilTugas: DetilTugasRead[];
+  jabatanList: JabatanRead[];
   accessToken: string | undefined;
   defaultValues?: Partial<FormValues>;
   /** ID untuk mode edit; tidak ada = mode tambah */
@@ -36,6 +38,7 @@ interface Props {
 export function TambahUraianTugasForm({
   tugasPokok,
   detilTugas,
+  jabatanList,
   accessToken,
   defaultValues,
   editId,
@@ -58,16 +61,27 @@ export function TambahUraianTugasForm({
       urutan: 1,
       tugas_pokok_id: "",
       detil_tugas_id: "",
+      jabatan_id: "",
       ...defaultValues,
     },
   });
 
   const watchedPokokId = watch("tugas_pokok_id");
+  const watchedDetilId = watch("detil_tugas_id");
+
   const filteredDetil = detilTugas.filter((dt) => dt.tugas_pokok_id === watchedPokokId);
+  const selectedDT = detilTugas.find((dt) => dt.id === watchedDetilId);
+  const filteredJabatan = jabatanList.filter((j) => (selectedDT?.jabatan_ids ?? []).includes(j.id));
 
   function handlePokokChange(e: React.ChangeEvent<HTMLSelectElement>) {
-    setValue("tugas_pokok_id", e.target.value);
-    setValue("detil_tugas_id", "");
+    setValue("tugas_pokok_id", e.target.value, { shouldValidate: true });
+    setValue("detil_tugas_id", "", { shouldValidate: true });
+    setValue("jabatan_id", "", { shouldValidate: true });
+  }
+
+  function handleDetilChange(e: React.ChangeEvent<HTMLSelectElement>) {
+    setValue("detil_tugas_id", e.target.value, { shouldValidate: true });
+    setValue("jabatan_id", "", { shouldValidate: true });
   }
 
   async function onSubmit(values: FormValues) {
@@ -80,7 +94,8 @@ export function TambahUraianTugasForm({
         unit: values.unit,
         urutan: values.urutan,
         tugas_pokok_id: values.tugas_pokok_id,
-        detil_tugas_id: values.detil_tugas_id || null,
+        detil_tugas_id: values.detil_tugas_id,
+        jabatan_id: values.jabatan_id,
       };
 
       if (editId) {
@@ -95,14 +110,7 @@ export function TambahUraianTugasForm({
         if (error) throw toApiError(error, requestId);
       } else {
         const { error, response } = await client.POST("/api/v1/task-inventory/uraian-tugas", {
-          body: {
-            kode: values.kode,
-            uraian: values.uraian,
-            unit: values.unit,
-            urutan: values.urutan,
-            tugas_pokok_id: values.tugas_pokok_id,
-            detil_tugas_id: values.detil_tugas_id || null,
-          },
+          body,
         });
         const requestId = response.headers.get("x-request-id");
         if (error) throw toApiError(error, requestId);
@@ -229,15 +237,17 @@ export function TambahUraianTugasForm({
 
       <div>
         <label htmlFor="detil_tugas_id" className="form-label">
-          Detil Tugas <span className="font-normal text-gray-400">(opsional)</span>
+          Detil Tugas <span aria-hidden>*</span>
         </label>
         <select
           id="detil_tugas_id"
-          {...register("detil_tugas_id")}
+          value={watchedDetilId}
+          onChange={handleDetilChange}
           disabled={!watchedPokokId}
           className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-400"
+          aria-invalid={!!errors.detil_tugas_id}
         >
-          <option value="">-- Tidak masuk detil tugas --</option>
+          <option value="">-- Pilih detil tugas --</option>
           {filteredDetil.map((dt) => (
             <option key={dt.id} value={dt.id}>
               {dt.nama}
@@ -246,6 +256,42 @@ export function TambahUraianTugasForm({
         </select>
         {!watchedPokokId && (
           <p className="mt-1 text-xs text-gray-400">Pilih tugas pokok terlebih dahulu.</p>
+        )}
+        {errors.detil_tugas_id && (
+          <p className="form-error" role="alert">
+            {errors.detil_tugas_id.message}
+          </p>
+        )}
+      </div>
+
+      <div>
+        <label htmlFor="jabatan_id" className="form-label">
+          Jabatan <span aria-hidden>*</span>
+        </label>
+        <select
+          id="jabatan_id"
+          {...register("jabatan_id")}
+          disabled={!watchedDetilId}
+          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-400"
+          aria-invalid={!!errors.jabatan_id}
+        >
+          <option value="">-- Pilih jabatan --</option>
+          {filteredJabatan.map((j) => (
+            <option key={j.id} value={j.id}>
+              {j.nama} ({j.kode})
+            </option>
+          ))}
+        </select>
+        {!watchedDetilId && (
+          <p className="mt-1 text-xs text-gray-400">Pilih detil tugas terlebih dahulu.</p>
+        )}
+        {watchedDetilId && filteredJabatan.length === 0 && (
+          <p className="mt-1 text-xs text-gray-400">Tidak ada jabatan untuk detil tugas ini.</p>
+        )}
+        {errors.jabatan_id && (
+          <p className="form-error" role="alert">
+            {errors.jabatan_id.message}
+          </p>
         )}
       </div>
 

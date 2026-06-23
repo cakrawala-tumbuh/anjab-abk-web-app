@@ -7,6 +7,26 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [1.10.0] - 2026-06-23
+
+### Diubah (Breaking)
+
+- **Form TugasPokok** (`/master-data/tugas-pokok/tambah`): dropdown jabatan tunggal diganti
+  checkboxes M2M — satu TugasPokok dapat terhubung ke beberapa Jabatan.
+- **Form DetilTugas** (`/master-data/detil-tugas/tambah`): tambah checkboxes jabatan M2M;
+  hanya jabatan dari TugasPokok terpilih yang ditampilkan (subset otomatis).
+- **Form UraianTugas** (`/master-data/uraian-tugas/tambah`): dropdown jabatan kini wajib
+  diisi eksplisit; pilihan jabatan difilter dari `jabatan_ids` DetilTugas terpilih.
+- **Schema API** (`openapi.json`, `schema.ts`) diregenerasi dari backend v0.15.0;
+  `TugasPokokCreate/Read` menggunakan `jabatan_ids` (list), `DetilTugasCreate/Read`
+  menggunakan `jabatan_ids` (list), `UraianTugasCreate` memerlukan `jabatan_id` eksplisit.
+
+### Diperbaiki
+
+- **E2E `master-data.spec.ts`**: interaksi M2M diperbarui — checkbox dipakai untuk
+  TugasPokok dan DetilTugas (menggantikan `selectOption`); helper `buatDetilTugas`
+  ditambahkan untuk mendukung cascading dependency pada tes UraianTugas.
+
 ## [1.9.0] - 2026-06-22
 
 ### Diubah (Breaking)

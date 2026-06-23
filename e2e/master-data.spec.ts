@@ -365,6 +365,9 @@ test.describe("Master Data — Instrumen DCS dan WCP", () => {
 
 // ─── Tugas Pokok ─────────────────────────────────────────────────────────────
 
+const TP_JABATAN_KODE = "E2E-TP-JBT";
+const TP_JABATAN_NAMA = "Jabatan TugasPokok E2E";
+
 test.describe.serial("Master Data — Tugas Pokok", () => {
   test("admin dapat mengakses halaman tugas pokok", async ({ page }) => {
     await loginViaAuthentik(page, "admin-e2e", "AdminE2e123!");
@@ -375,7 +378,7 @@ test.describe.serial("Master Data — Tugas Pokok", () => {
 
   test("admin dapat tambah tugas pokok baru", async ({ page }) => {
     await loginViaAuthentik(page, "admin-e2e", "AdminE2e123!");
-    await buatJabatan(page, "E2E-TP-DIR", "Jabatan TP Langsung E2E");
+    await buatJabatan(page, TP_JABATAN_KODE, TP_JABATAN_NAMA);
 
     // Idempoten — lewati jika sudah ada
     await page.goto("/master-data/tugas-pokok");
@@ -384,9 +387,10 @@ test.describe.serial("Master Data — Tugas Pokok", () => {
 
     await page.goto("/master-data/tugas-pokok/tambah");
     await page.waitForLoadState("networkidle");
-    const jabatanSelect = page.getByLabel("Jabatan");
-    await expect(jabatanSelect.locator("option").nth(1)).toBeAttached({ timeout: 10_000 });
-    await jabatanSelect.selectOption({ label: "Jabatan TP Langsung E2E (E2E-TP-DIR)" });
+    // Jabatan kini checkbox M2M — tunggu minimal satu checkbox muncul
+    const jabatanCheckbox = page.getByRole("checkbox", { name: new RegExp(TP_JABATAN_NAMA) });
+    await expect(jabatanCheckbox).toBeVisible({ timeout: 10_000 });
+    await jabatanCheckbox.check();
     await page.getByLabel("Nama Tugas Pokok").fill("Pengelolaan SDM E2E");
     await page.getByRole("button", { name: "Tambah Tugas Pokok" }).click();
     await page.waitForURL(/\/master-data\/tugas-pokok$/, { timeout: 15_000 });
@@ -398,15 +402,12 @@ test.describe.serial("Master Data — Tugas Pokok", () => {
     await page.goto("/master-data/tugas-pokok/tambah");
     await page.waitForLoadState("networkidle");
     await page.getByRole("button", { name: "Tambah Tugas Pokok" }).click();
-    await expect(page.getByText("Jabatan wajib dipilih")).toBeVisible();
+    await expect(page.getByText("Pilih minimal satu jabatan")).toBeVisible();
     await expect(page.getByText("Nama wajib diisi")).toBeVisible();
   });
 });
 
 // ─── Detil Tugas ─────────────────────────────────────────────────────────────
-
-const TP_JABATAN_KODE = "E2E-TP-JBT";
-const TP_JABATAN_NAMA = "Jabatan TugasPokok E2E";
 
 async function buatTugasPokok(
   page: Parameters<typeof loginViaAuthentik>[0],
@@ -420,12 +421,36 @@ async function buatTugasPokok(
 
   await page.goto("/master-data/tugas-pokok/tambah");
   await page.waitForLoadState("networkidle");
-  const jabatanSelect = page.getByLabel("Jabatan");
-  await expect(jabatanSelect.locator("option").nth(1)).toBeAttached({ timeout: 10_000 });
-  await jabatanSelect.selectOption({ label: `${TP_JABATAN_NAMA} (${TP_JABATAN_KODE})` });
+  const jabatanCheckbox = page.getByRole("checkbox", { name: new RegExp(TP_JABATAN_NAMA) });
+  await expect(jabatanCheckbox).toBeVisible({ timeout: 10_000 });
+  await jabatanCheckbox.check();
   await page.getByLabel("Nama Tugas Pokok").fill(nama);
   await page.getByRole("button", { name: "Tambah Tugas Pokok" }).click();
   await page.waitForURL(/\/master-data\/tugas-pokok$/, { timeout: 15_000 });
+  await expect(page.getByText(nama)).toBeVisible();
+}
+
+async function buatDetilTugas(
+  page: Parameters<typeof loginViaAuthentik>[0],
+  nama: string,
+  tpNama: string,
+): Promise<void> {
+  await buatTugasPokok(page, tpNama);
+
+  await page.goto("/master-data/detil-tugas");
+  await page.waitForLoadState("networkidle");
+  if ((await page.content()).includes(nama)) return;
+
+  await page.goto("/master-data/detil-tugas/tambah");
+  await page.waitForLoadState("networkidle");
+  await page.getByLabel("Nama Detil Tugas").fill(nama);
+  await page.getByLabel("Tugas Pokok").selectOption({ label: tpNama });
+  // Tunggu checkbox jabatan muncul (difilter dari jabatan_ids TP yang dipilih)
+  const jabatanCheckbox = page.getByRole("checkbox", { name: new RegExp(TP_JABATAN_NAMA) });
+  await expect(jabatanCheckbox).toBeVisible({ timeout: 10_000 });
+  await jabatanCheckbox.check();
+  await page.getByRole("button", { name: "Tambah Detil Tugas" }).click();
+  await page.waitForURL(/\/master-data\/detil-tugas$/, { timeout: 15_000 });
   await expect(page.getByText(nama)).toBeVisible();
 }
 
@@ -450,6 +475,10 @@ test.describe.serial("Master Data — Detil Tugas", () => {
     await page.waitForLoadState("networkidle");
     await page.getByLabel("Nama Detil Tugas").fill("Evaluasi Kinerja E2E");
     await page.getByLabel("Tugas Pokok").selectOption({ label: "Pengelolaan SDM E2E" });
+    // Tunggu checkbox jabatan muncul setelah TP dipilih
+    const dtJabatanCheckbox = page.getByRole("checkbox", { name: new RegExp(TP_JABATAN_NAMA) });
+    await expect(dtJabatanCheckbox).toBeVisible({ timeout: 10_000 });
+    await dtJabatanCheckbox.check();
     await page.getByRole("button", { name: "Tambah Detil Tugas" }).click();
     await page.waitForURL(/\/master-data\/detil-tugas$/, { timeout: 15_000 });
     await expect(page.getByText("Evaluasi Kinerja E2E")).toBeVisible();
@@ -462,6 +491,7 @@ test.describe.serial("Master Data — Detil Tugas", () => {
     await page.getByRole("button", { name: "Tambah Detil Tugas" }).click();
     await expect(page.getByText("Nama wajib diisi")).toBeVisible();
     await expect(page.getByText("Tugas pokok wajib dipilih")).toBeVisible();
+    await expect(page.getByText("Pilih minimal satu jabatan")).toBeVisible();
   });
 });
 
@@ -477,7 +507,8 @@ test.describe.serial("Master Data — Uraian Tugas", () => {
 
   test("admin dapat tambah uraian tugas baru", async ({ page }) => {
     await loginViaAuthentik(page, "admin-e2e", "AdminE2e123!");
-    await buatTugasPokok(page, "Pengelolaan SDM E2E");
+    // Pastikan TP dan DT (dengan jabatan) tersedia sebelum mengisi form UT
+    await buatDetilTugas(page, "Evaluasi Kinerja E2E", "Pengelolaan SDM E2E");
 
     // Idempoten — cek via API search (list UI dibatasi 500 dari 2000+ item seed)
     const backendUrl = (process.env.E2E_BASE_URL ?? "http://localhost:9100").replace(
@@ -498,12 +529,20 @@ test.describe.serial("Master Data — Uraian Tugas", () => {
     await page.getByLabel("Unit / Jenjang").fill("SD");
     await page.getByLabel("Urutan").fill("1");
     await page.getByLabel("Tugas Pokok").selectOption({ label: "Pengelolaan SDM E2E" });
+    // Tunggu dropdown Detil Tugas aktif setelah TP dipilih
+    await expect(page.getByLabel("Detil Tugas")).not.toBeDisabled({ timeout: 10_000 });
+    await page.getByLabel("Detil Tugas").selectOption({ label: "Evaluasi Kinerja E2E" });
+    // Tunggu dropdown Jabatan aktif setelah DT dipilih
+    await expect(page.getByLabel("Jabatan")).not.toBeDisabled({ timeout: 5_000 });
+    await page
+      .getByLabel("Jabatan")
+      .selectOption({ label: `${TP_JABATAN_NAMA} (${TP_JABATAN_KODE})` });
     await page.getByRole("button", { name: "Tambah Uraian Tugas" }).click();
     await page.waitForURL(/\/master-data\/uraian-tugas$/, { timeout: 15_000 });
     await expect(page.getByText("E2E-UT-001")).toBeVisible();
   });
 
-  test("validasi form: kode, uraian, unit, urutan, tugas pokok wajib", async ({
+  test("validasi form: kode, uraian, unit, tugas pokok, detil tugas, jabatan wajib", async ({
     page,
   }) => {
     await loginViaAuthentik(page, "admin-e2e", "AdminE2e123!");
@@ -514,5 +553,7 @@ test.describe.serial("Master Data — Uraian Tugas", () => {
     await expect(page.getByText("Uraian wajib diisi")).toBeVisible();
     await expect(page.getByText("Unit wajib diisi")).toBeVisible();
     await expect(page.getByText("Tugas pokok wajib dipilih")).toBeVisible();
+    await expect(page.getByText("Detil tugas wajib dipilih")).toBeVisible();
+    await expect(page.getByText("Jabatan wajib dipilih")).toBeVisible();
   });
 });

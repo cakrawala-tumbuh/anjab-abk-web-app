@@ -2239,6 +2239,14 @@ export interface components {
              * @example tp_a1b2c3d4
              */
             tugas_pokok_id: string;
+            /**
+             * Jabatan Ids
+             * @description Daftar ID jabatan terkait (M2M, minimal 1). Harus merupakan subset dari jabatan_ids TugasPokok induk.
+             * @example [
+             *       "jbt_a1b2c3d4"
+             *     ]
+             */
+            jabatan_ids: string[];
         };
         /**
          * DetilTugasRead
@@ -2264,6 +2272,14 @@ export interface components {
              */
             tugas_pokok_id: string;
             /**
+             * Jabatan Ids
+             * @description Daftar ID jabatan terkait (M2M).
+             * @example [
+             *       "jbt_a1b2c3d4"
+             *     ]
+             */
+            jabatan_ids: string[];
+            /**
              * Created At
              * Format: date-time
              * @description Waktu pembuatan (UTC, ISO-8601).
@@ -2285,6 +2301,11 @@ export interface components {
              * @description ID tugas pokok induk baru.
              */
             tugas_pokok_id?: string | null;
+            /**
+             * Jabatan Ids
+             * @description Daftar ID jabatan baru (M2M, minimal 1 item bila diisi).
+             */
+            jabatan_ids?: string[] | null;
         };
         /** ErrorDetail */
         ErrorDetail: {
@@ -4700,11 +4721,14 @@ export interface components {
          */
         TugasPokokCreate: {
             /**
-             * Jabatan Id
-             * @description ID jabatan yang menjadi induk tugas pokok ini.
-             * @example jbt_a1b2c3d4
+             * Jabatan Ids
+             * @description Daftar ID jabatan yang terkait dengan tugas pokok ini (M2M, minimal 1).
+             * @example [
+             *       "jbt_a1b2c3d4",
+             *       "jbt_b2c3d4e5"
+             *     ]
              */
-            jabatan_id: string;
+            jabatan_ids: string[];
             /**
              * Nama
              * @description Nama tugas pokok (klaster tugas).
@@ -4724,11 +4748,13 @@ export interface components {
              */
             id: string;
             /**
-             * Jabatan Id
-             * @description ID jabatan induk.
-             * @example jbt_a1b2c3d4
+             * Jabatan Ids
+             * @description Daftar ID jabatan terkait (M2M).
+             * @example [
+             *       "jbt_a1b2c3d4"
+             *     ]
              */
-            jabatan_id: string;
+            jabatan_ids: string[];
             /**
              * Nama
              * @description Nama tugas pokok.
@@ -4748,10 +4774,10 @@ export interface components {
          */
         TugasPokokUpdate: {
             /**
-             * Jabatan Id
-             * @description ID jabatan baru.
+             * Jabatan Ids
+             * @description Daftar ID jabatan baru (M2M, minimal 1 item bila diisi).
              */
-            jabatan_id?: string | null;
+            jabatan_ids?: string[] | null;
             /**
              * Nama
              * @description Nama baru.
@@ -4788,6 +4814,12 @@ export interface components {
              */
             urutan: number;
             /**
+             * Jabatan Id
+             * @description ID jabatan untuk uraian tugas ini (M2O). Bila detil_tugas_id diisi, jabatan harus ada dalam jabatan_ids DetilTugas tersebut.
+             * @example jbt_a1b2c3d4
+             */
+            jabatan_id: string;
+            /**
              * Detil Tugas Id
              * @description ID detil tugas induk (M2O). Null jika task tidak masuk detil tugas.
              * @example dt_a1b2c3d4
@@ -4795,7 +4827,7 @@ export interface components {
             detil_tugas_id?: string | null;
             /**
              * Tugas Pokok Id
-             * @description ID tugas pokok induk (M2O). Jabatan diwarisi dari TugasPokok ini.
+             * @description ID tugas pokok induk (M2O).
              * @example tp_a1b2c3d4
              */
             tugas_pokok_id: string;
@@ -4803,8 +4835,6 @@ export interface components {
         /**
          * UraianTugasRead
          * @description Representasi uraian tugas yang dikembalikan API.
-         *
-         *     jabatan_id adalah nilai turunan (inherited) dari TugasPokok induk.
          */
         UraianTugasRead: {
             /**
@@ -4833,7 +4863,7 @@ export interface components {
             unit: string;
             /**
              * Jabatan Id
-             * @description ID jabatan (diwarisi dari TugasPokok).
+             * @description ID jabatan untuk uraian tugas ini (M2O langsung).
              * @example jbt_a1b2c3d4
              */
             jabatan_id: string;
@@ -4887,6 +4917,11 @@ export interface components {
              * @description Urutan baru.
              */
             urutan?: number | null;
+            /**
+             * Jabatan Id
+             * @description ID jabatan baru.
+             */
+            jabatan_id?: string | null;
             /**
              * Detil Tugas Id
              * @description ID detil tugas induk baru.
