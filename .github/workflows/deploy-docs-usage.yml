@@ -18,13 +18,26 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    # Hanya deploy jika tag berasal dari branch master
-    if: github.event_name == 'workflow_dispatch' || contains(github.event.base_ref, 'master')
+    # Jalankan untuk tag v* (push) atau dispatch manual.
+    if: github.event_name == 'workflow_dispatch' || github.ref_type == 'tag'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
+      # Pastikan tag yang dideploy memang berasal dari riwayat master.
+      # Pada workflow_dispatch (ref = master) langkah ini otomatis terpenuhi.
+      - name: Verifikasi tag berasal dari master
+        if: github.ref_type == 'tag'
+        run: |
+          git fetch origin master --depth=100
+          if git merge-base --is-ancestor "${{ github.sha }}" origin/master; then
+            echo "Tag berada di riwayat master — lanjut deploy."
+          else
+            echo "::error::Tag tidak berada di riwayat master — deploy dibatalkan."
+            exit 1
+          fi
 
       - name: Setup Python
         uses: actions/setup-python@v5

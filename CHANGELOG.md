@@ -7,6 +7,15 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [1.12.1] - 2026-06-23
+
+### Diperbaiki
+
+- **Workflow deploy docs Pages**: kondisi pemicu berbasis `github.event.base_ref` membuat
+  deploy ter-*skip* saat tag `v*` di-push (base_ref kerap kosong pada event tag push).
+  Diganti menjadi `github.ref_type == 'tag'` ditambah langkah verifikasi tag berasal dari
+  riwayat `master`, sehingga push tag `v*` kini memicu deploy secara andal.
+
 ## [1.12.0] - 2026-06-23
 
 ### Ditambahkan
