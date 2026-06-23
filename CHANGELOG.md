@@ -7,6 +7,33 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [1.11.0] - 2026-06-23
+
+### Diubah
+
+- **Tahap 1 Task Inventory kini bertingkat (cascade)** (`/task-inventory/tahap1/{responden_id}`):
+  partisipan menyeleksi relevansi dalam tiga langkah berurutan — (1) **Tugas Pokok**,
+  lalu (2) **Detil Tugas** yang ditampilkan hanya untuk tugas pokok yang dipilih relevan,
+  lalu (3) **Uraian Tugas** yang ditampilkan hanya untuk detil tugas yang dipilih relevan.
+  Uraian tugas terpilih (`task_kode`) yang disubmit — kontrak submit tidak berubah.
+  Pengelompokan memakai `tugas_pokok_id`/`detil_tugas_id` (kunci stabil) dari catalog.
+  Mengubah pilihan di langkah sebelumnya otomatis membuang pilihan turunannya yang
+  tak lagi valid. Task tanpa detil tugas tampil sebagai "(Langsung di bawah tugas pokok)".
+- **Schema API** (`openapi.json`, `schema.ts`) diregenerasi dari backend v0.18.0
+  (`TiCatalogRead` menyertakan `tugas_pokok_id` & `detil_tugas_id`).
+
+### Diperbaiki
+
+- **Stack E2E**: service `backend` tidak punya `DATABASE_URL` sejak backend beralih ke
+  persistensi PostgreSQL (v0.16.0+) sehingga gagal start (unhealthy). Ditambahkan service
+  `backend-db` (PostgreSQL terpisah dari DB Authentik) dan `DATABASE_URL` agar stack E2E
+  bisa naik kembali.
+
+### Ditambahkan
+
+- **Test**: unit test cascade Tahap 1 (`src/test/seleksi-form.test.tsx`) dan spesifikasi
+  E2E alur partisipan (`e2e/tahap1.spec.ts`).
+
 ## [1.10.0] - 2026-06-23
 
 ### Diubah (Breaking)

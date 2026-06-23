@@ -3543,11 +3543,23 @@ export interface components {
              */
             jabatan_id: string;
             /**
+             * Tugas Pokok Id
+             * @description ID tugas pokok — kunci stabil untuk cascade Tahap 1 (level 1).
+             * @example titp_a1b2c3d4
+             */
+            tugas_pokok_id: string;
+            /**
              * Tugas Pokok
              * @description Tugas pokok (klaster).
              * @example Pengelolaan SDM
              */
             tugas_pokok: string;
+            /**
+             * Detil Tugas Id
+             * @description ID detil tugas — kunci stabil untuk cascade Tahap 1 (level 2); null bila task langsung di bawah tugas pokok.
+             * @example tidt_a1b2c3d4
+             */
+            detil_tugas_id?: string | null;
             /**
              * Detil Tugas
              * @description Detil tugas (kelompok); null bila task langsung di bawah tugas pokok.

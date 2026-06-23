@@ -12,7 +12,7 @@
       "name": "MIT",
       "identifier": "MIT"
     },
-    "version": "0.14.0"
+    "version": "0.17.0"
   },
   "paths": {
     "/api/v1/health": {
@@ -14010,12 +14010,35 @@
               "jbt_a1b2c3d4"
             ]
           },
+          "tugas_pokok_id": {
+            "type": "string",
+            "title": "Tugas Pokok Id",
+            "description": "ID tugas pokok — kunci stabil untuk cascade Tahap 1 (level 1).",
+            "examples": [
+              "titp_a1b2c3d4"
+            ]
+          },
           "tugas_pokok": {
             "type": "string",
             "title": "Tugas Pokok",
             "description": "Tugas pokok (klaster).",
             "examples": [
               "Pengelolaan SDM"
+            ]
+          },
+          "detil_tugas_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Detil Tugas Id",
+            "description": "ID detil tugas — kunci stabil untuk cascade Tahap 1 (level 2); null bila task langsung di bawah tugas pokok.",
+            "examples": [
+              "tidt_a1b2c3d4"
             ]
           },
           "detil_tugas": {
@@ -14055,6 +14078,7 @@
           "kode",
           "unit",
           "jabatan_id",
+          "tugas_pokok_id",
           "tugas_pokok",
           "uraian_tugas",
           "urutan"

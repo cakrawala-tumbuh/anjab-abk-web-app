@@ -55,6 +55,27 @@ services:
     networks:
       - e2e
 
+  # ── Database backend anjab-abk (terpisah dari DB Authentik) ──────────────────
+  # Sejak backend memakai persistensi PostgreSQL (v0.16.0+), service backend butuh
+  # DATABASE_URL sendiri. DB ini disposable; init schema + seed dijalankan otomatis
+  # oleh docker-entrypoint backend (alembic upgrade + seed).
+  backend-db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: anjab_abk
+    volumes:
+      - backend-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U app -d anjab_abk"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - e2e
+
   # ── Authentik ───────────────────────────────────────────────────────────────
 
   authentik-server:
@@ -125,8 +146,13 @@ services:
     depends_on:
       authentik-server:
         condition: service_healthy
+      backend-db:
+        condition: service_healthy
     environment:
       LOG_LEVEL: INFO
+      # Persistensi PostgreSQL (service backend-db). initdb (alembic + seed) berjalan
+      # otomatis lewat docker-entrypoint sebelum app naik.
+      DATABASE_URL: postgresql+psycopg://app:${POSTGRES_PASSWORD}@backend-db:5432/anjab_abk
       CORS_ORIGINS: '["http://localhost:9100","http://${HOST_IP:-localhost}:9100"]'
       CORS_ALLOW_CREDENTIALS: "true"
       # Issuer harus cocok dengan klaim `iss` di JWT yang diterbitkan Authentik (URL publik)
@@ -193,6 +219,7 @@ services:
 
 volumes:
   postgres-data:
+  backend-db-data:
   authentik-media:
   authentik-certs:
 
