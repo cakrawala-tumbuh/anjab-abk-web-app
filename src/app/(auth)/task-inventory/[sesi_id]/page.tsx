@@ -5,6 +5,7 @@ import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
 import type {
   PartisipanRead,
+  SMEPanelRead,
   TiHasilSesiRead,
   TiHasilTaskRead,
   TiRespondenRead,
@@ -56,18 +57,23 @@ interface Props {
 
 async function fetchPageData(accessToken: string | undefined, sesiId: string) {
   const client = withServerAuth(accessToken);
-  const [sesiRes, respondenRes, partisipanRes] = await Promise.all([
-    client.GET("/api/v1/task-inventory/sesi/{sesi_id}", {
-      params: { path: { sesi_id: sesiId } },
-    }),
-    client.GET("/api/v1/task-inventory/sesi/{sesi_id}/responden", {
-      params: { path: { sesi_id: sesiId } },
-    }),
-    client.GET("/api/v1/partisipan", { params: { query: { limit: 100 } } }),
-  ]);
+
+  const sesiRes = await client.GET("/api/v1/task-inventory/sesi/{sesi_id}", {
+    params: { path: { sesi_id: sesiId } },
+  });
   const reqId = sesiRes.response.headers.get("x-request-id");
   if (!sesiRes.data) throw toApiError(null, reqId);
   const sesi = sesiRes.data as TiSesiRead;
+
+  const [respondenRes, smeRes, partisipanRes] = await Promise.all([
+    client.GET("/api/v1/task-inventory/sesi/{sesi_id}/responden", {
+      params: { path: { sesi_id: sesiId } },
+    }),
+    client.POST("/api/v1/sme-panel/search", {
+      body: { domain: [["jabatan_id", "=", sesi.jabatan_id]], limit: 1, offset: 0 },
+    }),
+    client.GET("/api/v1/partisipan", { params: { query: { limit: 200 } } }),
+  ]);
 
   let taskTerpilih: TiTaskTerpilihRead[] = [];
   let hasil: TiHasilSesiRead | null = null;
@@ -84,10 +90,17 @@ async function fetchPageData(accessToken: string | undefined, sesiId: string) {
     hasil = (hRes.data ?? null) as TiHasilSesiRead | null;
   }
 
+  const smePanel = (smeRes.data?.items?.[0] ?? null) as SMEPanelRead | null;
+  const allowedIds = new Set<string>(smePanel?.partisipan_ids ?? []);
+  const allPartisipan = (partisipanRes.data?.items ?? []) as PartisipanRead[];
+  const partisipan = allowedIds.size > 0
+    ? allPartisipan.filter((p) => allowedIds.has(p.id))
+    : [];
+
   return {
     sesi,
     responden: (respondenRes.data ?? []) as TiRespondenRead[],
-    partisipan: (partisipanRes.data?.items ?? []) as PartisipanRead[],
+    partisipan,
     taskTerpilih,
     hasil,
   };

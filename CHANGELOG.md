@@ -7,6 +7,14 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [1.14.1] - 2026-06-25
+
+### Diperbaiki
+
+- **Dropdown partisipan di form Tambah Responden (Task Inventory)** kini hanya menampilkan
+  anggota SME panel yang sesuai dengan jabatan sesi, bukan semua partisipan. Jika SME panel
+  untuk jabatan tersebut belum dibuat, dropdown tampil kosong (konsisten dengan validasi backend).
+
 ## [1.14.0] - 2026-06-25
 
 ### Ditambahkan
