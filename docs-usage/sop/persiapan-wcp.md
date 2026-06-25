@@ -17,28 +17,28 @@ Setiap dimensi diklasifikasikan sebagai **Dimensi Risiko** atau **Dimensi Protek
 
 Setiap item dijawab pada skala Likert 1–5:
 
-| Nilai | Makna |
-|---|---|
-| 1 | Sangat Tidak Setuju |
-| 2 | Tidak Setuju |
-| 3 | Ragu-ragu |
-| 4 | Setuju |
-| 5 | Sangat Setuju |
+| Nilai | Makna               |
+| ----- | ------------------- |
+| 1     | Sangat Tidak Setuju |
+| 2     | Tidak Setuju        |
+| 3     | Ragu-ragu           |
+| 4     | Setuju              |
+| 5     | Sangat Setuju       |
 
 Status sesi: `DRAFT → Terbuka → Tertutup → Teranalisis`.
 
 !!! note "Sesi tidak terikat jabatan"
-    Sesi WCP tidak memerlukan pemilihan jabatan saat dibuat. Partisipan dengan jabatan
-    apapun dapat ditugaskan ke sesi yang sama.
+Sesi WCP tidak memerlukan pemilihan jabatan saat dibuat. Partisipan dengan jabatan
+apapun dapat ditugaskan ke sesi yang sama.
 
 ---
 
 ## Prasyarat
 
-| No | Prasyarat | IK terkait |
-|---|---|---|
-| 1 | **Partisipan** (calon responden) sudah terdaftar | [IK-03 Partisipan](../ik/partisipan.md) |
-| 2 | **Instrumen WCP** (12 dimensi, 72 item) sudah ditinjau dan sesuai | [IK-02 Master Data](../ik/master-data.md#instrumen-wcp) |
+| No  | Prasyarat                                                         | IK terkait                                              |
+| --- | ----------------------------------------------------------------- | ------------------------------------------------------- |
+| 1   | **Partisipan** (calon responden) sudah terdaftar                  | [IK-03 Partisipan](../ik/partisipan.md)                 |
+| 2   | **Instrumen WCP** (12 dimensi, 72 item) sudah ditinjau dan sesuai | [IK-02 Master Data](../ik/master-data.md#instrumen-wcp) |
 
 ---
 
@@ -52,19 +52,19 @@ Status sesi: `DRAFT → Terbuka → Tertutup → Teranalisis`.
    (langkah: [IK-02](../ik/master-data.md#instrumen-wcp)).
 
 !!! warning "Bekukan instrumen sebelum sesi berjalan"
-    Hindari mengubah item setelah responden mulai mengisi, agar jawaban tetap konsisten
-    dan dapat dibandingkan.
+Hindari mengubah item setelah responden mulai mengisi, agar jawaban tetap konsisten
+dan dapat dibandingkan.
 
 ### 2. Buat sesi WCP
 
 Buat sesi dengan parameter berikut (langkah: [IK-07 WCP](../ik/wcp.md#a-membuat-sesi)):
 
-| Parameter | Pedoman pengisian |
-|---|---|
-| **Periode** | Format `YYYY-MM` (mis. `2026-06`). |
-| **Min. Responden** | Default 6. Minimum agar hasil layak dianalisis. |
-| **Maks. Responden** | Default 8. Harus ≥ Min. Responden. |
-| **Catatan** | Opsional — keterangan sesi. |
+| Parameter           | Pedoman pengisian                               |
+| ------------------- | ----------------------------------------------- |
+| **Periode**         | Format `YYYY-MM` (mis. `2026-06`).              |
+| **Min. Responden**  | Default 6. Minimum agar hasil layak dianalisis. |
+| **Maks. Responden** | Default 8. Harus ≥ Min. Responden.              |
+| **Catatan**         | Opsional — keterangan sesi.                     |
 
 ### 3. Siapkan daftar responden
 
@@ -72,8 +72,8 @@ Identifikasi partisipan yang akan menjadi responden. Responden didaftarkan **set
 dibuka** (pada tahap pelaksanaan).
 
 !!! success "Selesai persiapan"
-    Setelah instrumen ditinjau, sesi dibuat, dan daftar responden disiapkan, lanjut ke
-    [SOP Pelaksanaan WCP](pelaksanaan-wcp.md).
+Setelah instrumen ditinjau, sesi dibuat, dan daftar responden disiapkan, lanjut ke
+[SOP Pelaksanaan WCP](pelaksanaan-wcp.md).
 
 ---
 

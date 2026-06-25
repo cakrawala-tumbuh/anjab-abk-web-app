@@ -21,21 +21,21 @@ Akses: **Administrator**.
 
 1. Klik **+ Tambah Partisipan**.
 2. Isi formulir:
-    - **Nama** (wajib, mis. `Siti Rahayu, S.Pd.`)
-    - **Email** (wajib). *Email ini dipakai membuat akun login Authentik.*
-    - **Sekolah** (wajib, pilih dari dropdown)
-    - **Jabatan Utama** (wajib, pilih dari dropdown)
-    - **Jabatan Tambahan (opsional)** — centang jabatan lain bila ada
-    - **Masa Kerja (tahun)** (wajib, 0–50) dan **(bulan)** (opsional, 0–11)
-    - **Mata Pelajaran Utama (opsional, untuk guru)** — bila relevan
+   - **Nama** (wajib, mis. `Siti Rahayu, S.Pd.`)
+   - **Email** (wajib). _Email ini dipakai membuat akun login Authentik._
+   - **Sekolah** (wajib, pilih dari dropdown)
+   - **Jabatan Utama** (wajib, pilih dari dropdown)
+   - **Jabatan Tambahan (opsional)** — centang jabatan lain bila ada
+   - **Masa Kerja (tahun)** (wajib, 0–50) dan **(bulan)** (opsional, 0–11)
+   - **Mata Pelajaran Utama (opsional, untuk guru)** — bila relevan
 3. Klik **Tambah Partisipan**. (Untuk membatalkan, klik **Batal**.)
 
 !!! info "Akun login otomatis"
-    Saat partisipan dibuat, akun Authentik dibuat otomatis. Partisipan dapat langsung
-    login dengan email yang didaftarkan dan akan melihat menu **Kuesioner Saya**.
+Saat partisipan dibuat, akun Authentik dibuat otomatis. Partisipan dapat langsung
+login dengan email yang didaftarkan dan akan melihat menu **Kuesioner Saya**.
 
 !!! tip "Email harus benar"
-    Pastikan email valid dan unik — email menjadi identitas login partisipan.
+Pastikan email valid dan unik — email menjadi identitas login partisipan.
 
 ---
 

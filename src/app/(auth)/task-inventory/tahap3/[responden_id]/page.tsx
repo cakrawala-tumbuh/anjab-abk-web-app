@@ -49,7 +49,7 @@ export default async function Tahap3Page({ params }: Props) {
     <div className="space-y-6">
       <div className="flex items-center gap-2 text-sm text-gray-500">
         <Link href={`/task-inventory/${sesi.id}`} className="hover:text-gray-700">
-          {sesi.unit} · {sesi.jabatan_id}
+          {sesi.jabatan_nama ?? sesi.jabatan_id}
         </Link>
         <span>/</span>
         <span className="text-gray-900">Tahap 3 — Detailing</span>

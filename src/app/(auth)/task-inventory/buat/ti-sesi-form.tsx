@@ -12,7 +12,6 @@ import type { TiKombinasiRead } from "@/lib/api/schema";
 
 export const schema = z
   .object({
-    unit: z.string().optional(),
     jabatan_id: z.string().min(1, "Jabatan wajib dipilih"),
     periode: z
       .string()
@@ -46,28 +45,21 @@ interface Props {
 export function TiSesiForm({ kombinasi, accessToken }: Props) {
   const router = useRouter();
   const [serverError, setServerError] = useState<string | null>(null);
-  const [unit, setUnit] = useState("");
 
-  const units = useMemo(
-    () => Array.from(new Set(kombinasi.map((k) => k.unit))).sort(),
-    [kombinasi],
-  );
   const jabatanOptions = useMemo(() => {
-    const filtered = unit ? kombinasi.filter((k) => k.unit === unit) : kombinasi;
     const seen = new Set<string>();
-    return filtered
+    return kombinasi
       .filter((k) => {
         if (seen.has(k.jabatan_id)) return false;
         seen.add(k.jabatan_id);
         return true;
       })
-      .sort((a, b) => a.jabatan_id.localeCompare(b.jabatan_id));
-  }, [kombinasi, unit]);
+      .sort((a, b) => a.jabatan_nama.localeCompare(b.jabatan_nama));
+  }, [kombinasi]);
 
   const {
     register,
     handleSubmit,
-    setValue,
     formState: { errors, isSubmitting },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
@@ -80,7 +72,6 @@ export function TiSesiForm({ kombinasi, accessToken }: Props) {
       const client = withServerAuth(accessToken);
       const { data, error, response } = await client.POST("/api/v1/task-inventory/sesi", {
         body: {
-          unit: values.unit || null,
           jabatan_id: values.jabatan_id,
           periode: values.periode,
           min_responden: values.min_responden,
@@ -104,61 +95,29 @@ export function TiSesiForm({ kombinasi, accessToken }: Props) {
         </div>
       )}
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        {/* Unit */}
-        <div>
-          <label htmlFor="unit" className="form-label">
-            Unit / Jenjang <span aria-hidden>*</span>
-          </label>
-          <select
-            id="unit"
-            {...register("unit")}
-            onChange={(e) => {
-              setUnit(e.target.value);
-              setValue("unit", e.target.value, { shouldValidate: true });
-              setValue("jabatan_id", "");
-            }}
-            className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-            aria-invalid={!!errors.unit}
-          >
-            <option value="">-- Semua unit --</option>
-            {units.map((u) => (
-              <option key={u} value={u}>
-                {u}
-              </option>
-            ))}
-          </select>
-          {errors.unit && (
-            <p className="form-error" role="alert">
-              {errors.unit.message}
-            </p>
-          )}
-        </div>
-
-        {/* Jabatan */}
-        <div>
-          <label htmlFor="jabatan_id" className="form-label">
-            Jabatan <span aria-hidden>*</span>
-          </label>
-          <select
-            id="jabatan_id"
-            {...register("jabatan_id")}
-            className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-            aria-invalid={!!errors.jabatan_id}
-          >
-            <option value="">-- Pilih jabatan --</option>
-            {jabatanOptions.map((k) => (
-              <option key={k.jabatan_id} value={k.jabatan_id}>
-                {k.jabatan_id} ({k.jumlah_task} task)
-              </option>
-            ))}
-          </select>
-          {errors.jabatan_id && (
-            <p className="form-error" role="alert">
-              {errors.jabatan_id.message}
-            </p>
-          )}
-        </div>
+      {/* Jabatan */}
+      <div>
+        <label htmlFor="jabatan_id" className="form-label">
+          Jabatan <span aria-hidden>*</span>
+        </label>
+        <select
+          id="jabatan_id"
+          {...register("jabatan_id")}
+          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          aria-invalid={!!errors.jabatan_id}
+        >
+          <option value="">-- Pilih jabatan --</option>
+          {jabatanOptions.map((k) => (
+            <option key={k.jabatan_id} value={k.jabatan_id}>
+              {k.jabatan_nama}
+            </option>
+          ))}
+        </select>
+        {errors.jabatan_id && (
+          <p className="form-error" role="alert">
+            {errors.jabatan_id.message}
+          </p>
+        )}
       </div>
 
       {/* Periode */}

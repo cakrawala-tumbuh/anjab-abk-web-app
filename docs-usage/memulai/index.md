@@ -8,15 +8,15 @@ Halaman ini membantu Anda mengenali aplikasi sebelum menjalankan SOP dan IK.
 
 Aplikasi membedakan dua peran berdasarkan grup akun:
 
-| Peran | Yang dapat dilakukan |
-|---|---|
+| Peran             | Yang dapat dilakukan                                                                                          |
+| ----------------- | ------------------------------------------------------------------------------------------------------------- |
 | **Administrator** | Mengelola master data, partisipan, panel SME, membuat & mengelola sesi semua alat ukur, menjalankan analisis. |
-| **Partisipan** | Mengisi alat ukur (kuesioner / seleksi / log) yang ditugaskan kepadanya melalui menu **Kuesioner Saya**. |
+| **Partisipan**    | Mengisi alat ukur (kuesioner / seleksi / log) yang ditugaskan kepadanya melalui menu **Kuesioner Saya**.      |
 
 !!! note "Peran ditentukan oleh administrator identitas"
-    Jika akun Anda belum tergabung ke grup manapun, dashboard menampilkan pesan
-    *"Akun Anda belum tergabung ke grup manapun. Hubungi administrator."* Hubungi
-    administrator untuk diberi akses.
+Jika akun Anda belum tergabung ke grup manapun, dashboard menampilkan pesan
+_"Akun Anda belum tergabung ke grup manapun. Hubungi administrator."_ Hubungi
+administrator untuk diberi akses.
 
 ---
 
@@ -27,8 +27,8 @@ Aplikasi membedakan dua peran berdasarkan grup akun:
 3. Setelah berhasil, aplikasi membuka halaman **Dashboard**.
 
 !!! tip "Aplikasi dapat dipasang (PWA)"
-    Aplikasi dapat dipasang sebagai aplikasi di perangkat (Add to Home Screen) dan
-    mendukung mode terang/gelap melalui tombol tema di kanan atas.
+Aplikasi dapat dipasang sebagai aplikasi di perangkat (Add to Home Screen) dan
+mendukung mode terang/gelap melalui tombol tema di kanan atas.
 
 ---
 

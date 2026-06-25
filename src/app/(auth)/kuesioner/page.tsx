@@ -284,9 +284,7 @@ function TiKuesionerCard({ item }: { item: TiKuesionerItemRead }) {
     <div className="flex items-center justify-between rounded-lg border border-gray-200 bg-white p-4">
       <div>
         <p className="font-medium text-gray-900 dark:text-gray-50">{item.sesi_jabatan_id}</p>
-        <p className="mt-0.5 text-sm text-gray-500">
-          Task Inventory · {item.sesi_unit} · Periode {item.sesi_periode}
-        </p>
+        <p className="mt-0.5 text-sm text-gray-500">Task Inventory · Periode {item.sesi_periode}</p>
         <div className="mt-2 flex items-center gap-2">
           <span
             className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${

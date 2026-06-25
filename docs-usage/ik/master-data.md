@@ -31,10 +31,10 @@ Isi master data sesuai urutan ini agar pilihan dropdown saling tersedia:
    **Urutan**, **Status**.
 2. Klik **+ Tambah Jenjang**.
 3. Isi formulir:
-    - **Kode** (wajib, mis. `SD`, `SMP`, `SMA`)
-    - **Nama** (wajib, mis. `Sekolah Dasar`)
-    - **Urutan** (angka; makin kecil makin atas)
-    - **Aktif** (centang; default aktif)
+   - **Kode** (wajib, mis. `SD`, `SMP`, `SMA`)
+   - **Nama** (wajib, mis. `Sekolah Dasar`)
+   - **Urutan** (angka; makin kecil makin atas)
+   - **Aktif** (centang; default aktif)
 4. Klik **Tambah Jenjang**.
 
 ---
@@ -44,11 +44,11 @@ Isi master data sesuai urutan ini agar pilihan dropdown saling tersedia:
 1. **Master Data → Sekolah**. Kolom: **Nama**, **Jenjang**, **NPSN**, **Kota**, **Status**.
 2. Klik **+ Tambah Sekolah**.
 3. Isi formulir:
-    - **Nama** (wajib, mis. `SD Negeri 1 Bandung`)
-    - **Jenjang Pendidikan** (wajib, pilih dari dropdown)
-    - **NPSN** (opsional, 8 digit)
-    - **Kota**, **Provinsi** (opsional)
-    - **Aktif** (centang)
+   - **Nama** (wajib, mis. `SD Negeri 1 Bandung`)
+   - **Jenjang Pendidikan** (wajib, pilih dari dropdown)
+   - **NPSN** (opsional, 8 digit)
+   - **Kota**, **Provinsi** (opsional)
+   - **Aktif** (centang)
 4. Klik **Tambah Sekolah**.
 
 ---
@@ -59,11 +59,11 @@ Isi master data sesuai urutan ini agar pilihan dropdown saling tersedia:
    **Deskripsi**, **Status**.
 2. Klik **+ Tambah Mata Pelajaran**.
 3. Isi formulir:
-    - **Kode** (wajib, mis. `MTK`)
-    - **Nama** (wajib, mis. `Matematika`)
-    - **Kelompok** (wajib: **Umum**, **Peminatan**, **Muatan Lokal**, **Kejuruan**)
-    - **Deskripsi** (opsional)
-    - **Aktif** (centang)
+   - **Kode** (wajib, mis. `MTK`)
+   - **Nama** (wajib, mis. `Matematika`)
+   - **Kelompok** (wajib: **Umum**, **Peminatan**, **Muatan Lokal**, **Kejuruan**)
+   - **Deskripsi** (opsional)
+   - **Aktif** (centang)
 4. Klik **Tambah Mata Pelajaran**.
 
 ---
@@ -73,12 +73,12 @@ Isi master data sesuai urutan ini agar pilihan dropdown saling tersedia:
 1. **Master Data → Jabatan**. Kolom: **Kode**, **Nama**, **Jenis**, **Deskripsi**, **Status**.
 2. Klik **+ Tambah Jabatan**.
 3. Isi formulir:
-    - **Kode** (wajib, mis. `KS-001`)
-    - **Nama** (wajib, mis. `Kepala Sekolah`)
-    - **Jenis** (wajib: **Struktural**, **Fungsional**, **Teknisi**)
-    - **Unit Kerja / Sekolah** (opsional; default `-- Tidak spesifik --`)
-    - **Deskripsi** (opsional)
-    - **Aktif** (centang)
+   - **Kode** (wajib, mis. `KS-001`)
+   - **Nama** (wajib, mis. `Kepala Sekolah`)
+   - **Jenis** (wajib: **Struktural**, **Fungsional**, **Teknisi**)
+   - **Unit Kerja / Sekolah** (opsional; default `-- Tidak spesifik --`)
+   - **Deskripsi** (opsional)
+   - **Aktif** (centang)
 4. Klik **Tambah Jabatan**.
 
 ---
@@ -90,8 +90,8 @@ Panel ahli (Subject Matter Expert) untuk sebuah jabatan, dipakai pada Task Inven
 1. **Master Data → SME Panel**. Kolom: **Jabatan**, **Jenis**, **Anggota**, **Status**, **Aksi**.
 2. Klik **+ Tambah SME Panel**.
 3. Isi formulir:
-    - **Jabatan** (wajib). *Setiap jabatan hanya dapat memiliki satu SME panel.*
-    - **Aktif** (centang)
+   - **Jabatan** (wajib). _Setiap jabatan hanya dapat memiliki satu SME panel._
+   - **Aktif** (centang)
 4. Klik **Tambah SME Panel**.
 5. Untuk mengisi anggota, pada baris panel klik **Kelola anggota →**, lalu tambahkan
    partisipan sebagai anggota. Tetapkan koordinator panel sesuai kebutuhan Task Inventory.
@@ -131,7 +131,7 @@ Tinjau & sunting item kuesioner DCS (3 sub-skala, 42 item).
    atau **urutan**.
 
 !!! warning "Jangan ubah saat sesi berjalan"
-    Hindari menyunting item setelah responden mulai mengisi sesi.
+Hindari menyunting item setelah responden mulai mengisi sesi.
 
 ---
 
@@ -157,8 +157,8 @@ Catalog tugas per kombinasi unit × jabatan. **Bersifat read-only** (data bawaan
    **Detil Tugas** dan **Uraian Tugas**.
 
 !!! note
-    Catalog tidak dapat diedit dari aplikasi. Gunakan halaman ini untuk memastikan
-    kombinasi unit × jabatan yang akan disurvei sudah memiliki task.
+Catalog tidak dapat diedit dari aplikasi. Gunakan halaman ini untuk memastikan
+kombinasi unit × jabatan yang akan disurvei sudah memiliki task.
 
 ---
 

@@ -44,8 +44,8 @@ Buka Sesi → daftar responden → partisipan isi kuesioner (42 item)
 > Langkah teknis: [IK-06 bagian D](../ik/dcs.md#d-mengisi-kuesioner-partisipan).
 
 !!! note "Semua item wajib & final"
-    Tombol **Kirim Jawaban** aktif hanya bila semua item terjawab. Setelah dikirim,
-    jawaban final (dapat dilihat via **Lihat Jawaban**).
+Tombol **Kirim Jawaban** aktif hanya bila semua item terjawab. Setelah dikirim,
+jawaban final (dapat dilihat via **Lihat Jawaban**).
 
 ---
 
@@ -65,7 +65,7 @@ Pantau dari detail sesi: kartu **Terdaftar** dan **Sudah Mengisi**, serta kolom
 > Langkah teknis: [IK-06 bagian B](../ik/dcs.md#b-membuka-menutup-sesi).
 
 !!! danger "Tidak dapat dibatalkan"
-    Penutupan sesi bersifat searah. Pastikan data lengkap sebelum menutup.
+Penutupan sesi bersifat searah. Pastikan data lengkap sebelum menutup.
 
 ---
 

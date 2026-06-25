@@ -119,17 +119,14 @@ export default async function TiSesiDetailPage({ params }: Props) {
           Task Inventory
         </Link>
         <span>/</span>
-        <span className="text-gray-900">
-          {sesi.unit} · {sesi.jabatan_id}
-        </span>
+        <span className="text-gray-900">{sesi.jabatan_nama ?? sesi.jabatan_id}</span>
       </div>
 
       {/* Header */}
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h1 className="page-heading">{sesi.jabatan_id}</h1>
+          <h1 className="page-heading">{sesi.jabatan_nama ?? sesi.jabatan_id}</h1>
           <p className="page-subtext">
-            Unit <span className="font-medium text-gray-700">{sesi.unit}</span> ·{" "}
             <span className="font-mono">{sesi.periode}</span>
           </p>
           {sesi.catatan && <p className="mt-2 text-sm text-gray-600 italic">{sesi.catatan}</p>}

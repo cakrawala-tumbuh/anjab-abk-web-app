@@ -34,10 +34,10 @@ Enam kategori distribusi waktu per hari:
 
 ## Prasyarat
 
-| No | Prasyarat | IK terkait |
-|---|---|---|
-| 1 | **Jabatan** yang akan disurvei sudah terdaftar | [IK-02 Master Data](../ik/master-data.md#jabatan) |
-| 2 | **Partisipan** (pegawai yang akan mencatat log) sudah terdaftar | [IK-03 Partisipan](../ik/partisipan.md) |
+| No  | Prasyarat                                                       | IK terkait                                        |
+| --- | --------------------------------------------------------------- | ------------------------------------------------- |
+| 1   | **Jabatan** yang akan disurvei sudah terdaftar                  | [IK-02 Master Data](../ik/master-data.md#jabatan) |
+| 2   | **Partisipan** (pegawai yang akan mencatat log) sudah terdaftar | [IK-03 Partisipan](../ik/partisipan.md)           |
 
 ---
 
@@ -53,10 +53,10 @@ Enam kategori distribusi waktu per hari:
 
 Buat sesi dengan parameter berikut (langkah: [IK-05 Time Study](../ik/time-study.md#a-membuat-sesi)):
 
-| Parameter | Pedoman pengisian |
-|---|---|
-| **Jabatan** | Wajib. Pilih jabatan target. |
-| **Periode** | Format `YYYY-MM` (mis. `2026-06`). |
+| Parameter   | Pedoman pengisian                        |
+| ----------- | ---------------------------------------- |
+| **Jabatan** | Wajib. Pilih jabatan target.             |
+| **Periode** | Format `YYYY-MM` (mis. `2026-06`).       |
 | **Catatan** | Opsional — instruksi/rentang pencatatan. |
 
 ### 3. Siapkan daftar responden
@@ -65,12 +65,12 @@ Identifikasi pegawai yang akan mencatat log untuk jabatan tersebut. Responden di
 **setelah sesi dibuka** (pada tahap pelaksanaan).
 
 !!! tip "Pre-isi dari partisipan"
-    Saat mendaftarkan responden, memilih partisipan akan mengisi otomatis **Nama** dan
-    **Label Jabatan**, sehingga lebih cepat dan konsisten.
+Saat mendaftarkan responden, memilih partisipan akan mengisi otomatis **Nama** dan
+**Label Jabatan**, sehingga lebih cepat dan konsisten.
 
 !!! success "Selesai persiapan"
-    Setelah sesi dibuat dan daftar responden disiapkan, lanjut ke
-    [SOP Pelaksanaan Time Study](pelaksanaan-time-study.md).
+Setelah sesi dibuat dan daftar responden disiapkan, lanjut ke
+[SOP Pelaksanaan Time Study](pelaksanaan-time-study.md).
 
 ---
 

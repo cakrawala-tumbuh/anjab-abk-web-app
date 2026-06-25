@@ -12,7 +12,7 @@
       "name": "MIT",
       "identifier": "MIT"
     },
-    "version": "0.17.0"
+    "version": "0.19.0"
   },
   "paths": {
     "/api/v1/health": {
@@ -6403,9 +6403,8 @@
               },
               "examples": {
                 "contoh": {
-                  "summary": "Sesi TI Kepala Sekolah TK",
+                  "summary": "Sesi TI Kepala Sekolah",
                   "value": {
-                    "unit": "TK",
                     "jabatan_id": "jbt_a1b2c3d4",
                     "periode": "2026-06",
                     "min_responden": 3,
@@ -6448,7 +6447,7 @@
             }
           },
           "409": {
-            "description": "Sesi untuk unit+jabatan+periode sudah ada.",
+            "description": "Sesi untuk jabatan+periode sudah ada.",
             "content": {
               "application/json": {
                 "schema": {
@@ -14338,18 +14337,6 @@
             "title": "Jabatan Id",
             "description": "ID jabatan yang dikaji."
           },
-          "unit": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Unit",
-            "description": "Unit/jenjang."
-          },
           "periode": {
             "type": "string",
             "title": "Periode",
@@ -14521,6 +14508,14 @@
               "jbt_a1b2c3d4"
             ]
           },
+          "jabatan_nama": {
+            "type": "string",
+            "title": "Jabatan Nama",
+            "description": "Nama jabatan.",
+            "examples": [
+              "Kepala Sekolah"
+            ]
+          },
           "jumlah_task": {
             "type": "integer",
             "title": "Jumlah Task",
@@ -14534,6 +14529,7 @@
         "required": [
           "unit",
           "jabatan_id",
+          "jabatan_nama",
           "jumlah_task"
         ],
         "title": "TiKombinasiRead",
@@ -14613,21 +14609,6 @@
             "description": "ID jabatan yang dikaji dalam sesi.",
             "examples": [
               "jbt_a1b2c3d4"
-            ]
-          },
-          "sesi_unit": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Sesi Unit",
-            "description": "Unit/jenjang yang dikaji.",
-            "examples": [
-              "TK"
             ]
           },
           "sesi_periode": {
@@ -14874,22 +14855,6 @@
               "jbt_a1b2c3d4"
             ]
           },
-          "unit": {
-            "anyOf": [
-              {
-                "type": "string",
-                "maxLength": 50
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Unit",
-            "description": "Unit/jenjang yang dikaji (TK/SD/SMP/SMA). Opsional; bila tidak diisi, sesi berlaku lintas unit.",
-            "examples": [
-              "TK"
-            ]
-          },
           "periode": {
             "type": "string",
             "maxLength": 7,
@@ -14977,7 +14942,7 @@
               "jbt_a1b2c3d4"
             ]
           },
-          "unit": {
+          "jabatan_nama": {
             "anyOf": [
               {
                 "type": "string"
@@ -14986,11 +14951,8 @@
                 "type": "null"
               }
             ],
-            "title": "Unit",
-            "description": "Unit/jenjang.",
-            "examples": [
-              "TK"
-            ]
+            "title": "Jabatan Nama",
+            "description": "Nama jabatan yang dikaji."
           },
           "periode": {
             "type": "string",

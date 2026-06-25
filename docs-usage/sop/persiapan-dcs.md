@@ -15,28 +15,28 @@ DCS (**Demand-Control-Support**) adalah kuesioner yang mengukur tuntutan pekerja
 kendali atas pekerjaan, dan dukungan. Instrumen terdiri dari **3 sub-skala** dengan total
 **42 item pernyataan**. Setiap item dijawab pada skala Likert 1–5:
 
-| Nilai | Makna |
-|---|---|
-| 1 | Sangat Tidak Setuju |
-| 2 | Tidak Setuju |
-| 3 | Ragu-ragu |
-| 4 | Setuju |
-| 5 | Sangat Setuju |
+| Nilai | Makna               |
+| ----- | ------------------- |
+| 1     | Sangat Tidak Setuju |
+| 2     | Tidak Setuju        |
+| 3     | Ragu-ragu           |
+| 4     | Setuju              |
+| 5     | Sangat Setuju       |
 
 Status sesi: `DRAFT → Terbuka → Tertutup → Teranalisis`.
 
 !!! note "Sesi tidak terikat jabatan"
-    Sesi DCS tidak memerlukan pemilihan jabatan saat dibuat. Partisipan dengan jabatan
-    apapun dapat ditugaskan ke sesi yang sama.
+Sesi DCS tidak memerlukan pemilihan jabatan saat dibuat. Partisipan dengan jabatan
+apapun dapat ditugaskan ke sesi yang sama.
 
 ---
 
 ## Prasyarat
 
-| No | Prasyarat | IK terkait |
-|---|---|---|
-| 1 | **Partisipan** (calon responden) sudah terdaftar | [IK-03 Partisipan](../ik/partisipan.md) |
-| 2 | **Instrumen DCS** (3 sub-skala, 42 item) sudah ditinjau dan sesuai | [IK-02 Master Data](../ik/master-data.md#instrumen-dcs) |
+| No  | Prasyarat                                                          | IK terkait                                              |
+| --- | ------------------------------------------------------------------ | ------------------------------------------------------- |
+| 1   | **Partisipan** (calon responden) sudah terdaftar                   | [IK-03 Partisipan](../ik/partisipan.md)                 |
+| 2   | **Instrumen DCS** (3 sub-skala, 42 item) sudah ditinjau dan sesuai | [IK-02 Master Data](../ik/master-data.md#instrumen-dcs) |
 
 ---
 
@@ -49,19 +49,19 @@ Status sesi: `DRAFT → Terbuka → Tertutup → Teranalisis`.
    (F/UF), atau urutan item (langkah: [IK-02](../ik/master-data.md#instrumen-dcs)).
 
 !!! warning "Bekukan instrumen sebelum sesi berjalan"
-    Hindari mengubah item setelah responden mulai mengisi, agar jawaban tetap konsisten
-    dan dapat dibandingkan.
+Hindari mengubah item setelah responden mulai mengisi, agar jawaban tetap konsisten
+dan dapat dibandingkan.
 
 ### 2. Buat sesi DCS
 
 Buat sesi dengan parameter berikut (langkah: [IK-06 DCS](../ik/dcs.md#a-membuat-sesi)):
 
-| Parameter | Pedoman pengisian |
-|---|---|
-| **Periode** | Format `YYYY-MM` (mis. `2026-06`). |
-| **Min. Responden** | Default 6. Minimum agar hasil layak dianalisis. |
-| **Maks. Responden** | Default 8. Harus ≥ Min. Responden. |
-| **Catatan** | Opsional — keterangan sesi. |
+| Parameter           | Pedoman pengisian                               |
+| ------------------- | ----------------------------------------------- |
+| **Periode**         | Format `YYYY-MM` (mis. `2026-06`).              |
+| **Min. Responden**  | Default 6. Minimum agar hasil layak dianalisis. |
+| **Maks. Responden** | Default 8. Harus ≥ Min. Responden.              |
+| **Catatan**         | Opsional — keterangan sesi.                     |
 
 ### 3. Siapkan daftar responden
 
@@ -69,8 +69,8 @@ Identifikasi partisipan yang akan menjadi responden. Responden didaftarkan **set
 dibuka** (pada tahap pelaksanaan).
 
 !!! success "Selesai persiapan"
-    Setelah instrumen ditinjau, sesi dibuat, dan daftar responden disiapkan, lanjut ke
-    [SOP Pelaksanaan DCS](pelaksanaan-dcs.md).
+Setelah instrumen ditinjau, sesi dibuat, dan daftar responden disiapkan, lanjut ke
+[SOP Pelaksanaan DCS](pelaksanaan-dcs.md).
 
 ---
 

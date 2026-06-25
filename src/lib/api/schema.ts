@@ -3735,11 +3735,6 @@ export interface components {
              */
             jabatan_id: string;
             /**
-             * Unit
-             * @description Unit/jenjang.
-             */
-            unit?: string | null;
-            /**
              * Periode
              * @description Periode.
              */
@@ -3873,6 +3868,12 @@ export interface components {
              */
             jabatan_id: string;
             /**
+             * Jabatan Nama
+             * @description Nama jabatan.
+             * @example Kepala Sekolah
+             */
+            jabatan_nama: string;
+            /**
              * Jumlah Task
              * @description Jumlah task pada kombinasi ini.
              * @example 42
@@ -3934,12 +3935,6 @@ export interface components {
              * @example jbt_a1b2c3d4
              */
             sesi_jabatan_id: string;
-            /**
-             * Sesi Unit
-             * @description Unit/jenjang yang dikaji.
-             * @example TK
-             */
-            sesi_unit?: string | null;
             /**
              * Sesi Periode
              * @description Periode sesi (YYYY-MM).
@@ -4074,12 +4069,6 @@ export interface components {
              */
             jabatan_id: string;
             /**
-             * Unit
-             * @description Unit/jenjang yang dikaji (TK/SD/SMP/SMA). Opsional; bila tidak diisi, sesi berlaku lintas unit.
-             * @example TK
-             */
-            unit?: string | null;
-            /**
              * Periode
              * @description Periode kajian format YYYY-MM.
              * @example 2026-06
@@ -4129,11 +4118,10 @@ export interface components {
              */
             jabatan_id: string;
             /**
-             * Unit
-             * @description Unit/jenjang.
-             * @example TK
+             * Jabatan Nama
+             * @description Nama jabatan yang dikaji.
              */
-            unit?: string | null;
+            jabatan_nama?: string | null;
             /**
              * Periode
              * @description Periode kajian (YYYY-MM).
@@ -9981,7 +9969,7 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
-            /** @description Sesi untuk unit+jabatan+periode sudah ada. */
+            /** @description Sesi untuk jabatan+periode sudah ada. */
             409: {
                 headers: {
                     [name: string]: unknown;

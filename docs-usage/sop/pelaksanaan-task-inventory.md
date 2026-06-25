@@ -46,7 +46,7 @@ Mulai Tahap 1 → daftar responden → partisipan isi Tahap 1
 > Langkah teknis: [IK-04 bagian E](../ik/task-inventory.md#e-mengisi-tahap-1-seleksi-partisipan).
 
 !!! warning "Final setelah dikirim"
-    Seleksi Tahap 1 yang sudah dikirim tidak dapat diubah. Pantau kolom **Selesai Tahap 1**.
+Seleksi Tahap 1 yang sudah dikirim tidak dapat diubah. Pantau kolom **Selesai Tahap 1**.
 
 ---
 
@@ -54,7 +54,7 @@ Mulai Tahap 1 → daftar responden → partisipan isi Tahap 1
 
 1. Setelah Tahap 1 cukup terkumpul, klik **Mulai Tahap 2 — Review Koordinator** (OK bila
    semua sudah submit; Cancel untuk memaksa lanjut).
-2. Koordinator membuka **Buka Review Koordinator**, memutuskan tiap tugas *partial*
+2. Koordinator membuka **Buka Review Koordinator**, memutuskan tiap tugas _partial_
    (**Ya**/**Tidak**, atau **Setujui Semua**/**Tolak Semua**), lalu **Simpan Keputusan**.
 
 > Langkah teknis: [IK-04 bagian D](../ik/task-inventory.md#d-review-koordinator-tahap-2).
@@ -64,15 +64,15 @@ Mulai Tahap 1 → daftar responden → partisipan isi Tahap 1
 ## 4. Tahap 3 — Detailing
 
 1. Klik **Mulai Tahap 3 — Bekukan Task Relevan** → tugas final dibekukan
-   (*unanimous* ∪ *disetujui koordinator*), status menjadi **TAHAP3**.
+   (_unanimous_ ∪ _disetujui koordinator_), status menjadi **TAHAP3**.
 2. Tiap anggota membuka **Isi Tahap 3**, menandai tugas yang dikerjakan, mengisi rincian
    CalHR, lalu **Kirim Detail**.
 
 > Langkah teknis: [IK-04 bagian F](../ik/task-inventory.md#f-mengisi-tahap-3-detailing-partisipan).
 
 !!! warning "Tugas belum diputuskan diabaikan"
-    Tugas partial yang belum diputuskan koordinator tidak masuk daftar final saat masuk
-    Tahap 3.
+Tugas partial yang belum diputuskan koordinator tidak masuk daftar final saat masuk
+Tahap 3.
 
 ---
 
@@ -86,8 +86,8 @@ Mulai Tahap 1 → daftar responden → partisipan isi Tahap 1
 > Langkah teknis: [IK-04 bagian G](../ik/task-inventory.md#g-melihat-hasil-setelah-analisis).
 
 !!! danger "Tidak dapat dibatalkan"
-    Penutupan sesi dan transisi tahap bersifat searah. Pastikan data lengkap & jumlah
-    pengisi memenuhi **Min. Responden** sebelum menutup/berpindah tahap.
+Penutupan sesi dan transisi tahap bersifat searah. Pastikan data lengkap & jumlah
+pengisi memenuhi **Min. Responden** sebelum menutup/berpindah tahap.
 
 ---
 

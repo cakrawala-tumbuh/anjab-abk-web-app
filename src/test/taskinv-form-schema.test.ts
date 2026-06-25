@@ -3,7 +3,6 @@ import { schema as tiSesiSchema } from "@/app/(auth)/task-inventory/buat/ti-sesi
 import { detailItemSchema } from "@/app/(auth)/task-inventory/tahap3/[responden_id]/detail-form";
 
 const VALID_SESI = {
-  unit: "TK",
   jabatan_id: "jbt_test",
   periode: "2026-06",
   min_responden: 3,
@@ -26,11 +25,6 @@ const VALID_DETAIL = {
 describe("TiSesiSchema", () => {
   it("menerima payload valid", () => {
     expect(tiSesiSchema.safeParse(VALID_SESI).success).toBe(true);
-  });
-
-  it("mengizinkan unit kosong", () => {
-    const result = tiSesiSchema.safeParse({ ...VALID_SESI, unit: "" });
-    expect(result.success).toBe(true);
   });
 
   it("menolak jabatan_id kosong", () => {

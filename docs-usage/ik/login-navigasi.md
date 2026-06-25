@@ -7,15 +7,15 @@ Langkah teknis masuk ke aplikasi dan mengenali navigasi.
 ## A. Login
 
 1. Buka alamat aplikasi ANJAB-ABK di peramban.
-2. Anda otomatis dialihkan ke halaman login (muncul teks *"Mengalihkan ke halaman
-   login..."*).
+2. Anda otomatis dialihkan ke halaman login (muncul teks _"Mengalihkan ke halaman
+   login..."_).
 3. Pada halaman Authentik, masukkan **email** dan **kata sandi**, lalu masuk.
-4. Setelah berhasil, aplikasi membuka **Dashboard** dengan sapaan *"Selamat datang,
-   {nama}."*
+4. Setelah berhasil, aplikasi membuka **Dashboard** dengan sapaan _"Selamat datang,
+   {nama}."_
 
 !!! info "Akun belum bergrup"
-    Jika muncul *"Akun Anda belum tergabung ke grup manapun. Hubungi administrator."*,
-    artinya akun belum diberi peran. Hubungi administrator.
+Jika muncul _"Akun Anda belum tergabung ke grup manapun. Hubungi administrator."_,
+artinya akun belum diberi peran. Hubungi administrator.
 
 ---
 

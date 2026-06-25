@@ -17,13 +17,13 @@ WCP = 12 dimensi, 72 item, skala 1–5. Status sesi:
    **Status**, **Responden**, **Dibuat**.
 2. Klik **+ Buat Sesi**.
 3. Isi formulir:
-    - **Periode** (wajib, format `YYYY-MM`, mis. `2026-06`)
-    - **Min. Responden** (default 6) dan **Maks. Responden** (default 8, harus ≥ min)
-    - **Catatan (opsional)**
+   - **Periode** (wajib, format `YYYY-MM`, mis. `2026-06`)
+   - **Min. Responden** (default 6) dan **Maks. Responden** (default 8, harus ≥ min)
+   - **Catatan (opsional)**
 4. Klik **Buat Sesi**. Sesi terbuat dengan status **Draft**.
 
 !!! note "Tanpa pilihan jabatan"
-    Sesi WCP tidak memerlukan pemilihan jabatan. Partisipan jabatan apapun dapat ditugaskan.
+Sesi WCP tidak memerlukan pemilihan jabatan. Partisipan jabatan apapun dapat ditugaskan.
 
 ---
 
@@ -31,11 +31,11 @@ WCP = 12 dimensi, 72 item, skala 1–5. Status sesi:
 
 Bagian transisi menampilkan tombol sesuai status:
 
-| Status | Tombol | Hasil |
-|---|---|---|
-| Draft | **Buka Sesi** | → Terbuka |
-| Draft | **Hapus Sesi** | Menghapus sesi (*tidak dapat dibatalkan*) |
-| Terbuka | **Tutup Sesi** | → Tertutup |
+| Status  | Tombol         | Hasil                                     |
+| ------- | -------------- | ----------------------------------------- |
+| Draft   | **Buka Sesi**  | → Terbuka                                 |
+| Draft   | **Hapus Sesi** | Menghapus sesi (_tidak dapat dibatalkan_) |
+| Terbuka | **Tutup Sesi** | → Tertutup                                |
 
 Setelah **Tertutup**, analisis diproses dari backend; hasil tersedia di halaman laporan.
 
@@ -60,21 +60,21 @@ Setelah **Tertutup**, analisis diproses dari backend; hasil tersedia di halaman 
    **Isi Sekarang**.
 2. Kuesioner tersusun per **dimensi** (sebagian ditandai **Dimensi Risiko**). Untuk tiap
    pernyataan, pilih satu nilai:
-    - **1 — Sangat Tidak Setuju**
-    - **2 — Tidak Setuju**
-    - **3 — Ragu-ragu**
-    - **4 — Setuju**
-    - **5 — Sangat Setuju**
-3. Pantau penghitung *"{terjawab} / {total} pernyataan dijawab"* di bagian bawah.
+   - **1 — Sangat Tidak Setuju**
+   - **2 — Tidak Setuju**
+   - **3 — Ragu-ragu**
+   - **4 — Setuju**
+   - **5 — Sangat Setuju**
+3. Pantau penghitung _"{terjawab} / {total} pernyataan dijawab"_ di bagian bawah.
 4. Setelah **semua** 72 item dijawab, klik **Kirim Jawaban**.
 
 !!! warning "Semua wajib dijawab"
-    Tombol **Kirim Jawaban** aktif hanya bila seluruh pernyataan terjawab. Jika belum,
-    muncul *"Semua pernyataan wajib dijawab sebelum mengirim."*
+Tombol **Kirim Jawaban** aktif hanya bila seluruh pernyataan terjawab. Jika belum,
+muncul _"Semua pernyataan wajib dijawab sebelum mengirim."_
 
 !!! success "Setelah dikirim"
-    Muncul *"Jawaban berhasil dikirim!"*. Jawaban bersifat final; nanti dapat dibuka lagi
-    lewat tombol **Lihat Jawaban** (mode baca-saja).
+Muncul _"Jawaban berhasil dikirim!"_. Jawaban bersifat final; nanti dapat dibuka lagi
+lewat tombol **Lihat Jawaban** (mode baca-saja).
 
 ---
 

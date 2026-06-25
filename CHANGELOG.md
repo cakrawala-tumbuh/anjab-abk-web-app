@@ -7,6 +7,21 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [1.14.0] - 2026-06-25
+
+### Ditambahkan
+
+- **Nama jabatan ditampilkan menggantikan kode jabatan** — tabel list sesi, breadcrumb, dan
+  heading di halaman detail sesi, tahap1, tahap2, tahap3, dan kuesioner kini menampilkan
+  `jabatan_nama` (fallback ke `jabatan_id` bila null).
+
+### Diubah
+
+- **Form buat sesi Task Inventory** tidak lagi memiliki dropdown unit — hanya pilih jabatan.
+  Dropdown jabatan menampilkan nama lengkap jabatan (bukan kode), diurutkan alfabetis.
+- **Halaman kuesioner** (TI): hapus referensi `sesi_unit` dari subtitle kartu kuesioner.
+- `schema.ts` diregenerasi dari openapi.json backend v0.20.0.
+
 ## [1.13.0] - 2026-06-23
 
 ### Diubah
@@ -22,7 +37,7 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 ### Diperbaiki
 
 - **Workflow deploy docs Pages**: kondisi pemicu berbasis `github.event.base_ref` membuat
-  deploy ter-*skip* saat tag `v*` di-push (base_ref kerap kosong pada event tag push).
+  deploy ter-_skip_ saat tag `v*` di-push (base_ref kerap kosong pada event tag push).
   Diganti menjadi `github.ref_type == 'tag'` ditambah langkah verifikasi tag berasal dari
   riwayat `master`, sehingga push tag `v*` kini memicu deploy secara andal.
 
@@ -33,11 +48,11 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 - **Dokumentasi penggunaan (user guide)** berbasis Material for MkDocs di `docs-usage/`
   dengan konfigurasi terpisah `mkdocs-usage.yml` (tidak mengganggu dokumentasi teknis).
   Konten dibagi menjadi **SOP** dan **Instruksi Kerja (IK)**:
-    - **SOP Persiapan** per alat ukur (Task Inventory, Time Study, DCS, WCP) dan
-      **SOP Pelaksanaan Pengambilan Data** lintas alat ukur.
-    - **IK** detail penginputan aplikasi: login & navigasi, master data, partisipan,
-      serta keempat alat ukur (TI, TS, DCS, WCP).
-    - Halaman Beranda, Memulai, dan FAQ.
+  - **SOP Persiapan** per alat ukur (Task Inventory, Time Study, DCS, WCP) dan
+    **SOP Pelaksanaan Pengambilan Data** lintas alat ukur.
+  - **IK** detail penginputan aplikasi: login & navigasi, master data, partisipan,
+    serta keempat alat ukur (TI, TS, DCS, WCP).
+  - Halaman Beranda, Memulai, dan FAQ.
 - **Workflow GitHub Pages** `.github/workflows/deploy-docs-usage.yml` — mem-build &
   men-deploy dokumentasi penggunaan ke GitHub Pages saat tag `v*` di-push dari `master`
   (atau via `workflow_dispatch`). Disertai `requirements-docs.txt`.

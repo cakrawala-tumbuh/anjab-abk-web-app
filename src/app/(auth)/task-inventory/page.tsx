@@ -66,10 +66,7 @@ export default async function TaskInventoryPage() {
             <thead className="bg-gray-50 dark:bg-gray-800">
               <tr>
                 <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
-                  Unit
-                </th>
-                <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
-                  Jabatan ID
+                  Jabatan
                 </th>
                 <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
                   Periode
@@ -95,10 +92,9 @@ export default async function TaskInventoryPage() {
                         href={`/task-inventory/${s.id}`}
                         className="font-medium text-blue-600 hover:text-blue-800 hover:underline"
                       >
-                        {s.unit}
+                        {s.jabatan_nama ?? s.jabatan_id}
                       </Link>
                     </td>
-                    <td className="px-4 py-3 text-gray-700">{s.jabatan_id}</td>
                     <td className="px-4 py-3 font-mono text-gray-700">{s.periode}</td>
                     <td className="px-4 py-3">
                       <span

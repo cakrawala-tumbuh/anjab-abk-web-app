@@ -48,7 +48,7 @@ Buka Sesi → daftar responden → partisipan catat log harian (selama periode)
 > Langkah teknis: [IK-05 bagian E–F](../ik/time-study.md#e-mengisi-log-harian-partisipan).
 
 !!! tip "Catat harian, jangan menumpuk"
-    Dorong responden mengisi log di hari yang sama agar estimasi waktu lebih akurat.
+Dorong responden mengisi log di hari yang sama agar estimasi waktu lebih akurat.
 
 ---
 
@@ -67,7 +67,7 @@ Pastikan jumlah hari pencatatan memadai sebelum menutup sesi.
 > Langkah teknis: [IK-05 bagian B & D](../ik/time-study.md#d-menjalankan-analisis).
 
 !!! danger "Tidak dapat dibatalkan"
-    Penutupan sesi bersifat searah. Pastikan log sudah lengkap sebelum menutup.
+Penutupan sesi bersifat searah. Pastikan log sudah lengkap sebelum menutup.
 
 ---
 

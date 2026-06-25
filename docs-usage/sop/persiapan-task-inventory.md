@@ -15,33 +15,33 @@ sehingga partisipan dapat menyeleksi relevansi tugas (Tahap 1) dan merinci beban
 Task Inventory mengukur, per jabatan, **tugas mana yang relevan** dan **berapa beban
 kerjanya** (komponen CalHR). Alurnya **3 tahap**:
 
-| Tahap | Aktor | Aktivitas |
-|---|---|---|
-| **Tahap 1 — Seleksi** | Anggota SME panel | Memilih tugas yang relevan untuk jabatannya (kaskade Tugas Pokok → Detil Tugas → Uraian Tugas). |
-| **Tahap 2 — Review Koordinator** | Koordinator SME panel | Memutuskan relevansi tugas yang **tidak dipilih bulat** (partial) oleh semua anggota. |
-| **Tahap 3 — Detailing** | Anggota SME panel | Mengisi rincian beban kerja (CalHR) untuk tugas final. |
+| Tahap                            | Aktor                 | Aktivitas                                                                                       |
+| -------------------------------- | --------------------- | ----------------------------------------------------------------------------------------------- |
+| **Tahap 1 — Seleksi**            | Anggota SME panel     | Memilih tugas yang relevan untuk jabatannya (kaskade Tugas Pokok → Detil Tugas → Uraian Tugas). |
+| **Tahap 2 — Review Koordinator** | Koordinator SME panel | Memutuskan relevansi tugas yang **tidak dipilih bulat** (partial) oleh semua anggota.           |
+| **Tahap 3 — Detailing**          | Anggota SME panel     | Mengisi rincian beban kerja (CalHR) untuk tugas final.                                          |
 
 Status sesi: `DRAFT → TAHAP1 → TAHAP2 → TAHAP3 → CLOSED → ANALYZED`.
 
 !!! note "Pembekuan tugas"
-    Pada transisi **Tahap 2 → Tahap 3**, daftar tugas dibekukan =
-    *tugas yang dipilih bulat (unanimous)* **∪** *tugas partial yang disetujui koordinator*.
+Pada transisi **Tahap 2 → Tahap 3**, daftar tugas dibekukan =
+_tugas yang dipilih bulat (unanimous)_ **∪** _tugas partial yang disetujui koordinator_.
 
 ---
 
 ## Prasyarat
 
-| No | Prasyarat | IK terkait |
-|---|---|---|
-| 1 | Jenjang pendidikan, sekolah, dan **jabatan** sudah terdaftar | [IK-02 Master Data](../ik/master-data.md) |
-| 2 | **Catalog Task Inventory** tersedia untuk kombinasi unit × jabatan (Tugas Pokok, Detil Tugas, Uraian Tugas) | [IK-02 Master Data](../ik/master-data.md#instrumen-task-inventory-catalog) |
-| 3 | **Partisipan** yang menjadi anggota panel sudah terdaftar | [IK-03 Partisipan](../ik/partisipan.md) |
-| 4 | **SME Panel** untuk jabatan terkait sudah dibuat & anggotanya diisi | [IK-02 Master Data](../ik/master-data.md#sme-panel) |
+| No  | Prasyarat                                                                                                   | IK terkait                                                                 |
+| --- | ----------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| 1   | Jenjang pendidikan, sekolah, dan **jabatan** sudah terdaftar                                                | [IK-02 Master Data](../ik/master-data.md)                                  |
+| 2   | **Catalog Task Inventory** tersedia untuk kombinasi unit × jabatan (Tugas Pokok, Detil Tugas, Uraian Tugas) | [IK-02 Master Data](../ik/master-data.md#instrumen-task-inventory-catalog) |
+| 3   | **Partisipan** yang menjadi anggota panel sudah terdaftar                                                   | [IK-03 Partisipan](../ik/partisipan.md)                                    |
+| 4   | **SME Panel** untuk jabatan terkait sudah dibuat & anggotanya diisi                                         | [IK-02 Master Data](../ik/master-data.md#sme-panel)                        |
 
 !!! warning "Catalog tugas bersifat read-only"
-    Catalog Task Inventory bersumber dari data bawaan sistem dan hanya dapat ditinjau,
-    bukan dibuat dari aplikasi. Pastikan kombinasi unit × jabatan yang akan disurvei
-    sudah memiliki task di catalog sebelum membuat sesi.
+Catalog Task Inventory bersumber dari data bawaan sistem dan hanya dapat ditinjau,
+bukan dibuat dari aplikasi. Pastikan kombinasi unit × jabatan yang akan disurvei
+sudah memiliki task di catalog sebelum membuat sesi.
 
 ---
 
@@ -59,21 +59,21 @@ Status sesi: `DRAFT → TAHAP1 → TAHAP2 → TAHAP3 → CLOSED → ANALYZED`.
 2. Tetapkan **satu koordinator** panel. Koordinator yang akan menjalankan **Tahap 2**.
 
 !!! tip "Partisipan di lebih dari satu panel"
-    Partisipan yang menjadi anggota di lebih dari satu panel harus mengisi Tahap 1
-    secara terpisah untuk tiap panel.
+Partisipan yang menjadi anggota di lebih dari satu panel harus mengisi Tahap 1
+secara terpisah untuk tiap panel.
 
 ### 3. Buat sesi Task Inventory
 
 Buat sesi dengan parameter berikut (detail langkah: [IK-04 Task Inventory](../ik/task-inventory.md#a-membuat-sesi)):
 
-| Parameter | Pedoman pengisian |
-|---|---|
-| **Unit / Jenjang** | Pilih unit yang disurvei (boleh "Semua unit"). |
-| **Jabatan** | Wajib. Pilih jabatan target; jumlah task per jabatan ditampilkan. |
-| **Periode** | Format `YYYY-MM` (mis. `2026-06`). |
-| **Min. Responden** | Default 3. Jumlah minimum responden agar hasil layak diagregasi. |
-| **Maks. Responden** | Default 10. Harus ≥ Min. Responden. |
-| **Catatan** | Opsional — keterangan sesi. |
+| Parameter           | Pedoman pengisian                                                 |
+| ------------------- | ----------------------------------------------------------------- |
+| **Unit / Jenjang**  | Pilih unit yang disurvei (boleh "Semua unit").                    |
+| **Jabatan**         | Wajib. Pilih jabatan target; jumlah task per jabatan ditampilkan. |
+| **Periode**         | Format `YYYY-MM` (mis. `2026-06`).                                |
+| **Min. Responden**  | Default 3. Jumlah minimum responden agar hasil layak diagregasi.  |
+| **Maks. Responden** | Default 10. Harus ≥ Min. Responden.                               |
+| **Catatan**         | Opsional — keterangan sesi.                                       |
 
 ### 4. Daftarkan responden
 
@@ -82,9 +82,9 @@ Buat sesi dengan parameter berikut (detail langkah: [IK-04 Task Inventory](../ik
    (Langkah: [IK-04 Task Inventory](../ik/task-inventory.md#b-mendaftarkan-responden).)
 
 !!! success "Selesai persiapan"
-    Setelah catalog terverifikasi, panel & koordinator ditetapkan, sesi dibuat, dan
-    responden terdaftar — sesi siap dibuka. Lanjut ke
-    [SOP Pelaksanaan Task Inventory](pelaksanaan-task-inventory.md).
+Setelah catalog terverifikasi, panel & koordinator ditetapkan, sesi dibuat, dan
+responden terdaftar — sesi siap dibuka. Lanjut ke
+[SOP Pelaksanaan Task Inventory](pelaksanaan-task-inventory.md).
 
 ---
 

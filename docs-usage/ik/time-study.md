@@ -16,9 +16,9 @@ Status sesi: `Draft → Terbuka → Tertutup → Teranalisis`.
    **Periode**, **Status**, **Dibuat**.
 2. Klik **+ Buat Sesi**.
 3. Isi formulir:
-    - **Jabatan** (wajib, pilih dari dropdown)
-    - **Periode** (wajib, format `YYYY-MM`, mis. `2026-06`)
-    - **Catatan** (opsional)
+   - **Jabatan** (wajib, pilih dari dropdown)
+   - **Periode** (wajib, format `YYYY-MM`, mis. `2026-06`)
+   - **Catatan** (opsional)
 4. Klik **Buat Sesi**. Aplikasi membuka detail sesi dengan status **Draft**.
 
 ---
@@ -27,12 +27,12 @@ Status sesi: `Draft → Terbuka → Tertutup → Teranalisis`.
 
 Bagian **Transisi Sesi** menampilkan tombol sesuai status:
 
-| Status | Tombol | Hasil |
-|---|---|---|
-| Draft | **Buka Sesi** | → Terbuka (responden dapat didaftarkan) |
-| Draft | **Hapus Sesi** | Menghapus sesi |
-| Terbuka | **Tutup Sesi** | → Tertutup |
-| Tertutup | **Jalankan Analisis** | → Teranalisis |
+| Status   | Tombol                | Hasil                                   |
+| -------- | --------------------- | --------------------------------------- |
+| Draft    | **Buka Sesi**         | → Terbuka (responden dapat didaftarkan) |
+| Draft    | **Hapus Sesi**        | Menghapus sesi                          |
+| Terbuka  | **Tutup Sesi**        | → Tertutup                              |
+| Tertutup | **Jalankan Analisis** | → Teranalisis                           |
 
 ---
 
@@ -52,7 +52,7 @@ Bagian **Transisi Sesi** menampilkan tombol sesuai status:
 ## D. Menjalankan Analisis
 
 Setelah sesi **Tertutup**, klik **Jalankan Analisis**. Status menjadi **Teranalisis** dan
-muncul *"✓ Analisis selesai. Lihat hasil di halaman laporan."*
+muncul _"✓ Analisis selesai. Lihat hasil di halaman laporan."_
 
 ---
 
@@ -63,13 +63,13 @@ muncul *"✓ Analisis selesai. Lihat hasil di halaman laporan."*
    **Pengembangan**, **Strategis**, **Administrasi**, **Istirahat**, **Warna Hari**, **Aksi**.
 2. Klik **+ Tambah Log** (atau **Tambah Log Hari Ini** bila belum ada log).
 3. Isi formulir:
-    - **Tanggal** (default hari ini)
-    - **Waktu Masuk** dan **Waktu Keluar** (format jam:menit)
-    - **Kategori Hari**: **Hijau (Hari Biasa)** / **Kuning (Hari Sibuk)** / **Merah (Hari Puncak)**
-    - **Distribusi Waktu per Kategori** — isi **jam** (0–23) dan **menit** (0–59) untuk:
-      **Pekerjaan Inti**, **Asesmen Karakter**, **Pengembangan Diri**, **Pekerjaan
-      Strategis**, **Administrasi**, **Istirahat Terstruktur**
-    - **Catatan** (opsional)
+   - **Tanggal** (default hari ini)
+   - **Waktu Masuk** dan **Waktu Keluar** (format jam:menit)
+   - **Kategori Hari**: **Hijau (Hari Biasa)** / **Kuning (Hari Sibuk)** / **Merah (Hari Puncak)**
+   - **Distribusi Waktu per Kategori** — isi **jam** (0–23) dan **menit** (0–59) untuk:
+     **Pekerjaan Inti**, **Asesmen Karakter**, **Pengembangan Diri**, **Pekerjaan
+     Strategis**, **Administrasi**, **Istirahat Terstruktur**
+   - **Catatan** (opsional)
 4. Klik **Simpan Log**. Log muncul di tabel.
 
 ---
@@ -81,7 +81,7 @@ muncul *"✓ Analisis selesai. Lihat hasil di halaman laporan."*
 3. Klik **Simpan Perubahan**.
 
 !!! note "Selama sesi terbuka"
-    Log dapat ditambah dan diedit selama sesi masih **Terbuka**.
+Log dapat ditambah dan diedit selama sesi masih **Terbuka**.
 
 ---
 

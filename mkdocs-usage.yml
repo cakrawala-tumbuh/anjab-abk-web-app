@@ -68,25 +68,25 @@ extra:
 nav:
   - Beranda: index.md
   - Memulai:
-    - Cara Memulai: memulai/index.md
+      - Cara Memulai: memulai/index.md
   - SOP:
-    - Daftar SOP: sop/index.md
-    - "Persiapan: Task Inventory": sop/persiapan-task-inventory.md
-    - "Persiapan: Time Study": sop/persiapan-time-study.md
-    - "Persiapan: DCS": sop/persiapan-dcs.md
-    - "Persiapan: WCP": sop/persiapan-wcp.md
-    - "Pelaksanaan: Task Inventory": sop/pelaksanaan-task-inventory.md
-    - "Pelaksanaan: Time Study": sop/pelaksanaan-time-study.md
-    - "Pelaksanaan: DCS": sop/pelaksanaan-dcs.md
-    - "Pelaksanaan: WCP": sop/pelaksanaan-wcp.md
+      - Daftar SOP: sop/index.md
+      - "Persiapan: Task Inventory": sop/persiapan-task-inventory.md
+      - "Persiapan: Time Study": sop/persiapan-time-study.md
+      - "Persiapan: DCS": sop/persiapan-dcs.md
+      - "Persiapan: WCP": sop/persiapan-wcp.md
+      - "Pelaksanaan: Task Inventory": sop/pelaksanaan-task-inventory.md
+      - "Pelaksanaan: Time Study": sop/pelaksanaan-time-study.md
+      - "Pelaksanaan: DCS": sop/pelaksanaan-dcs.md
+      - "Pelaksanaan: WCP": sop/pelaksanaan-wcp.md
   - Instruksi Kerja (IK):
-    - Daftar IK: ik/index.md
-    - "IK-01 Login & Navigasi": ik/login-navigasi.md
-    - "IK-02 Master Data": ik/master-data.md
-    - "IK-03 Partisipan": ik/partisipan.md
-    - "IK-04 Task Inventory": ik/task-inventory.md
-    - "IK-05 Time Study": ik/time-study.md
-    - "IK-06 DCS": ik/dcs.md
-    - "IK-07 WCP": ik/wcp.md
+      - Daftar IK: ik/index.md
+      - "IK-01 Login & Navigasi": ik/login-navigasi.md
+      - "IK-02 Master Data": ik/master-data.md
+      - "IK-03 Partisipan": ik/partisipan.md
+      - "IK-04 Task Inventory": ik/task-inventory.md
+      - "IK-05 Time Study": ik/time-study.md
+      - "IK-06 DCS": ik/dcs.md
+      - "IK-07 WCP": ik/wcp.md
   - Referensi:
-    - FAQ: referensi/faq.md
+      - FAQ: referensi/faq.md
