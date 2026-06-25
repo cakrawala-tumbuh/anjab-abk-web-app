@@ -90,7 +90,7 @@ export default async function KuesionerSayaPage() {
             {dcs.map((k) => (
               <KuesionerCard
                 key={k.id}
-                jabatan_label={k.jabatan_label}
+                label={k.sesi_catatan ?? k.sesi_periode}
                 periode={k.sesi_periode}
                 sesi_status={k.sesi_status}
                 sudah_submit={k.sudah_submit}
@@ -110,7 +110,7 @@ export default async function KuesionerSayaPage() {
             {wcp.map((k) => (
               <KuesionerCard
                 key={k.id}
-                jabatan_label={k.jabatan_label}
+                label={k.sesi_catatan ?? k.sesi_periode}
                 periode={k.sesi_periode}
                 sesi_status={k.sesi_status}
                 sudah_submit={k.sudah_submit}
@@ -152,14 +152,14 @@ export default async function KuesionerSayaPage() {
 }
 
 function KuesionerCard({
-  jabatan_label,
+  label,
   periode,
   sesi_status,
   sudah_submit,
   href,
   tipe,
 }: {
-  jabatan_label: string;
+  label: string;
   periode: string;
   sesi_status: string;
   sudah_submit: boolean;
@@ -171,7 +171,7 @@ function KuesionerCard({
   return (
     <div className="flex items-center justify-between rounded-lg border border-gray-200 bg-white p-4">
       <div>
-        <p className="font-medium text-gray-900 dark:text-gray-50">{jabatan_label}</p>
+        <p className="font-medium text-gray-900 dark:text-gray-50">{label}</p>
         <p className="mt-0.5 text-sm text-gray-500">
           {tipe} · Periode {periode}
         </p>

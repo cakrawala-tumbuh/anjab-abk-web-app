@@ -1948,10 +1948,10 @@ export interface components {
              */
             sesi_id: string;
             /**
-             * Jabatan Label
-             * @description Label jabatan responden.
+             * Sesi Catatan
+             * @description Catatan sesi DCS.
              */
-            jabatan_label: string;
+            sesi_catatan?: string | null;
             /**
              * Sudah Submit
              * @description True jika jawaban sudah disubmit.
@@ -5304,10 +5304,10 @@ export interface components {
              */
             sesi_id: string;
             /**
-             * Jabatan Label
-             * @description Label jabatan responden.
+             * Sesi Catatan
+             * @description Catatan sesi WCP.
              */
-            jabatan_label: string;
+            sesi_catatan?: string | null;
             /**
              * Sudah Submit
              * @description True jika jawaban sudah disubmit.

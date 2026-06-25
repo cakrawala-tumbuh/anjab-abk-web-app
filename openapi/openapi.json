@@ -3609,9 +3609,8 @@
               },
               "examples": {
                 "contoh": {
-                  "summary": "Sesi WCP Guru MTK",
+                  "summary": "Sesi WCP 2025-06",
                   "value": {
-                    "jabatan_id": "jbt_a1b2c3d4",
                     "periode": "2025-06",
                     "min_responden": 6,
                     "max_responden": 8
@@ -5035,9 +5034,8 @@
               },
               "examples": {
                 "contoh": {
-                  "summary": "Sesi DCS Guru MTK",
+                  "summary": "Sesi DCS 2025-06",
                   "value": {
-                    "jabatan_id": "jbt_a1b2c3d4",
                     "periode": "2025-06",
                     "min_responden": 6,
                     "max_responden": 8
@@ -11118,10 +11116,17 @@
               "dses_a1b2c3d4"
             ]
           },
-          "jabatan_label": {
-            "type": "string",
-            "title": "Jabatan Label",
-            "description": "Label jabatan responden."
+          "sesi_catatan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sesi Catatan",
+            "description": "Catatan sesi DCS."
           },
           "sudah_submit": {
             "type": "boolean",
@@ -11168,7 +11173,6 @@
         "required": [
           "id",
           "sesi_id",
-          "jabatan_label",
           "sudah_submit",
           "created_at",
           "sesi_status",
@@ -17026,10 +17030,17 @@
               "wses_a1b2c3d4"
             ]
           },
-          "jabatan_label": {
-            "type": "string",
-            "title": "Jabatan Label",
-            "description": "Label jabatan responden."
+          "sesi_catatan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sesi Catatan",
+            "description": "Catatan sesi WCP."
           },
           "sudah_submit": {
             "type": "boolean",
@@ -17076,7 +17087,6 @@
         "required": [
           "id",
           "sesi_id",
-          "jabatan_label",
           "sudah_submit",
           "created_at",
           "sesi_status",

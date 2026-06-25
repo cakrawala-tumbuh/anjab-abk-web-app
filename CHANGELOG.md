@@ -7,6 +7,15 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [1.16.0] - 2026-06-25
+
+### Diubah
+
+- **Halaman kuesioner partisipan (DCS & WCP): hilangkan nama jabatan** — kartu kuesioner di
+  `/kuesioner` kini menggunakan `sesi_catatan` (fallback: `sesi_periode`) sebagai label, bukan
+  lagi `jabatan_label` responden. Halaman isi kuesioner `/wcp/isi/{id}` dan `/dcs/isi/{id}`
+  juga tidak lagi menampilkan `jabatan_label` di subtext header.
+
 ## [1.15.2] - 2026-06-25
 
 ### Diperbaiki

@@ -75,9 +75,7 @@ export default async function WcpIsiPage({ params }: Props) {
       {/* Header */}
       <div>
         <h1 className="page-heading">Kuesioner WCP</h1>
-        <p className="page-subtext">
-          {responden.jabatan_label} · {responden.nama ?? "Anonim"}
-        </p>
+        <p className="page-subtext">{responden.nama ?? "Anonim"}</p>
       </div>
 
       {responden.sudah_submit ? (

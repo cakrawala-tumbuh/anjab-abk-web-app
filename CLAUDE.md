@@ -60,6 +60,15 @@ src/
 - Saat transisi TAHAP2→TAHAP3, task dibekukan = unanimous ∪ koordinator-disetujui.
 - `src/lib/api/schema.ts` memiliki convenience re-exports di akhir file yang harus dipertahankan saat `gen:api` (append setelah generate ulang).
 
+### [2026-06-25] DCS & WCP: Hilangkan jabatan dari tampilan partisipan
+
+- Halaman `/kuesioner` (DCS & WCP): label kartu kini menggunakan `sesi_catatan ?? sesi_periode`
+  (bukan `jabatan_label` responden).
+- Halaman `/wcp/isi/{id}` dan `/dcs/isi/{id}`: subtext header hanya menampilkan nama partisipan,
+  tidak lagi menampilkan `jabatan_label`.
+- `DcsKuesionerItemRead` / `WcpKuesionerItemRead` di `schema.ts`: field `jabatan_label` diganti
+  `sesi_catatan?: string | null`.
+
 ### [2026-06-21] DCS & WCP: Sesi tidak terikat jabatan
 
 Sesi DCS dan WCP tidak lagi memerlukan pilihan jabatan saat pembuatan.
