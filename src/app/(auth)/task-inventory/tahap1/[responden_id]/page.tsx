@@ -82,7 +82,6 @@ export default async function Tahap1Page({ params }: Props) {
       ) : (
         <SeleksiForm
           respondenId={responden_id}
-          sesiId={sesi.id}
           catalog={catalog}
           accessToken={session?.accessToken}
         />

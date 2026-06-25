@@ -54,9 +54,7 @@ const catalog: TiCatalogRead[] = [
 ];
 
 function renderForm() {
-  return render(
-    <SeleksiForm respondenId="trsp_1" sesiId="tises_1" catalog={catalog} accessToken="tok" />,
-  );
+  return render(<SeleksiForm respondenId="trsp_1" catalog={catalog} accessToken="tok" />);
 }
 
 beforeEach(() => {
@@ -124,7 +122,7 @@ describe("SeleksiForm — cascade 3 level Tahap 1", () => {
         body: { task_kode: ["TI-A"] },
       }),
     );
-    expect(push).toHaveBeenCalledWith("/task-inventory/tises_1");
+    expect(push).toHaveBeenCalledWith("/kuesioner");
   });
 
   it("mengubah pilihan tugas pokok membuang detil & uraian yang tak lagi valid", () => {

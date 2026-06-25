@@ -7,6 +7,17 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [1.16.1] - 2026-06-25
+
+### Diperbaiki
+
+- **Tahap 1 Task Inventory: "Halaman Tidak Ditemukan" setelah klik "Kirim Seleksi"** —
+  setelah submit berhasil (data sebenarnya tersimpan), formulir mengarahkan partisipan ke
+  halaman detail sesi `/task-inventory/{sesi_id}` yang **khusus admin** (`notFound()` bagi
+  non-admin), sehingga partisipan melihat halaman "Halaman Tidak Ditemukan". Redirect kini
+  diarahkan ke `/kuesioner` (halaman milik partisipan). Prop `sesiId` pada `SeleksiForm`
+  yang tak lagi dipakai turut dihapus.
+
 ## [1.16.0] - 2026-06-25
 
 ### Diubah

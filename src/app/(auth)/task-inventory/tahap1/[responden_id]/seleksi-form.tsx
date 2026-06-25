@@ -8,7 +8,6 @@ import type { TiCatalogRead } from "@/lib/api/schema";
 
 interface Props {
   respondenId: string;
-  sesiId: string;
   catalog: TiCatalogRead[];
   accessToken: string | undefined;
 }
@@ -35,7 +34,7 @@ function detilKey(item: TiCatalogRead): string {
  * Catalog sudah difilter backend ke jabatan (dan unit) sesi, sehingga seluruh
  * cascade konsisten dengan jabatan dari sesi yang diikuti partisipan.
  */
-export function SeleksiForm({ respondenId, sesiId, catalog, accessToken }: Props) {
+export function SeleksiForm({ respondenId, catalog, accessToken }: Props) {
   const router = useRouter();
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [selectedTP, setSelectedTP] = useState<Set<string>>(new Set());
@@ -150,7 +149,9 @@ export function SeleksiForm({ respondenId, sesiId, catalog, accessToken }: Props
       );
       const reqId = response.headers.get("x-request-id");
       if (apiError) throw toApiError(apiError, reqId);
-      router.push(`/task-inventory/${sesiId}`);
+      // Partisipan kembali ke daftar kuesioner miliknya, bukan ke halaman
+      // detail sesi yang khusus admin (akan memicu notFound bagi partisipan).
+      router.push("/kuesioner");
       router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Terjadi kesalahan.");
