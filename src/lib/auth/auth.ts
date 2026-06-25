@@ -21,6 +21,7 @@ declare module "next-auth" {
     accessToken?: string;
     idToken?: string;
     user: {
+      id: string;
       groups: string[];
     } & DefaultSession["user"];
   }
@@ -65,6 +66,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async session({ session, token }) {
       session.accessToken = token.accessToken;
       session.idToken = token.idToken;
+      session.user.id = token.sub ?? "";
       session.user.groups = token.groups ?? [];
       return session;
     },

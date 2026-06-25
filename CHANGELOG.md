@@ -7,6 +7,16 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [1.16.2] - 2026-06-25
+
+### Diperbaiki
+
+- **Tahap 2 Task Inventory: halaman hanya bisa dibuka admin** — halaman
+  `/task-inventory/tahap2/{sesi_id}` memblok semua non-admin dengan `notFound()`.
+  Kini koordinator SME panel yang ditunjuk (`sesi.koordinator_id`) juga dapat
+  membuka halaman ini. `session.user.id` (sub Authentik) di-ekspos lewat session
+  callback untuk perbandingan dengan `koordinator_id`.
+
 ## [1.16.1] - 2026-06-25
 
 ### Diperbaiki

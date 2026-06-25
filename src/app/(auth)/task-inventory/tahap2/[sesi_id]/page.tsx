@@ -31,10 +31,11 @@ async function fetchPageData(accessToken: string | undefined, sesiId: string) {
 
 export default async function Tahap2KoordinatorPage({ params }: Props) {
   const session = await auth();
-  if (!isAdmin(session)) notFound();
-
   const { sesi_id } = await params;
   const { sesi, review } = await fetchPageData(session?.accessToken, sesi_id);
+
+  const isKoordinator = session?.user?.id === sesi.koordinator_id;
+  if (!isAdmin(session) && !isKoordinator) notFound();
 
   const readOnly = sesi.status !== "TAHAP2";
 

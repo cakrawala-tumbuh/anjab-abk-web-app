@@ -54,7 +54,7 @@ src/
 
 - Alur TI berubah dari 2 tahap menjadi 3 tahap.
 - **Tahap 1** (`/task-inventory/tahap1/{responden_id}`): Partisipan pilih task relevan.
-- **Tahap 2** (`/task-inventory/tahap2/{sesi_id}`): Koordinator review task partial (khusus admin).
+- **Tahap 2** (`/task-inventory/tahap2/{sesi_id}`): Koordinator review task partial. Dapat diakses oleh admin atau koordinator SME panel yang ditunjuk (`sesi.koordinator_id`).
 - **Tahap 3** (`/task-inventory/tahap3/{responden_id}`): Partisipan isi detail CalHR.
 - Status sesi: `DRAFT → TAHAP1 → TAHAP2 → TAHAP3 → CLOSED → ANALYZED`.
 - Saat transisi TAHAP2→TAHAP3, task dibekukan = unanimous ∪ koordinator-disetujui.
