@@ -1,7 +1,7 @@
 /**
  * Pemetaan error backend → tipe error klien.
  *
- * Backend mengembalikan envelope: { "error": { "code": "...", "message": "...", "details": [...] } }
+ * Backend mengembalikan envelope: { "error": "code_string", "message": "...", "details": [...] }
  * disertai header `X-Request-ID` untuk korelasi dengan log backend.
  */
 
@@ -25,17 +25,21 @@ export class ApiError extends Error {
   }
 }
 
-function isErrorEnvelope(value: unknown): value is { error: ApiErrorBody } {
+// Backend mengirim: { "error": "code_string", "message": "...", "details": [...] }
+function isErrorEnvelope(
+  value: unknown,
+): value is { error: string; message: string; details?: unknown[] } {
   if (typeof value !== "object" || value === null) return false;
-  const err = (value as Record<string, unknown>).error;
-  if (typeof err !== "object" || err === null) return false;
-  const e = err as Record<string, unknown>;
-  return typeof e.code === "string" && typeof e.message === "string";
+  const v = value as Record<string, unknown>;
+  return typeof v.error === "string" && typeof v.message === "string";
 }
 
 export function toApiError(error: unknown, requestId: string | null): ApiError {
   if (isErrorEnvelope(error)) {
-    return new ApiError(error.error, requestId);
+    return new ApiError(
+      { code: error.error, message: error.message, details: error.details },
+      requestId,
+    );
   }
   return new ApiError(
     { code: "unknown_error", message: "Terjadi kesalahan tak terduga." },

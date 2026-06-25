@@ -1,11 +1,11 @@
 import { describe, expect, it } from "vitest";
 import { ApiError, toApiError } from "@/lib/api/errors";
 
+// Format envelope backend: { "error": "code_string", "message": "...", "details": [...] }
+
 describe("toApiError", () => {
   it("memetakan envelope error backend ke ApiError", () => {
-    const envelope = {
-      error: { code: "not_found", message: "Partisipan tidak ditemukan." },
-    };
+    const envelope = { error: "not_found", message: "Partisipan tidak ditemukan." };
     const err = toApiError(envelope, "req-123");
     expect(err).toBeInstanceOf(ApiError);
     expect(err.code).toBe("not_found");
@@ -21,11 +21,9 @@ describe("toApiError", () => {
 
   it("menyertakan details bila ada", () => {
     const envelope = {
-      error: {
-        code: "validation_error",
-        message: "Payload tidak valid.",
-        details: [{ loc: ["email"], msg: "Format email tidak valid." }],
-      },
+      error: "validation_error",
+      message: "Payload tidak valid.",
+      details: [{ loc: ["email"], msg: "Format email tidak valid." }],
     };
     const err = toApiError(envelope, null);
     expect(err.details).toHaveLength(1);

@@ -7,6 +7,17 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [1.15.2] - 2026-06-25
+
+### Diperbaiki
+
+- **Semua error backend ditampilkan sebagai "Terjadi kesalahan tak terduga."** —
+  `isErrorEnvelope` keliru mengecek `error` sebagai objek nested `{ code, message }`,
+  padahal backend mengirim envelope datar `{ "error": "code_string", "message": "..." }`.
+  Akibatnya `toApiError` selalu jatuh ke fallback dan pesan error asli tidak pernah
+  terlihat di UI. Diperbaiki agar pesan error dari backend (mis. "Token tidak ada.",
+  "Payload tidak valid.") kini tampil dengan benar.
+
 ## [1.15.1] - 2026-06-25
 
 ### Diperbaiki
