@@ -7,6 +7,16 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [1.16.3] - 2026-06-26
+
+### Diperbaiki
+
+- **Data list tidak otomatis refresh setelah tambah/ubah/hapus** — Client Router Cache
+  Next.js menyajikan RSC payload lama saat navigasi kembali ke halaman list, sehingga
+  pengguna harus refresh browser manual untuk melihat data terbaru. Ditambahkan konfigurasi
+  `staleTimes: { dynamic: 0, static: 0 }` di `next.config.ts` agar cache router selalu
+  kedaluwarsa dan setiap navigasi memuat data segar dari server.
+
 ## [1.16.2] - 2026-06-25
 
 ### Diperbaiki
