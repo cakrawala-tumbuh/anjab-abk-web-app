@@ -7,6 +7,14 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [1.15.1] - 2026-06-25
+
+### Diperbaiki
+
+- **Dropdown partisipan kosong saat SME panel belum dibuat** — menampilkan peringatan
+  informatif yang mengarahkan admin ke halaman pembuatan SME panel, bukan menampilkan
+  semua partisipan sebagai fallback (perilaku yang salah).
+
 ## [1.15.0] - 2026-06-25
 
 ### Ditambahkan
@@ -23,8 +31,6 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ### Diperbaiki
 
-- **Dropdown partisipan di Tambah Responden (Task Inventory)** kini menampilkan semua
-  partisipan bila SME panel untuk jabatan sesi belum dikonfigurasi (sebelumnya tampil kosong).
 - **Kanban tile master data Task Inventory** kini menampilkan nama jabatan (`jabatan_nama`)
   bukan kode jabatan (`jabatan_id`).
 

@@ -97,12 +97,12 @@ async function fetchPageData(accessToken: string | undefined, sesiId: string) {
   const smePanel = (smeRes.data?.items?.[0] ?? null) as SMEPanelRead | null;
   const allowedIds = new Set<string>(smePanel?.partisipan_ids ?? []);
   const allPartisipan = (partisipanRes.data?.items ?? []) as PartisipanRead[];
-  const partisipan =
-    allowedIds.size > 0 ? allPartisipan.filter((p) => allowedIds.has(p.id)) : allPartisipan;
+  const partisipan = allowedIds.size > 0 ? allPartisipan.filter((p) => allowedIds.has(p.id)) : [];
 
   return {
     sesi,
     responden: (respondenRes.data ?? []) as TiRespondenRead[],
+    smePanel,
     partisipan,
     taskTerpilih,
     hasil,
@@ -114,7 +114,7 @@ export default async function TiSesiDetailPage({ params }: Props) {
   if (!isAdmin(session)) notFound();
 
   const { sesi_id } = await params;
-  const { sesi, responden, partisipan, taskTerpilih, hasil } = await fetchPageData(
+  const { sesi, responden, smePanel, partisipan, taskTerpilih, hasil } = await fetchPageData(
     session?.accessToken,
     sesi_id,
   );
@@ -198,11 +198,21 @@ export default async function TiSesiDetailPage({ params }: Props) {
       {(sesi.status === "DRAFT" || sesi.status === "TAHAP1") && (
         <div>
           <h2 className="mb-4 text-lg font-medium text-gray-900">Tambah Responden</h2>
-          <TambahResponden
-            sesiId={sesi.id}
-            partisipan={partisipan}
-            accessToken={session?.accessToken}
-          />
+          {!smePanel ? (
+            <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
+              SME panel untuk jabatan ini belum dibuat. Buat SME panel terlebih dahulu di{" "}
+              <Link href="/master-data/sme-panel/tambah" className="font-medium underline">
+                Master Data → SME Panel
+              </Link>{" "}
+              agar daftar partisipan dapat dipilih.
+            </div>
+          ) : (
+            <TambahResponden
+              sesiId={sesi.id}
+              partisipan={partisipan}
+              accessToken={session?.accessToken}
+            />
+          )}
         </div>
       )}
 
