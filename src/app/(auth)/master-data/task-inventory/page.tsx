@@ -54,7 +54,7 @@ export default async function TiMasterDataPage() {
                 className="group rounded-lg border border-gray-200 bg-white p-4 transition-colors hover:border-blue-400 hover:bg-blue-50/40 dark:border-gray-700 dark:bg-gray-800 dark:hover:border-blue-500 dark:hover:bg-blue-900/20"
               >
                 <p className="font-medium text-gray-900 group-hover:text-blue-700 dark:text-gray-100 dark:group-hover:text-blue-400">
-                  {k.jabatan_id}
+                  {k.jabatan_nama}
                 </p>
                 <div className="mt-2 flex items-center justify-between">
                   <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-600 dark:bg-gray-700 dark:text-gray-400">

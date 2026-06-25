@@ -70,7 +70,11 @@ async function fetchPageData(accessToken: string | undefined, sesiId: string) {
       params: { path: { sesi_id: sesiId } },
     }),
     client.POST("/api/v1/sme-panel/search", {
-      body: { domain: [["jabatan_id", "=", sesi.jabatan_id]], limit: 1, offset: 0 },
+      body: {
+        domain: [["jabatan_id", "=", sesi.jabatan_id]],
+        limit: 1,
+        offset: 0,
+      },
     }),
     client.GET("/api/v1/partisipan", { params: { query: { limit: 200 } } }),
   ]);
@@ -93,9 +97,8 @@ async function fetchPageData(accessToken: string | undefined, sesiId: string) {
   const smePanel = (smeRes.data?.items?.[0] ?? null) as SMEPanelRead | null;
   const allowedIds = new Set<string>(smePanel?.partisipan_ids ?? []);
   const allPartisipan = (partisipanRes.data?.items ?? []) as PartisipanRead[];
-  const partisipan = allowedIds.size > 0
-    ? allPartisipan.filter((p) => allowedIds.has(p.id))
-    : [];
+  const partisipan =
+    allowedIds.size > 0 ? allPartisipan.filter((p) => allowedIds.has(p.id)) : allPartisipan;
 
   return {
     sesi,

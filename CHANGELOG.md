@@ -7,6 +7,27 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [1.15.0] - 2026-06-25
+
+### Ditambahkan
+
+- **Halaman hasil DCS per responden** (`/dcs/{sesi_id}/hasil-responden/{responden_id}`) —
+  admin dapat melihat skor per sub-skala (Demand, Control, Support) dan flag risiko
+  individu setiap responden.
+- **Halaman hasil WCP per responden** (`/wcp/{sesi_id}/hasil-responden/{responden_id}`) —
+  admin dapat melihat skor dan interpretasi per dimensi (12 dimensi) setiap responden.
+- **Tombol "Lihat Hasil" di baris responden** pada halaman detail sesi DCS dan WCP —
+  tombol muncul untuk responden yang sudah submit, memudahkan akses langsung ke hasil individu.
+- **Export type `DcsHasilRespondenRead`, `DcsHasilSubSkalaRespondenRead`, `WcpHasilRespondenRead`,
+  `WcpHasilDimensiRespondenRead`** ditambahkan ke re-export `schema.ts`.
+
+### Diperbaiki
+
+- **Dropdown partisipan di Tambah Responden (Task Inventory)** kini menampilkan semua
+  partisipan bila SME panel untuk jabatan sesi belum dikonfigurasi (sebelumnya tampil kosong).
+- **Kanban tile master data Task Inventory** kini menampilkan nama jabatan (`jabatan_nama`)
+  bukan kode jabatan (`jabatan_id`).
+
 ## [1.14.1] - 2026-06-25
 
 ### Diperbaiki

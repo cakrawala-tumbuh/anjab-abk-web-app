@@ -164,11 +164,9 @@ export default async function DcsSesiDetailPage({ params }: Props) {
                   <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
                     Status Isian
                   </th>
-                  {sesi.status === "OPEN" && (
-                    <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
-                      Aksi
-                    </th>
-                  )}
+                  <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
+                    Aksi
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
@@ -192,17 +190,25 @@ export default async function DcsSesiDetailPage({ params }: Props) {
                         </span>
                       )}
                     </td>
-                    {sesi.status === "OPEN" && (
-                      <td className="px-4 py-3">
-                        {!r.sudah_submit && (
+                    <td className="px-4 py-3">
+                      <div className="flex flex-wrap items-center gap-3">
+                        {r.sudah_submit && (
+                          <Link
+                            href={`/dcs/${sesi.id}/hasil-responden/${r.id}`}
+                            className="text-xs font-medium text-blue-600 hover:text-blue-800"
+                          >
+                            Lihat Hasil
+                          </Link>
+                        )}
+                        {sesi.status === "OPEN" && !r.sudah_submit && (
                           <HapusResponden
                             respondenId={r.id}
                             nama={r.nama ?? "Anonim"}
                             accessToken={session?.accessToken}
                           />
                         )}
-                      </td>
-                    )}
+                      </div>
+                    </td>
                   </tr>
                 ))}
               </tbody>
