@@ -3958,6 +3958,12 @@ export interface components {
              * @example 2026-06
              */
             sesi_periode: string;
+            /**
+             * Is Koordinator
+             * @description True jika pengguna ini adalah koordinator SME panel untuk sesi ini.
+             * @default false
+             */
+            is_koordinator: boolean;
         };
         /**
          * TiRespondenCreate

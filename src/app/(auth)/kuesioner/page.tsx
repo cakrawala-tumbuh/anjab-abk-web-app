@@ -312,6 +312,13 @@ function TiKuesionerCard({ item }: { item: TiKuesionerItemRead }) {
           >
             Isi {fase === 1 ? "Tahap 1" : "Tahap 3"}
           </Link>
+        ) : item.is_koordinator && sesi_status === "TAHAP2" ? (
+          <Link
+            href={`/task-inventory/tahap2/${item.sesi_id}`}
+            className="rounded-md bg-amber-600 px-4 py-2 text-sm font-medium text-white hover:bg-amber-700"
+          >
+            Review Koordinator
+          </Link>
         ) : (
           <span className="rounded-md border border-gray-200 px-4 py-2 text-sm text-gray-400">
             {sesi_status === "TAHAP2"

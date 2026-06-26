@@ -7,6 +7,16 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [1.16.5] - 2026-06-26
+
+### Ditambahkan
+
+- **Tombol "Review Koordinator" di halaman Kuesioner Saya** — kartu Task Inventory
+  kini menampilkan tombol berwarna amber yang mengarah ke halaman review Tahap 2
+  jika pengguna adalah koordinator SME panel (`is_koordinator=true`) dan sesi
+  sedang di status TAHAP2. Sebelumnya koordinator hanya melihat label
+  "Menunggu review koordinator" tanpa akses langsung.
+
 ## [1.16.4] - 2026-06-26
 
 ### Diperbaiki

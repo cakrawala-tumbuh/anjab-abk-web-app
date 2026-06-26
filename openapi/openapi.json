@@ -14668,6 +14668,12 @@
             "examples": [
               "2026-06"
             ]
+          },
+          "is_koordinator": {
+            "description": "True jika pengguna ini adalah koordinator SME panel untuk sesi ini.",
+            "default": false,
+            "title": "Is Koordinator",
+            "type": "boolean"
           }
         },
         "type": "object",
