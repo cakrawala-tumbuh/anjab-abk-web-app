@@ -7,6 +7,16 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [1.16.4] - 2026-06-26
+
+### Diperbaiki
+
+- **Tahap 2 Task Inventory: koordinator masih mendapat 404** — halaman
+  `/task-inventory/tahap2/{sesi_id}` membandingkan `session.user.id` (sub JWT = email)
+  dengan `sesi.koordinator_id` (ID partisipan `par_*`), yang tidak pernah cocok.
+  Kini halaman memanggil endpoint baru `GET /api/v1/partisipan/saya` untuk mendapatkan
+  ID partisipan pengguna saat ini, lalu membandingkan `par.id` dengan `koordinator_id`.
+
 ## [1.16.3] - 2026-06-26
 
 ### Diperbaiki

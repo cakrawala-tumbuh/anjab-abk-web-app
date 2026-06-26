@@ -1785,6 +1785,52 @@
         }
       }
     },
+    "/api/v1/partisipan/saya": {
+      "get": {
+        "tags": [
+          "partisipan"
+        ],
+        "summary": "Partisipan saat ini (berdasarkan token Bearer)",
+        "operationId": "partisipan_saya",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PartisipanRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Partisipan tidak ditemukan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
     "/api/v1/partisipan/{partisipan_id}": {
       "get": {
         "tags": [

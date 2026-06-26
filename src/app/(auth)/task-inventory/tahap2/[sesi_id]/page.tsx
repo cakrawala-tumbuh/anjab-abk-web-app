@@ -14,27 +14,29 @@ interface Props {
 
 async function fetchPageData(accessToken: string | undefined, sesiId: string) {
   const client = withServerAuth(accessToken);
-  const [sesiRes, reviewRes] = await Promise.all([
+  const [sesiRes, reviewRes, sayaRes] = await Promise.all([
     client.GET("/api/v1/task-inventory/sesi/{sesi_id}", {
       params: { path: { sesi_id: sesiId } },
     }),
     client.GET("/api/v1/task-inventory/sesi/{sesi_id}/tahap2", {
       params: { path: { sesi_id: sesiId } },
     }),
+    client.GET("/api/v1/partisipan/saya"),
   ]);
   const reqId = sesiRes.response.headers.get("x-request-id");
   if (!sesiRes.data) throw toApiError(null, reqId);
   const sesi = sesiRes.data as TiSesiRead;
   const review = (reviewRes.data ?? null) as TiTahap2ReviewRead | null;
-  return { sesi, review };
+  const partisipanId = sayaRes.data?.id ?? null;
+  return { sesi, review, partisipanId };
 }
 
 export default async function Tahap2KoordinatorPage({ params }: Props) {
   const session = await auth();
   const { sesi_id } = await params;
-  const { sesi, review } = await fetchPageData(session?.accessToken, sesi_id);
+  const { sesi, review, partisipanId } = await fetchPageData(session?.accessToken, sesi_id);
 
-  const isKoordinator = session?.user?.id === sesi.koordinator_id;
+  const isKoordinator = !!partisipanId && partisipanId === sesi.koordinator_id;
   if (!isAdmin(session) && !isKoordinator) notFound();
 
   const readOnly = sesi.status !== "TAHAP2";
