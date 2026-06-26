@@ -7,6 +7,18 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [1.16.6] - 2026-06-26
+
+### Diperbaiki
+
+- **Nama jabatan TI di halaman Kuesioner Saya** — kartu Task Inventory kini menampilkan
+  nama jabatan yang terbaca manusia (mis. "Kepala Sekolah"), bukan kode ID jabatan
+  (mis. `jbt_a1b2c3d4`). Frontend menggunakan field `sesi_jabatan_nama` yang baru
+  dikirim backend, dengan fallback ke ID jika nama tidak tersedia.
+- **Login ulang masuk ke user sebelumnya** — proses login kini meneruskan parameter
+  `prompt=login` ke Authentik sehingga halaman login selalu ditampilkan, meskipun
+  sesi SSO Authentik untuk user sebelumnya masih aktif.
+
 ## [1.16.5] - 2026-06-26
 
 ### Ditambahkan

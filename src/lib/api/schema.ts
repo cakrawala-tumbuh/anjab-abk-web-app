@@ -3953,6 +3953,12 @@ export interface components {
              */
             sesi_jabatan_id: string;
             /**
+             * Sesi Jabatan Nama
+             * @description Nama jabatan yang dikaji dalam sesi.
+             * @example Kepala Sekolah
+             */
+            sesi_jabatan_nama?: string | null;
+            /**
              * Sesi Periode
              * @description Periode sesi (YYYY-MM).
              * @example 2026-06
@@ -10991,6 +10997,15 @@ export interface operations {
             };
             /** @description Token tidak ada/invalid. */
             401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin atau koordinator sesi. */
+            403: {
                 headers: {
                     [name: string]: unknown;
                 };

@@ -4,7 +4,7 @@ import { useEffect } from "react";
 
 export default function LoginClient({ callbackUrl }: { callbackUrl?: string }) {
   useEffect(() => {
-    signIn("authentik", { callbackUrl: callbackUrl ?? "/dashboard" });
+    signIn("authentik", { callbackUrl: callbackUrl ?? "/dashboard" }, { prompt: "login" });
   }, [callbackUrl]);
 
   return (
