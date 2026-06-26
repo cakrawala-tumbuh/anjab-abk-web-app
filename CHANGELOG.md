@@ -7,6 +7,19 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [1.16.7] - 2026-06-26
+
+### Diperbaiki
+
+- **Logout tidak membersihkan sesi pada HTTPS** — route handler `/api/auth/logout`
+  kini menyertakan atribut `Secure` saat menghapus cookie `__Secure-authjs.*` dan
+  `__Host-authjs.*`. Tanpa atribut ini, browser menolak instruksi penghapusan cookie
+  (RFC 6265bis §4.1.3) sehingga sesi lama tetap hidup dan pengguna otomatis masuk
+  kembali sebagai user sebelumnya setelah logout.
+- **Revert `prompt=login`** — parameter ini menyebabkan loop tak berujung di Authentik
+  (reauthentication loop via `next` parameter) sehingga login tidak bisa diselesaikan.
+  Penghapusan cookie yang benar (fix di atas) sudah cukup untuk menyelesaikan masalah.
+
 ## [1.16.6] - 2026-06-26
 
 ### Diperbaiki
@@ -15,9 +28,6 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
   nama jabatan yang terbaca manusia (mis. "Kepala Sekolah"), bukan kode ID jabatan
   (mis. `jbt_a1b2c3d4`). Frontend menggunakan field `sesi_jabatan_nama` yang baru
   dikirim backend, dengan fallback ke ID jika nama tidak tersedia.
-- **Login ulang masuk ke user sebelumnya** — proses login kini meneruskan parameter
-  `prompt=login` ke Authentik sehingga halaman login selalu ditampilkan, meskipun
-  sesi SSO Authentik untuk user sebelumnya masih aktif.
 
 ## [1.16.5] - 2026-06-26
 
