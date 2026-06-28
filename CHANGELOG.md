@@ -7,6 +7,24 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [1.16.8] - 2026-06-28
+
+### Diperbaiki
+
+- **Logout tidak menghapus cookie sesi yang ter-_chunk_** — Auth.js memecah cookie
+  sesi besar menjadi `__Secure-authjs.session-token.0`, `.1`, dst. Route handler
+  `/api/auth/logout` sebelumnya hanya menghapus nama statis tanpa suffix `.0`/`.1`,
+  sehingga chunk tersebut lolos dan sesi lokal tetap hidup setelah logout. Sekarang
+  handler meng-enumerasi cookie yang benar-benar dikirim browser dan meng-kadaluwarsa
+  setiap cookie milik Auth.js (termasuk chunk dan prefix `__Secure-`/`__Host-`).
+
+### Catatan
+
+- Akar masalah "login berikutnya tetap user sebelumnya" ada di sisi Authentik:
+  provider `anjab-abk-web` memakai invalidation flow tanpa stage `user_logout`,
+  sehingga RP-initiated logout tidak mematikan sesi SSO. Diperbaiki di Authentik
+  (provider diarahkan ke flow logout yang benar) — perubahan konfigurasi, bukan kode.
+
 ## [1.16.7] - 2026-06-26
 
 ### Diperbaiki

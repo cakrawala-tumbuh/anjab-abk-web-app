@@ -1,3 +1,4 @@
+import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth/auth";
 import { config } from "@/lib/config";
@@ -35,29 +36,31 @@ export async function GET() {
 
   const response = NextResponse.redirect(targetUrl, { status: 303 });
 
-  // Hapus semua cookie sesi Auth.js v5.
-  // HTTP: "authjs.*" — HTTPS: "__Secure-authjs.*" / "__Host-authjs.*"
-  // Cookie bertanda __Secure-* dan __Host-* wajib di-set dengan Secure:true agar
-  // browser menerima instruksi penghapusan (RFC 6265bis §4.1.3).
-  const cookieSuffixes = ["session-token", "csrf-token", "callback-url", "pkce.code_verifier"];
-  const deleteOptions = [
-    // HTTP (development): tanpa prefix, tanpa Secure
-    { prefix: "", secure: false },
-    // HTTPS: __Secure- prefix — wajib Secure:true
-    { prefix: "__Secure-", secure: true },
-    // HTTPS: __Host- prefix — wajib Secure:true + tidak boleh ada Domain
-    { prefix: "__Host-", secure: true },
-  ];
-  for (const { prefix, secure } of deleteOptions) {
-    for (const suffix of cookieSuffixes) {
-      response.cookies.set(`${prefix}authjs.${suffix}`, "", {
-        expires: new Date(0),
-        path: "/",
-        httpOnly: true,
-        sameSite: "lax",
-        secure,
-      });
-    }
+  // Hapus SEMUA cookie sesi Auth.js v5 yang benar-benar ada di request.
+  //
+  // Auth.js MEMECAH cookie sesi yang besar (mis. session-token berisi JWT panjang)
+  // menjadi beberapa "chunk": `authjs.session-token.0`, `authjs.session-token.1`, dst.
+  // Implementasi lama menghapus nama statis tanpa suffix `.0`/`.1`, sehingga chunk
+  // tersebut LOLOS dan sesi lokal tidak pernah benar-benar terhapus.
+  //
+  // Solusi: enumerasi cookie yang sungguh dikirim browser, lalu set-kadaluwarsa
+  // setiap cookie milik Auth.js (cocok dengan/atau tanpa prefix __Secure-/__Host-).
+  // Cookie __Secure-* / __Host- wajib di-set dengan Secure:true agar instruksi
+  // penghapusan diterima browser (RFC 6265bis §4.1.3).
+  const authCookieRe =
+    /^(__Secure-|__Host-)?authjs\.(session-token|csrf-token|callback-url|pkce\.code_verifier|state|nonce)(\.\d+)?$/;
+  const present = (await cookies()).getAll();
+  for (const { name } of present) {
+    if (!authCookieRe.test(name)) continue;
+    const secure = name.startsWith("__Secure-") || name.startsWith("__Host-");
+    response.cookies.set(name, "", {
+      expires: new Date(0),
+      maxAge: 0,
+      path: "/",
+      httpOnly: true,
+      sameSite: "lax",
+      secure,
+    });
   }
 
   return response;
