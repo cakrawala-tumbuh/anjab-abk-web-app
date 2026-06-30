@@ -321,13 +321,16 @@ function TiKuesionerCard({ item }: { item: TiKuesionerItemRead }) {
           >
             Review Koordinator
           </Link>
+        ) : !item.is_koordinator && sesi_status === "TAHAP2" ? (
+          <Link
+            href={`/task-inventory/tahap2/${item.sesi_id}`}
+            className="rounded-md border border-violet-300 bg-violet-50 px-4 py-2 text-sm font-medium text-violet-700 hover:bg-violet-100"
+          >
+            Lihat Tahap 2
+          </Link>
         ) : (
           <span className="rounded-md border border-gray-200 px-4 py-2 text-sm text-gray-400">
-            {sesi_status === "TAHAP2"
-              ? "Menunggu review koordinator"
-              : faseSelesai
-                ? "Menunggu tahap berikutnya"
-                : (STATUS_LABEL[sesi_status] ?? sesi_status)}
+            {faseSelesai ? "Menunggu tahap berikutnya" : (STATUS_LABEL[sesi_status] ?? sesi_status)}
           </span>
         )}
       </div>

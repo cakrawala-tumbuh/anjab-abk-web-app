@@ -82,6 +82,11 @@ muncul, dan banner biru "Anda melihat hasil Tahap 2 sebagai anggota panel" ditam
 Hanya **koordinator** (atau admin) yang dapat menyimpan keputusan saat status `TAHAP2`.
 Partisipan yang bukan anggota panel akan mendapat halaman 404.
 
+    **Cara anggota panel masuk ke Tahap 2:** buka **Kuesioner Saya**, cari kartu
+    Task Inventory yang berstatus _Tahap 2 — Review Koordinator_, lalu klik tombol
+    **Lihat Tahap 2** (warna ungu). Koordinator melihat tombol **Review Koordinator**
+    (warna kuning-oranye) di kartu yang sama.
+
 ---
 
 ## E. Mengisi Tahap 1 — Seleksi (Partisipan)

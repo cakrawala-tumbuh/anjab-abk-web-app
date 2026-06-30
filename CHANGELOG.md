@@ -7,6 +7,15 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [1.17.1] - 2026-06-30
+
+### Diperbaiki
+
+- **Tombol "Lihat Tahap 2" di halaman Kuesioner Saya** — anggota panel yang bukan
+  koordinator kini melihat tombol ungu "Lihat Tahap 2" saat status sesi adalah `TAHAP2`,
+  bukan teks abu-abu "Menunggu review koordinator" yang tidak bisa diklik. Tombol
+  mengarah ke halaman review Tahap 2 yang sudah mendukung mode hanya-baca sejak v1.17.0.
+
 ## [1.17.0] - 2026-06-30
 
 ### Ditambahkan
