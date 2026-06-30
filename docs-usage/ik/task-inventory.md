@@ -65,7 +65,8 @@ Saat status **TAHAP2**, muncul kotak _Tahap 2 — Review Koordinator_ dengan tom
 
 1. Dari detail sesi (status TAHAP2), klik **Buka Review Koordinator**.
 2. Halaman menampilkan tabel task **partial** (kolom **Task**, **Pilih** = jumlah pemilih,
-   **Setujui?**).
+   **Setujui?**). Kolom **Task** menampilkan **nama uraian tugas** (mis. _"Menyusun evaluasi
+   karyawan"_) dengan kode task kecil di sampingnya sebagai keterangan.
 3. Untuk tiap task, klik **Ya** (setujui) atau **Tidak** (tolak). Tersedia pintasan
    **Setujui Semua** dan **Tolak Semua**.
 4. Klik **Simpan Keputusan**.
@@ -73,6 +74,13 @@ Saat status **TAHAP2**, muncul kotak _Tahap 2 — Review Koordinator_ dengan tom
 !!! note
 Jika masih ada task belum diputuskan saat menyimpan, muncul konfirmasi — task yang
 belum diputuskan tidak akan disertakan ke Tahap 3.
+
+!!! info "Akses anggota panel"
+**Anggota panel** (responden selain koordinator) dapat membuka halaman ini dalam mode
+**hanya-baca** — tabel dan keputusan ditampilkan, tetapi tombol Ya/Tidak/Simpan tidak
+muncul, dan banner biru "Anda melihat hasil Tahap 2 sebagai anggota panel" ditampilkan.
+Hanya **koordinator** (atau admin) yang dapat menyimpan keputusan saat status `TAHAP2`.
+Partisipan yang bukan anggota panel akan mendapat halaman 404.
 
 ---
 

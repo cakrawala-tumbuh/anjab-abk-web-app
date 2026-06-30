@@ -3,7 +3,12 @@ import { notFound } from "next/navigation";
 import { auth, isAdmin } from "@/lib/auth/auth";
 import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
-import type { TiSesiRead, TiTahap2ReviewRead } from "@/lib/api/schema";
+import type {
+  TiSesiRead,
+  TiTahap2ReviewRead,
+  UraianTugasRead,
+  TiRespondenRead,
+} from "@/lib/api/schema";
 import { ReviewForm } from "./review-form";
 
 export const metadata = { title: "Tahap 2 — Review Koordinator — ANJAB-ABK" };
@@ -14,7 +19,7 @@ interface Props {
 
 async function fetchPageData(accessToken: string | undefined, sesiId: string) {
   const client = withServerAuth(accessToken);
-  const [sesiRes, reviewRes, sayaRes] = await Promise.all([
+  const [sesiRes, reviewRes, sayaRes, uraianRes, respondenRes] = await Promise.all([
     client.GET("/api/v1/task-inventory/sesi/{sesi_id}", {
       params: { path: { sesi_id: sesiId } },
     }),
@@ -22,24 +27,41 @@ async function fetchPageData(accessToken: string | undefined, sesiId: string) {
       params: { path: { sesi_id: sesiId } },
     }),
     client.GET("/api/v1/partisipan/saya"),
+    client.GET("/api/v1/task-inventory/uraian-tugas", { params: { query: { limit: 500 } } }),
+    client.GET("/api/v1/task-inventory/sesi/{sesi_id}/responden", {
+      params: { path: { sesi_id: sesiId } },
+    }),
   ]);
   const reqId = sesiRes.response.headers.get("x-request-id");
   if (!sesiRes.data) throw toApiError(null, reqId);
   const sesi = sesiRes.data as TiSesiRead;
   const review = (reviewRes.data ?? null) as TiTahap2ReviewRead | null;
   const partisipanId = sayaRes.data?.id ?? null;
-  return { sesi, review, partisipanId };
+
+  const uraianItems = (uraianRes.data?.items ?? []) as UraianTugasRead[];
+  const kodeToUraian: Record<string, string> = {};
+  for (const u of uraianItems) kodeToUraian[u.kode] = u.uraian;
+
+  const respondenList = (respondenRes.data ?? []) as TiRespondenRead[];
+  return { sesi, review, partisipanId, kodeToUraian, respondenList };
 }
 
 export default async function Tahap2KoordinatorPage({ params }: Props) {
   const session = await auth();
   const { sesi_id } = await params;
-  const { sesi, review, partisipanId } = await fetchPageData(session?.accessToken, sesi_id);
+  const { sesi, review, partisipanId, kodeToUraian, respondenList } = await fetchPageData(
+    session?.accessToken,
+    sesi_id,
+  );
 
+  const admin = isAdmin(session);
   const isKoordinator = !!partisipanId && partisipanId === sesi.koordinator_id;
-  if (!isAdmin(session) && !isKoordinator) notFound();
+  const isAnggota = !!partisipanId && respondenList.some((r) => r.partisipan_id === partisipanId);
 
-  const readOnly = sesi.status !== "TAHAP2";
+  if (!admin && !isKoordinator && !isAnggota) notFound();
+
+  const canEdit = admin || isKoordinator;
+  const readOnly = !canEdit || sesi.status !== "TAHAP2";
 
   return (
     <div className="space-y-6">
@@ -63,7 +85,14 @@ export default async function Tahap2KoordinatorPage({ params }: Props) {
         </p>
       </div>
 
-      {readOnly && (
+      {!canEdit && (
+        <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 text-sm text-blue-800">
+          Anda melihat hasil Tahap 2 sebagai anggota panel (hanya-baca). Keputusan ditetapkan oleh
+          koordinator.
+        </div>
+      )}
+
+      {canEdit && sesi.status !== "TAHAP2" && (
         <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
           Sesi sudah melewati Tahap 2 (status: <strong>{sesi.status}</strong>). Keputusan tidak
           dapat diubah.
@@ -94,6 +123,7 @@ export default async function Tahap2KoordinatorPage({ params }: Props) {
             review={review}
             accessToken={session?.accessToken}
             readOnly={readOnly}
+            kodeToUraian={kodeToUraian}
           />
         </>
       )}

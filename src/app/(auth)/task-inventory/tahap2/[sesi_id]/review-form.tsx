@@ -11,11 +11,12 @@ interface Props {
   review: TiTahap2ReviewRead;
   accessToken: string | undefined;
   readOnly: boolean;
+  kodeToUraian: Record<string, string>;
 }
 
 type Keputusan = Record<string, boolean | null>;
 
-export function ReviewForm({ sesiId, review, accessToken, readOnly }: Props) {
+export function ReviewForm({ sesiId, review, accessToken, readOnly, kodeToUraian }: Props) {
   const router = useRouter();
   const [keputusan, setKeputusan] = useState<Keputusan>(() => {
     const init: Keputusan = {};
@@ -123,7 +124,12 @@ export function ReviewForm({ sesiId, review, accessToken, readOnly }: Props) {
               const val = keputusan[t.task_kode];
               return (
                 <tr key={t.task_kode} className="hover:bg-gray-50 dark:hover:bg-gray-800/50">
-                  <td className="px-4 py-3 text-gray-800">{t.task_kode}</td>
+                  <td className="px-4 py-3 text-gray-800">
+                    <span>{kodeToUraian[t.task_kode] ?? t.task_kode}</span>
+                    {kodeToUraian[t.task_kode] && (
+                      <span className="ml-2 text-xs text-gray-400">{t.task_kode}</span>
+                    )}
+                  </td>
                   <td className="px-4 py-3 text-center text-gray-500">
                     {t.n_relevan}/{t.n_total}
                   </td>

@@ -7,6 +7,24 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [1.17.0] - 2026-06-30
+
+### Ditambahkan
+
+- **Akses hanya-baca Tahap 2 untuk anggota panel** — responden sesi (selain koordinator)
+  kini dapat membuka halaman review Tahap 2 dalam mode hanya-baca. Sebelumnya mereka
+  mendapat 404. Koordinator dan admin tetap dapat mengedit keputusan saat status `TAHAP2`;
+  anggota panel melihat tabel dan keputusan tanpa tombol Ya/Tidak/Simpan, disertai banner
+  biru informatif.
+- **Kolom Task menampilkan nama uraian tugas** — tabel task di halaman review Tahap 2
+  kini menampilkan nama uraian tugas (mis. _"Menyusun evaluasi karyawan"_) dengan kode
+  task sebagai keterangan kecil di sampingnya. Sebelumnya hanya kode (mis. `TIf0b59714`)
+  yang ditampilkan. Nama diambil dari `GET /api/v1/task-inventory/uraian-tugas` dan
+  di-resolve di frontend; payload submit ke backend tetap menggunakan kode.
+- **Unit test `ReviewForm`** — test baru di `src/test/review-form.test.tsx` mencakup:
+  render nama uraian, fallback ke kode bila nama tidak ada, mode hanya-baca menyembunyikan
+  kontrol edit, dan submit menggunakan kode (bukan nama).
+
 ## [1.16.8] - 2026-06-28
 
 ### Diperbaiki
