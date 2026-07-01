@@ -6,7 +6,7 @@ import { toApiError } from "@/lib/api/errors";
 import type {
   TiSesiRead,
   TiTahap2ReviewRead,
-  UraianTugasRead,
+  TiCatalogRead,
   TiRespondenRead,
 } from "@/lib/api/schema";
 import { ReviewForm } from "./review-form";
@@ -19,28 +19,31 @@ interface Props {
 
 async function fetchPageData(accessToken: string | undefined, sesiId: string) {
   const client = withServerAuth(accessToken);
-  const [sesiRes, reviewRes, sayaRes, uraianRes, respondenRes] = await Promise.all([
-    client.GET("/api/v1/task-inventory/sesi/{sesi_id}", {
-      params: { path: { sesi_id: sesiId } },
-    }),
+  const sesiRes = await client.GET("/api/v1/task-inventory/sesi/{sesi_id}", {
+    params: { path: { sesi_id: sesiId } },
+  });
+  const reqId = sesiRes.response.headers.get("x-request-id");
+  if (!sesiRes.data) throw toApiError(null, reqId);
+  const sesi = sesiRes.data as TiSesiRead;
+
+  const [reviewRes, sayaRes, catalogRes, respondenRes] = await Promise.all([
     client.GET("/api/v1/task-inventory/sesi/{sesi_id}/tahap2", {
       params: { path: { sesi_id: sesiId } },
     }),
     client.GET("/api/v1/partisipan/saya"),
-    client.GET("/api/v1/task-inventory/uraian-tugas", { params: { query: { limit: 500 } } }),
+    client.GET("/api/v1/task-inventory/catalog", {
+      params: { query: { jabatan_id: sesi.jabatan_id } },
+    }),
     client.GET("/api/v1/task-inventory/sesi/{sesi_id}/responden", {
       params: { path: { sesi_id: sesiId } },
     }),
   ]);
-  const reqId = sesiRes.response.headers.get("x-request-id");
-  if (!sesiRes.data) throw toApiError(null, reqId);
-  const sesi = sesiRes.data as TiSesiRead;
   const review = (reviewRes.data ?? null) as TiTahap2ReviewRead | null;
   const partisipanId = sayaRes.data?.id ?? null;
 
-  const uraianItems = (uraianRes.data?.items ?? []) as UraianTugasRead[];
+  const catalog = (catalogRes.data ?? []) as TiCatalogRead[];
   const kodeToUraian: Record<string, string> = {};
-  for (const u of uraianItems) kodeToUraian[u.kode] = u.uraian;
+  for (const c of catalog) kodeToUraian[c.kode] = c.uraian_tugas;
 
   const respondenList = (respondenRes.data ?? []) as TiRespondenRead[];
   return { sesi, review, partisipanId, kodeToUraian, respondenList };

@@ -7,6 +7,18 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [1.17.2] - 2026-07-01
+
+### Diperbaiki
+
+- **Nama uraian tugas tidak muncul di Tahap 2** — halaman review Tahap 2 (koordinator
+  maupun tampilan hanya-baca anggota panel) sebelumnya membangun peta kode→nama uraian
+  tugas dari `GET /task-inventory/uraian-tugas?limit=500`, endpoint global tanpa filter
+  jabatan. Karena total uraian tugas di database (2738 item) jauh melebihi batas 500,
+  sesi dengan jabatan di luar 500 item pertama gagal me-resolve nama tugasnya dan
+  menampilkan kode mentah (mis. `TI01e02d59`). Diganti ke `GET /task-inventory/catalog?jabatan_id=...`
+  yang sudah di-scope ke jabatan sesi — pola yang sama dipakai di halaman Tahap 1.
+
 ## [1.17.1] - 2026-06-30
 
 ### Diperbaiki
