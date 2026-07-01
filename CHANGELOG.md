@@ -7,6 +7,20 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [1.17.3] - 2026-07-02
+
+### Diperbaiki
+
+- **Halaman "not found" setelah submit Tahap 3** — partisipan yang mengirim detail
+  CalHR di Tahap 3 diarahkan ke `/task-inventory/{sesi_id}`, halaman yang hanya bisa
+  diakses admin (`notFound()` untuk peran lain). Redirect sekarang mengarah ke
+  `/kuesioner`, mengikuti pola yang sudah dipakai Tahap 1.
+- **Breadcrumb admin-only di Tahap 1/2/3** — breadcrumb pada ketiga halaman tahap
+  Task Inventory memuat tautan ke `/task-inventory` dan `/task-inventory/{sesi_id}`
+  (keduanya admin-only) yang selalu 404 bila diklik partisipan atau koordinator
+  non-admin. Tautan tersebut kini hanya dirender sebagai link untuk admin; peran
+  lain melihatnya sebagai teks biasa.
+
 ## [1.17.2] - 2026-07-01
 
 ### Diperbaiki

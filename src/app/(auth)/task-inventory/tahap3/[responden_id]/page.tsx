@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { auth } from "@/lib/auth/auth";
+import { auth, isAdmin } from "@/lib/auth/auth";
 import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
 import type { TiRespondenRead, TiSesiRead, TiTaskTerpilihRead } from "@/lib/api/schema";
@@ -44,13 +44,18 @@ export default async function Tahap3Page({ params }: Props) {
 
   const { responden_id } = await params;
   const { responden, sesi, terpilih } = await fetchPageData(session?.accessToken, responden_id);
+  const admin = isAdmin(session);
 
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-2 text-sm text-gray-500">
-        <Link href={`/task-inventory/${sesi.id}`} className="hover:text-gray-700">
-          {sesi.jabatan_nama ?? sesi.jabatan_id}
-        </Link>
+        {admin ? (
+          <Link href={`/task-inventory/${sesi.id}`} className="hover:text-gray-700">
+            {sesi.jabatan_nama ?? sesi.jabatan_id}
+          </Link>
+        ) : (
+          <span>{sesi.jabatan_nama ?? sesi.jabatan_id}</span>
+        )}
         <span>/</span>
         <span className="text-gray-900">Tahap 3 — Detailing</span>
       </div>
@@ -74,7 +79,6 @@ export default async function Tahap3Page({ params }: Props) {
       ) : (
         <DetailForm
           respondenId={responden_id}
-          sesiId={sesi.id}
           tasks={terpilih}
           accessToken={session?.accessToken}
         />

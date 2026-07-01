@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { auth } from "@/lib/auth/auth";
+import { auth, isAdmin } from "@/lib/auth/auth";
 import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
 import type { TiCatalogRead, TiRespondenRead, TiSeleksiRead, TiSesiRead } from "@/lib/api/schema";
@@ -53,13 +53,18 @@ export default async function Tahap1Page({ params }: Props) {
     session?.accessToken,
     responden_id,
   );
+  const admin = isAdmin(session);
 
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-2 text-sm text-gray-500">
-        <Link href={`/task-inventory/${sesi.id}`} className="hover:text-gray-700">
-          {sesi.jabatan_nama ?? sesi.jabatan_id}
-        </Link>
+        {admin ? (
+          <Link href={`/task-inventory/${sesi.id}`} className="hover:text-gray-700">
+            {sesi.jabatan_nama ?? sesi.jabatan_id}
+          </Link>
+        ) : (
+          <span>{sesi.jabatan_nama ?? sesi.jabatan_id}</span>
+        )}
         <span>/</span>
         <span className="text-gray-900">Tahap 1 — Seleksi</span>
       </div>

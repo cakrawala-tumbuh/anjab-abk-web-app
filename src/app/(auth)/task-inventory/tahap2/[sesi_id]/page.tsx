@@ -69,13 +69,19 @@ export default async function Tahap2KoordinatorPage({ params }: Props) {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-2 text-sm text-gray-500">
-        <Link href="/task-inventory" className="hover:text-gray-700">
-          Task Inventory
-        </Link>
-        <span>/</span>
-        <Link href={`/task-inventory/${sesi.id}`} className="hover:text-gray-700">
-          {sesi.jabatan_nama ?? sesi.jabatan_id}
-        </Link>
+        {admin ? (
+          <>
+            <Link href="/task-inventory" className="hover:text-gray-700">
+              Task Inventory
+            </Link>
+            <span>/</span>
+            <Link href={`/task-inventory/${sesi.id}`} className="hover:text-gray-700">
+              {sesi.jabatan_nama ?? sesi.jabatan_id}
+            </Link>
+          </>
+        ) : (
+          <span>{sesi.jabatan_nama ?? sesi.jabatan_id}</span>
+        )}
         <span>/</span>
         <span className="text-gray-900">Review Koordinator Tahap 2</span>
       </div>

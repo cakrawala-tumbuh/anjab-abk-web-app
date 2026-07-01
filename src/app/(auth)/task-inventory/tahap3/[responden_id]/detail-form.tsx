@@ -57,12 +57,11 @@ function defaultRow(): RowState {
 
 interface Props {
   respondenId: string;
-  sesiId: string;
   tasks: TiTaskTerpilihRead[];
   accessToken: string | undefined;
 }
 
-export function DetailForm({ respondenId, sesiId, tasks, accessToken }: Props) {
+export function DetailForm({ respondenId, tasks, accessToken }: Props) {
   const router = useRouter();
   const [rows, setRows] = useState<Record<string, RowState>>(() =>
     Object.fromEntries(tasks.map((t) => [t.kode, defaultRow()])),
@@ -113,7 +112,7 @@ export function DetailForm({ respondenId, sesiId, tasks, accessToken }: Props) {
       );
       const reqId = response.headers.get("x-request-id");
       if (apiError) throw toApiError(apiError, reqId);
-      router.push(`/task-inventory/${sesiId}`);
+      router.push("/kuesioner");
       router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Terjadi kesalahan.");
