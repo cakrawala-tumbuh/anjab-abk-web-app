@@ -45,6 +45,17 @@ export default async function DashboardPage() {
             </p>
           </Link>
         )}
+        {admin && (
+          <Link
+            href="/opm"
+            className="page-card hover:border-blue-300 hover:shadow-sm dark:hover:border-blue-600"
+          >
+            <h2 className="font-medium text-gray-900 dark:text-gray-50">OPM — Rating Tugas</h2>
+            <p className="page-subtext">
+              Rating Importance/Frequency/Criticality atas task hasil Task Inventory.
+            </p>
+          </Link>
+        )}
         {partisipan && !admin && (
           <Link
             href="/kuesioner"

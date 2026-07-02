@@ -1,0 +1,86 @@
+import { notFound } from "next/navigation";
+import Link from "next/link";
+import { auth, isPartisipan } from "@/lib/auth/auth";
+import { withServerAuth } from "@/lib/api/client";
+import { toApiError } from "@/lib/api/errors";
+import type { OpmJawabanRead, OpmRespondenRead, OpmSesiTaskRead } from "@/lib/api/schema";
+import { OpmForm } from "./opm-form";
+
+export const metadata = { title: "Isi Kuesioner OPM — ANJAB-ABK" };
+
+interface Props {
+  params: Promise<{ responden_id: string }>;
+}
+
+async function fetchPageData(accessToken: string | undefined, respondenId: string) {
+  const client = withServerAuth(accessToken);
+  const respondenRes = await client.GET("/api/v1/opm/sesi/responden/{responden_id}", {
+    params: { path: { responden_id: respondenId } },
+  });
+  const reqId = respondenRes.response.headers.get("x-request-id");
+  if (respondenRes.error) throw toApiError(respondenRes.error, reqId);
+
+  const responden = respondenRes.data as OpmRespondenRead;
+
+  const taskRes = await client.GET("/api/v1/opm/sesi/{sesi_id}/task", {
+    params: { path: { sesi_id: responden.sesi_id } },
+  });
+  const task = (taskRes.data ?? []) as OpmSesiTaskRead[];
+
+  let jawaban: OpmJawabanRead[] = [];
+  if (responden.sudah_submit) {
+    const jRes = await client.GET("/api/v1/opm/sesi/responden/{responden_id}/jawaban", {
+      params: { path: { responden_id: respondenId } },
+    });
+    jawaban = (jRes.data ?? []) as OpmJawabanRead[];
+  }
+
+  return { responden, task, jawaban };
+}
+
+export default async function OpmIsiPage({ params }: Props) {
+  const session = await auth();
+  if (!isPartisipan(session)) notFound();
+
+  const { responden_id } = await params;
+  const { responden, task, jawaban } = await fetchPageData(session?.accessToken, responden_id);
+
+  return (
+    <div className="space-y-6">
+      {/* Breadcrumb */}
+      <div className="flex items-center gap-2 text-sm text-gray-500">
+        <Link href="/kuesioner" className="hover:text-gray-700">
+          Kuesioner Saya
+        </Link>
+        <span>/</span>
+        <span className="text-gray-900">OPM</span>
+      </div>
+
+      {/* Header */}
+      <div>
+        <h1 className="page-heading">Kuesioner OPM — Rating Tugas</h1>
+        <p className="page-subtext">{responden.nama ?? "Anonim"}</p>
+      </div>
+
+      {responden.sudah_submit ? (
+        <div className="rounded-lg border border-green-200 bg-green-50 p-4">
+          <p className="text-sm font-medium text-green-800">
+            Kuesioner sudah diisi pada{" "}
+            {responden.submitted_at
+              ? new Date(responden.submitted_at).toLocaleString("id-ID")
+              : "-"}
+            .
+          </p>
+        </div>
+      ) : null}
+
+      <OpmForm
+        respondenId={responden_id}
+        task={task}
+        jawabanAwal={jawaban}
+        sudahSubmit={responden.sudah_submit}
+        accessToken={session?.accessToken}
+      />
+    </div>
+  );
+}

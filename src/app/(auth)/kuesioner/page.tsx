@@ -4,6 +4,7 @@ import { auth, isPartisipan } from "@/lib/auth/auth";
 import { withServerAuth } from "@/lib/api/client";
 import type {
   DcsKuesionerItemRead,
+  OpmKuesionerItemRead,
   TiKuesionerItemRead,
   WcpKuesionerItemRead,
   components,
@@ -25,17 +26,19 @@ const STATUS_LABEL: Record<string, string> = {
 
 async function fetchKuesioner(accessToken: string | undefined) {
   const client = withServerAuth(accessToken);
-  const [dcsRes, wcpRes, tiRes, tsRes] = await Promise.all([
+  const [dcsRes, wcpRes, tiRes, tsRes, opmRes] = await Promise.all([
     client.GET("/api/v1/dcs/kuesioner/saya"),
     client.GET("/api/v1/wcp/kuesioner/saya"),
     client.GET("/api/v1/task-inventory/kuesioner/saya"),
     client.GET("/api/v1/time-study/kuesioner/saya"),
+    client.GET("/api/v1/opm/kuesioner/saya"),
   ]);
   return {
     dcs: (dcsRes.data ?? []) as DcsKuesionerItemRead[],
     wcp: (wcpRes.data ?? []) as WcpKuesionerItemRead[],
     ti: (tiRes.data ?? []) as TiKuesionerItemRead[],
     ts: (tsRes.data ?? []) as TsKuesionerItemRead[],
+    opm: (opmRes.data ?? []) as OpmKuesionerItemRead[],
   };
 }
 
@@ -51,13 +54,14 @@ export default async function KuesionerSayaPage() {
   const session = await auth();
   if (!isPartisipan(session)) notFound();
 
-  const { dcs, wcp, ti, ts } = await fetchKuesioner(session?.accessToken);
-  const total = dcs.length + wcp.length + ti.length + ts.length;
+  const { dcs, wcp, ti, ts, opm } = await fetchKuesioner(session?.accessToken);
+  const total = dcs.length + wcp.length + ti.length + ts.length + opm.length;
   const belumDiisi =
     dcs.filter((k) => !k.sudah_submit && k.sesi_status === "OPEN").length +
     wcp.filter((k) => !k.sudah_submit && k.sesi_status === "OPEN").length +
     ti.filter(tiPerluDiisi).length +
-    ts.filter((k) => k.sesi_status === "OPEN").length;
+    ts.filter((k) => k.sesi_status === "OPEN").length +
+    opm.filter((k) => !k.sudah_submit && k.sesi_status === "OPEN").length;
 
   return (
     <div className="space-y-6">
@@ -116,6 +120,26 @@ export default async function KuesionerSayaPage() {
                 sudah_submit={k.sudah_submit}
                 href={`/wcp/isi/${k.id}`}
                 tipe="WCP"
+              />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* OPM */}
+      {opm.length > 0 && (
+        <section>
+          <h2 className="mb-3 text-lg font-medium text-gray-900">OPM — Rating Tugas</h2>
+          <div className="space-y-3">
+            {opm.map((k) => (
+              <KuesionerCard
+                key={k.id}
+                label={k.sesi_catatan ?? k.sesi_periode}
+                periode={k.sesi_periode}
+                sesi_status={k.sesi_status}
+                sudah_submit={k.sudah_submit}
+                href={`/opm/isi/${k.id}`}
+                tipe="OPM"
               />
             ))}
           </div>

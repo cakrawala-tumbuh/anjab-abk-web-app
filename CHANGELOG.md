@@ -7,6 +7,22 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [1.18.0] - 2026-07-02
+
+### Ditambahkan
+
+- **Instrumen OPM (Rating Tugas — Importance/Frequency/Criticality)** — halaman baru
+  `/opm` untuk admin (daftar sesi, buat sesi dari sesi Task Inventory yang sudah
+  dibekukan, detail sesi dengan transisi status, kelola responden, dan halaman hasil
+  analisis per task) serta `/opm/isi/[responden_id]` untuk partisipan mengisi rating
+  3 dimensi (Importance/Frequency/Criticality) per task dengan progres pengisian dan
+  mode hanya-baca setelah submit.
+- Menu OPM ditambahkan di navigasi admin, kartu dashboard admin, dan section OPM di
+  halaman kuesioner partisipan.
+- Refactor `e2e/kuesioner.spec.ts`: builder master data (`buatJenjang`, `buatSekolah`,
+  `buatJabatan`, `buatPartisipan`) dipindah ke modul bersama `e2e/builders.ts`, dipakai
+  ulang oleh `e2e/opm.spec.ts`.
+
 ## [1.17.3] - 2026-07-02
 
 ### Diperbaiki

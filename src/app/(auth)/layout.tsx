@@ -49,6 +49,12 @@ export default async function AuthLayout({ children }: { children: ReactNode }) 
                   WCP
                 </Link>
                 <Link
+                  href="/opm"
+                  className="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-50"
+                >
+                  OPM
+                </Link>
+                <Link
                   href="/task-inventory"
                   className="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-50"
                 >

@@ -17,6 +17,7 @@ dan pembuatan sesi.
 | [Persiapan Time Study](persiapan-time-study.md)         | TS        | Jabatan, partisipan, sesi periode log harian                    |
 | [Persiapan DCS](persiapan-dcs.md)                       | DCS       | Instrumen 3 sub-skala, partisipan, sesi survei                  |
 | [Persiapan WCP](persiapan-wcp.md)                       | WCP       | Instrumen 12 dimensi, partisipan, sesi survei                   |
+| [Persiapan OPM](persiapan-opm.md)                       | OPM       | Jabatan ber-SME panel, Task Inventory dibekukan, sesi rating    |
 
 ## 2. SOP Pelaksanaan Pengambilan Data (per Alat Ukur)
 
@@ -30,6 +31,7 @@ berlangsung pada **waktu yang berbeda**.
 | [Pelaksanaan Time Study](pelaksanaan-time-study.md)         | TS        | Pencatatan log harian sepanjang periode → analisis           |
 | [Pelaksanaan DCS](pelaksanaan-dcs.md)                       | DCS       | Pengisian kuesioner 42 item → hasil                          |
 | [Pelaksanaan WCP](pelaksanaan-wcp.md)                       | WCP       | Pengisian kuesioner 72 item → hasil                          |
+| [Pelaksanaan OPM](pelaksanaan-opm.md)                       | OPM       | Rating tiap task (3 dimensi) oleh anggota SME panel → hasil  |
 
 ---
 

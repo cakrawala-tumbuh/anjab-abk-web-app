@@ -756,6 +756,223 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/opm/kuesioner/saya": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Daftar kuesioner OPM milik pengguna yang sedang login
+         * @description Kembalikan sesi OPM yang sudah di-assign ke partisipan dan berstatus OPEN.
+         *
+         *     Partisipan hanya melihat kuesioner OPM yang telah di-assign secara eksplisit
+         *     (record responden dibuat otomatis dari anggota SME panel saat sesi dibuat,
+         *     atau ditambahkan manual admin).
+         */
+        get: operations["opm_kuesioner_saya"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/opm/sesi": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Daftar sesi OPM */
+        get: operations["opm_sesi_list"];
+        put?: never;
+        /** Buat sesi OPM (snapshot task dari sesi Task Inventory yang sudah frozen) */
+        post: operations["opm_sesi_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/opm/sesi/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Cari sesi OPM (domain ala Odoo) */
+        post: operations["opm_sesi_search"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/opm/sesi/{sesi_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Ambil sesi OPM */
+        get: operations["opm_sesi_get"];
+        put?: never;
+        post?: never;
+        /** Hapus sesi OPM (hanya saat DRAFT) */
+        delete: operations["opm_sesi_delete"];
+        options?: never;
+        head?: never;
+        /** Perbarui sesi OPM (hanya saat DRAFT) */
+        patch: operations["opm_sesi_update"];
+        trace?: never;
+    };
+    "/api/v1/opm/sesi/{sesi_id}/buka": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Buka sesi OPM (DRAFT → OPEN) */
+        post: operations["opm_sesi_buka"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/opm/sesi/{sesi_id}/tutup": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Tutup sesi OPM (OPEN → CLOSED) */
+        post: operations["opm_sesi_tutup"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/opm/sesi/{sesi_id}/task": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Daftar snapshot task dalam sesi OPM */
+        get: operations["opm_sesi_task_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/opm/sesi/{sesi_id}/responden": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Daftar responden dalam sesi OPM */
+        get: operations["opm_responden_list"];
+        put?: never;
+        /** Daftarkan responden manual ke sesi OPM (wajib anggota SME panel jabatan sesi) */
+        post: operations["opm_responden_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/opm/sesi/responden/{responden_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Ambil detail responden OPM */
+        get: operations["opm_responden_get"];
+        put?: never;
+        post?: never;
+        /** Hapus responden (hanya jika belum submit) */
+        delete: operations["opm_responden_delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/opm/sesi/responden/{responden_id}/jawaban": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lihat jawaban responden */
+        get: operations["opm_jawaban_list"];
+        put?: never;
+        /** Submit rating (Importance/Frequency/Criticality) untuk satu responden */
+        post: operations["opm_jawaban_submit"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/opm/sesi/{sesi_id}/analisis": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Jalankan analisis OPM (CLOSED → ANALYZED) */
+        post: operations["opm_analisis_run"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/opm/sesi/{sesi_id}/hasil": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lihat hasil analisis sesi OPM */
+        get: operations["opm_hasil_sesi_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/dcs/sub-skala": {
         parameters: {
             query?: never;
@@ -2723,6 +2940,517 @@ export interface components {
              */
             aktif?: boolean | null;
         };
+        /**
+         * OpmHasilSesiRead
+         * @description Hasil analisis lengkap satu sesi OPM (seluruh task snapshot).
+         */
+        OpmHasilSesiRead: {
+            /**
+             * Sesi Id
+             * @description ID sesi.
+             */
+            sesi_id: string;
+            /**
+             * Jabatan Id
+             * @description ID jabatan yang dinilai.
+             */
+            jabatan_id: string;
+            /**
+             * Jabatan Nama
+             * @description Nama jabatan yang dinilai.
+             */
+            jabatan_nama?: string | null;
+            /**
+             * Periode
+             * @description Periode survei.
+             */
+            periode: string;
+            /**
+             * N Responden Submit
+             * @description Jumlah responden yang sudah submit.
+             */
+            n_responden_submit: number;
+            /**
+             * Tasks
+             * @description Hasil per task.
+             */
+            tasks: components["schemas"]["OpmHasilTaskRead"][];
+        };
+        /**
+         * OpmHasilTaskRead
+         * @description Hasil agregat satu task lintas responden.
+         */
+        OpmHasilTaskRead: {
+            /**
+             * Task Kode
+             * @description Kode task.
+             * @example K001
+             */
+            task_kode: string;
+            /**
+             * Uraian Tugas
+             * @description Uraian tugas.
+             */
+            uraian_tugas: string;
+            /**
+             * Tugas Pokok
+             * @description Nama tugas pokok induk.
+             */
+            tugas_pokok: string;
+            /**
+             * Detil Tugas
+             * @description Nama detil tugas induk, bila ada.
+             */
+            detil_tugas?: string | null;
+            /**
+             * N
+             * @description Jumlah responden yang menilai task ini.
+             * @example 3
+             */
+            n: number;
+            /**
+             * Mean Importance
+             * @description Rata-rata importance.
+             * @example 4
+             */
+            mean_importance: number;
+            /**
+             * Mean Frequency
+             * @description Rata-rata frequency.
+             * @example 3
+             */
+            mean_frequency: number;
+            /**
+             * Mean Criticality
+             * @description Rata-rata criticality.
+             * @example 5
+             */
+            mean_criticality: number;
+            /**
+             * Sd Importance
+             * @description Standar deviasi importance (None bila n < 2).
+             */
+            sd_importance?: number | null;
+            /**
+             * Sd Frequency
+             * @description Standar deviasi frequency (None bila n < 2).
+             */
+            sd_frequency?: number | null;
+            /**
+             * Sd Criticality
+             * @description Standar deviasi criticality (None bila n < 2).
+             */
+            sd_criticality?: number | null;
+            /**
+             * Selection Essential
+             * @description True bila mean_importance >= 4 atau mean_criticality >= 4.
+             */
+            selection_essential: boolean;
+            /**
+             * Workload Essential
+             * @description True bila (mean_importance >= 3 dan mean_frequency >= 3) atau mean_criticality >= 4.
+             */
+            workload_essential: boolean;
+            /**
+             * Prop Selection Essential
+             * @description Proporsi responden yang menandai task ini selection-essential secara individual.
+             */
+            prop_selection_essential: number;
+            /**
+             * Prop Workload Essential
+             * @description Proporsi responden yang menandai task ini workload-essential secara individual.
+             */
+            prop_workload_essential: number;
+        };
+        /**
+         * OpmJawabanBulkCreate
+         * @description Payload bulk submission rating untuk satu responden.
+         *
+         *     Kelengkapan set `task_kode` divalidasi service terhadap snapshot task sesi
+         *     (jumlah task per sesi dinamis, bergantung Task Inventory sumber).
+         */
+        OpmJawabanBulkCreate: {
+            /**
+             * Jawaban
+             * @description Rating untuk setiap task dalam snapshot sesi.
+             */
+            jawaban: components["schemas"]["OpmJawabanItem"][];
+        };
+        /**
+         * OpmJawabanItem
+         * @description Satu jawaban rating task dalam bulk submission.
+         */
+        OpmJawabanItem: {
+            /**
+             * Task Kode
+             * @description Kode task orisinal (dari snapshot Task Inventory).
+             * @example K001
+             */
+            task_kode: string;
+            /**
+             * Importance
+             * @description Seberapa penting (1 Tidak penting … 5 Sangat penting).
+             * @example 4
+             */
+            importance: number;
+            /**
+             * Frequency
+             * @description Seberapa sering (1 Insidental … 5 Sangat sering/Harian).
+             * @example 3
+             */
+            frequency: number;
+            /**
+             * Criticality
+             * @description Dampak jika gagal (1 Dampak minimal … 5 Dampak kritis).
+             * @example 5
+             */
+            criticality: number;
+            /**
+             * Catatan
+             * @description Catatan opsional.
+             */
+            catatan?: string | null;
+        };
+        /**
+         * OpmJawabanRead
+         * @description Representasi satu jawaban yang dikembalikan API.
+         */
+        OpmJawabanRead: {
+            /**
+             * Id
+             * @description ID jawaban.
+             * @example opjw_a1b2c3d4
+             */
+            id: string;
+            /**
+             * Responden Id
+             * @description ID responden.
+             * @example oprs_a1b2c3d4
+             */
+            responden_id: string;
+            /**
+             * Task Kode
+             * @description Kode task orisinal.
+             * @example K001
+             */
+            task_kode: string;
+            /**
+             * Importance
+             * @description Skor importance 1–5.
+             */
+            importance: number;
+            /**
+             * Frequency
+             * @description Skor frequency 1–5.
+             */
+            frequency: number;
+            /**
+             * Criticality
+             * @description Skor criticality 1–5.
+             */
+            criticality: number;
+            /**
+             * Catatan
+             * @description Catatan.
+             */
+            catatan?: string | null;
+        };
+        /**
+         * OpmKuesionerItemRead
+         * @description Responden OPM diperkaya info sesi — dipakai endpoint /kuesioner/saya.
+         */
+        OpmKuesionerItemRead: {
+            /**
+             * Id
+             * @description ID responden.
+             * @example oprs_a1b2c3d4
+             */
+            id: string;
+            /**
+             * Sesi Id
+             * @description ID sesi OPM.
+             * @example opses_a1b2c3d4
+             */
+            sesi_id: string;
+            /**
+             * Sesi Catatan
+             * @description Catatan sesi OPM.
+             */
+            sesi_catatan?: string | null;
+            /**
+             * Sudah Submit
+             * @description True jika jawaban sudah disubmit.
+             */
+            sudah_submit: boolean;
+            /**
+             * Submitted At
+             * @description Waktu submit.
+             */
+            submitted_at?: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             * @description Waktu pendaftaran.
+             */
+            created_at: string;
+            /**
+             * Sesi Status
+             * @description Status sesi: DRAFT | OPEN | CLOSED | ANALYZED.
+             * @example OPEN
+             */
+            sesi_status: string;
+            /**
+             * Sesi Periode
+             * @description Periode sesi (YYYY-MM).
+             * @example 2026-06
+             */
+            sesi_periode: string;
+        };
+        /**
+         * OpmRespondenCreate
+         * @description Payload pendaftaran responden manual ke dalam sesi OPM.
+         *
+         *     `partisipan_id` wajib — responden OPM harus anggota SME panel jabatan sesi.
+         */
+        OpmRespondenCreate: {
+            /**
+             * Nama
+             * @description Nama responden (opsional).
+             * @example Budi Santoso, S.Pd.
+             */
+            nama?: string | null;
+            /**
+             * Jabatan Label
+             * @description Label jabatan responden (teks bebas).
+             * @example Guru Matematika
+             */
+            jabatan_label: string;
+            /**
+             * Partisipan Id
+             * @description ID partisipan yang wajib merupakan anggota SME panel jabatan sesi.
+             * @example par_a1b2c3d4
+             */
+            partisipan_id: string;
+        };
+        /**
+         * OpmRespondenRead
+         * @description Representasi responden yang dikembalikan API.
+         */
+        OpmRespondenRead: {
+            /**
+             * Id
+             * @description ID responden.
+             * @example oprs_a1b2c3d4
+             */
+            id: string;
+            /**
+             * Sesi Id
+             * @description ID sesi induk.
+             * @example opses_a1b2c3d4
+             */
+            sesi_id: string;
+            /**
+             * Nama
+             * @description Nama responden.
+             */
+            nama?: string | null;
+            /**
+             * Jabatan Label
+             * @description Label jabatan responden.
+             */
+            jabatan_label: string;
+            /**
+             * Partisipan Id
+             * @description ID partisipan yang terhubung, bila ada.
+             */
+            partisipan_id?: string | null;
+            /**
+             * Sudah Submit
+             * @description True jika jawaban sudah disubmit.
+             */
+            sudah_submit: boolean;
+            /**
+             * Submitted At
+             * @description Waktu submit jawaban.
+             */
+            submitted_at?: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             * @description Waktu pendaftaran (UTC, ISO-8601).
+             */
+            created_at: string;
+        };
+        /**
+         * OpmSesiCreate
+         * @description Payload pembuatan sesi OPM.
+         */
+        OpmSesiCreate: {
+            /**
+             * Jabatan Id
+             * @description ID jabatan yang dinilai (FK ke Jabatan; wajib punya SME panel).
+             * @example jbt_a1b2c3d4
+             */
+            jabatan_id: string;
+            /**
+             * Ti Sesi Id
+             * @description ID sesi Task Inventory sumber snapshot task (harus sudah frozen).
+             * @example tises_a1b2c3d4
+             */
+            ti_sesi_id: string;
+            /**
+             * Periode
+             * @description Periode survei format YYYY-MM.
+             * @example 2026-06
+             */
+            periode: string;
+            /**
+             * Min Responden
+             * @description Jumlah minimum responden.
+             * @default 3
+             * @example 3
+             */
+            min_responden: number;
+            /**
+             * Max Responden
+             * @description Jumlah maksimum responden.
+             * @default 10
+             * @example 10
+             */
+            max_responden: number;
+            /**
+             * Catatan
+             * @description Catatan opsional untuk sesi ini.
+             */
+            catatan?: string | null;
+        };
+        /**
+         * OpmSesiRead
+         * @description Representasi sesi OPM yang dikembalikan API.
+         */
+        OpmSesiRead: {
+            /**
+             * Id
+             * @description ID sesi.
+             * @example opses_a1b2c3d4
+             */
+            id: string;
+            /**
+             * Jabatan Id
+             * @description ID jabatan yang dinilai.
+             * @example jbt_a1b2c3d4
+             */
+            jabatan_id: string;
+            /**
+             * Jabatan Nama
+             * @description Nama jabatan yang dinilai.
+             */
+            jabatan_nama?: string | null;
+            /**
+             * Ti Sesi Id
+             * @description ID sesi Task Inventory sumber snapshot.
+             */
+            ti_sesi_id: string;
+            /**
+             * Periode
+             * @description Periode survei (YYYY-MM).
+             * @example 2026-06
+             */
+            periode: string;
+            /**
+             * Status
+             * @description Status sesi.
+             * @example DRAFT
+             * @enum {string}
+             */
+            status: "DRAFT" | "OPEN" | "CLOSED" | "ANALYZED";
+            /**
+             * Min Responden
+             * @description Minimum responden.
+             */
+            min_responden: number;
+            /**
+             * Max Responden
+             * @description Maksimum responden.
+             */
+            max_responden: number;
+            /**
+             * Jumlah Task
+             * @description Jumlah task hasil snapshot Task Inventory.
+             */
+            jumlah_task: number;
+            /**
+             * Catatan
+             * @description Catatan.
+             */
+            catatan?: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             * @description Waktu pembuatan (UTC, ISO-8601).
+             */
+            created_at: string;
+        };
+        /**
+         * OpmSesiTaskRead
+         * @description Satu baris snapshot task dalam sesi OPM.
+         */
+        OpmSesiTaskRead: {
+            /**
+             * Task Kode
+             * @description Kode task orisinal (dari Task Inventory).
+             */
+            task_kode: string;
+            /**
+             * Uraian Tugas
+             * @description Uraian tugas.
+             */
+            uraian_tugas: string;
+            /**
+             * Tugas Pokok
+             * @description Nama tugas pokok induk.
+             */
+            tugas_pokok: string;
+            /**
+             * Detil Tugas
+             * @description Nama detil tugas induk, bila ada.
+             */
+            detil_tugas?: string | null;
+            /**
+             * Urutan
+             * @description Urutan tampil task.
+             */
+            urutan: number;
+        };
+        /**
+         * OpmSesiUpdate
+         * @description Payload pembaruan sesi OPM (hanya saat DRAFT).
+         *
+         *     `jabatan_id` dan `ti_sesi_id` tidak dapat diubah — ganti sumber berarti hapus
+         *     sesi lalu buat ulang.
+         */
+        OpmSesiUpdate: {
+            /**
+             * Periode
+             * @description Periode baru.
+             */
+            periode?: string | null;
+            /**
+             * Min Responden
+             * @description Minimum responden baru.
+             */
+            min_responden?: number | null;
+            /**
+             * Max Responden
+             * @description Maksimum responden baru.
+             */
+            max_responden?: number | null;
+            /**
+             * Catatan
+             * @description Catatan baru.
+             */
+            catatan?: string | null;
+        };
         /** Page[DcsSesiRead] */
         Page_DcsSesiRead_: {
             /**
@@ -2834,6 +3562,32 @@ export interface components {
              * @description Item pada halaman ini.
              */
             items: components["schemas"]["MataPelajaranRead"][];
+            /**
+             * Total
+             * @description Total item tersedia.
+             * @example 42
+             */
+            total: number;
+            /**
+             * Limit
+             * @description Maksimum item per halaman.
+             * @example 20
+             */
+            limit: number;
+            /**
+             * Offset
+             * @description Jumlah item yang dilewati.
+             * @example 0
+             */
+            offset: number;
+        };
+        /** Page[OpmSesiRead] */
+        Page_OpmSesiRead_: {
+            /**
+             * Items
+             * @description Item pada halaman ini.
+             */
+            items: components["schemas"]["OpmSesiRead"][];
             /**
              * Total
              * @description Total item tersedia.
@@ -8840,6 +9594,900 @@ export interface operations {
             };
         };
     };
+    opm_kuesioner_saya: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OpmKuesionerItemRead"][];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    opm_sesi_list: {
+        parameters: {
+            query?: {
+                /** @description Maks item per halaman. */
+                limit?: number;
+                /** @description Jumlah item yang dilewati. */
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Page_OpmSesiRead_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    opm_sesi_create: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["OpmSesiCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OpmSesiRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Jabatan sudah punya sesi OPM. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Jabatan/SME panel/sesi Task Inventory tidak valid, atau belum frozen. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    opm_sesi_search: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SearchRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Page_OpmSesiRead_"];
+                };
+            };
+            /** @description Domain/field tidak valid. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    opm_sesi_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID sesi OPM. */
+                sesi_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OpmSesiRead"];
+                };
+            };
+            /** @description Sesi OPM tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    opm_sesi_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID sesi OPM. */
+                sesi_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Sesi OPM tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    opm_sesi_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID sesi OPM. */
+                sesi_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["OpmSesiUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OpmSesiRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Sesi OPM tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    opm_sesi_buka: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID sesi OPM. */
+                sesi_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OpmSesiRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Sesi OPM tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    opm_sesi_tutup: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID sesi OPM. */
+                sesi_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OpmSesiRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Sesi OPM tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    opm_sesi_task_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID sesi OPM. */
+                sesi_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OpmSesiTaskRead"][];
+                };
+            };
+            /** @description Sesi OPM tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    opm_responden_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID sesi OPM. */
+                sesi_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OpmRespondenRead"][];
+                };
+            };
+            /** @description Sesi OPM tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    opm_responden_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID sesi OPM. */
+                sesi_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["OpmRespondenCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OpmRespondenRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Sesi OPM tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Partisipan sudah terdaftar sebagai responden OPM di sesi ini. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Sesi bukan DRAFT/OPEN, atau partisipan bukan anggota SME panel. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    opm_responden_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID responden. */
+                responden_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OpmRespondenRead"];
+                };
+            };
+            /** @description Responden tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    opm_responden_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID responden. */
+                responden_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Responden tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    opm_jawaban_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID responden. */
+                responden_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OpmJawabanRead"][];
+                };
+            };
+            /** @description Responden tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    opm_jawaban_submit: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID responden. */
+                responden_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["OpmJawabanBulkCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OpmJawabanRead"][];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Responden tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Sesi bukan OPEN, responden sudah submit, atau set task tidak lengkap. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    opm_analisis_run: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID sesi OPM. */
+                sesi_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OpmHasilSesiRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Sesi OPM tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Sesi bukan CLOSED/ANALYZED, atau responden submit < min_responden. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    opm_hasil_sesi_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID sesi OPM. */
+                sesi_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OpmHasilSesiRead"];
+                };
+            };
+            /** @description Sesi OPM tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Sesi belum ANALYZED. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
     dcs_subskala_list: {
         parameters: {
             query?: never;
@@ -13079,3 +14727,10 @@ export type TsKuesionerItemRead = components["schemas"]["TsKuesionerItemRead"];
 export type TugasPokokRead = components["schemas"]["TugasPokokRead"];
 export type DetilTugasRead = components["schemas"]["DetilTugasRead"];
 export type UraianTugasRead = components["schemas"]["UraianTugasRead"];
+export type OpmSesiRead = components["schemas"]["OpmSesiRead"];
+export type OpmSesiTaskRead = components["schemas"]["OpmSesiTaskRead"];
+export type OpmRespondenRead = components["schemas"]["OpmRespondenRead"];
+export type OpmJawabanRead = components["schemas"]["OpmJawabanRead"];
+export type OpmKuesionerItemRead = components["schemas"]["OpmKuesionerItemRead"];
+export type OpmHasilSesiRead = components["schemas"]["OpmHasilSesiRead"];
+export type OpmHasilTaskRead = components["schemas"]["OpmHasilTaskRead"];

@@ -13,6 +13,7 @@ detail klik tombol, mengisi formulir, dan menginput data. IK adalah pelengkap
 | [IK-05](time-study.md)     | Time Study (TS)     | Administrator, Partisipan              |
 | [IK-06](dcs.md)            | DCS                 | Administrator, Partisipan              |
 | [IK-07](wcp.md)            | WCP                 | Administrator, Partisipan              |
+| [IK-08](opm.md)            | OPM (Rating Tugas)  | Administrator, Partisipan              |
 
 ---
 
