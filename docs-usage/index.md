@@ -4,12 +4,12 @@ Selamat datang di panduan pengguna aplikasi **ANJAB-ABK**.
 
 Aplikasi ini membantu yayasan pendidikan menjalankan **Analisis Jabatan (ANJAB)** dan
 **Analisis Beban Kerja (ABK)** untuk satu atau lebih satuan pendidikan. Aplikasi
-mengelola data jabatan, panel ahli (SME), partisipan, dan **empat alat ukur** untuk
+mengelola data jabatan, panel ahli (SME), partisipan, dan **lima alat ukur** untuk
 mengumpulkan data dari pegawai, lalu mengolahnya menjadi informasi jabatan dan beban kerja.
 
 ---
 
-## Empat Alat Ukur
+## Lima Alat Ukur
 
 | Alat Ukur                                     | Singkatan | Mengukur                                                                        |
 | --------------------------------------------- | --------- | ------------------------------------------------------------------------------- |
@@ -17,6 +17,7 @@ mengumpulkan data dari pegawai, lalu mengolahnya menjadi informasi jabatan dan b
 | **Time Study**                                | TS        | Distribusi waktu aktivitas harian pegawai melalui log harian                    |
 | **Demand-Control-Support**                    | DCS       | Tuntutan, kendali, dan dukungan dalam pekerjaan (3 sub-skala, 42 item)          |
 | **Workplace Climate/Characteristics Profile** | WCP       | Iklim & karakteristik tempat kerja (12 dimensi, 72 item)                        |
+| **Occupational Profile Measure**              | OPM       | Rating tiap task hasil Task Inventory pada 3 dimensi (Importance, Frequency, Criticality) oleh anggota SME panel |
 
 ---
 

@@ -39,7 +39,7 @@ Kartu yang muncul bergantung peran:
 
 - **ANJAB-ABK** (kiri) — kembali ke Dashboard.
 - Menu tengah (khusus Administrator): **Master Data**, **Partisipan**, **DCS**, **WCP**,
-  **Task Inventory**.
+  **OPM**, **Task Inventory**.
 - Kanan: nama Anda, **tombol tema** (terang/gelap), dan **Keluar**.
 
 ---

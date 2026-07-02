@@ -16,10 +16,11 @@ Akun Anda kemungkinan belum tergabung ke grup (peran). Dashboard akan menampilka
 _"Akun Anda belum tergabung ke grup manapun. Hubungi administrator."_ Hubungi
 administrator agar akun diberi peran Administrator atau Partisipan.
 
-??? question "Apa saja keempat alat ukurnya?"
+??? question "Apa saja kelima alat ukurnya?"
 **Task Inventory (TI)**, **Time Study (TS)**, **DCS** (Demand-Control-Support, 42 item),
-dan **WCP** (Workplace Climate/Characteristics Profile, 72 item). Lihat
-[Beranda](../index.md#empat-alat-ukur).
+**WCP** (Workplace Climate/Characteristics Profile, 72 item), dan **OPM** (Occupational
+Profile Measure — Rating Tugas, 3 dimensi per task). Lihat
+[Beranda](../index.md#lima-alat-ukur).
 
 ---
 
@@ -36,15 +37,16 @@ ditugaskan ke sesi yang sama.
 
 ??? question "Kapan responden bisa didaftarkan?"
 **Time Study/DCS/WCP**: saat sesi **Terbuka**. **Task Inventory**: saat **DRAFT** atau
-**TAHAP1**.
+**TAHAP1**. **OPM**: responden terisi **otomatis** dari anggota SME panel saat sesi dibuat;
+penambahan manual dilakukan lewat **Tambah Responden** di detail sesi.
 
 ??? question "Apakah penutupan sesi bisa dibatalkan?"
 Tidak. Penutupan sesi dan transisi tahap bersifat searah. Pastikan data lengkap
 sebelum menutup atau berpindah tahap.
 
 ??? question "Berapa responden minimum agar hasil sahih?"
-Ikuti nilai **Min. Responden** pada sesi (default TI = 3; DCS/WCP = 6). Jangan menutup
-sesi sebelum jumlah pengisi memenuhi minimum.
+Ikuti nilai **Min. Responden** pada sesi (default TI = 3; DCS/WCP = 6; OPM = 3). Jangan
+menutup sesi sebelum jumlah pengisi memenuhi minimum.
 
 ---
 
@@ -72,10 +74,11 @@ membuka sesi dan mendaftarkan Anda sebagai responden.
 
 ??? question "Tombol Kirim Jawaban tidak aktif."
 Pada DCS/WCP, semua pernyataan wajib dijawab dulu. Periksa penghitung _"{terjawab} /
-{total} pernyataan dijawab"_.
+{total} pernyataan dijawab"_. Pada **OPM**, ketiga dimensi (Importance, Frequency,
+Criticality) untuk **setiap task** wajib terisi.
 
-??? question "Bisakah saya mengubah jawaban setelah dikirim?" - **DCS/WCP & Task Inventory**: tidak — jawaban final (DCS/WCP dapat dilihat lagi via
-**Lihat Jawaban**). - **Time Study**: log dapat diedit selama sesi masih **Terbuka**.
+??? question "Bisakah saya mengubah jawaban setelah dikirim?" - **DCS/WCP, OPM & Task Inventory**: tidak — jawaban final (DCS/WCP & OPM dapat dilihat
+lagi dalam mode hanya-baca). - **Time Study**: log dapat diedit selama sesi masih **Terbuka**.
 
 ??? question "Apa arti warna hari di Time Study?"
 **Hijau** = Hari Biasa, **Kuning** = Hari Sibuk, **Merah** = Hari Puncak.

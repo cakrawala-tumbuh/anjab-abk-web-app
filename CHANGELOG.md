@@ -7,6 +7,17 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [1.18.1] - 2026-07-02
+
+### Diubah
+
+- **Dokumentasi penggunaan (`docs-usage/`) diselaraskan dengan instrumen OPM** —
+  halaman lintas-alat-ukur yang sebelumnya menyebut "empat alat ukur" kini mencakup
+  OPM: Beranda (`index.md`, tabel + heading "Lima Alat Ukur"), Cara Memulai &
+  IK-01 Login/Navigasi (daftar menu admin), IK-03 Partisipan (SME panel & daftar
+  responden), serta FAQ (daftar alat ukur, pendaftaran responden, min. responden,
+  syarat tombol Kirim, dan kebijakan ubah jawaban setelah kirim).
+
 ## [1.18.0] - 2026-07-02
 
 ### Ditambahkan

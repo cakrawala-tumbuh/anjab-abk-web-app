@@ -39,7 +39,7 @@ Setelah login, perhatikan bagian berikut:
 - **Bilah navigasi atas** — logo **ANJAB-ABK** (kembali ke Dashboard) di kiri; nama Anda,
   tombol tema, dan tombol **Keluar** di kanan.
 - **Menu (khusus Administrator)**: **Master Data**, **Partisipan**, **DCS**, **WCP**,
-  **Task Inventory**. Time Study diakses dari kartu di Dashboard.
+  **OPM**, **Task Inventory**. Time Study diakses dari kartu di Dashboard.
 - **Menu (khusus Partisipan)**: kartu **Kuesioner Saya** di Dashboard.
 
 ---
