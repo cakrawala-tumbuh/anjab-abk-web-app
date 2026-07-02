@@ -13,6 +13,7 @@ import type {
   TiTaskTerpilihRead,
 } from "@/lib/api/schema";
 import { TransisiSesi } from "./transisi-sesi";
+import { AturKoordinator } from "./atur-koordinator";
 import { TambahResponden } from "./tambah-responden";
 import { HapusResponden } from "./hapus-responden";
 
@@ -177,6 +178,15 @@ export default async function TiSesiDetailPage({ params }: Props) {
 
       {/* Aksi transisi status */}
       <TransisiSesi sesi={sesi} accessToken={session?.accessToken} />
+
+      {/* Pengaturan koordinator SME panel */}
+      <AturKoordinator
+        sesiId={sesi.id}
+        koordinatorId={sesi.koordinator_id ?? null}
+        anggotaPanel={partisipan}
+        hasPanel={!!smePanel}
+        accessToken={session?.accessToken}
+      />
 
       {/* Review koordinator (TAHAP2) */}
       {sesi.status === "TAHAP2" && (

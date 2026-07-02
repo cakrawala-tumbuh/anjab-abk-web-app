@@ -6,11 +6,11 @@ name: Release
 
 on:
   push:
-    tags: ['v*']
+    tags: ["v*"]
 
 permissions:
-  contents: write     # untuk GitHub Release
-  packages: write     # untuk push image ke GHCR
+  contents: write # untuk GitHub Release
+  packages: write # untuk push image ke GHCR
 
 jobs:
   github-release:

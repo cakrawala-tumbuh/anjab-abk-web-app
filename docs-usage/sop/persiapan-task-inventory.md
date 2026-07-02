@@ -66,13 +66,13 @@ secara terpisah untuk tiap panel.
 
 Buat sesi dengan parameter berikut (detail langkah: [IK-04 Task Inventory](../ik/task-inventory.md#a-membuat-sesi)):
 
-| Parameter           | Pedoman pengisian                                                 |
-| ------------------- | ----------------------------------------------------------------- |
-| **Jabatan**         | Wajib. Pilih jabatan target (daftar berisi jabatan yang tersedia di catalog).  |
-| **Periode**         | Format `YYYY-MM` (mis. `2026-06`).                                |
-| **Min. Responden**  | Default 3. Jumlah minimum responden agar hasil layak diagregasi.  |
-| **Maks. Responden** | Default 10. Harus ≥ Min. Responden.                               |
-| **Catatan**         | Opsional — keterangan sesi.                                       |
+| Parameter           | Pedoman pengisian                                                             |
+| ------------------- | ----------------------------------------------------------------------------- |
+| **Jabatan**         | Wajib. Pilih jabatan target (daftar berisi jabatan yang tersedia di catalog). |
+| **Periode**         | Format `YYYY-MM` (mis. `2026-06`).                                            |
+| **Min. Responden**  | Default 3. Jumlah minimum responden agar hasil layak diagregasi.              |
+| **Maks. Responden** | Default 10. Harus ≥ Min. Responden.                                           |
+| **Catatan**         | Opsional — keterangan sesi.                                                   |
 
 ### 4. Daftarkan responden
 

@@ -7,6 +7,22 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [1.19.0] - 2026-07-02
+
+### Ditambahkan
+
+- **Atur koordinator SME panel dari detail sesi Task Inventory** — kartu "Koordinator
+  SME Panel" di halaman `/task-inventory/[sesi_id]` memungkinkan admin menentukan/
+  mengubah koordinator kapan saja (mis. ketika koordinator baru ditetapkan setelah sesi
+  dimulai). Pilihan **dibatasi hanya ke anggota SME panel** jabatan sesi tersebut;
+  tersedia opsi mengosongkan koordinator. Menyimpan lewat `PATCH` sesi TI (`koordinator_id`).
+
+### Diperbaiki
+
+- Format ulang (Prettier) beberapa berkas yang sebelumnya tidak sesuai gaya kode
+  (`docs-usage/index.md`, `docs-usage/sop/persiapan-task-inventory.md`, workflow rilis &
+  deploy-docs, `e2e/opm.spec.ts`) agar gate lint hijau. Tanpa perubahan logika.
+
 ## [1.18.2] - 2026-07-02
 
 ### Diperbaiki

@@ -11,12 +11,12 @@ mengumpulkan data dari pegawai, lalu mengolahnya menjadi informasi jabatan dan b
 
 ## Lima Alat Ukur
 
-| Alat Ukur                                     | Singkatan | Mengukur                                                                        |
-| --------------------------------------------- | --------- | ------------------------------------------------------------------------------- |
-| **Task Inventory**                            | TI        | Relevansi tugas per jabatan & rincian beban kerja (CalHR), melalui alur 3 tahap |
-| **Time Study**                                | TS        | Distribusi waktu aktivitas harian pegawai melalui log harian                    |
-| **Demand-Control-Support**                    | DCS       | Tuntutan, kendali, dan dukungan dalam pekerjaan (3 sub-skala, 42 item)          |
-| **Workplace Climate/Characteristics Profile** | WCP       | Iklim & karakteristik tempat kerja (12 dimensi, 72 item)                        |
+| Alat Ukur                                     | Singkatan | Mengukur                                                                                                         |
+| --------------------------------------------- | --------- | ---------------------------------------------------------------------------------------------------------------- |
+| **Task Inventory**                            | TI        | Relevansi tugas per jabatan & rincian beban kerja (CalHR), melalui alur 3 tahap                                  |
+| **Time Study**                                | TS        | Distribusi waktu aktivitas harian pegawai melalui log harian                                                     |
+| **Demand-Control-Support**                    | DCS       | Tuntutan, kendali, dan dukungan dalam pekerjaan (3 sub-skala, 42 item)                                           |
+| **Workplace Climate/Characteristics Profile** | WCP       | Iklim & karakteristik tempat kerja (12 dimensi, 72 item)                                                         |
 | **Occupational Profile Measure**              | OPM       | Rating tiap task hasil Task Inventory pada 3 dimensi (Importance, Frequency, Criticality) oleh anggota SME panel |
 
 ---

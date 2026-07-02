@@ -1,12 +1,6 @@
 import { test, expect, type Page } from "@playwright/test";
 import { loginViaAuthentik } from "./helpers";
-import {
-  buatJenjang,
-  buatSekolah,
-  buatJabatan,
-  buatPartisipan,
-  PARTISIPAN_NAMA,
-} from "./builders";
+import { buatJenjang, buatSekolah, buatJabatan, buatPartisipan, PARTISIPAN_NAMA } from "./builders";
 
 // ─── Konstanta data uji ──────────────────────────────────────────────────────
 // PERIODE_TI: sesi Task Inventory sumber snapshot OPM (tidak bentrok "2031-03" milik tahap1.spec).
