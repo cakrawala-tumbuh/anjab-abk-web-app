@@ -16,8 +16,7 @@ Status sesi: `DRAFT → TAHAP1 → TAHAP2 → TAHAP3 → CLOSED → ANALYZED`.
 1. Buka **Task Inventory** dari navigasi (atau kartu di Dashboard).
 2. Klik **+ Buat Sesi**.
 3. Isi formulir:
-   - **Unit / Jenjang** (opsional; default `-- Semua unit --`) — memfilter pilihan jabatan.
-   - **Jabatan** (wajib) — pilihan menampilkan jumlah task per jabatan.
+   - **Jabatan** (wajib) — daftar berisi nama jabatan yang tersedia di catalog Task Inventory.
    - **Periode** (wajib, format `YYYY-MM`).
    - **Min. Responden** (default 3) dan **Maks. Responden** (default 10, harus ≥ min).
    - **Catatan (opsional)**.

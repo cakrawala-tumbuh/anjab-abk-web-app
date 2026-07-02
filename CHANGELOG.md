@@ -7,6 +7,16 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [1.18.2] - 2026-07-02
+
+### Diperbaiki
+
+- **Dokumentasi penggunaan Task Inventory diselaraskan dengan form buat sesi terbaru** —
+  field **Unit / Jenjang** sudah dihapus dari form buat sesi TI, dan dropdown Jabatan
+  hanya menampilkan nama jabatan (bukan "jumlah task per jabatan"). IK-04 §A dan
+  SOP Persiapan TI §3 disesuaikan. Referensi "catalog unit × jabatan" (master data)
+  tetap dipertahankan karena catalog masih berdimensi unit.
+
 ## [1.18.1] - 2026-07-02
 
 ### Diubah

@@ -68,8 +68,7 @@ Buat sesi dengan parameter berikut (detail langkah: [IK-04 Task Inventory](../ik
 
 | Parameter           | Pedoman pengisian                                                 |
 | ------------------- | ----------------------------------------------------------------- |
-| **Unit / Jenjang**  | Pilih unit yang disurvei (boleh "Semua unit").                    |
-| **Jabatan**         | Wajib. Pilih jabatan target; jumlah task per jabatan ditampilkan. |
+| **Jabatan**         | Wajib. Pilih jabatan target (daftar berisi jabatan yang tersedia di catalog).  |
 | **Periode**         | Format `YYYY-MM` (mis. `2026-06`).                                |
 | **Min. Responden**  | Default 3. Jumlah minimum responden agar hasil layak diagregasi.  |
 | **Maks. Responden** | Default 10. Harus ≥ Min. Responden.                               |
