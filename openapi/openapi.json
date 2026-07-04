@@ -9268,7 +9268,7 @@
           "ts.kuesioner"
         ],
         "summary": "Daftar kuesioner Time Study milik pengguna yang sedang login",
-        "description": "Kembalikan sesi Time Study yang sudah di-assign ke partisipan dan berstatus OPEN.\n\nPartisipan hanya melihat kuesioner Time Study yang telah di-assign secara eksplisit\noleh admin (record responden sudah dibuat dengan ``partisipan_id`` mereka).\nTidak ada enrollment otomatis.",
+        "description": "Kembalikan penugasan Time Study yang aktif milik partisipan yang sedang login.\n\nPartisipan hanya melihat penugasan yang telah di-assign secara eksplisit oleh\nadmin dan sedang berstatus aktif. Tidak ada enrollment otomatis.",
         "operationId": "ts_kuesioner_saya",
         "responses": {
           "200": {
@@ -9303,13 +9303,13 @@
         ]
       }
     },
-    "/api/v1/time-study/sesi": {
+    "/api/v1/time-study/penugasan": {
       "get": {
         "tags": [
-          "ts.sesi"
+          "ts.penugasan"
         ],
-        "summary": "Daftar sesi Time Study",
-        "operationId": "ts_sesi_list",
+        "summary": "Daftar penugasan Time Study",
+        "operationId": "ts_penugasan_list",
         "parameters": [
           {
             "name": "limit",
@@ -9345,7 +9345,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Page_TsSesiRead_"
+                  "$ref": "#/components/schemas/Page_TsPenugasanRead_"
                 }
               }
             }
@@ -9364,33 +9364,13 @@
       },
       "post": {
         "tags": [
-          "ts.sesi"
+          "ts.penugasan"
         ],
-        "summary": "Buat sesi Time Study",
-        "operationId": "ts_sesi_create",
+        "summary": "Tugaskan partisipan ke Time Study",
+        "operationId": "ts_penugasan_create",
         "security": [
           {
             "BearerAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "Idempotency-Key",
-            "in": "header",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "description": "Kunci idempotency opsional.",
-              "title": "Idempotency-Key"
-            },
-            "description": "Kunci idempotency opsional."
           }
         ],
         "requestBody": {
@@ -9398,16 +9378,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/TsSesiCreate"
-              },
-              "examples": {
-                "contoh": {
-                  "summary": "Sesi Time Study Guru MTK",
-                  "value": {
-                    "jabatan_id": "jbt_a1b2c3d4",
-                    "periode": "2025-06"
-                  }
-                }
+                "$ref": "#/components/schemas/TsPenugasanCreate"
               }
             }
           }
@@ -9418,7 +9389,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/TsSesiRead"
+                  "$ref": "#/components/schemas/TsPenugasanRead"
                 }
               }
             }
@@ -9443,6 +9414,16 @@
               }
             }
           },
+          "409": {
+            "description": "Partisipan sudah memiliki penugasan Time Study.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "422": {
             "description": "Validation Error",
             "content": {
@@ -9456,24 +9437,24 @@
         }
       }
     },
-    "/api/v1/time-study/sesi/{sesi_id}": {
+    "/api/v1/time-study/penugasan/{penugasan_id}": {
       "get": {
         "tags": [
-          "ts.sesi"
+          "ts.penugasan"
         ],
-        "summary": "Ambil sesi Time Study",
-        "operationId": "ts_sesi_get",
+        "summary": "Ambil penugasan Time Study",
+        "operationId": "ts_penugasan_get",
         "parameters": [
           {
-            "name": "sesi_id",
+            "name": "penugasan_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string",
-              "description": "ID sesi Time Study.",
-              "title": "Sesi Id"
+              "description": "ID penugasan Time Study.",
+              "title": "Penugasan Id"
             },
-            "description": "ID sesi Time Study."
+            "description": "ID penugasan Time Study."
           }
         ],
         "responses": {
@@ -9482,13 +9463,13 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/TsSesiRead"
+                  "$ref": "#/components/schemas/TsPenugasanRead"
                 }
               }
             }
           },
           "404": {
-            "description": "Sesi Time Study tidak ditemukan.",
+            "description": "Penugasan Time Study tidak ditemukan.",
             "content": {
               "application/json": {
                 "schema": {
@@ -9511,10 +9492,10 @@
       },
       "patch": {
         "tags": [
-          "ts.sesi"
+          "ts.penugasan"
         ],
-        "summary": "Perbarui sesi Time Study (hanya saat DRAFT)",
-        "operationId": "ts_sesi_update",
+        "summary": "Perbarui penugasan Time Study (mis. nonaktifkan)",
+        "operationId": "ts_penugasan_update",
         "security": [
           {
             "BearerAuth": []
@@ -9522,15 +9503,15 @@
         ],
         "parameters": [
           {
-            "name": "sesi_id",
+            "name": "penugasan_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string",
-              "description": "ID sesi Time Study.",
-              "title": "Sesi Id"
+              "description": "ID penugasan Time Study.",
+              "title": "Penugasan Id"
             },
-            "description": "ID sesi Time Study."
+            "description": "ID penugasan Time Study."
           }
         ],
         "requestBody": {
@@ -9538,7 +9519,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/TsSesiUpdate"
+                "$ref": "#/components/schemas/TsPenugasanUpdate"
               }
             }
           }
@@ -9549,7 +9530,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/TsSesiRead"
+                  "$ref": "#/components/schemas/TsPenugasanRead"
                 }
               }
             }
@@ -9575,7 +9556,7 @@
             }
           },
           "404": {
-            "description": "Sesi Time Study tidak ditemukan.",
+            "description": "Penugasan Time Study tidak ditemukan.",
             "content": {
               "application/json": {
                 "schema": {
@@ -9598,10 +9579,10 @@
       },
       "delete": {
         "tags": [
-          "ts.sesi"
+          "ts.penugasan"
         ],
-        "summary": "Hapus sesi Time Study (hanya saat DRAFT)",
-        "operationId": "ts_sesi_delete",
+        "summary": "Hapus penugasan Time Study",
+        "operationId": "ts_penugasan_delete",
         "security": [
           {
             "BearerAuth": []
@@ -9609,15 +9590,15 @@
         ],
         "parameters": [
           {
-            "name": "sesi_id",
+            "name": "penugasan_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string",
-              "description": "ID sesi Time Study.",
-              "title": "Sesi Id"
+              "description": "ID penugasan Time Study.",
+              "title": "Penugasan Id"
             },
-            "description": "ID sesi Time Study."
+            "description": "ID penugasan Time Study."
           }
         ],
         "responses": {
@@ -9645,7 +9626,7 @@
             }
           },
           "404": {
-            "description": "Sesi Time Study tidak ditemukan.",
+            "description": "Penugasan Time Study tidak ditemukan.",
             "content": {
               "application/json": {
                 "schema": {
@@ -9667,487 +9648,12 @@
         }
       }
     },
-    "/api/v1/time-study/sesi/{sesi_id}/buka": {
-      "post": {
-        "tags": [
-          "ts.sesi"
-        ],
-        "summary": "Buka sesi Time Study (DRAFT → OPEN)",
-        "operationId": "ts_sesi_buka",
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "sesi_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "description": "ID sesi Time Study.",
-              "title": "Sesi Id"
-            },
-            "description": "ID sesi Time Study."
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/TsSesiRead"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Token tidak ada/invalid.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "429": {
-            "description": "Terlalu banyak permintaan.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Sesi Time Study tidak ditemukan.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/time-study/sesi/{sesi_id}/tutup": {
-      "post": {
-        "tags": [
-          "ts.sesi"
-        ],
-        "summary": "Tutup sesi Time Study (OPEN → CLOSED)",
-        "operationId": "ts_sesi_tutup",
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "sesi_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "description": "ID sesi Time Study.",
-              "title": "Sesi Id"
-            },
-            "description": "ID sesi Time Study."
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/TsSesiRead"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Token tidak ada/invalid.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "429": {
-            "description": "Terlalu banyak permintaan.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Sesi Time Study tidak ditemukan.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/time-study/sesi/{sesi_id}/analisis": {
-      "post": {
-        "tags": [
-          "ts.sesi"
-        ],
-        "summary": "Tandai sesi Time Study sebagai ANALYZED (CLOSED → ANALYZED)",
-        "operationId": "ts_sesi_analisis",
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "sesi_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "description": "ID sesi Time Study.",
-              "title": "Sesi Id"
-            },
-            "description": "ID sesi Time Study."
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/TsSesiRead"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Token tidak ada/invalid.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "429": {
-            "description": "Terlalu banyak permintaan.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Sesi Time Study tidak ditemukan.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/time-study/sesi/{sesi_id}/responden": {
-      "get": {
-        "tags": [
-          "ts.responden"
-        ],
-        "summary": "Daftar responden dalam sesi Time Study",
-        "operationId": "ts_responden_list",
-        "parameters": [
-          {
-            "name": "sesi_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "description": "ID sesi Time Study.",
-              "title": "Sesi Id"
-            },
-            "description": "ID sesi Time Study."
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/TsRespondenRead"
-                  },
-                  "title": "Response Ts Responden List"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Sesi Time Study tidak ditemukan.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "ts.responden"
-        ],
-        "summary": "Daftarkan responden ke sesi Time Study",
-        "operationId": "ts_responden_create",
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "sesi_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "description": "ID sesi Time Study.",
-              "title": "Sesi Id"
-            },
-            "description": "ID sesi Time Study."
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/TsRespondenCreate"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/TsRespondenRead"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Token tidak ada/invalid.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "429": {
-            "description": "Terlalu banyak permintaan.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Sesi Time Study tidak ditemukan.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Partisipan sudah terdaftar sebagai responden dalam sesi ini.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/time-study/sesi/{sesi_id}/responden/{responden_id}": {
-      "delete": {
-        "tags": [
-          "ts.responden"
-        ],
-        "summary": "Hapus responden dari sesi Time Study",
-        "operationId": "ts_responden_delete",
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "sesi_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "description": "ID sesi Time Study.",
-              "title": "Sesi Id"
-            },
-            "description": "ID sesi Time Study."
-          },
-          {
-            "name": "responden_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "description": "ID responden.",
-              "title": "Responden Id"
-            },
-            "description": "ID responden."
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "Successful Response"
-          },
-          "401": {
-            "description": "Token tidak ada/invalid.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "429": {
-            "description": "Terlalu banyak permintaan.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Responden tidak ditemukan.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/time-study/responden/{responden_id}/log": {
+    "/api/v1/time-study/penugasan/{penugasan_id}/log": {
       "get": {
         "tags": [
           "ts.log"
         ],
-        "summary": "Daftar log harian responden Time Study",
+        "summary": "Daftar log harian penugasan Time Study",
         "operationId": "ts_log_list",
         "security": [
           {
@@ -10156,15 +9662,15 @@
         ],
         "parameters": [
           {
-            "name": "responden_id",
+            "name": "penugasan_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string",
-              "description": "ID responden Time Study.",
-              "title": "Responden Id"
+              "description": "ID penugasan Time Study.",
+              "title": "Penugasan Id"
             },
-            "description": "ID responden Time Study."
+            "description": "ID penugasan Time Study."
           }
         ],
         "responses": {
@@ -10203,7 +9709,7 @@
             }
           },
           "404": {
-            "description": "Responden tidak ditemukan.",
+            "description": "Penugasan tidak ditemukan.",
             "content": {
               "application/json": {
                 "schema": {
@@ -10228,7 +9734,7 @@
         "tags": [
           "ts.log"
         ],
-        "summary": "Tambah log harian untuk responden Time Study",
+        "summary": "Tambah log harian untuk penugasan Time Study",
         "operationId": "ts_log_create",
         "security": [
           {
@@ -10237,15 +9743,15 @@
         ],
         "parameters": [
           {
-            "name": "responden_id",
+            "name": "penugasan_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string",
-              "description": "ID responden Time Study.",
-              "title": "Responden Id"
+              "description": "ID penugasan Time Study.",
+              "title": "Penugasan Id"
             },
-            "description": "ID responden Time Study."
+            "description": "ID penugasan Time Study."
           }
         ],
         "requestBody": {
@@ -10290,7 +9796,17 @@
             }
           },
           "404": {
-            "description": "Responden tidak ditemukan.",
+            "description": "Penugasan tidak ditemukan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Penugasan sedang tidak aktif.",
             "content": {
               "application/json": {
                 "schema": {
@@ -10308,21 +9824,11 @@
                 }
               }
             }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
           }
         }
       }
     },
-    "/api/v1/time-study/responden/{responden_id}/log/{log_id}": {
+    "/api/v1/time-study/penugasan/{penugasan_id}/log/{log_id}": {
       "get": {
         "tags": [
           "ts.log"
@@ -10336,15 +9842,15 @@
         ],
         "parameters": [
           {
-            "name": "responden_id",
+            "name": "penugasan_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string",
-              "description": "ID responden Time Study.",
-              "title": "Responden Id"
+              "description": "ID penugasan Time Study.",
+              "title": "Penugasan Id"
             },
-            "description": "ID responden Time Study."
+            "description": "ID penugasan Time Study."
           },
           {
             "name": "log_id",
@@ -10424,15 +9930,15 @@
         ],
         "parameters": [
           {
-            "name": "responden_id",
+            "name": "penugasan_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string",
-              "description": "ID responden Time Study.",
-              "title": "Responden Id"
+              "description": "ID penugasan Time Study.",
+              "title": "Penugasan Id"
             },
-            "description": "ID responden Time Study."
+            "description": "ID penugasan Time Study."
           },
           {
             "name": "log_id",
@@ -10488,7 +9994,7 @@
             }
           },
           "404": {
-            "description": "Log tidak ditemukan.",
+            "description": "Penugasan tidak ditemukan.",
             "content": {
               "application/json": {
                 "schema": {
@@ -10498,11 +10004,11 @@
             }
           },
           "422": {
-            "description": "Validation Error",
+            "description": "Penugasan sedang tidak aktif.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -15106,11 +14612,11 @@
         ],
         "title": "Page[TiSesiRead]"
       },
-      "Page_TsSesiRead_": {
+      "Page_TsPenugasanRead_": {
         "properties": {
           "items": {
             "items": {
-              "$ref": "#/components/schemas/TsSesiRead"
+              "$ref": "#/components/schemas/TsPenugasanRead"
             },
             "type": "array",
             "title": "Items",
@@ -15148,7 +14654,7 @@
           "limit",
           "offset"
         ],
-        "title": "Page[TsSesiRead]"
+        "title": "Page[TsPenugasanRead]"
       },
       "Page_TugasPokokRead_": {
         "properties": {
@@ -17505,70 +17011,37 @@
           "id": {
             "type": "string",
             "title": "Id",
-            "description": "ID responden.",
+            "description": "ID penugasan.",
             "examples": [
-              "trsp_a1b2c3d4"
+              "tpn_a1b2c3d4"
             ]
           },
-          "sesi_id": {
-            "type": "string",
-            "title": "Sesi Id",
-            "description": "ID sesi Time Study.",
-            "examples": [
-              "tses_a1b2c3d4"
-            ]
-          },
-          "jabatan_label": {
-            "type": "string",
-            "title": "Jabatan Label",
-            "description": "Label jabatan responden."
-          },
-          "created_at": {
-            "type": "string",
-            "format": "date-time",
-            "title": "Created At",
-            "description": "Waktu pendaftaran."
-          },
-          "sesi_status": {
-            "type": "string",
-            "title": "Sesi Status",
-            "description": "Status sesi: DRAFT | OPEN | CLOSED | ANALYZED.",
-            "examples": [
-              "OPEN"
-            ]
-          },
-          "sesi_periode": {
-            "type": "string",
-            "title": "Sesi Periode",
-            "description": "Periode sesi (YYYY-MM).",
-            "examples": [
-              "2025-06"
-            ]
-          },
-          "sesi_jabatan_id": {
-            "type": "string",
-            "title": "Sesi Jabatan Id",
-            "description": "ID jabatan yang dikaji."
+          "aktif": {
+            "type": "boolean",
+            "title": "Aktif",
+            "description": "Status aktif penugasan."
           },
           "jumlah_log": {
             "type": "integer",
             "title": "Jumlah Log",
             "description": "Jumlah log harian yang sudah diisi."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At",
+            "description": "Waktu penugasan dibuat."
           }
         },
         "type": "object",
         "required": [
           "id",
-          "sesi_id",
-          "jabatan_label",
-          "created_at",
-          "sesi_status",
-          "sesi_periode",
-          "sesi_jabatan_id",
-          "jumlah_log"
+          "aktif",
+          "jumlah_log",
+          "created_at"
         ],
         "title": "TsKuesionerItemRead",
-        "description": "Responden TS diperkaya info sesi — dipakai endpoint /kuesioner/saya."
+        "description": "Penugasan TS milik pengguna yang sedang login — dipakai endpoint /kuesioner/saya."
       },
       "TsLogCreate": {
         "properties": {
@@ -17689,12 +17162,12 @@
               "tlog_a1b2c3d4"
             ]
           },
-          "responden_id": {
+          "partisipan_id": {
             "type": "string",
-            "title": "Responden Id",
-            "description": "ID responden induk.",
+            "title": "Partisipan Id",
+            "description": "ID partisipan pemilik log.",
             "examples": [
-              "trsp_a1b2c3d4"
+              "par_a1b2c3d4"
             ]
           },
           "tanggal": {
@@ -17781,7 +17254,7 @@
         "type": "object",
         "required": [
           "id",
-          "responden_id",
+          "partisipan_id",
           "tanggal",
           "waktu_masuk",
           "waktu_keluar",
@@ -17953,142 +17426,21 @@
         "title": "TsLogUpdate",
         "description": "Payload pembaruan log harian Time Study (semua field opsional)."
       },
-      "TsRespondenCreate": {
+      "TsPenugasanCreate": {
         "properties": {
-          "nama": {
-            "anyOf": [
-              {
-                "type": "string",
-                "maxLength": 200
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Nama",
-            "description": "Nama responden (opsional, boleh anonim).",
-            "examples": [
-              "Budi Santoso, S.Pd."
-            ]
-          },
-          "jabatan_label": {
-            "type": "string",
-            "maxLength": 200,
-            "minLength": 1,
-            "title": "Jabatan Label",
-            "description": "Label jabatan responden (teks bebas).",
-            "examples": [
-              "Guru Matematika"
-            ]
-          },
           "partisipan_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
+            "type": "string",
             "title": "Partisipan Id",
-            "description": "ID partisipan yang terhubung (opsional, untuk fitur 'Kuesioner Saya').",
+            "description": "ID partisipan yang ditugaskan mencatat Time Study.",
             "examples": [
               "par_a1b2c3d4"
             ]
-          }
-        },
-        "additionalProperties": false,
-        "type": "object",
-        "required": [
-          "jabatan_label"
-        ],
-        "title": "TsRespondenCreate",
-        "description": "Payload pendaftaran responden ke dalam sesi Time Study."
-      },
-      "TsRespondenRead": {
-        "properties": {
-          "id": {
-            "type": "string",
-            "title": "Id",
-            "description": "ID responden.",
-            "examples": [
-              "trsp_a1b2c3d4"
-            ]
           },
-          "sesi_id": {
-            "type": "string",
-            "title": "Sesi Id",
-            "description": "ID sesi induk.",
-            "examples": [
-              "tses_a1b2c3d4"
-            ]
-          },
-          "nama": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Nama",
-            "description": "Nama responden."
-          },
-          "jabatan_label": {
-            "type": "string",
-            "title": "Jabatan Label",
-            "description": "Label jabatan responden."
-          },
-          "partisipan_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Partisipan Id",
-            "description": "ID partisipan yang terhubung, bila ada."
-          },
-          "created_at": {
-            "type": "string",
-            "format": "date-time",
-            "title": "Created At",
-            "description": "Waktu pendaftaran (UTC, ISO-8601)."
-          }
-        },
-        "type": "object",
-        "required": [
-          "id",
-          "sesi_id",
-          "jabatan_label",
-          "created_at"
-        ],
-        "title": "TsRespondenRead",
-        "description": "Representasi responden Time Study yang dikembalikan API."
-      },
-      "TsSesiCreate": {
-        "properties": {
-          "jabatan_id": {
-            "type": "string",
-            "title": "Jabatan Id",
-            "description": "ID jabatan yang dikaji.",
-            "examples": [
-              "jbt_a1b2c3d4"
-            ]
-          },
-          "periode": {
-            "type": "string",
-            "maxLength": 7,
-            "minLength": 7,
-            "pattern": "^\\d{4}-\\d{2}$",
-            "title": "Periode",
-            "description": "Periode survei format YYYY-MM.",
-            "examples": [
-              "2025-06"
-            ]
+          "aktif": {
+            "type": "boolean",
+            "title": "Aktif",
+            "description": "Status aktif penugasan.",
+            "default": true
           },
           "catatan": {
             "anyOf": [
@@ -18101,57 +17453,36 @@
               }
             ],
             "title": "Catatan",
-            "description": "Catatan opsional untuk sesi ini."
+            "description": "Catatan opsional untuk penugasan ini."
           }
         },
         "additionalProperties": false,
         "type": "object",
         "required": [
-          "jabatan_id",
-          "periode"
+          "partisipan_id"
         ],
-        "title": "TsSesiCreate",
-        "description": "Payload pembuatan sesi Time Study."
+        "title": "TsPenugasanCreate",
+        "description": "Payload penugasan Time Study ke seorang partisipan."
       },
-      "TsSesiRead": {
+      "TsPenugasanRead": {
         "properties": {
           "id": {
             "type": "string",
             "title": "Id",
-            "description": "ID sesi.",
+            "description": "ID penugasan.",
             "examples": [
-              "tses_a1b2c3d4"
+              "tpn_a1b2c3d4"
             ]
           },
-          "jabatan_id": {
+          "partisipan_id": {
             "type": "string",
-            "title": "Jabatan Id",
-            "description": "ID jabatan.",
-            "examples": [
-              "jbt_a1b2c3d4"
-            ]
+            "title": "Partisipan Id",
+            "description": "ID partisipan yang ditugaskan."
           },
-          "periode": {
-            "type": "string",
-            "title": "Periode",
-            "description": "Periode survei (YYYY-MM).",
-            "examples": [
-              "2025-06"
-            ]
-          },
-          "status": {
-            "type": "string",
-            "enum": [
-              "DRAFT",
-              "OPEN",
-              "CLOSED",
-              "ANALYZED"
-            ],
-            "title": "Status",
-            "description": "Status sesi.",
-            "examples": [
-              "DRAFT"
-            ]
+          "aktif": {
+            "type": "boolean",
+            "title": "Aktif",
+            "description": "Status aktif penugasan."
           },
           "catatan": {
             "anyOf": [
@@ -18175,30 +17506,26 @@
         "type": "object",
         "required": [
           "id",
-          "jabatan_id",
-          "periode",
-          "status",
+          "partisipan_id",
+          "aktif",
           "created_at"
         ],
-        "title": "TsSesiRead",
-        "description": "Representasi sesi Time Study yang dikembalikan API."
+        "title": "TsPenugasanRead",
+        "description": "Representasi penugasan Time Study yang dikembalikan API."
       },
-      "TsSesiUpdate": {
+      "TsPenugasanUpdate": {
         "properties": {
-          "periode": {
+          "aktif": {
             "anyOf": [
               {
-                "type": "string",
-                "maxLength": 7,
-                "minLength": 7,
-                "pattern": "^\\d{4}-\\d{2}$"
+                "type": "boolean"
               },
               {
                 "type": "null"
               }
             ],
-            "title": "Periode",
-            "description": "Periode baru."
+            "title": "Aktif",
+            "description": "Status aktif penugasan."
           },
           "catatan": {
             "anyOf": [
@@ -18216,8 +17543,8 @@
         },
         "additionalProperties": false,
         "type": "object",
-        "title": "TsSesiUpdate",
-        "description": "Payload pembaruan sesi Time Study (hanya saat DRAFT)."
+        "title": "TsPenugasanUpdate",
+        "description": "Payload pembaruan penugasan Time Study (mis. toggle aktif)."
       },
       "TugasPokokCreate": {
         "properties": {

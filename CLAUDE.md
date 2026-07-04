@@ -50,6 +50,26 @@ src/
 
 ## Revisi Desain
 
+### [2026-07-04] Time Study: hapus sesi, penugasan berbasis partisipan
+
+Time Study tidak lagi memakai sesi. Admin menugaskan partisipan langsung (1
+partisipan = 1 penugasan); partisipan mencatat log harian open-ended selama
+penugasannya aktif.
+
+- Rute admin: `/time-study` menampilkan daftar penugasan (bukan sesi); `/time-study/buat`
+  langsung memilih partisipan untuk ditugaskan (form `ts-penugasan-form.tsx`, menggantikan
+  `ts-sesi-form.tsx`); `/time-study/{penugasan_id}` (dulu `{sesi_id}`) menampilkan info
+  partisipan + toggle aktif/nonaktif (`toggle-aktif.tsx`, menggantikan `transisi-sesi.tsx`)
+  - hapus penugasan (`hapus-penugasan.tsx`). Komponen `tambah-responden.tsx` dihapus —
+    assign kini terjadi sekali saat membuat penugasan.
+- Rute partisipan: `/time-study/isi/[responden_id]` menjadi `/time-study/isi/[penugasan_id]`.
+  Halaman & form log (`ts-log-form.tsx`, `ts-log-edit-form.tsx`) memakai endpoint
+  `/api/v1/time-study/penugasan/{penugasan_id}/log`. Tombol tambah/edit log disembunyikan
+  saat penugasan nonaktif (`penugasan.aktif === false`).
+- `TsKuesionerItemRead` di `schema.ts` diringkas menjadi `{id, aktif, jumlah_log, created_at}`
+  — field `sesi_*`/`jabatan_label` dihapus. Halaman `/kuesioner`: `TsKuesionerCard` memakai
+  `aktif` (bukan `sesi_status === "OPEN"`) untuk menentukan status & tombol aksi.
+
 ### [2026-06-21] Task Inventory: Alur 3 Tahap
 
 - Alur TI berubah dari 2 tahap menjadi 3 tahap.

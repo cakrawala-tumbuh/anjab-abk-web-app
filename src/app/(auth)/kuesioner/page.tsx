@@ -60,7 +60,7 @@ export default async function KuesionerSayaPage() {
     dcs.filter((k) => !k.sudah_submit && k.sesi_status === "OPEN").length +
     wcp.filter((k) => !k.sudah_submit && k.sesi_status === "OPEN").length +
     ti.filter(tiPerluDiisi).length +
-    ts.filter((k) => k.sesi_status === "OPEN").length +
+    ts.filter((k) => k.aktif).length +
     opm.filter((k) => !k.sudah_submit && k.sesi_status === "OPEN").length;
 
   return (
@@ -244,20 +244,20 @@ function KuesionerCard({
 }
 
 function TsKuesionerCard({ item }: { item: TsKuesionerItemRead }) {
-  const isOpen = item.sesi_status === "OPEN";
-
   return (
     <div className="flex items-center justify-between rounded-lg border border-gray-200 bg-white p-4">
       <div>
-        <p className="font-medium text-gray-900 dark:text-gray-50">{item.jabatan_label}</p>
-        <p className="mt-0.5 text-sm text-gray-500">Time Study · Periode {item.sesi_periode}</p>
+        <p className="font-medium text-gray-900 dark:text-gray-50">
+          Ditugaskan sejak {new Date(item.created_at).toLocaleDateString("id-ID")}
+        </p>
+        <p className="mt-0.5 text-sm text-gray-500">Time Study · Studi Waktu</p>
         <div className="mt-2 flex items-center gap-2">
           <span
             className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${
-              isOpen ? "bg-blue-100 text-blue-700" : "bg-gray-100 text-gray-500"
+              item.aktif ? "bg-blue-100 text-blue-700" : "bg-gray-100 text-gray-500"
             }`}
           >
-            {STATUS_LABEL[item.sesi_status] ?? item.sesi_status}
+            {item.aktif ? "Aktif" : "Nonaktif"}
           </span>
           <span className="inline-flex rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-600">
             {item.jumlah_log} log hari
@@ -265,7 +265,7 @@ function TsKuesionerCard({ item }: { item: TsKuesionerItemRead }) {
         </div>
       </div>
       <div className="ml-4 shrink-0">
-        {isOpen ? (
+        {item.aktif ? (
           <Link
             href={`/time-study/isi/${item.id}`}
             className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"

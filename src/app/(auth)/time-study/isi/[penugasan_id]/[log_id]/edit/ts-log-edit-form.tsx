@@ -46,13 +46,13 @@ const schema = z.object({
 type FormValues = z.infer<typeof schema>;
 
 interface Props {
-  respondenId: string;
+  penugasanId: string;
   logId: string;
   initialData: TsLogRead;
   accessToken: string | undefined;
 }
 
-export function TsLogEditForm({ respondenId, logId, initialData, accessToken }: Props) {
+export function TsLogEditForm({ penugasanId, logId, initialData, accessToken }: Props) {
   const router = useRouter();
   const [serverError, setServerError] = useState<string | null>(null);
 
@@ -88,9 +88,9 @@ export function TsLogEditForm({ respondenId, logId, initialData, accessToken }: 
     try {
       const client = withServerAuth(accessToken);
       const { error, response } = await client.PATCH(
-        "/api/v1/time-study/responden/{responden_id}/log/{log_id}",
+        "/api/v1/time-study/penugasan/{penugasan_id}/log/{log_id}",
         {
-          params: { path: { responden_id: respondenId, log_id: logId } },
+          params: { path: { penugasan_id: penugasanId, log_id: logId } },
           body: {
             tanggal: values.tanggal,
             waktu_masuk: values.waktu_masuk,
@@ -108,7 +108,7 @@ export function TsLogEditForm({ respondenId, logId, initialData, accessToken }: 
       );
       const reqId = response.headers.get("x-request-id");
       if (error) throw toApiError(error, reqId);
-      router.push(`/time-study/isi/${respondenId}`);
+      router.push(`/time-study/isi/${penugasanId}`);
       router.refresh();
     } catch (err) {
       setServerError(err instanceof Error ? err.message : "Terjadi kesalahan.");
@@ -259,7 +259,7 @@ export function TsLogEditForm({ respondenId, logId, initialData, accessToken }: 
           {isSubmitting ? "Menyimpan…" : "Simpan Perubahan"}
         </button>
         <Link
-          href={`/time-study/isi/${respondenId}`}
+          href={`/time-study/isi/${penugasanId}`}
           className="text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
         >
           Batal

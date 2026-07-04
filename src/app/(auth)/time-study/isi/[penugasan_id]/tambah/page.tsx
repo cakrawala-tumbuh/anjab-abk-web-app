@@ -6,14 +6,14 @@ import { TsLogForm } from "./ts-log-form";
 export const metadata = { title: "Tambah Log Harian — Time Study — ANJAB-ABK" };
 
 interface Props {
-  params: Promise<{ responden_id: string }>;
+  params: Promise<{ penugasan_id: string }>;
 }
 
 export default async function TambahLogPage({ params }: Props) {
   const session = await auth();
   if (!isPartisipan(session)) notFound();
 
-  const { responden_id } = await params;
+  const { penugasan_id } = await params;
 
   return (
     <div className="space-y-6">
@@ -23,7 +23,7 @@ export default async function TambahLogPage({ params }: Props) {
           Kuesioner Saya
         </Link>
         <span>/</span>
-        <Link href={`/time-study/isi/${responden_id}`} className="hover:text-gray-700">
+        <Link href={`/time-study/isi/${penugasan_id}`} className="hover:text-gray-700">
           Time Study
         </Link>
         <span>/</span>
@@ -35,7 +35,7 @@ export default async function TambahLogPage({ params }: Props) {
         <p className="page-subtext">Catat distribusi waktu aktivitas kerja untuk hari ini.</p>
       </div>
 
-      <TsLogForm respondenId={responden_id} accessToken={session?.accessToken} />
+      <TsLogForm penugasanId={penugasan_id} accessToken={session?.accessToken} />
     </div>
   );
 }

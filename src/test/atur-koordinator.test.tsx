@@ -24,7 +24,7 @@ function par(id: string, nama: string): PartisipanRead {
     sekolah_id: "skl_1",
     jabatan_utama_id: "jbt_1",
     jabatan_tambahan_ids: [],
-  } as PartisipanRead;
+  } as unknown as PartisipanRead;
 }
 const anggota = [par("par_a", "Agustinus Widjianta"), par("par_b", "Susana")];
 // par_x sengaja BUKAN anggota panel → tidak boleh muncul sebagai opsi

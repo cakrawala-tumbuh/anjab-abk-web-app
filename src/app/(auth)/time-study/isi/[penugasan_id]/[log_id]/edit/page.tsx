@@ -11,18 +11,18 @@ type TsLogRead = components["schemas"]["TsLogRead"];
 export const metadata = { title: "Edit Log Harian — Time Study — ANJAB-ABK" };
 
 interface Props {
-  params: Promise<{ responden_id: string; log_id: string }>;
+  params: Promise<{ penugasan_id: string; log_id: string }>;
 }
 
 async function fetchLog(
   accessToken: string | undefined,
-  respondenId: string,
+  penugasanId: string,
   logId: string,
 ): Promise<TsLogRead> {
   const client = withServerAuth(accessToken);
   const { data, error, response } = await client.GET(
-    "/api/v1/time-study/responden/{responden_id}/log/{log_id}",
-    { params: { path: { responden_id: respondenId, log_id: logId } } },
+    "/api/v1/time-study/penugasan/{penugasan_id}/log/{log_id}",
+    { params: { path: { penugasan_id: penugasanId, log_id: logId } } },
   );
   const reqId = response.headers.get("x-request-id");
   if (error) throw toApiError(error, reqId);
@@ -33,8 +33,8 @@ export default async function EditLogPage({ params }: Props) {
   const session = await auth();
   if (!isPartisipan(session)) notFound();
 
-  const { responden_id, log_id } = await params;
-  const log = await fetchLog(session?.accessToken, responden_id, log_id);
+  const { penugasan_id, log_id } = await params;
+  const log = await fetchLog(session?.accessToken, penugasan_id, log_id);
 
   return (
     <div className="space-y-6">
@@ -44,7 +44,7 @@ export default async function EditLogPage({ params }: Props) {
           Kuesioner Saya
         </Link>
         <span>/</span>
-        <Link href={`/time-study/isi/${responden_id}`} className="hover:text-gray-700">
+        <Link href={`/time-study/isi/${penugasan_id}`} className="hover:text-gray-700">
           Time Study
         </Link>
         <span>/</span>
@@ -59,7 +59,7 @@ export default async function EditLogPage({ params }: Props) {
       </div>
 
       <TsLogEditForm
-        respondenId={responden_id}
+        penugasanId={penugasan_id}
         logId={log_id}
         initialData={log}
         accessToken={session?.accessToken}

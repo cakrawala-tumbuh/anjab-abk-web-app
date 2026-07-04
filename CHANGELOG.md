@@ -7,6 +7,21 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [2.0.0] - 2026-07-04
+
+### Diubah
+
+- **BREAKING: Time Study tanpa sesi — penugasan berbasis partisipan langsung.**
+  - Rute admin `/time-study` menampilkan daftar penugasan (bukan sesi); `/time-study/buat`
+    langsung memilih partisipan untuk ditugaskan (menggantikan alur buat-sesi lalu
+    tambah-responden); `/time-study/{penugasan_id}` (dulu `{sesi_id}`) menampilkan info
+    partisipan + toggle aktif/nonaktif (menggantikan transisi status sesi).
+  - Rute partisipan `/time-study/isi/[responden_id]` menjadi `/time-study/isi/[penugasan_id]`;
+    tombol tambah/edit log disembunyikan saat penugasan nonaktif.
+  - `TsKuesionerItemRead` diringkas menjadi `{id, aktif, jumlah_log, created_at}` — halaman
+    `/kuesioner` menampilkan status berdasarkan `aktif`, bukan `sesi_status === "OPEN"`.
+  - `schema.ts` diregenerasi dari backend v0.23.0 (endpoint TS berubah total).
+
 ## [1.19.0] - 2026-07-02
 
 ### Ditambahkan

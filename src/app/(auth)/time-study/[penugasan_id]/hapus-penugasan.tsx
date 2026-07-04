@@ -6,30 +6,36 @@ import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
 
 interface Props {
-  sesiId: string;
-  respondenId: string;
+  penugasanId: string;
   nama: string;
   accessToken: string | undefined;
 }
 
-export function HapusResponden({ sesiId, respondenId, nama, accessToken }: Props) {
+export function HapusPenugasan({ penugasanId, nama, accessToken }: Props) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
   async function handleHapus() {
-    if (!confirm(`Hapus responden "${nama}" dari sesi ini?`)) return;
+    if (
+      !confirm(
+        `Hapus penugasan Time Study untuk "${nama}"? Riwayat log harian tidak akan bisa diakses lagi lewat penugasan ini.`,
+      )
+    )
+      return;
     setLoading(true);
     try {
       const client = withServerAuth(accessToken);
       const { error, response } = await client.DELETE(
-        "/api/v1/time-study/sesi/{sesi_id}/responden/{responden_id}",
-        { params: { path: { sesi_id: sesiId, responden_id: respondenId } } },
+        "/api/v1/time-study/penugasan/{penugasan_id}",
+        {
+          params: { path: { penugasan_id: penugasanId } },
+        },
       );
       const reqId = response.headers.get("x-request-id");
       if (error) throw toApiError(error, reqId);
-      router.refresh();
+      router.push("/time-study");
     } catch (err) {
-      alert(err instanceof Error ? err.message : "Gagal menghapus responden.");
+      alert(err instanceof Error ? err.message : "Gagal menghapus penugasan.");
       setLoading(false);
     }
   }
@@ -38,10 +44,9 @@ export function HapusResponden({ sesiId, respondenId, nama, accessToken }: Props
     <button
       onClick={handleHapus}
       disabled={loading}
-      className="text-xs text-red-500 hover:text-red-700 disabled:opacity-50"
-      aria-label={`Hapus responden ${nama}`}
+      className="rounded-md border border-red-300 px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 disabled:opacity-60"
     >
-      {loading ? "…" : "Hapus"}
+      {loading ? "Menghapus…" : "Hapus Penugasan"}
     </button>
   );
 }

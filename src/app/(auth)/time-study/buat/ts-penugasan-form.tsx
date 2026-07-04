@@ -10,28 +10,27 @@ import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
 import type { components } from "@/lib/api/schema";
 
+type PartisipanRead = components["schemas"]["PartisipanRead"];
 type JabatanRead = components["schemas"]["JabatanRead"];
 
-const schema = z.object({
-  jabatan_id: z.string().min(1, "Jabatan wajib dipilih"),
-  periode: z
-    .string()
-    .regex(/^\d{4}-\d{2}$/, "Format periode: YYYY-MM (cth. 2025-06)")
-    .min(7)
-    .max(7),
+export const schema = z.object({
+  partisipan_id: z.string().min(1, "Partisipan wajib dipilih"),
   catatan: z.string().max(500).optional(),
 });
 
 type FormValues = z.infer<typeof schema>;
 
 interface Props {
+  partisipan: PartisipanRead[];
   jabatan: JabatanRead[];
   accessToken: string | undefined;
 }
 
-export function TsSesiForm({ jabatan, accessToken }: Props) {
+export function TsPenugasanForm({ partisipan, jabatan, accessToken }: Props) {
   const router = useRouter();
   const [serverError, setServerError] = useState<string | null>(null);
+
+  const jabatanMap = Object.fromEntries(jabatan.map((j) => [j.id, j.nama]));
 
   const {
     register,
@@ -45,10 +44,10 @@ export function TsSesiForm({ jabatan, accessToken }: Props) {
     setServerError(null);
     try {
       const client = withServerAuth(accessToken);
-      const { data, error, response } = await client.POST("/api/v1/time-study/sesi", {
+      const { data, error, response } = await client.POST("/api/v1/time-study/penugasan", {
         body: {
-          jabatan_id: values.jabatan_id,
-          periode: values.periode,
+          partisipan_id: values.partisipan_id,
+          aktif: true,
           catatan: values.catatan || null,
         },
       });
@@ -68,49 +67,27 @@ export function TsSesiForm({ jabatan, accessToken }: Props) {
         </div>
       )}
 
-      {/* Jabatan */}
+      {/* Partisipan */}
       <div>
-        <label htmlFor="jabatan_id" className="form-label">
-          Jabatan <span aria-hidden>*</span>
+        <label htmlFor="partisipan_id" className="form-label">
+          Partisipan <span aria-hidden>*</span>
         </label>
         <select
-          id="jabatan_id"
-          {...register("jabatan_id")}
+          id="partisipan_id"
+          {...register("partisipan_id")}
           className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-          aria-invalid={!!errors.jabatan_id}
+          aria-invalid={!!errors.partisipan_id}
         >
-          <option value="">-- Pilih jabatan --</option>
-          {jabatan.map((j) => (
-            <option key={j.id} value={j.id}>
-              {j.nama}
+          <option value="">-- Pilih partisipan --</option>
+          {partisipan.map((p) => (
+            <option key={p.id} value={p.id}>
+              {p.nama} — {jabatanMap[p.jabatan_utama_id] ?? p.jabatan_utama_id}
             </option>
           ))}
         </select>
-        {errors.jabatan_id && (
+        {errors.partisipan_id && (
           <p className="form-error" role="alert">
-            {errors.jabatan_id.message}
-          </p>
-        )}
-      </div>
-
-      {/* Periode */}
-      <div>
-        <label htmlFor="periode" className="form-label">
-          Periode <span aria-hidden>*</span>
-        </label>
-        <input
-          id="periode"
-          type="text"
-          {...register("periode")}
-          placeholder="cth. 2025-06"
-          maxLength={7}
-          className="mt-1 block w-48 rounded-md border border-gray-300 px-3 py-2 font-mono text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-          aria-invalid={!!errors.periode}
-        />
-        <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">Format: YYYY-MM</p>
-        {errors.periode && (
-          <p className="form-error" role="alert">
-            {errors.periode.message}
+            {errors.partisipan_id.message}
           </p>
         )}
       </div>
@@ -134,7 +111,7 @@ export function TsSesiForm({ jabatan, accessToken }: Props) {
           disabled={isSubmitting}
           className="rounded-md bg-blue-600 px-5 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
         >
-          {isSubmitting ? "Membuat…" : "Buat Sesi"}
+          {isSubmitting ? "Menugaskan…" : "Tugaskan"}
         </button>
         <Link
           href="/time-study"

@@ -20,7 +20,7 @@ const KATEGORI = [
 
 type KategoriKey = (typeof KATEGORI)[number]["key"];
 
-const schema = z.object({
+export const schema = z.object({
   tanggal: z.string().min(1, "Tanggal wajib diisi"),
   waktu_masuk: z.string().regex(/^\d{2}:\d{2}$/, "Format HH:MM"),
   waktu_keluar: z.string().regex(/^\d{2}:\d{2}$/, "Format HH:MM"),
@@ -43,7 +43,7 @@ const schema = z.object({
 type FormValues = z.infer<typeof schema>;
 
 interface Props {
-  respondenId: string;
+  penugasanId: string;
   accessToken: string | undefined;
 }
 
@@ -51,7 +51,7 @@ function todayString(): string {
   return new Date().toISOString().slice(0, 10);
 }
 
-export function TsLogForm({ respondenId, accessToken }: Props) {
+export function TsLogForm({ penugasanId, accessToken }: Props) {
   const router = useRouter();
   const [serverError, setServerError] = useState<string | null>(null);
 
@@ -84,9 +84,9 @@ export function TsLogForm({ respondenId, accessToken }: Props) {
     try {
       const client = withServerAuth(accessToken);
       const { error, response } = await client.POST(
-        "/api/v1/time-study/responden/{responden_id}/log",
+        "/api/v1/time-study/penugasan/{penugasan_id}/log",
         {
-          params: { path: { responden_id: respondenId } },
+          params: { path: { penugasan_id: penugasanId } },
           body: {
             tanggal: values.tanggal,
             waktu_masuk: values.waktu_masuk,
@@ -104,7 +104,7 @@ export function TsLogForm({ respondenId, accessToken }: Props) {
       );
       const reqId = response.headers.get("x-request-id");
       if (error) throw toApiError(error, reqId);
-      router.push(`/time-study/isi/${respondenId}`);
+      router.push(`/time-study/isi/${penugasanId}`);
       router.refresh();
     } catch (err) {
       setServerError(err instanceof Error ? err.message : "Terjadi kesalahan.");
@@ -255,7 +255,7 @@ export function TsLogForm({ respondenId, accessToken }: Props) {
           {isSubmitting ? "Menyimpan…" : "Simpan Log"}
         </button>
         <Link
-          href={`/time-study/isi/${respondenId}`}
+          href={`/time-study/isi/${penugasanId}`}
           className="text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
         >
           Batal

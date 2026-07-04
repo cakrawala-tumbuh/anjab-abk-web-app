@@ -6,6 +6,7 @@ import { toApiError } from "@/lib/api/errors";
 import type { components } from "@/lib/api/schema";
 
 type TsLogRead = components["schemas"]["TsLogRead"];
+type TsPenugasanRead = components["schemas"]["TsPenugasanRead"];
 
 export const metadata = { title: "Time Study — Log Harian — ANJAB-ABK" };
 
@@ -24,26 +25,34 @@ function formatMenit(menit: number): string {
 }
 
 interface Props {
-  params: Promise<{ responden_id: string }>;
+  params: Promise<{ penugasan_id: string }>;
 }
 
-async function fetchPageData(accessToken: string | undefined, respondenId: string) {
+async function fetchPageData(accessToken: string | undefined, penugasanId: string) {
   const client = withServerAuth(accessToken);
-  const { data, error, response } = await client.GET(
-    "/api/v1/time-study/responden/{responden_id}/log",
-    { params: { path: { responden_id: respondenId } } },
-  );
-  const reqId = response.headers.get("x-request-id");
-  if (error) throw toApiError(error, reqId);
-  return (data ?? []) as TsLogRead[];
+  const [penugasanRes, logRes] = await Promise.all([
+    client.GET("/api/v1/time-study/penugasan/{penugasan_id}", {
+      params: { path: { penugasan_id: penugasanId } },
+    }),
+    client.GET("/api/v1/time-study/penugasan/{penugasan_id}/log", {
+      params: { path: { penugasan_id: penugasanId } },
+    }),
+  ]);
+  const reqId = penugasanRes.response.headers.get("x-request-id");
+  if (!penugasanRes.data) throw toApiError(null, reqId);
+  if (logRes.error) throw toApiError(logRes.error, reqId);
+  return {
+    penugasan: penugasanRes.data as TsPenugasanRead,
+    logs: (logRes.data ?? []) as TsLogRead[],
+  };
 }
 
 export default async function TimeStudyIsiPage({ params }: Props) {
   const session = await auth();
   if (!isPartisipan(session)) notFound();
 
-  const { responden_id } = await params;
-  const logs = await fetchPageData(session?.accessToken, responden_id);
+  const { penugasan_id } = await params;
+  const { penugasan, logs } = await fetchPageData(session?.accessToken, penugasan_id);
 
   return (
     <div className="space-y-6">
@@ -62,25 +71,36 @@ export default async function TimeStudyIsiPage({ params }: Props) {
           <h1 className="page-heading">Log Harian — Time Study</h1>
           <p className="page-subtext">Catat aktivitas harian Anda untuk keperluan Studi Waktu.</p>
         </div>
-        <Link
-          href={`/time-study/isi/${responden_id}/tambah`}
-          className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
-        >
-          + Tambah Log
-        </Link>
+        {penugasan.aktif && (
+          <Link
+            href={`/time-study/isi/${penugasan_id}/tambah`}
+            className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+          >
+            + Tambah Log
+          </Link>
+        )}
       </div>
+
+      {!penugasan.aktif && (
+        <div role="alert" className="rounded-md bg-yellow-50 p-4 text-sm text-yellow-700">
+          Penugasan Time Study Anda sedang tidak aktif. Log baru tidak dapat ditambahkan atau diubah
+          untuk sementara.
+        </div>
+      )}
 
       {logs.length === 0 ? (
         <div className="empty-state">
           <p className="text-sm text-gray-500 dark:text-gray-400">
             Belum ada log harian. Mulai catat aktivitas Anda.
           </p>
-          <Link
-            href={`/time-study/isi/${responden_id}/tambah`}
-            className="mt-4 inline-block rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
-          >
-            Tambah Log Hari Ini
-          </Link>
+          {penugasan.aktif && (
+            <Link
+              href={`/time-study/isi/${penugasan_id}/tambah`}
+              className="mt-4 inline-block rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+            >
+              Tambah Log Hari Ini
+            </Link>
+          )}
         </div>
       ) : (
         <div className="table-container">
@@ -114,9 +134,11 @@ export default async function TimeStudyIsiPage({ params }: Props) {
                 <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
                   Warna Hari
                 </th>
-                <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
-                  Aksi
-                </th>
+                {penugasan.aktif && (
+                  <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
+                    Aksi
+                  </th>
+                )}
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
@@ -156,14 +178,16 @@ export default async function TimeStudyIsiPage({ params }: Props) {
                         {dc.label}
                       </span>
                     </td>
-                    <td className="px-4 py-3">
-                      <Link
-                        href={`/time-study/isi/${responden_id}/${log.id}/edit`}
-                        className="text-xs text-blue-600 hover:text-blue-800 hover:underline"
-                      >
-                        Edit
-                      </Link>
-                    </td>
+                    {penugasan.aktif && (
+                      <td className="px-4 py-3">
+                        <Link
+                          href={`/time-study/isi/${penugasan_id}/${log.id}/edit`}
+                          className="text-xs text-blue-600 hover:text-blue-800 hover:underline"
+                        >
+                          Edit
+                        </Link>
+                      </td>
+                    )}
                   </tr>
                 );
               })}
