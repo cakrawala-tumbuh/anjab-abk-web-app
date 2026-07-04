@@ -7,6 +7,16 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+### Diperbaiki
+
+- **Tampilan tidak otomatis refresh setelah beberapa action (mis. assign partisipan)** —
+  Service Worker PWA (`public/sw.js`) menyajikan RSC payload `router.refresh()` dari
+  Cache Storage secara cache-first, sehingga hard reload manual diperlukan agar
+  perubahan terlihat. Kini request RSC (header `RSC: 1` atau query `_rsc`) dan konten
+  non-aset selalu lewat ke network; cache-first dibatasi hanya untuk aset statis
+  ber-hash (`/_next/static/`, ikon, dsb). `CACHE_NAME` dinaikkan ke `anjab-abk-v2` agar
+  cache lama yang menyimpan RSC basi terhapus saat Service Worker baru aktif.
+
 ## [2.0.0] - 2026-07-04
 
 ### Diubah

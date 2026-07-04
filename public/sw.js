@@ -1,4 +1,4 @@
-const CACHE_NAME = "anjab-abk-v1";
+const CACHE_NAME = "anjab-abk-v2";
 
 const STATIC_ASSETS = ["/", "/favicon.svg", "/icon.svg"];
 
@@ -43,6 +43,20 @@ self.addEventListener("fetch", (event) => {
         })
         .catch(() => caches.match(request).then((cached) => cached ?? caches.match("/"))),
     );
+    return;
+  }
+
+  // RSC payload (router.refresh()/soft navigation): jangan cache-first — data
+  // harus selalu segar dari server, kalau tidak tampilan basi setelah mutasi.
+  if (request.headers.get("RSC") === "1" || url.searchParams.has("_rsc")) {
+    return;
+  }
+
+  // Hanya aset statis ber-hash yang aman di-cache-first (immutable).
+  const isStaticAsset =
+    url.pathname.startsWith("/_next/static/") ||
+    /\.(?:js|css|woff2?|png|svg|ico|webmanifest)$/.test(url.pathname);
+  if (!isStaticAsset) {
     return;
   }
 
