@@ -7,6 +7,8 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [2.0.1] - 2026-07-04
+
 ### Diperbaiki
 
 - **Tampilan tidak otomatis refresh setelah beberapa action (mis. assign partisipan)** —
