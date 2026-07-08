@@ -4135,8 +4135,13 @@
         "tags": [
           "wcp.responden"
         ],
-        "summary": "Daftar responden dalam sesi WCP",
+        "summary": "Daftar responden dalam sesi WCP (admin)",
         "operationId": "wcp_responden_list",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "sesi_id",
@@ -4161,6 +4166,26 @@
                     "$ref": "#/components/schemas/WcpRespondenRead"
                   },
                   "title": "Response Wcp Responden List"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan admin atau bukan pemilik responden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -4191,7 +4216,7 @@
         "tags": [
           "wcp.responden"
         ],
-        "summary": "Daftarkan responden ke sesi WCP",
+        "summary": "Daftarkan responden ke sesi WCP (admin)",
         "operationId": "wcp_responden_create",
         "security": [
           {
@@ -4252,6 +4277,16 @@
               }
             }
           },
+          "403": {
+            "description": "Bukan admin atau bukan pemilik responden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "404": {
             "description": "Sesi WCP tidak ditemukan.",
             "content": {
@@ -4290,8 +4325,13 @@
         "tags": [
           "wcp.responden"
         ],
-        "summary": "Ambil detail responden WCP",
+        "summary": "Ambil detail responden WCP (admin atau pemilik)",
         "operationId": "wcp_responden_get",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "responden_id",
@@ -4312,6 +4352,26 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/WcpRespondenRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan admin atau bukan pemilik responden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -4342,7 +4402,7 @@
         "tags": [
           "wcp.responden"
         ],
-        "summary": "Hapus responden (hanya jika belum submit)",
+        "summary": "Hapus responden (admin; hanya jika belum submit)",
         "operationId": "wcp_responden_delete",
         "security": [
           {
@@ -4386,6 +4446,16 @@
               }
             }
           },
+          "403": {
+            "description": "Bukan admin atau bukan pemilik responden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "404": {
             "description": "Responden tidak ditemukan.",
             "content": {
@@ -4410,12 +4480,12 @@
       }
     },
     "/api/v1/wcp/sesi/responden/{responden_id}/jawaban": {
-      "post": {
+      "put": {
         "tags": [
           "wcp.responden"
         ],
-        "summary": "Submit 72 jawaban untuk satu responden",
-        "operationId": "wcp_jawaban_submit",
+        "summary": "Simpan draft jawaban (parsial) untuk satu responden",
+        "operationId": "wcp_jawaban_save_draft",
         "security": [
           {
             "BearerAuth": []
@@ -4439,11 +4509,195 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/WcpJawabanBulkCreate"
+                "$ref": "#/components/schemas/WcpJawabanUpsert"
               }
             }
           }
         },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/WcpJawabanRead"
+                  },
+                  "title": "Response Wcp Jawaban Save Draft"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan admin atau bukan pemilik responden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Responden tidak ditemukan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Item tidak dikenal.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Responden sudah submit final.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "wcp.responden"
+        ],
+        "summary": "Lihat jawaban responden (admin atau pemilik)",
+        "operationId": "wcp_jawaban_list",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "responden_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID responden.",
+              "title": "Responden Id"
+            },
+            "description": "ID responden."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/WcpJawabanRead"
+                  },
+                  "title": "Response Wcp Jawaban List"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan admin atau bukan pemilik responden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Responden tidak ditemukan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/wcp/sesi/responden/{responden_id}/jawaban/submit": {
+      "post": {
+        "tags": [
+          "wcp.responden"
+        ],
+        "summary": "Finalisasi (submit) 72 jawaban tersimpan untuk satu responden",
+        "operationId": "wcp_jawaban_submit",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "responden_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID responden.",
+              "title": "Responden Id"
+            },
+            "description": "ID responden."
+          }
+        ],
         "responses": {
           "201": {
             "description": "Successful Response",
@@ -4479,68 +4733,12 @@
               }
             }
           },
-          "404": {
-            "description": "Responden tidak ditemukan.",
+          "403": {
+            "description": "Bukan admin atau bukan pemilik responden.",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Jawaban sudah ada atau item tidak valid.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      },
-      "get": {
-        "tags": [
-          "wcp.responden"
-        ],
-        "summary": "Lihat jawaban responden",
-        "operationId": "wcp_jawaban_list",
-        "parameters": [
-          {
-            "name": "responden_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "description": "ID responden.",
-              "title": "Responden Id"
-            },
-            "description": "ID responden."
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/WcpJawabanRead"
-                  },
-                  "title": "Response Wcp Jawaban List"
                 }
               }
             }
@@ -4556,11 +4754,11 @@
             }
           },
           "422": {
-            "description": "Validation Error",
+            "description": "Responden sudah submit, atau jawaban tersimpan belum lengkap.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -5435,8 +5633,13 @@
         "tags": [
           "opm.responden"
         ],
-        "summary": "Daftar responden dalam sesi OPM",
+        "summary": "Daftar responden dalam sesi OPM (admin)",
         "operationId": "opm_responden_list",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "sesi_id",
@@ -5461,6 +5664,26 @@
                     "$ref": "#/components/schemas/OpmRespondenRead"
                   },
                   "title": "Response Opm Responden List"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan admin atau bukan pemilik responden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -5491,7 +5714,7 @@
         "tags": [
           "opm.responden"
         ],
-        "summary": "Daftarkan responden manual ke sesi OPM (wajib anggota SME panel jabatan sesi)",
+        "summary": "Daftarkan responden manual ke sesi OPM (admin; wajib anggota SME panel jabatan sesi)",
         "operationId": "opm_responden_create",
         "security": [
           {
@@ -5552,6 +5775,16 @@
               }
             }
           },
+          "403": {
+            "description": "Bukan admin atau bukan pemilik responden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "404": {
             "description": "Sesi OPM tidak ditemukan.",
             "content": {
@@ -5590,8 +5823,13 @@
         "tags": [
           "opm.responden"
         ],
-        "summary": "Ambil detail responden OPM",
+        "summary": "Ambil detail responden OPM (admin atau pemilik)",
         "operationId": "opm_responden_get",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "responden_id",
@@ -5612,6 +5850,26 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/OpmRespondenRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan admin atau bukan pemilik responden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -5642,7 +5900,7 @@
         "tags": [
           "opm.responden"
         ],
-        "summary": "Hapus responden (hanya jika belum submit)",
+        "summary": "Hapus responden (admin; hanya jika belum submit)",
         "operationId": "opm_responden_delete",
         "security": [
           {
@@ -5686,6 +5944,16 @@
               }
             }
           },
+          "403": {
+            "description": "Bukan admin atau bukan pemilik responden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "404": {
             "description": "Responden tidak ditemukan.",
             "content": {
@@ -5710,12 +5978,12 @@
       }
     },
     "/api/v1/opm/sesi/responden/{responden_id}/jawaban": {
-      "post": {
+      "put": {
         "tags": [
           "opm.responden"
         ],
-        "summary": "Submit rating (Importance/Frequency/Criticality) untuk satu responden",
-        "operationId": "opm_jawaban_submit",
+        "summary": "Simpan draft rating (Importance/Frequency/Criticality) untuk satu responden",
+        "operationId": "opm_jawaban_save_draft",
         "security": [
           {
             "BearerAuth": []
@@ -5739,11 +6007,185 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/OpmJawabanBulkCreate"
+                "$ref": "#/components/schemas/OpmJawabanUpsert"
               }
             }
           }
         },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/OpmJawabanRead"
+                  },
+                  "title": "Response Opm Jawaban Save Draft"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan admin atau bukan pemilik responden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Responden tidak ditemukan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Sesi bukan OPEN, responden sudah submit, atau kode task tidak dikenal.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "opm.responden"
+        ],
+        "summary": "Lihat jawaban responden (admin atau pemilik)",
+        "operationId": "opm_jawaban_list",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "responden_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID responden.",
+              "title": "Responden Id"
+            },
+            "description": "ID responden."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/OpmJawabanRead"
+                  },
+                  "title": "Response Opm Jawaban List"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan admin atau bukan pemilik responden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Responden tidak ditemukan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/opm/sesi/responden/{responden_id}/jawaban/submit": {
+      "post": {
+        "tags": [
+          "opm.responden"
+        ],
+        "summary": "Finalisasi (submit) rating tersimpan untuk satu responden",
+        "operationId": "opm_jawaban_submit",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "responden_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID responden.",
+              "title": "Responden Id"
+            },
+            "description": "ID responden."
+          }
+        ],
         "responses": {
           "201": {
             "description": "Successful Response",
@@ -5779,6 +6221,16 @@
               }
             }
           },
+          "403": {
+            "description": "Bukan admin atau bukan pemilik responden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "404": {
             "description": "Responden tidak ditemukan.",
             "content": {
@@ -5795,62 +6247,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          }
-        }
-      },
-      "get": {
-        "tags": [
-          "opm.responden"
-        ],
-        "summary": "Lihat jawaban responden",
-        "operationId": "opm_jawaban_list",
-        "parameters": [
-          {
-            "name": "responden_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "description": "ID responden.",
-              "title": "Responden Id"
-            },
-            "description": "ID responden."
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/OpmJawabanRead"
-                  },
-                  "title": "Response Opm Jawaban List"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Responden tidak ditemukan.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
                 }
               }
             }
@@ -6796,8 +7192,13 @@
         "tags": [
           "dcs.responden"
         ],
-        "summary": "Daftar responden dalam sesi DCS",
+        "summary": "Daftar responden dalam sesi DCS (admin)",
         "operationId": "dcs_responden_list",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "sesi_id",
@@ -6822,6 +7223,26 @@
                     "$ref": "#/components/schemas/DcsRespondenRead"
                   },
                   "title": "Response Dcs Responden List"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan admin atau bukan pemilik responden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -6852,7 +7273,7 @@
         "tags": [
           "dcs.responden"
         ],
-        "summary": "Daftarkan responden ke sesi DCS",
+        "summary": "Daftarkan responden ke sesi DCS (admin)",
         "operationId": "dcs_responden_create",
         "security": [
           {
@@ -6913,6 +7334,16 @@
               }
             }
           },
+          "403": {
+            "description": "Bukan admin atau bukan pemilik responden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "404": {
             "description": "Sesi DCS tidak ditemukan.",
             "content": {
@@ -6951,8 +7382,13 @@
         "tags": [
           "dcs.responden"
         ],
-        "summary": "Ambil detail responden DCS",
+        "summary": "Ambil detail responden DCS (admin atau pemilik)",
         "operationId": "dcs_responden_get",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "responden_id",
@@ -6973,6 +7409,26 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/DcsRespondenRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan admin atau bukan pemilik responden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -7003,7 +7459,7 @@
         "tags": [
           "dcs.responden"
         ],
-        "summary": "Hapus responden (hanya jika belum submit)",
+        "summary": "Hapus responden (admin; hanya jika belum submit)",
         "operationId": "dcs_responden_delete",
         "security": [
           {
@@ -7047,6 +7503,16 @@
               }
             }
           },
+          "403": {
+            "description": "Bukan admin atau bukan pemilik responden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "404": {
             "description": "Responden tidak ditemukan.",
             "content": {
@@ -7071,12 +7537,12 @@
       }
     },
     "/api/v1/dcs/sesi/responden/{responden_id}/jawaban": {
-      "post": {
+      "put": {
         "tags": [
           "dcs.responden"
         ],
-        "summary": "Submit 42 jawaban untuk satu responden",
-        "operationId": "dcs_jawaban_submit",
+        "summary": "Simpan draft jawaban (parsial) untuk satu responden",
+        "operationId": "dcs_jawaban_save_draft",
         "security": [
           {
             "BearerAuth": []
@@ -7100,11 +7566,195 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/DcsJawabanBulkCreate"
+                "$ref": "#/components/schemas/DcsJawabanUpsert"
               }
             }
           }
         },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DcsJawabanRead"
+                  },
+                  "title": "Response Dcs Jawaban Save Draft"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan admin atau bukan pemilik responden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Responden tidak ditemukan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Item tidak dikenal.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Responden sudah submit final.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "dcs.responden"
+        ],
+        "summary": "Lihat jawaban responden DCS (admin atau pemilik)",
+        "operationId": "dcs_jawaban_list",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "responden_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID responden.",
+              "title": "Responden Id"
+            },
+            "description": "ID responden."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DcsJawabanRead"
+                  },
+                  "title": "Response Dcs Jawaban List"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan admin atau bukan pemilik responden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Responden tidak ditemukan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/dcs/sesi/responden/{responden_id}/jawaban/submit": {
+      "post": {
+        "tags": [
+          "dcs.responden"
+        ],
+        "summary": "Finalisasi (submit) 42 jawaban tersimpan untuk satu responden",
+        "operationId": "dcs_jawaban_submit",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "responden_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID responden.",
+              "title": "Responden Id"
+            },
+            "description": "ID responden."
+          }
+        ],
         "responses": {
           "201": {
             "description": "Successful Response",
@@ -7140,68 +7790,12 @@
               }
             }
           },
-          "404": {
-            "description": "Responden tidak ditemukan.",
+          "403": {
+            "description": "Bukan admin atau bukan pemilik responden.",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Jawaban sudah ada atau item tidak valid.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      },
-      "get": {
-        "tags": [
-          "dcs.responden"
-        ],
-        "summary": "Lihat jawaban responden DCS",
-        "operationId": "dcs_jawaban_list",
-        "parameters": [
-          {
-            "name": "responden_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "description": "ID responden.",
-              "title": "Responden Id"
-            },
-            "description": "ID responden."
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/DcsJawabanRead"
-                  },
-                  "title": "Response Dcs Jawaban List"
                 }
               }
             }
@@ -7217,11 +7811,11 @@
             }
           },
           "422": {
-            "description": "Validation Error",
+            "description": "Responden sudah submit, atau jawaban tersimpan belum lengkap.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -8346,8 +8940,13 @@
         "tags": [
           "taskinv.responden"
         ],
-        "summary": "Daftar responden dalam sesi",
+        "summary": "Daftar responden dalam sesi (admin)",
         "operationId": "taskinv_responden_list",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "sesi_id",
@@ -8372,6 +8971,26 @@
                     "$ref": "#/components/schemas/TiRespondenRead"
                   },
                   "title": "Response Taskinv Responden List"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan admin atau bukan pemilik responden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -8402,7 +9021,7 @@
         "tags": [
           "taskinv.responden"
         ],
-        "summary": "Daftarkan responden ke sesi (saat DRAFT/TAHAP1)",
+        "summary": "Daftarkan responden ke sesi (admin; saat DRAFT/TAHAP1)",
         "operationId": "taskinv_responden_create",
         "security": [
           {
@@ -8463,6 +9082,16 @@
               }
             }
           },
+          "403": {
+            "description": "Bukan admin atau bukan pemilik responden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "404": {
             "description": "Sesi tidak ditemukan.",
             "content": {
@@ -8491,8 +9120,13 @@
         "tags": [
           "taskinv.responden"
         ],
-        "summary": "Ambil detail responden",
+        "summary": "Ambil detail responden (admin atau pemilik)",
         "operationId": "taskinv_responden_get",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "responden_id",
@@ -8513,6 +9147,26 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/TiRespondenRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan admin atau bukan pemilik responden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -8543,7 +9197,7 @@
         "tags": [
           "taskinv.responden"
         ],
-        "summary": "Hapus responden (hanya jika belum submit)",
+        "summary": "Hapus responden (admin; hanya jika belum submit)",
         "operationId": "taskinv_responden_delete",
         "security": [
           {
@@ -8587,6 +9241,16 @@
               }
             }
           },
+          "403": {
+            "description": "Bukan admin atau bukan pemilik responden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "404": {
             "description": "Responden tidak ditemukan.",
             "content": {
@@ -8611,12 +9275,12 @@
       }
     },
     "/api/v1/task-inventory/sesi/responden/{responden_id}/seleksi": {
-      "post": {
+      "put": {
         "tags": [
           "taskinv.seleksi"
         ],
-        "summary": "Submit seleksi relevansi Tahap 1 untuk satu responden",
-        "operationId": "taskinv_seleksi_submit",
+        "summary": "Simpan draft seleksi relevansi Tahap 1 untuk satu responden (full-replace)",
+        "operationId": "taskinv_seleksi_save_draft",
         "security": [
           {
             "BearerAuth": []
@@ -8640,11 +9304,177 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/TiSeleksiSubmit"
+                "$ref": "#/components/schemas/TiSeleksiDraftSave"
               }
             }
           }
         },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TiSeleksiRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan admin atau bukan pemilik responden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Responden tidak ditemukan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Kode task tidak valid, sesi bukan TAHAP1, atau responden sudah submit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "taskinv.seleksi"
+        ],
+        "summary": "Lihat seleksi Tahap 1 satu responden (admin atau pemilik)",
+        "operationId": "taskinv_seleksi_get",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "responden_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID responden.",
+              "title": "Responden Id"
+            },
+            "description": "ID responden."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TiSeleksiRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan admin atau bukan pemilik responden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Responden tidak ditemukan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/task-inventory/sesi/responden/{responden_id}/seleksi/submit": {
+      "post": {
+        "tags": [
+          "taskinv.seleksi"
+        ],
+        "summary": "Finalisasi (submit) seleksi relevansi Tahap 1 tersimpan untuk satu responden",
+        "operationId": "taskinv_seleksi_submit",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "responden_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID responden.",
+              "title": "Responden Id"
+            },
+            "description": "ID responden."
+          }
+        ],
         "responses": {
           "201": {
             "description": "Successful Response",
@@ -8676,6 +9506,16 @@
               }
             }
           },
+          "403": {
+            "description": "Bukan admin atau bukan pemilik responden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "404": {
             "description": "Responden tidak ditemukan.",
             "content": {
@@ -8686,8 +9526,101 @@
               }
             }
           },
-          "409": {
-            "description": "Seleksi sudah disubmit.",
+          "422": {
+            "description": "Sesi bukan TAHAP1, responden sudah submit, atau belum ada task terpilih.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/task-inventory/sesi/responden/{responden_id}/detail": {
+      "put": {
+        "tags": [
+          "taskinv.detail"
+        ],
+        "summary": "Simpan draft detail (parsial) Tahap 3 untuk satu responden",
+        "operationId": "taskinv_detail_save_draft",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "responden_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID responden.",
+              "title": "Responden Id"
+            },
+            "description": "ID responden."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TiDetailUpsert"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TiDetailRead"
+                  },
+                  "title": "Response Taskinv Detail Save Draft"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan admin atau bukan pemilik responden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Responden tidak ditemukan.",
             "content": {
               "application/json": {
                 "schema": {
@@ -8697,7 +9630,7 @@
             }
           },
           "422": {
-            "description": "Kode task tidak valid / sesi bukan TAHAP1.",
+            "description": "task_kode di luar himpunan terpilih, sesi bukan TAHAP3, atau responden sudah submit.",
             "content": {
               "application/json": {
                 "schema": {
@@ -8710,10 +9643,15 @@
       },
       "get": {
         "tags": [
-          "taskinv.seleksi"
+          "taskinv.detail"
         ],
-        "summary": "Lihat seleksi Tahap 1 satu responden",
-        "operationId": "taskinv_seleksi_get",
+        "summary": "Lihat detail Tahap 3 satu responden (admin atau pemilik)",
+        "operationId": "taskinv_detail_list",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "responden_id",
@@ -8733,7 +9671,31 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/TiSeleksiRead"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TiDetailRead"
+                  },
+                  "title": "Response Taskinv Detail List"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan admin atau bukan pemilik responden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -8761,12 +9723,12 @@
         }
       }
     },
-    "/api/v1/task-inventory/sesi/responden/{responden_id}/detail": {
+    "/api/v1/task-inventory/sesi/responden/{responden_id}/detail/submit": {
       "post": {
         "tags": [
           "taskinv.detail"
         ],
-        "summary": "Submit detail Tahap 3 untuk satu responden",
+        "summary": "Finalisasi (submit) detail Tahap 3 tersimpan untuk satu responden",
         "operationId": "taskinv_detail_submit",
         "security": [
           {
@@ -8786,16 +9748,6 @@
             "description": "ID responden."
           }
         ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/TiDetailSubmit"
-              }
-            }
-          }
-        },
         "responses": {
           "201": {
             "description": "Successful Response",
@@ -8831,68 +9783,12 @@
               }
             }
           },
-          "404": {
-            "description": "Responden tidak ditemukan.",
+          "403": {
+            "description": "Bukan admin atau bukan pemilik responden.",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Detail sudah disubmit.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "task_kode di luar himpunan terpilih.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          }
-        }
-      },
-      "get": {
-        "tags": [
-          "taskinv.detail"
-        ],
-        "summary": "Lihat detail Tahap 3 satu responden",
-        "operationId": "taskinv_detail_list",
-        "parameters": [
-          {
-            "name": "responden_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "description": "ID responden.",
-              "title": "Responden Id"
-            },
-            "description": "ID responden."
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/TiDetailRead"
-                  },
-                  "title": "Response Taskinv Detail List"
                 }
               }
             }
@@ -8908,11 +9804,11 @@
             }
           },
           "422": {
-            "description": "Validation Error",
+            "description": "Sesi bukan TAHAP3, responden sudah submit, atau belum ada entri detail.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -9308,8 +10204,13 @@
         "tags": [
           "ts.penugasan"
         ],
-        "summary": "Daftar penugasan Time Study",
+        "summary": "Daftar penugasan Time Study (admin)",
         "operationId": "ts_penugasan_list",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "limit",
@@ -9350,6 +10251,26 @@
               }
             }
           },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan admin atau bukan pemilik penugasan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "422": {
             "description": "Validation Error",
             "content": {
@@ -9366,7 +10287,7 @@
         "tags": [
           "ts.penugasan"
         ],
-        "summary": "Tugaskan partisipan ke Time Study",
+        "summary": "Tugaskan partisipan ke Time Study (admin)",
         "operationId": "ts_penugasan_create",
         "security": [
           {
@@ -9414,6 +10335,16 @@
               }
             }
           },
+          "403": {
+            "description": "Bukan admin atau bukan pemilik penugasan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "409": {
             "description": "Partisipan sudah memiliki penugasan Time Study.",
             "content": {
@@ -9442,8 +10373,13 @@
         "tags": [
           "ts.penugasan"
         ],
-        "summary": "Ambil penugasan Time Study",
+        "summary": "Ambil penugasan Time Study (admin atau pemilik)",
         "operationId": "ts_penugasan_get",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "penugasan_id",
@@ -9464,6 +10400,26 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/TsPenugasanRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan admin atau bukan pemilik penugasan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -9494,7 +10450,7 @@
         "tags": [
           "ts.penugasan"
         ],
-        "summary": "Perbarui penugasan Time Study (mis. nonaktifkan)",
+        "summary": "Perbarui penugasan Time Study (admin; mis. nonaktifkan)",
         "operationId": "ts_penugasan_update",
         "security": [
           {
@@ -9555,6 +10511,16 @@
               }
             }
           },
+          "403": {
+            "description": "Bukan admin atau bukan pemilik penugasan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "404": {
             "description": "Penugasan Time Study tidak ditemukan.",
             "content": {
@@ -9581,7 +10547,7 @@
         "tags": [
           "ts.penugasan"
         ],
-        "summary": "Hapus penugasan Time Study",
+        "summary": "Hapus penugasan Time Study (admin)",
         "operationId": "ts_penugasan_delete",
         "security": [
           {
@@ -9625,6 +10591,16 @@
               }
             }
           },
+          "403": {
+            "description": "Bukan admin atau bukan pemilik penugasan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "404": {
             "description": "Penugasan Time Study tidak ditemukan.",
             "content": {
@@ -9653,7 +10629,7 @@
         "tags": [
           "ts.log"
         ],
-        "summary": "Daftar log harian penugasan Time Study",
+        "summary": "Daftar log harian penugasan Time Study (admin atau pemilik)",
         "operationId": "ts_log_list",
         "security": [
           {
@@ -9708,6 +10684,16 @@
               }
             }
           },
+          "403": {
+            "description": "Bukan admin atau bukan pemilik penugasan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "404": {
             "description": "Penugasan tidak ditemukan.",
             "content": {
@@ -9734,7 +10720,7 @@
         "tags": [
           "ts.log"
         ],
-        "summary": "Tambah log harian untuk penugasan Time Study",
+        "summary": "Tambah log harian untuk penugasan Time Study (admin atau pemilik)",
         "operationId": "ts_log_create",
         "security": [
           {
@@ -9795,6 +10781,16 @@
               }
             }
           },
+          "403": {
+            "description": "Bukan admin atau bukan pemilik penugasan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "404": {
             "description": "Penugasan tidak ditemukan.",
             "content": {
@@ -9833,7 +10829,7 @@
         "tags": [
           "ts.log"
         ],
-        "summary": "Ambil detail log harian Time Study",
+        "summary": "Ambil detail log harian Time Study (admin atau pemilik)",
         "operationId": "ts_log_get",
         "security": [
           {
@@ -9895,6 +10891,16 @@
               }
             }
           },
+          "403": {
+            "description": "Bukan admin atau bukan pemilik penugasan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "404": {
             "description": "Log tidak ditemukan.",
             "content": {
@@ -9921,7 +10927,7 @@
         "tags": [
           "ts.log"
         ],
-        "summary": "Perbarui log harian Time Study",
+        "summary": "Perbarui log harian Time Study (admin atau pemilik)",
         "operationId": "ts_log_update",
         "security": [
           {
@@ -9985,6 +10991,16 @@
           },
           "429": {
             "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan admin atau bukan pemilik penugasan.",
             "content": {
               "application/json": {
                 "schema": {
@@ -11803,27 +12819,6 @@
         "title": "DcsItemUpdate",
         "description": "Field item DCS yang dapat diubah admin (partial; field kosong diabaikan)."
       },
-      "DcsJawabanBulkCreate": {
-        "properties": {
-          "jawaban": {
-            "items": {
-              "$ref": "#/components/schemas/DcsJawabanItem"
-            },
-            "type": "array",
-            "maxItems": 42,
-            "minItems": 42,
-            "title": "Jawaban",
-            "description": "Tepat 42 jawaban, satu per item DCS."
-          }
-        },
-        "additionalProperties": false,
-        "type": "object",
-        "required": [
-          "jawaban"
-        ],
-        "title": "DcsJawabanBulkCreate",
-        "description": "Payload bulk submission 42 jawaban untuk satu responden."
-      },
       "DcsJawabanItem": {
         "properties": {
           "item_id": {
@@ -11895,6 +12890,26 @@
         ],
         "title": "DcsJawabanRead",
         "description": "Representasi satu jawaban yang dikembalikan API."
+      },
+      "DcsJawabanUpsert": {
+        "properties": {
+          "jawaban": {
+            "items": {
+              "$ref": "#/components/schemas/DcsJawabanItem"
+            },
+            "type": "array",
+            "maxItems": 42,
+            "title": "Jawaban",
+            "description": "0..42 jawaban parsial, satu per item DCS."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "jawaban"
+        ],
+        "title": "DcsJawabanUpsert",
+        "description": "Payload draft-save (upsert parsial) jawaban untuk satu responden.\n\nBoleh 0..42 item; tiap item di-upsert per `item_id`. Kelengkapan 42 item\ndivalidasi terpisah saat finalisasi (`POST .../jawaban/submit`)."
       },
       "DcsKuesionerItemRead": {
         "properties": {
@@ -13520,26 +14535,6 @@
         "title": "OpmHasilTaskRead",
         "description": "Hasil agregat satu task lintas responden."
       },
-      "OpmJawabanBulkCreate": {
-        "properties": {
-          "jawaban": {
-            "items": {
-              "$ref": "#/components/schemas/OpmJawabanItem"
-            },
-            "type": "array",
-            "minItems": 1,
-            "title": "Jawaban",
-            "description": "Rating untuk setiap task dalam snapshot sesi."
-          }
-        },
-        "additionalProperties": false,
-        "type": "object",
-        "required": [
-          "jawaban"
-        ],
-        "title": "OpmJawabanBulkCreate",
-        "description": "Payload bulk submission rating untuk satu responden.\n\nKelengkapan set `task_kode` divalidasi service terhadap snapshot task sesi\n(jumlah task per sesi dinamis, bergantung Task Inventory sumber)."
-      },
       "OpmJawabanItem": {
         "properties": {
           "task_kode": {
@@ -13670,6 +14665,22 @@
         ],
         "title": "OpmJawabanRead",
         "description": "Representasi satu jawaban yang dikembalikan API."
+      },
+      "OpmJawabanUpsert": {
+        "properties": {
+          "jawaban": {
+            "items": {
+              "$ref": "#/components/schemas/OpmJawabanItem"
+            },
+            "type": "array",
+            "title": "Jawaban",
+            "description": "Rating parsial untuk task dalam snapshot sesi."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "OpmJawabanUpsert",
+        "description": "Payload draft-save (upsert parsial) rating untuk satu responden.\n\nBoleh 0..N item; tiap item di-upsert per `task_kode`. Kelengkapan set\n`task_kode` (harus persis sama dengan snapshot task sesi) divalidasi\nterpisah saat finalisasi (`POST .../jawaban/submit`)."
       },
       "OpmKuesionerItemRead": {
         "properties": {
@@ -15995,25 +17006,21 @@
         "title": "TiDetailRead",
         "description": "Representasi satu entri detail Tahap 2."
       },
-      "TiDetailSubmit": {
+      "TiDetailUpsert": {
         "properties": {
           "detail": {
             "items": {
               "$ref": "#/components/schemas/TiDetailItem"
             },
             "type": "array",
-            "minItems": 1,
             "title": "Detail",
-            "description": "Daftar entri detail, satu per task relevan."
+            "description": "Daftar entri detail parsial, satu per task relevan."
           }
         },
         "additionalProperties": false,
         "type": "object",
-        "required": [
-          "detail"
-        ],
-        "title": "TiDetailSubmit",
-        "description": "Payload submit detail Tahap 2 untuk satu responden.\n\nBoleh subset dari himpunan terpilih (hanya task yang benar-benar dikerjakan responden),\ntetapi setiap `task_kode` wajib termasuk himpunan terpilih sesi."
+        "title": "TiDetailUpsert",
+        "description": "Payload draft-save (upsert parsial) detail Tahap 3 untuk satu responden.\n\nBoleh 0..N entri; tiap entri di-upsert per `task_kode`, dan wajib termasuk\nhimpunan terpilih sesi. Kelengkapan minimal (≥1 entri) divalidasi terpisah\nsaat finalisasi (`POST .../detail/submit`)."
       },
       "TiHasilSesiRead": {
         "properties": {
@@ -16480,6 +17487,28 @@
         "title": "TiRespondenRead",
         "description": "Representasi responden yang dikembalikan API."
       },
+      "TiSeleksiDraftSave": {
+        "properties": {
+          "task_kode": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Task Kode",
+            "description": "Daftar kode task yang relevan untuk responden ini saat ini.",
+            "examples": [
+              [
+                "TIf0b59714",
+                "TIa1b2c3d4"
+              ]
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "TiSeleksiDraftSave",
+        "description": "Payload draft-save (full-replace) seleksi relevansi Tahap 1.\n\nMenggantikan seluruh pilihan responden saat ini; boleh kosong (belum memilih\ntask apapun). Kelengkapan (≥1 task terpilih) divalidasi terpisah saat\nfinalisasi (`POST .../seleksi/submit`)."
+      },
       "TiSeleksiRead": {
         "properties": {
           "responden_id": {
@@ -16528,32 +17557,6 @@
         ],
         "title": "TiSeleksiRead",
         "description": "Representasi seleksi Tahap 1 satu responden."
-      },
-      "TiSeleksiSubmit": {
-        "properties": {
-          "task_kode": {
-            "items": {
-              "type": "string"
-            },
-            "type": "array",
-            "minItems": 1,
-            "title": "Task Kode",
-            "description": "Daftar kode task yang relevan untuk responden ini (≥1).",
-            "examples": [
-              [
-                "TIf0b59714",
-                "TIa1b2c3d4"
-              ]
-            ]
-          }
-        },
-        "additionalProperties": false,
-        "type": "object",
-        "required": [
-          "task_kode"
-        ],
-        "title": "TiSeleksiSubmit",
-        "description": "Payload submit seleksi relevansi Tahap 1: daftar kode task yang relevan."
       },
       "TiSesiCreate": {
         "properties": {
@@ -18447,27 +19450,6 @@
         "title": "WcpItemUpdate",
         "description": "Field item WCP yang dapat diubah admin (partial; field kosong diabaikan)."
       },
-      "WcpJawabanBulkCreate": {
-        "properties": {
-          "jawaban": {
-            "items": {
-              "$ref": "#/components/schemas/WcpJawabanItem"
-            },
-            "type": "array",
-            "maxItems": 72,
-            "minItems": 72,
-            "title": "Jawaban",
-            "description": "Tepat 72 jawaban, satu per item WCP."
-          }
-        },
-        "additionalProperties": false,
-        "type": "object",
-        "required": [
-          "jawaban"
-        ],
-        "title": "WcpJawabanBulkCreate",
-        "description": "Payload bulk submission 72 jawaban untuk satu responden."
-      },
       "WcpJawabanItem": {
         "properties": {
           "item_id": {
@@ -18539,6 +19521,26 @@
         ],
         "title": "WcpJawabanRead",
         "description": "Representasi satu jawaban yang dikembalikan API."
+      },
+      "WcpJawabanUpsert": {
+        "properties": {
+          "jawaban": {
+            "items": {
+              "$ref": "#/components/schemas/WcpJawabanItem"
+            },
+            "type": "array",
+            "maxItems": 72,
+            "title": "Jawaban",
+            "description": "0..72 jawaban parsial, satu per item WCP."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "jawaban"
+        ],
+        "title": "WcpJawabanUpsert",
+        "description": "Payload draft-save (upsert parsial) jawaban untuk satu responden.\n\nBoleh 0..72 item; tiap item di-upsert per `item_id`. Kelengkapan 72 item\ndivalidasi terpisah saat finalisasi (`POST .../jawaban/submit`)."
       },
       "WcpKuesionerItemRead": {
         "properties": {

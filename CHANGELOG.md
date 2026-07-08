@@ -7,6 +7,32 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [2.1.0] - 2026-07-08
+
+### Ditambahkan
+
+- **Simpan draft & tombol atas+bawah — DCS, WCP, OPM, Task Inventory Tahap 1 & 3.**
+  Sebelumnya jawaban hanya tersimpan lewat satu submit final; menutup tab atau
+  koneksi terputus di tengah pengisian kuesioner panjang (DCS 42 item, WCP 72
+  item, dst.) membuat semua jawaban hilang.
+  - Tombol **Simpan** baru (memanggil `PUT` draft-save backend) berdampingan
+    dengan tombol submit di kelima form; halaman `isi/[responden_id]` kini selalu
+    memuat jawaban/seleksi/detail tersimpan (bukan hanya setelah submit final)
+    untuk mengisi ulang draft saat partisipan kembali.
+  - Tombol submit ("Kirim Jawaban"/"Kirim Seleksi"/"Kirim Detail") kini memanggil
+    `PUT` (simpan state saat ini) lalu `POST .../submit` (finalisasi) berurutan,
+    mengikuti kontrak backend v0.25.0.
+  - Bar tombol submit/simpan ditambahkan di atas **dan** bawah konten form pada
+    seluruh 8 form kuesioner (termasuk Task Inventory Tahap 2 dan Time Study yang
+    tidak mendapat draft-save) agar partisipan tidak perlu scroll untuk
+    menemukannya di form yang panjang.
+
+### Diubah (Breaking, mengikuti backend v0.25.0)
+
+- Konsumsi endpoint `POST .../jawaban`, `.../seleksi`, `.../detail` (submit
+  sekali-jadi) diganti pasangan `PUT` (draft) + `POST .../submit` (finalisasi) —
+  lihat backend `CHANGELOG.md` v0.25.0.
+
 ## [2.0.1] - 2026-07-04
 
 ### Diperbaiki

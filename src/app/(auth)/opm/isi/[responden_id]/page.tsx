@@ -27,13 +27,10 @@ async function fetchPageData(accessToken: string | undefined, respondenId: strin
   });
   const task = (taskRes.data ?? []) as OpmSesiTaskRead[];
 
-  let jawaban: OpmJawabanRead[] = [];
-  if (responden.sudah_submit) {
-    const jRes = await client.GET("/api/v1/opm/sesi/responden/{responden_id}/jawaban", {
-      params: { path: { responden_id: respondenId } },
-    });
-    jawaban = (jRes.data ?? []) as OpmJawabanRead[];
-  }
+  const jRes = await client.GET("/api/v1/opm/sesi/responden/{responden_id}/jawaban", {
+    params: { path: { responden_id: respondenId } },
+  });
+  const jawaban = (jRes.data ?? []) as OpmJawabanRead[];
 
   return { responden, task, jawaban };
 }

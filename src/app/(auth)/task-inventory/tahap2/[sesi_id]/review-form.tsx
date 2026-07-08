@@ -181,6 +181,37 @@ export function ReviewForm({ sesiId, review, accessToken, readOnly, kodeToUraian
           </tbody>
         </table>
       </div>
+
+      {!readOnly && (
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-gray-200 bg-gray-50 px-4 py-3">
+          <div className="flex gap-2">
+            <button
+              onClick={() => setAll(true)}
+              className="rounded-md border border-green-300 px-3 py-1.5 text-xs font-medium text-green-700 hover:bg-green-50"
+            >
+              Setujui Semua
+            </button>
+            <button
+              onClick={() => setAll(false)}
+              className="rounded-md border border-red-300 px-3 py-1.5 text-xs font-medium text-red-700 hover:bg-red-50"
+            >
+              Tolak Semua
+            </button>
+          </div>
+          <div className="flex items-center gap-3">
+            {belumDiputuskan > 0 && (
+              <span className="text-xs text-amber-600">{belumDiputuskan} belum diputuskan</span>
+            )}
+            <button
+              onClick={onSubmit}
+              disabled={submitting}
+              className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-60"
+            >
+              {submitting ? "Menyimpan…" : "Simpan Keputusan"}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

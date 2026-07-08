@@ -29,11 +29,40 @@ export function WcpForm({ respondenId, dimensi, jawabanAwal, sudahSubmit, access
 
   const [skor, setSkor] = useState<Record<string, number>>(initialValues);
   const [submitting, setSubmitting] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [saveMessage, setSaveMessage] = useState<string | null>(null);
   const [sukses, setSukses] = useState(false);
 
   const allItems = dimensi.flatMap((d) => d.items ?? []);
   const allFilled = allItems.length > 0 && allItems.every((item) => skor[item.item_id] != null);
+
+  function buildJawabanPayload() {
+    return Object.entries(skor).map(([item_id, skor_raw]) => ({ item_id, skor_raw }));
+  }
+
+  async function handleSave() {
+    setError(null);
+    setSaveMessage(null);
+    setSaving(true);
+    try {
+      const client = withServerAuth(accessToken);
+      const { error: apiError, response } = await client.PUT(
+        "/api/v1/wcp/sesi/responden/{responden_id}/jawaban",
+        {
+          params: { path: { responden_id: respondenId } },
+          body: { jawaban: buildJawabanPayload() },
+        },
+      );
+      const reqId = response.headers.get("x-request-id");
+      if (apiError) throw toApiError(apiError, reqId);
+      setSaveMessage("Draft tersimpan.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Terjadi kesalahan saat menyimpan draft.");
+    } finally {
+      setSaving(false);
+    }
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -42,20 +71,23 @@ export function WcpForm({ respondenId, dimensi, jawabanAwal, sudahSubmit, access
       return;
     }
     setError(null);
+    setSaveMessage(null);
     setSubmitting(true);
     try {
       const client = withServerAuth(accessToken);
-      const { error: apiError, response } = await client.POST(
+      const { error: saveError, response: saveResponse } = await client.PUT(
         "/api/v1/wcp/sesi/responden/{responden_id}/jawaban",
         {
           params: { path: { responden_id: respondenId } },
-          body: {
-            jawaban: Object.entries(skor).map(([item_id, skor_raw]) => ({
-              item_id,
-              skor_raw,
-            })),
-          },
+          body: { jawaban: buildJawabanPayload() },
         },
+      );
+      const saveReqId = saveResponse.headers.get("x-request-id");
+      if (saveError) throw toApiError(saveError, saveReqId);
+
+      const { error: apiError, response } = await client.POST(
+        "/api/v1/wcp/sesi/responden/{responden_id}/jawaban/submit",
+        { params: { path: { responden_id: respondenId } } },
       );
       const reqId = response.headers.get("x-request-id");
       if (apiError) throw toApiError(apiError, reqId);
@@ -88,6 +120,36 @@ export function WcpForm({ respondenId, dimensi, jawabanAwal, sudahSubmit, access
       {error && (
         <div role="alert" className="rounded-md bg-red-50 p-4 text-sm text-red-700">
           {error}
+        </div>
+      )}
+      {saveMessage && !error && (
+        <div className="rounded-md bg-blue-50 p-4 text-sm text-blue-700">{saveMessage}</div>
+      )}
+
+      {!sudahSubmit && (
+        <div className="border-b border-gray-200 bg-white py-4">
+          <div className="flex items-center justify-between">
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              {Object.keys(skor).length} / {allItems.length} pernyataan dijawab
+            </p>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={handleSave}
+                disabled={saving || submitting}
+                className="rounded-md border border-gray-300 px-6 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {saving ? "Menyimpan…" : "Simpan"}
+              </button>
+              <button
+                type="submit"
+                disabled={submitting || saving || !allFilled}
+                className="rounded-md bg-blue-600 px-6 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {submitting ? "Mengirim…" : "Kirim Jawaban"}
+              </button>
+            </div>
+          </div>
         </div>
       )}
 
@@ -155,13 +217,23 @@ export function WcpForm({ respondenId, dimensi, jawabanAwal, sudahSubmit, access
             <p className="text-sm text-gray-500 dark:text-gray-400">
               {Object.keys(skor).length} / {allItems.length} pernyataan dijawab
             </p>
-            <button
-              type="submit"
-              disabled={submitting || !allFilled}
-              className="rounded-md bg-blue-600 px-6 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              {submitting ? "Mengirim…" : "Kirim Jawaban"}
-            </button>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={handleSave}
+                disabled={saving || submitting}
+                className="rounded-md border border-gray-300 px-6 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {saving ? "Menyimpan…" : "Simpan"}
+              </button>
+              <button
+                type="submit"
+                disabled={submitting || saving || !allFilled}
+                className="rounded-md bg-blue-600 px-6 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {submitting ? "Mengirim…" : "Kirim Jawaban"}
+              </button>
+            </div>
           </div>
         </div>
       )}

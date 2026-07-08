@@ -658,10 +658,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Daftar responden dalam sesi WCP */
+        /** Daftar responden dalam sesi WCP (admin) */
         get: operations["wcp_responden_list"];
         put?: never;
-        /** Daftarkan responden ke sesi WCP */
+        /** Daftarkan responden ke sesi WCP (admin) */
         post: operations["wcp_responden_create"];
         delete?: never;
         options?: never;
@@ -676,11 +676,11 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Ambil detail responden WCP */
+        /** Ambil detail responden WCP (admin atau pemilik) */
         get: operations["wcp_responden_get"];
         put?: never;
         post?: never;
-        /** Hapus responden (hanya jika belum submit) */
+        /** Hapus responden (admin; hanya jika belum submit) */
         delete: operations["wcp_responden_delete"];
         options?: never;
         head?: never;
@@ -694,10 +694,27 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Lihat jawaban responden */
+        /** Lihat jawaban responden (admin atau pemilik) */
         get: operations["wcp_jawaban_list"];
+        /** Simpan draft jawaban (parsial) untuk satu responden */
+        put: operations["wcp_jawaban_save_draft"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/wcp/sesi/responden/{responden_id}/jawaban/submit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
         put?: never;
-        /** Submit 72 jawaban untuk satu responden */
+        /** Finalisasi (submit) 72 jawaban tersimpan untuk satu responden */
         post: operations["wcp_jawaban_submit"];
         delete?: never;
         options?: never;
@@ -892,10 +909,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Daftar responden dalam sesi OPM */
+        /** Daftar responden dalam sesi OPM (admin) */
         get: operations["opm_responden_list"];
         put?: never;
-        /** Daftarkan responden manual ke sesi OPM (wajib anggota SME panel jabatan sesi) */
+        /** Daftarkan responden manual ke sesi OPM (admin; wajib anggota SME panel jabatan sesi) */
         post: operations["opm_responden_create"];
         delete?: never;
         options?: never;
@@ -910,11 +927,11 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Ambil detail responden OPM */
+        /** Ambil detail responden OPM (admin atau pemilik) */
         get: operations["opm_responden_get"];
         put?: never;
         post?: never;
-        /** Hapus responden (hanya jika belum submit) */
+        /** Hapus responden (admin; hanya jika belum submit) */
         delete: operations["opm_responden_delete"];
         options?: never;
         head?: never;
@@ -928,10 +945,27 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Lihat jawaban responden */
+        /** Lihat jawaban responden (admin atau pemilik) */
         get: operations["opm_jawaban_list"];
+        /** Simpan draft rating (Importance/Frequency/Criticality) untuk satu responden */
+        put: operations["opm_jawaban_save_draft"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/opm/sesi/responden/{responden_id}/jawaban/submit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
         put?: never;
-        /** Submit rating (Importance/Frequency/Criticality) untuk satu responden */
+        /** Finalisasi (submit) rating tersimpan untuk satu responden */
         post: operations["opm_jawaban_submit"];
         delete?: never;
         options?: never;
@@ -1136,10 +1170,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Daftar responden dalam sesi DCS */
+        /** Daftar responden dalam sesi DCS (admin) */
         get: operations["dcs_responden_list"];
         put?: never;
-        /** Daftarkan responden ke sesi DCS */
+        /** Daftarkan responden ke sesi DCS (admin) */
         post: operations["dcs_responden_create"];
         delete?: never;
         options?: never;
@@ -1154,11 +1188,11 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Ambil detail responden DCS */
+        /** Ambil detail responden DCS (admin atau pemilik) */
         get: operations["dcs_responden_get"];
         put?: never;
         post?: never;
-        /** Hapus responden (hanya jika belum submit) */
+        /** Hapus responden (admin; hanya jika belum submit) */
         delete: operations["dcs_responden_delete"];
         options?: never;
         head?: never;
@@ -1172,10 +1206,27 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Lihat jawaban responden DCS */
+        /** Lihat jawaban responden DCS (admin atau pemilik) */
         get: operations["dcs_jawaban_list"];
+        /** Simpan draft jawaban (parsial) untuk satu responden */
+        put: operations["dcs_jawaban_save_draft"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/dcs/sesi/responden/{responden_id}/jawaban/submit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
         put?: never;
-        /** Submit 42 jawaban untuk satu responden */
+        /** Finalisasi (submit) 42 jawaban tersimpan untuk satu responden */
         post: operations["dcs_jawaban_submit"];
         delete?: never;
         options?: never;
@@ -1419,10 +1470,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Daftar responden dalam sesi */
+        /** Daftar responden dalam sesi (admin) */
         get: operations["taskinv_responden_list"];
         put?: never;
-        /** Daftarkan responden ke sesi (saat DRAFT/TAHAP1) */
+        /** Daftarkan responden ke sesi (admin; saat DRAFT/TAHAP1) */
         post: operations["taskinv_responden_create"];
         delete?: never;
         options?: never;
@@ -1437,11 +1488,11 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Ambil detail responden */
+        /** Ambil detail responden (admin atau pemilik) */
         get: operations["taskinv_responden_get"];
         put?: never;
         post?: never;
-        /** Hapus responden (hanya jika belum submit) */
+        /** Hapus responden (admin; hanya jika belum submit) */
         delete: operations["taskinv_responden_delete"];
         options?: never;
         head?: never;
@@ -1455,10 +1506,27 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Lihat seleksi Tahap 1 satu responden */
+        /** Lihat seleksi Tahap 1 satu responden (admin atau pemilik) */
         get: operations["taskinv_seleksi_get"];
+        /** Simpan draft seleksi relevansi Tahap 1 untuk satu responden (full-replace) */
+        put: operations["taskinv_seleksi_save_draft"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/task-inventory/sesi/responden/{responden_id}/seleksi/submit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
         put?: never;
-        /** Submit seleksi relevansi Tahap 1 untuk satu responden */
+        /** Finalisasi (submit) seleksi relevansi Tahap 1 tersimpan untuk satu responden */
         post: operations["taskinv_seleksi_submit"];
         delete?: never;
         options?: never;
@@ -1473,10 +1541,27 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Lihat detail Tahap 3 satu responden */
+        /** Lihat detail Tahap 3 satu responden (admin atau pemilik) */
         get: operations["taskinv_detail_list"];
+        /** Simpan draft detail (parsial) Tahap 3 untuk satu responden */
+        put: operations["taskinv_detail_save_draft"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/task-inventory/sesi/responden/{responden_id}/detail/submit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
         put?: never;
-        /** Submit detail Tahap 3 untuk satu responden */
+        /** Finalisasi (submit) detail Tahap 3 tersimpan untuk satu responden */
         post: operations["taskinv_detail_submit"];
         delete?: never;
         options?: never;
@@ -1583,10 +1668,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Daftar penugasan Time Study */
+        /** Daftar penugasan Time Study (admin) */
         get: operations["ts_penugasan_list"];
         put?: never;
-        /** Tugaskan partisipan ke Time Study */
+        /** Tugaskan partisipan ke Time Study (admin) */
         post: operations["ts_penugasan_create"];
         delete?: never;
         options?: never;
@@ -1601,15 +1686,15 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Ambil penugasan Time Study */
+        /** Ambil penugasan Time Study (admin atau pemilik) */
         get: operations["ts_penugasan_get"];
         put?: never;
         post?: never;
-        /** Hapus penugasan Time Study */
+        /** Hapus penugasan Time Study (admin) */
         delete: operations["ts_penugasan_delete"];
         options?: never;
         head?: never;
-        /** Perbarui penugasan Time Study (mis. nonaktifkan) */
+        /** Perbarui penugasan Time Study (admin; mis. nonaktifkan) */
         patch: operations["ts_penugasan_update"];
         trace?: never;
     };
@@ -1620,10 +1705,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Daftar log harian penugasan Time Study */
+        /** Daftar log harian penugasan Time Study (admin atau pemilik) */
         get: operations["ts_log_list"];
         put?: never;
-        /** Tambah log harian untuk penugasan Time Study */
+        /** Tambah log harian untuk penugasan Time Study (admin atau pemilik) */
         post: operations["ts_log_create"];
         delete?: never;
         options?: never;
@@ -1638,14 +1723,14 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Ambil detail log harian Time Study */
+        /** Ambil detail log harian Time Study (admin atau pemilik) */
         get: operations["ts_log_get"];
         put?: never;
         post?: never;
         delete?: never;
         options?: never;
         head?: never;
-        /** Perbarui log harian Time Study */
+        /** Perbarui log harian Time Study (admin atau pemilik) */
         patch: operations["ts_log_update"];
         trace?: never;
     };
@@ -2020,17 +2105,6 @@ export interface components {
             urutan?: number | null;
         };
         /**
-         * DcsJawabanBulkCreate
-         * @description Payload bulk submission 42 jawaban untuk satu responden.
-         */
-        DcsJawabanBulkCreate: {
-            /**
-             * Jawaban
-             * @description Tepat 42 jawaban, satu per item DCS.
-             */
-            jawaban: components["schemas"]["DcsJawabanItem"][];
-        };
-        /**
          * DcsJawabanItem
          * @description Satu jawaban item dalam bulk submission.
          */
@@ -2076,6 +2150,20 @@ export interface components {
              * @description Skor mentah 1–5.
              */
             skor_raw: number;
+        };
+        /**
+         * DcsJawabanUpsert
+         * @description Payload draft-save (upsert parsial) jawaban untuk satu responden.
+         *
+         *     Boleh 0..42 item; tiap item di-upsert per `item_id`. Kelengkapan 42 item
+         *     divalidasi terpisah saat finalisasi (`POST .../jawaban/submit`).
+         */
+        DcsJawabanUpsert: {
+            /**
+             * Jawaban
+             * @description 0..42 jawaban parsial, satu per item DCS.
+             */
+            jawaban: components["schemas"]["DcsJawabanItem"][];
         };
         /**
          * DcsKuesionerItemRead
@@ -2976,20 +3064,6 @@ export interface components {
             prop_workload_essential: number;
         };
         /**
-         * OpmJawabanBulkCreate
-         * @description Payload bulk submission rating untuk satu responden.
-         *
-         *     Kelengkapan set `task_kode` divalidasi service terhadap snapshot task sesi
-         *     (jumlah task per sesi dinamis, bergantung Task Inventory sumber).
-         */
-        OpmJawabanBulkCreate: {
-            /**
-             * Jawaban
-             * @description Rating untuk setiap task dalam snapshot sesi.
-             */
-            jawaban: components["schemas"]["OpmJawabanItem"][];
-        };
-        /**
          * OpmJawabanItem
          * @description Satu jawaban rating task dalam bulk submission.
          */
@@ -3067,6 +3141,21 @@ export interface components {
              * @description Catatan.
              */
             catatan?: string | null;
+        };
+        /**
+         * OpmJawabanUpsert
+         * @description Payload draft-save (upsert parsial) rating untuk satu responden.
+         *
+         *     Boleh 0..N item; tiap item di-upsert per `task_kode`. Kelengkapan set
+         *     `task_kode` (harus persis sama dengan snapshot task sesi) divalidasi
+         *     terpisah saat finalisasi (`POST .../jawaban/submit`).
+         */
+        OpmJawabanUpsert: {
+            /**
+             * Jawaban
+             * @description Rating parsial untuk task dalam snapshot sesi.
+             */
+            jawaban?: components["schemas"]["OpmJawabanItem"][];
         };
         /**
          * OpmKuesionerItemRead
@@ -4390,18 +4479,19 @@ export interface components {
             catatan?: string | null;
         };
         /**
-         * TiDetailSubmit
-         * @description Payload submit detail Tahap 2 untuk satu responden.
+         * TiDetailUpsert
+         * @description Payload draft-save (upsert parsial) detail Tahap 3 untuk satu responden.
          *
-         *     Boleh subset dari himpunan terpilih (hanya task yang benar-benar dikerjakan responden),
-         *     tetapi setiap `task_kode` wajib termasuk himpunan terpilih sesi.
+         *     Boleh 0..N entri; tiap entri di-upsert per `task_kode`, dan wajib termasuk
+         *     himpunan terpilih sesi. Kelengkapan minimal (≥1 entri) divalidasi terpisah
+         *     saat finalisasi (`POST .../detail/submit`).
          */
-        TiDetailSubmit: {
+        TiDetailUpsert: {
             /**
              * Detail
-             * @description Daftar entri detail, satu per task relevan.
+             * @description Daftar entri detail parsial, satu per task relevan.
              */
-            detail: components["schemas"]["TiDetailItem"][];
+            detail?: components["schemas"]["TiDetailItem"][];
         };
         /**
          * TiHasilSesiRead
@@ -4711,6 +4801,25 @@ export interface components {
             created_at: string;
         };
         /**
+         * TiSeleksiDraftSave
+         * @description Payload draft-save (full-replace) seleksi relevansi Tahap 1.
+         *
+         *     Menggantikan seluruh pilihan responden saat ini; boleh kosong (belum memilih
+         *     task apapun). Kelengkapan (≥1 task terpilih) divalidasi terpisah saat
+         *     finalisasi (`POST .../seleksi/submit`).
+         */
+        TiSeleksiDraftSave: {
+            /**
+             * Task Kode
+             * @description Daftar kode task yang relevan untuk responden ini saat ini.
+             * @example [
+             *       "TIf0b59714",
+             *       "TIa1b2c3d4"
+             *     ]
+             */
+            task_kode?: string[];
+        };
+        /**
          * TiSeleksiRead
          * @description Representasi seleksi Tahap 1 satu responden.
          */
@@ -4737,21 +4846,6 @@ export interface components {
              * @description Waktu submit.
              */
             submitted_at?: string | null;
-        };
-        /**
-         * TiSeleksiSubmit
-         * @description Payload submit seleksi relevansi Tahap 1: daftar kode task yang relevan.
-         */
-        TiSeleksiSubmit: {
-            /**
-             * Task Kode
-             * @description Daftar kode task yang relevan untuk responden ini (≥1).
-             * @example [
-             *       "TIf0b59714",
-             *       "TIa1b2c3d4"
-             *     ]
-             */
-            task_kode: string[];
         };
         /**
          * TiSesiCreate
@@ -5830,17 +5924,6 @@ export interface components {
             urutan?: number | null;
         };
         /**
-         * WcpJawabanBulkCreate
-         * @description Payload bulk submission 72 jawaban untuk satu responden.
-         */
-        WcpJawabanBulkCreate: {
-            /**
-             * Jawaban
-             * @description Tepat 72 jawaban, satu per item WCP.
-             */
-            jawaban: components["schemas"]["WcpJawabanItem"][];
-        };
-        /**
          * WcpJawabanItem
          * @description Satu jawaban item dalam bulk submission.
          */
@@ -5886,6 +5969,20 @@ export interface components {
              * @description Skor mentah 1–5.
              */
             skor_raw: number;
+        };
+        /**
+         * WcpJawabanUpsert
+         * @description Payload draft-save (upsert parsial) jawaban untuk satu responden.
+         *
+         *     Boleh 0..72 item; tiap item di-upsert per `item_id`. Kelengkapan 72 item
+         *     divalidasi terpisah saat finalisasi (`POST .../jawaban/submit`).
+         */
+        WcpJawabanUpsert: {
+            /**
+             * Jawaban
+             * @description 0..72 jawaban parsial, satu per item WCP.
+             */
+            jawaban: components["schemas"]["WcpJawabanItem"][];
         };
         /**
          * WcpKuesionerItemRead
@@ -8968,6 +9065,24 @@ export interface operations {
                     "application/json": components["schemas"]["WcpRespondenRead"][];
                 };
             };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin atau bukan pemilik responden. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Sesi WCP tidak ditemukan. */
             404: {
                 headers: {
@@ -9015,6 +9130,15 @@ export interface operations {
             };
             /** @description Token tidak ada/invalid. */
             401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin atau bukan pemilik responden. */
+            403: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -9081,6 +9205,24 @@ export interface operations {
                     "application/json": components["schemas"]["WcpRespondenRead"];
                 };
             };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin atau bukan pemilik responden. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Responden tidak ditemukan. */
             404: {
                 headers: {
@@ -9122,6 +9264,15 @@ export interface operations {
             };
             /** @description Token tidak ada/invalid. */
             401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin atau bukan pemilik responden. */
+            403: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -9179,6 +9330,24 @@ export interface operations {
                     "application/json": components["schemas"]["WcpJawabanRead"][];
                 };
             };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin atau bukan pemilik responden. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Responden tidak ditemukan. */
             404: {
                 headers: {
@@ -9199,7 +9368,7 @@ export interface operations {
             };
         };
     };
-    wcp_jawaban_submit: {
+    wcp_jawaban_save_draft: {
         parameters: {
             query?: never;
             header?: never;
@@ -9211,9 +9380,86 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["WcpJawabanBulkCreate"];
+                "application/json": components["schemas"]["WcpJawabanUpsert"];
             };
         };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WcpJawabanRead"][];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin atau bukan pemilik responden. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Responden tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Item tidak dikenal. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Responden sudah submit final. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    wcp_jawaban_submit: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID responden. */
+                responden_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
         responses: {
             /** @description Successful Response */
             201: {
@@ -9233,6 +9479,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Bukan admin atau bukan pemilik responden. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Responden tidak ditemukan. */
             404: {
                 headers: {
@@ -9242,22 +9497,13 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
-            /** @description Jawaban sudah ada atau item tidak valid. */
-            409: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description Validation Error */
+            /** @description Responden sudah submit, atau jawaban tersimpan belum lengkap. */
             422: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
             /** @description Terlalu banyak permintaan. */
@@ -9912,6 +10158,24 @@ export interface operations {
                     "application/json": components["schemas"]["OpmRespondenRead"][];
                 };
             };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin atau bukan pemilik responden. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Sesi OPM tidak ditemukan. */
             404: {
                 headers: {
@@ -9959,6 +10223,15 @@ export interface operations {
             };
             /** @description Token tidak ada/invalid. */
             401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin atau bukan pemilik responden. */
+            403: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -10025,6 +10298,24 @@ export interface operations {
                     "application/json": components["schemas"]["OpmRespondenRead"];
                 };
             };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin atau bukan pemilik responden. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Responden tidak ditemukan. */
             404: {
                 headers: {
@@ -10066,6 +10357,15 @@ export interface operations {
             };
             /** @description Token tidak ada/invalid. */
             401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin atau bukan pemilik responden. */
+            403: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -10123,6 +10423,24 @@ export interface operations {
                     "application/json": components["schemas"]["OpmJawabanRead"][];
                 };
             };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin atau bukan pemilik responden. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Responden tidak ditemukan. */
             404: {
                 headers: {
@@ -10143,7 +10461,7 @@ export interface operations {
             };
         };
     };
-    opm_jawaban_submit: {
+    opm_jawaban_save_draft: {
         parameters: {
             query?: never;
             header?: never;
@@ -10155,9 +10473,77 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["OpmJawabanBulkCreate"];
+                "application/json": components["schemas"]["OpmJawabanUpsert"];
             };
         };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OpmJawabanRead"][];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin atau bukan pemilik responden. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Responden tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Sesi bukan OPEN, responden sudah submit, atau kode task tidak dikenal. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    opm_jawaban_submit: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID responden. */
+                responden_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
         responses: {
             /** @description Successful Response */
             201: {
@@ -10170,6 +10556,15 @@ export interface operations {
             };
             /** @description Token tidak ada/invalid. */
             401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin atau bukan pemilik responden. */
+            403: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -10901,6 +11296,24 @@ export interface operations {
                     "application/json": components["schemas"]["DcsRespondenRead"][];
                 };
             };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin atau bukan pemilik responden. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Sesi DCS tidak ditemukan. */
             404: {
                 headers: {
@@ -10948,6 +11361,15 @@ export interface operations {
             };
             /** @description Token tidak ada/invalid. */
             401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin atau bukan pemilik responden. */
+            403: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -11014,6 +11436,24 @@ export interface operations {
                     "application/json": components["schemas"]["DcsRespondenRead"];
                 };
             };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin atau bukan pemilik responden. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Responden tidak ditemukan. */
             404: {
                 headers: {
@@ -11055,6 +11495,15 @@ export interface operations {
             };
             /** @description Token tidak ada/invalid. */
             401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin atau bukan pemilik responden. */
+            403: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -11112,6 +11561,24 @@ export interface operations {
                     "application/json": components["schemas"]["DcsJawabanRead"][];
                 };
             };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin atau bukan pemilik responden. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Responden tidak ditemukan. */
             404: {
                 headers: {
@@ -11132,7 +11599,7 @@ export interface operations {
             };
         };
     };
-    dcs_jawaban_submit: {
+    dcs_jawaban_save_draft: {
         parameters: {
             query?: never;
             header?: never;
@@ -11144,9 +11611,86 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["DcsJawabanBulkCreate"];
+                "application/json": components["schemas"]["DcsJawabanUpsert"];
             };
         };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DcsJawabanRead"][];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin atau bukan pemilik responden. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Responden tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Item tidak dikenal. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Responden sudah submit final. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    dcs_jawaban_submit: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID responden. */
+                responden_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
         responses: {
             /** @description Successful Response */
             201: {
@@ -11166,6 +11710,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Bukan admin atau bukan pemilik responden. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Responden tidak ditemukan. */
             404: {
                 headers: {
@@ -11175,22 +11728,13 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
-            /** @description Jawaban sudah ada atau item tidak valid. */
-            409: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description Validation Error */
+            /** @description Responden sudah submit, atau jawaban tersimpan belum lengkap. */
             422: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
             /** @description Terlalu banyak permintaan. */
@@ -11988,6 +12532,24 @@ export interface operations {
                     "application/json": components["schemas"]["TiRespondenRead"][];
                 };
             };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin atau bukan pemilik responden. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Sesi tidak ditemukan. */
             404: {
                 headers: {
@@ -12035,6 +12597,15 @@ export interface operations {
             };
             /** @description Token tidak ada/invalid. */
             401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin atau bukan pemilik responden. */
+            403: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -12092,6 +12663,24 @@ export interface operations {
                     "application/json": components["schemas"]["TiRespondenRead"];
                 };
             };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin atau bukan pemilik responden. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Responden tidak ditemukan. */
             404: {
                 headers: {
@@ -12133,6 +12722,15 @@ export interface operations {
             };
             /** @description Token tidak ada/invalid. */
             401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin atau bukan pemilik responden. */
+            403: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -12190,6 +12788,24 @@ export interface operations {
                     "application/json": components["schemas"]["TiSeleksiRead"];
                 };
             };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin atau bukan pemilik responden. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Responden tidak ditemukan. */
             404: {
                 headers: {
@@ -12210,7 +12826,7 @@ export interface operations {
             };
         };
     };
-    taskinv_seleksi_submit: {
+    taskinv_seleksi_save_draft: {
         parameters: {
             query?: never;
             header?: never;
@@ -12222,9 +12838,77 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["TiSeleksiSubmit"];
+                "application/json": components["schemas"]["TiSeleksiDraftSave"];
             };
         };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TiSeleksiRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin atau bukan pemilik responden. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Responden tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Kode task tidak valid, sesi bukan TAHAP1, atau responden sudah submit. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    taskinv_seleksi_submit: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID responden. */
+                responden_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
         responses: {
             /** @description Successful Response */
             201: {
@@ -12244,6 +12928,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Bukan admin atau bukan pemilik responden. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Responden tidak ditemukan. */
             404: {
                 headers: {
@@ -12253,16 +12946,7 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
-            /** @description Seleksi sudah disubmit. */
-            409: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description Kode task tidak valid / sesi bukan TAHAP1. */
+            /** @description Sesi bukan TAHAP1, responden sudah submit, atau belum ada task terpilih. */
             422: {
                 headers: {
                     [name: string]: unknown;
@@ -12303,6 +12987,24 @@ export interface operations {
                     "application/json": components["schemas"]["TiDetailRead"][];
                 };
             };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin atau bukan pemilik responden. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Responden tidak ditemukan. */
             404: {
                 headers: {
@@ -12323,7 +13025,7 @@ export interface operations {
             };
         };
     };
-    taskinv_detail_submit: {
+    taskinv_detail_save_draft: {
         parameters: {
             query?: never;
             header?: never;
@@ -12335,9 +13037,77 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["TiDetailSubmit"];
+                "application/json": components["schemas"]["TiDetailUpsert"];
             };
         };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TiDetailRead"][];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin atau bukan pemilik responden. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Responden tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description task_kode di luar himpunan terpilih, sesi bukan TAHAP3, atau responden sudah submit. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    taskinv_detail_submit: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID responden. */
+                responden_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
         responses: {
             /** @description Successful Response */
             201: {
@@ -12357,6 +13127,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Bukan admin atau bukan pemilik responden. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Responden tidak ditemukan. */
             404: {
                 headers: {
@@ -12366,16 +13145,7 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
-            /** @description Detail sudah disubmit. */
-            409: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description task_kode di luar himpunan terpilih. */
+            /** @description Sesi bukan TAHAP3, responden sudah submit, atau belum ada entri detail. */
             422: {
                 headers: {
                     [name: string]: unknown;
@@ -12701,6 +13471,24 @@ export interface operations {
                     "application/json": components["schemas"]["Page_TsPenugasanRead_"];
                 };
             };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin atau bukan pemilik penugasan. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Validation Error */
             422: {
                 headers: {
@@ -12736,6 +13524,15 @@ export interface operations {
             };
             /** @description Token tidak ada/invalid. */
             401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin atau bukan pemilik penugasan. */
+            403: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -12793,6 +13590,24 @@ export interface operations {
                     "application/json": components["schemas"]["TsPenugasanRead"];
                 };
             };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin atau bukan pemilik penugasan. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Penugasan Time Study tidak ditemukan. */
             404: {
                 headers: {
@@ -12834,6 +13649,15 @@ export interface operations {
             };
             /** @description Token tidak ada/invalid. */
             401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin atau bukan pemilik penugasan. */
+            403: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -12904,6 +13728,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Bukan admin atau bukan pemilik penugasan. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Penugasan Time Study tidak ditemukan. */
             404: {
                 headers: {
@@ -12956,6 +13789,15 @@ export interface operations {
             };
             /** @description Token tidak ada/invalid. */
             401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin atau bukan pemilik penugasan. */
+            403: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -13019,6 +13861,15 @@ export interface operations {
             };
             /** @description Token tidak ada/invalid. */
             401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin atau bukan pemilik penugasan. */
+            403: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -13096,6 +13947,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Bukan admin atau bukan pemilik penugasan. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Log tidak ditemukan. */
             404: {
                 headers: {
@@ -13154,6 +14014,15 @@ export interface operations {
             };
             /** @description Token tidak ada/invalid. */
             401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin atau bukan pemilik penugasan. */
+            403: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -14157,6 +15026,7 @@ export interface operations {
         };
     };
 }
+
 export type JabatanRead = components["schemas"]["JabatanRead"];
 export type JenjangPendidikanRead = components["schemas"]["JenjangPendidikanRead"];
 export type MataPelajaranRead = components["schemas"]["MataPelajaranRead"];
@@ -14185,6 +15055,7 @@ export type WcpHasilDimensiRespondenRead = components["schemas"]["WcpHasilDimens
 export type WcpReverseType = "NONE" | "R" | "UF" | "R_STAR";
 export type TiCatalogRead = components["schemas"]["TiCatalogRead"];
 export type TiDetailItem = components["schemas"]["TiDetailItem"];
+export type TiDetailRead = components["schemas"]["TiDetailRead"];
 export type TiHasilSesiRead = components["schemas"]["TiHasilSesiRead"];
 export type TiHasilTaskRead = components["schemas"]["TiHasilTaskRead"];
 export type TiKombinasiRead = components["schemas"]["TiKombinasiRead"];

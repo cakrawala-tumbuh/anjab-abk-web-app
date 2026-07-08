@@ -170,7 +170,8 @@ async function bekukanTiSampaiTahap3(page: Page, sesiId: string): Promise<void> 
       (r) => r.url().includes("/seleksi") && r.request().method() === "POST",
       { timeout: 15_000 },
     );
-    await page.getByRole("button", { name: "Kirim Seleksi" }).click();
+    // Tombol Simpan/Kirim Seleksi muncul di atas & bawah daftar (duplikat) — pakai yang pertama.
+    await page.getByRole("button", { name: "Kirim Seleksi" }).first().click();
     const resp = await seleksiResp;
     expect(resp.status()).toBe(201);
 
@@ -350,7 +351,8 @@ test.describe.serial("OPM — Rating Tugas", () => {
 
     await expect(page.getByText(`${total} / ${total} tugas lengkap`)).toBeVisible();
 
-    await page.getByRole("button", { name: "Kirim Jawaban" }).click();
+    // Tombol muncul di atas & bawah form (duplikat) — pakai yang pertama.
+    await page.getByRole("button", { name: "Kirim Jawaban" }).first().click();
     await expect(page.getByText("Jawaban berhasil dikirim!")).toBeVisible({ timeout: 15_000 });
   });
 

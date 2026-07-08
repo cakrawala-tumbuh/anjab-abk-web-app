@@ -81,7 +81,8 @@ describe("ReviewForm — Requirement B: read-only menyembunyikan kontrol edit", 
 
   it("readOnly=false: tombol simpan, ya, tidak ada", () => {
     renderForm(false);
-    expect(screen.getByRole("button", { name: "Simpan Keputusan" })).toBeInTheDocument();
+    // Bar tombol muncul di atas & bawah tabel (duplikat).
+    expect(screen.getAllByRole("button", { name: "Simpan Keputusan" })).toHaveLength(2);
     expect(screen.getAllByRole("button", { name: "Ya" })).toHaveLength(2);
     expect(screen.getAllByRole("button", { name: "Tidak" })).toHaveLength(2);
   });
@@ -96,7 +97,7 @@ describe("ReviewForm — submit memakai kode, bukan nama", () => {
     fireEvent.click(yaButtons[0]); // baris TIaaa (urutan pertama di review.tasks)
 
     await act(async () => {
-      fireEvent.click(screen.getByRole("button", { name: "Simpan Keputusan" }));
+      fireEvent.click(screen.getAllByRole("button", { name: "Simpan Keputusan" })[0]);
     });
 
     await waitFor(() => expect(post).toHaveBeenCalledTimes(1));

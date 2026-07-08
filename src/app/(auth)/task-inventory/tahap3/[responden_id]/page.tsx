@@ -3,7 +3,12 @@ import { notFound } from "next/navigation";
 import { auth, isAdmin } from "@/lib/auth/auth";
 import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
-import type { TiRespondenRead, TiSesiRead, TiTaskTerpilihRead } from "@/lib/api/schema";
+import type {
+  TiDetailRead,
+  TiRespondenRead,
+  TiSesiRead,
+  TiTaskTerpilihRead,
+} from "@/lib/api/schema";
 import { DetailForm } from "./detail-form";
 
 export const metadata = { title: "Tahap 3 — Detailing — ANJAB-ABK" };
@@ -35,7 +40,15 @@ async function fetchPageData(accessToken: string | undefined, respondenId: strin
     terpilih = (ttRes.data ?? []) as TiTaskTerpilihRead[];
   }
 
-  return { responden, sesi, terpilih };
+  const detailRes = await client.GET(
+    "/api/v1/task-inventory/sesi/responden/{responden_id}/detail",
+    {
+      params: { path: { responden_id: respondenId } },
+    },
+  );
+  const detail = (detailRes.data ?? []) as TiDetailRead[];
+
+  return { responden, sesi, terpilih, detail };
 }
 
 export default async function Tahap3Page({ params }: Props) {
@@ -43,7 +56,10 @@ export default async function Tahap3Page({ params }: Props) {
   if (!session) notFound();
 
   const { responden_id } = await params;
-  const { responden, sesi, terpilih } = await fetchPageData(session?.accessToken, responden_id);
+  const { responden, sesi, terpilih, detail } = await fetchPageData(
+    session?.accessToken,
+    responden_id,
+  );
   const admin = isAdmin(session);
 
   return (
@@ -80,6 +96,7 @@ export default async function Tahap3Page({ params }: Props) {
         <DetailForm
           respondenId={responden_id}
           tasks={terpilih}
+          detailAwal={detail}
           accessToken={session?.accessToken}
         />
       )}

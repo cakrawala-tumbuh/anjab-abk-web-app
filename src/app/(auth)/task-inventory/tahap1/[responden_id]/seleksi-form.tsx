@@ -9,6 +9,7 @@ import type { TiCatalogRead } from "@/lib/api/schema";
 interface Props {
   respondenId: string;
   catalog: TiCatalogRead[];
+  terpilihAwal: string[];
   accessToken: string | undefined;
 }
 
@@ -34,14 +35,23 @@ function detilKey(item: TiCatalogRead): string {
  * Catalog sudah difilter backend ke jabatan (dan unit) sesi, sehingga seluruh
  * cascade konsisten dengan jabatan dari sesi yang diikuti partisipan.
  */
-export function SeleksiForm({ respondenId, catalog, accessToken }: Props) {
+export function SeleksiForm({ respondenId, catalog, terpilihAwal, accessToken }: Props) {
   const router = useRouter();
   const [step, setStep] = useState<1 | 2 | 3>(1);
-  const [selectedTP, setSelectedTP] = useState<Set<string>>(new Set());
-  const [selectedDT, setSelectedDT] = useState<Set<string>>(new Set());
-  const [selectedUT, setSelectedUT] = useState<Set<string>>(new Set());
+  // Draft tersimpan hanya berupa daftar task_kode (flat) — state wizard TP/DT
+  // dihitung ulang dari draft sesuai hierarki katalog saat form dimuat.
+  const [selectedTP, setSelectedTP] = useState<Set<string>>(
+    () =>
+      new Set(catalog.filter((t) => terpilihAwal.includes(t.kode)).map((t) => t.tugas_pokok_id)),
+  );
+  const [selectedDT, setSelectedDT] = useState<Set<string>>(
+    () => new Set(catalog.filter((t) => terpilihAwal.includes(t.kode)).map(detilKey)),
+  );
+  const [selectedUT, setSelectedUT] = useState<Set<string>>(() => new Set(terpilihAwal));
   const [submitting, setSubmitting] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [saveMessage, setSaveMessage] = useState<string | null>(null);
 
   // ── Level 1: daftar tugas pokok unik (id → nama) ───────────────────────────
   const tugasPokokList = useMemo(() => {
@@ -131,6 +141,29 @@ export function SeleksiForm({ respondenId, catalog, accessToken }: Props) {
     setStep(3);
   }
 
+  async function handleSave() {
+    setError(null);
+    setSaveMessage(null);
+    setSaving(true);
+    try {
+      const client = withServerAuth(accessToken);
+      const { error: apiError, response } = await client.PUT(
+        "/api/v1/task-inventory/sesi/responden/{responden_id}/seleksi",
+        {
+          params: { path: { responden_id: respondenId } },
+          body: { task_kode: Array.from(selectedUT) },
+        },
+      );
+      const reqId = response.headers.get("x-request-id");
+      if (apiError) throw toApiError(apiError, reqId);
+      setSaveMessage("Draft tersimpan.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Terjadi kesalahan saat menyimpan draft.");
+    } finally {
+      setSaving(false);
+    }
+  }
+
   async function onSubmit() {
     if (selectedUT.size === 0) {
       setError("Pilih minimal satu uraian tugas yang relevan.");
@@ -138,14 +171,22 @@ export function SeleksiForm({ respondenId, catalog, accessToken }: Props) {
     }
     setSubmitting(true);
     setError(null);
+    setSaveMessage(null);
     try {
       const client = withServerAuth(accessToken);
-      const { error: apiError, response } = await client.POST(
+      const { error: saveError, response: saveResponse } = await client.PUT(
         "/api/v1/task-inventory/sesi/responden/{responden_id}/seleksi",
         {
           params: { path: { responden_id: respondenId } },
           body: { task_kode: Array.from(selectedUT) },
         },
+      );
+      const saveReqId = saveResponse.headers.get("x-request-id");
+      if (saveError) throw toApiError(saveError, saveReqId);
+
+      const { error: apiError, response } = await client.POST(
+        "/api/v1/task-inventory/sesi/responden/{responden_id}/seleksi/submit",
+        { params: { path: { responden_id: respondenId } } },
       );
       const reqId = response.headers.get("x-request-id");
       if (apiError) throw toApiError(apiError, reqId);
@@ -167,6 +208,9 @@ export function SeleksiForm({ respondenId, catalog, accessToken }: Props) {
         <div role="alert" className="form-server-error">
           {error}
         </div>
+      )}
+      {saveMessage && !error && (
+        <div className="rounded-md bg-blue-50 p-4 text-sm text-blue-700">{saveMessage}</div>
       )}
 
       {/* Indikator langkah */}
@@ -292,13 +336,22 @@ export function SeleksiForm({ respondenId, catalog, accessToken }: Props) {
             <p className="text-sm text-gray-600 dark:text-gray-400">
               Terpilih: <strong>{selectedUT.size}</strong> uraian tugas
             </p>
-            <button
-              onClick={onSubmit}
-              disabled={submitting}
-              className="rounded-md bg-blue-600 px-5 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-60"
-            >
-              {submitting ? "Mengirim…" : "Kirim Seleksi"}
-            </button>
+            <div className="flex gap-2">
+              <button
+                onClick={handleSave}
+                disabled={saving || submitting}
+                className="rounded-md border border-gray-300 px-5 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-60"
+              >
+                {saving ? "Menyimpan…" : "Simpan"}
+              </button>
+              <button
+                onClick={onSubmit}
+                disabled={submitting || saving}
+                className="rounded-md bg-blue-600 px-5 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-60"
+              >
+                {submitting ? "Mengirim…" : "Kirim Seleksi"}
+              </button>
+            </div>
           </div>
           {uraianGroups.map((g) => (
             <fieldset key={g.label} className="rounded-lg border border-gray-200 bg-white p-4">
@@ -320,6 +373,27 @@ export function SeleksiForm({ respondenId, catalog, accessToken }: Props) {
               </ul>
             </fieldset>
           ))}
+          <div className="flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50 px-4 py-3">
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              Terpilih: <strong>{selectedUT.size}</strong> uraian tugas
+            </p>
+            <div className="flex gap-2">
+              <button
+                onClick={handleSave}
+                disabled={saving || submitting}
+                className="rounded-md border border-gray-300 px-5 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-60"
+              >
+                {saving ? "Menyimpan…" : "Simpan"}
+              </button>
+              <button
+                onClick={onSubmit}
+                disabled={submitting || saving}
+                className="rounded-md bg-blue-600 px-5 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-60"
+              >
+                {submitting ? "Mengirim…" : "Kirim Seleksi"}
+              </button>
+            </div>
+          </div>
           <div className="flex justify-start">
             <button
               onClick={() => {

@@ -43,13 +43,10 @@ async function fetchPageData(accessToken: string | undefined, respondenId: strin
   const responden = respondenRes.data as WcpRespondenRead;
   const dimensi = dimensiRes.map((r) => r.data).filter(Boolean) as WcpDimensiWithItemsRead[];
 
-  let jawaban: WcpJawabanRead[] = [];
-  if (responden.sudah_submit) {
-    const jRes = await client.GET("/api/v1/wcp/sesi/responden/{responden_id}/jawaban", {
-      params: { path: { responden_id: respondenId } },
-    });
-    jawaban = (jRes.data ?? []) as WcpJawabanRead[];
-  }
+  const jRes = await client.GET("/api/v1/wcp/sesi/responden/{responden_id}/jawaban", {
+    params: { path: { responden_id: respondenId } },
+  });
+  const jawaban = (jRes.data ?? []) as WcpJawabanRead[];
 
   return { responden, dimensi, jawaban };
 }

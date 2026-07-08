@@ -9,9 +9,10 @@ vi.mock("next/navigation", () => ({
   useRouter: () => ({ push, refresh }),
 }));
 
+const put = vi.fn();
 const post = vi.fn();
 vi.mock("@/lib/api/client", () => ({
-  withServerAuth: () => ({ POST: post }),
+  withServerAuth: () => ({ PUT: put, POST: post }),
 }));
 
 import { SeleksiForm } from "@/app/(auth)/task-inventory/tahap1/[responden_id]/seleksi-form";
@@ -54,13 +55,17 @@ const catalog: TiCatalogRead[] = [
 ];
 
 function renderForm() {
-  return render(<SeleksiForm respondenId="trsp_1" catalog={catalog} accessToken="tok" />);
+  return render(
+    <SeleksiForm respondenId="trsp_1" catalog={catalog} terpilihAwal={[]} accessToken="tok" />,
+  );
 }
 
 beforeEach(() => {
   push.mockReset();
   refresh.mockReset();
+  put.mockReset();
   post.mockReset();
+  put.mockResolvedValue({ error: null, response: { headers: { get: () => "req-1" } } });
   post.mockResolvedValue({ error: null, response: { headers: { get: () => "req-1" } } });
 });
 
@@ -110,16 +115,23 @@ describe("SeleksiForm — cascade 3 level Tahap 1", () => {
     ).not.toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("checkbox", { name: "Menyusun evaluasi karyawan" }));
+    // Bar tombol Simpan/Kirim Seleksi muncul di atas & bawah daftar (duplikat) — pakai yang pertama.
     await act(async () => {
-      fireEvent.click(screen.getByRole("button", { name: "Kirim Seleksi" }));
+      fireEvent.click(screen.getAllByRole("button", { name: "Kirim Seleksi" })[0]);
     });
 
     await waitFor(() => expect(post).toHaveBeenCalledTimes(1));
-    expect(post).toHaveBeenCalledWith(
+    expect(put).toHaveBeenCalledWith(
       "/api/v1/task-inventory/sesi/responden/{responden_id}/seleksi",
       expect.objectContaining({
         params: { path: { responden_id: "trsp_1" } },
         body: { task_kode: ["TI-A"] },
+      }),
+    );
+    expect(post).toHaveBeenCalledWith(
+      "/api/v1/task-inventory/sesi/responden/{responden_id}/seleksi/submit",
+      expect.objectContaining({
+        params: { path: { responden_id: "trsp_1" } },
       }),
     );
     expect(push).toHaveBeenCalledWith("/kuesioner");

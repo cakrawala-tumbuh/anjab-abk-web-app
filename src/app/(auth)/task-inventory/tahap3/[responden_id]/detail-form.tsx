@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { z } from "zod";
 import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
-import type { TiDetailItem, TiTaskTerpilihRead } from "@/lib/api/schema";
+import type { TiDetailItem, TiDetailRead, TiTaskTerpilihRead } from "@/lib/api/schema";
 
 /** Skema validasi satu entri detail CalHR (dipakai juga di unit test). */
 export const detailItemSchema = z.object({
@@ -58,16 +58,37 @@ function defaultRow(): RowState {
 interface Props {
   respondenId: string;
   tasks: TiTaskTerpilihRead[];
+  detailAwal: TiDetailRead[];
   accessToken: string | undefined;
 }
 
-export function DetailForm({ respondenId, tasks, accessToken }: Props) {
+export function DetailForm({ respondenId, tasks, detailAwal, accessToken }: Props) {
   const router = useRouter();
   const [rows, setRows] = useState<Record<string, RowState>>(() =>
-    Object.fromEntries(tasks.map((t) => [t.kode, defaultRow()])),
+    Object.fromEntries(
+      tasks.map((t) => {
+        const existing = detailAwal.find((d) => d.task_kode === t.kode);
+        if (!existing) return [t.kode, defaultRow()];
+        const row: RowState = {
+          checked: true,
+          sumber_bukti: existing.sumber_bukti,
+          kondisi: existing.kondisi,
+          frekuensi_teks: existing.frekuensi_teks,
+          durasi_per_kali: existing.durasi_per_kali,
+          jam_per_minggu: existing.jam_per_minggu,
+          peak4w_hours: existing.peak4w_hours,
+          ai_mode: existing.ai_mode,
+          va_type: existing.va_type,
+          dcs_flag: existing.dcs_flag,
+        };
+        return [t.kode, row];
+      }),
+    ),
   );
   const [submitting, setSubmitting] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [saveMessage, setSaveMessage] = useState<string | null>(null);
 
   function update(kode: string, patch: Partial<RowState>) {
     setRows((prev) => ({ ...prev, [kode]: { ...prev[kode], ...patch } }));
@@ -75,8 +96,8 @@ export function DetailForm({ respondenId, tasks, accessToken }: Props) {
 
   const checkedCount = Object.values(rows).filter((r) => r.checked).length;
 
-  async function onSubmit() {
-    setError(null);
+  /** Kumpulkan entri detail yang ditandai & valid; null bila ada isian tidak valid. */
+  function buildDetailPayload(): { detail: TiDetailItem[] } | null {
     const detail: TiDetailItem[] = [];
     for (const t of tasks) {
       const r = rows[t.kode];
@@ -95,20 +116,57 @@ export function DetailForm({ respondenId, tasks, accessToken }: Props) {
       });
       if (!parsed.success) {
         setError(`Periksa isian pada task "${t.uraian_tugas}".`);
-        return;
+        return null;
       }
       detail.push(parsed.data as TiDetailItem);
     }
-    if (detail.length === 0) {
+    return { detail };
+  }
+
+  async function handleSave() {
+    setError(null);
+    setSaveMessage(null);
+    const payload = buildDetailPayload();
+    if (!payload) return;
+    setSaving(true);
+    try {
+      const client = withServerAuth(accessToken);
+      const { error: apiError, response } = await client.PUT(
+        "/api/v1/task-inventory/sesi/responden/{responden_id}/detail",
+        { params: { path: { responden_id: respondenId } }, body: payload },
+      );
+      const reqId = response.headers.get("x-request-id");
+      if (apiError) throw toApiError(apiError, reqId);
+      setSaveMessage("Draft tersimpan.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Terjadi kesalahan saat menyimpan draft.");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function onSubmit() {
+    setError(null);
+    setSaveMessage(null);
+    const payload = buildDetailPayload();
+    if (!payload) return;
+    if (payload.detail.length === 0) {
       setError("Tandai minimal satu tugas yang Anda kerjakan, lalu isi rinciannya.");
       return;
     }
     setSubmitting(true);
     try {
       const client = withServerAuth(accessToken);
-      const { error: apiError, response } = await client.POST(
+      const { error: saveError, response: saveResponse } = await client.PUT(
         "/api/v1/task-inventory/sesi/responden/{responden_id}/detail",
-        { params: { path: { responden_id: respondenId } }, body: { detail } },
+        { params: { path: { responden_id: respondenId } }, body: payload },
+      );
+      const saveReqId = saveResponse.headers.get("x-request-id");
+      if (saveError) throw toApiError(saveError, saveReqId);
+
+      const { error: apiError, response } = await client.POST(
+        "/api/v1/task-inventory/sesi/responden/{responden_id}/detail/submit",
+        { params: { path: { responden_id: respondenId } } },
       );
       const reqId = response.headers.get("x-request-id");
       if (apiError) throw toApiError(apiError, reqId);
@@ -132,18 +190,30 @@ export function DetailForm({ respondenId, tasks, accessToken }: Props) {
           {error}
         </div>
       )}
+      {saveMessage && !error && (
+        <div className="rounded-md bg-blue-50 p-4 text-sm text-blue-700">{saveMessage}</div>
+      )}
 
       <div className="flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50 px-4 py-3">
         <p className="text-sm text-gray-600 dark:text-gray-400">
           Ditandai dikerjakan: <strong>{checkedCount}</strong> dari {tasks.length} task
         </p>
-        <button
-          onClick={onSubmit}
-          disabled={submitting}
-          className="rounded-md bg-indigo-600 px-5 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-60"
-        >
-          {submitting ? "Mengirim…" : "Kirim Detail"}
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={handleSave}
+            disabled={saving || submitting}
+            className="rounded-md border border-gray-300 px-5 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-60"
+          >
+            {saving ? "Menyimpan…" : "Simpan"}
+          </button>
+          <button
+            onClick={onSubmit}
+            disabled={submitting || saving}
+            className="rounded-md bg-indigo-600 px-5 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-60"
+          >
+            {submitting ? "Mengirim…" : "Kirim Detail"}
+          </button>
+        </div>
       </div>
 
       <div className="space-y-4">
@@ -277,6 +347,28 @@ export function DetailForm({ respondenId, tasks, accessToken }: Props) {
             </div>
           );
         })}
+      </div>
+
+      <div className="flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50 px-4 py-3">
+        <p className="text-sm text-gray-600 dark:text-gray-400">
+          Ditandai dikerjakan: <strong>{checkedCount}</strong> dari {tasks.length} task
+        </p>
+        <div className="flex gap-2">
+          <button
+            onClick={handleSave}
+            disabled={saving || submitting}
+            className="rounded-md border border-gray-300 px-5 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-60"
+          >
+            {saving ? "Menyimpan…" : "Simpan"}
+          </button>
+          <button
+            onClick={onSubmit}
+            disabled={submitting || saving}
+            className="rounded-md bg-indigo-600 px-5 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-60"
+          >
+            {submitting ? "Mengirim…" : "Kirim Detail"}
+          </button>
+        </div>
       </div>
     </div>
   );

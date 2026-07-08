@@ -30,13 +30,10 @@ async function fetchPageData(accessToken: string | undefined, respondenId: strin
   const responden = respondenRes.data as DcsRespondenRead;
   const subskala = subskalaRes.map((r) => r.data).filter(Boolean) as DcsSubSkalaWithItemsRead[];
 
-  let jawaban: DcsJawabanRead[] = [];
-  if (responden.sudah_submit) {
-    const jRes = await client.GET("/api/v1/dcs/sesi/responden/{responden_id}/jawaban", {
-      params: { path: { responden_id: respondenId } },
-    });
-    jawaban = (jRes.data ?? []) as DcsJawabanRead[];
-  }
+  const jRes = await client.GET("/api/v1/dcs/sesi/responden/{responden_id}/jawaban", {
+    params: { path: { responden_id: respondenId } },
+  });
+  const jawaban = (jRes.data ?? []) as DcsJawabanRead[];
 
   return { responden, subskala, jawaban };
 }

@@ -113,7 +113,8 @@ test.describe.serial("Task Inventory — Tahap 1 Cascade", () => {
       (r) => r.url().includes("/seleksi") && r.request().method() === "POST",
       { timeout: 15_000 },
     );
-    await page.getByRole("button", { name: "Kirim Seleksi" }).click();
+    // Tombol Simpan/Kirim Seleksi muncul di atas & bawah daftar (duplikat) — pakai yang pertama.
+    await page.getByRole("button", { name: "Kirim Seleksi" }).first().click();
     const resp = await seleksiResp;
     expect(resp.status()).toBe(201);
 

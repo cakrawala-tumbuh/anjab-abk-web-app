@@ -32,14 +32,10 @@ async function fetchPageData(accessToken: string | undefined, respondenId: strin
   });
   const catalog = (catalogRes.data ?? []) as TiCatalogRead[];
 
-  let terpilih: string[] = [];
-  if (responden.tahap1_submit) {
-    const selRes = await client.GET(
-      "/api/v1/task-inventory/sesi/responden/{responden_id}/seleksi",
-      { params: { path: { responden_id: respondenId } } },
-    );
-    terpilih = (selRes.data as TiSeleksiRead | undefined)?.task_kode ?? [];
-  }
+  const selRes = await client.GET("/api/v1/task-inventory/sesi/responden/{responden_id}/seleksi", {
+    params: { path: { responden_id: respondenId } },
+  });
+  const terpilih = (selRes.data as TiSeleksiRead | undefined)?.task_kode ?? [];
 
   return { responden, sesi, catalog, terpilih };
 }
@@ -88,6 +84,7 @@ export default async function Tahap1Page({ params }: Props) {
         <SeleksiForm
           respondenId={responden_id}
           catalog={catalog}
+          terpilihAwal={terpilih}
           accessToken={session?.accessToken}
         />
       )}

@@ -112,6 +112,38 @@ test.describe.serial("Kuesioner DCS — Alur Partisipan", () => {
     ).toBeVisible();
   });
 
+  test("partisipan menyimpan draft sebagian jawaban lalu melanjutkan", async ({ page }) => {
+    await loginViaAuthentik(page, "part-e2e", "PartE2e123!");
+    await page.goto("/kuesioner");
+    await page.waitForLoadState("networkidle");
+
+    // Idempoten — jika sudah submit final sebelumnya, skenario draft tidak relevan lagi.
+    if ((await page.content()).includes("Sudah diisi")) return;
+
+    await page.getByRole("link", { name: "Isi Sekarang" }).click();
+    await page.waitForURL(/\/dcs\/isi\//, { timeout: 10_000 });
+    await page.waitForLoadState("networkidle");
+
+    // Isi 10 item pertama saja, lalu Simpan (draft — belum submit final).
+    const radios = page.locator('input[type="radio"][value="3"]');
+    for (let i = 0; i < 10; i++) {
+      await radios.nth(i).evaluate((el) => (el as HTMLInputElement).click());
+    }
+    const saveResp = page.waitForResponse(
+      (r) => r.request().method() === "PUT" && r.url().includes("/jawaban") && r.status() === 200,
+      { timeout: 10_000 },
+    );
+    await page.getByRole("button", { name: "Simpan" }).first().click();
+    await saveResp;
+    await expect(page.getByText("Draft tersimpan.")).toBeVisible();
+
+    // Reload — jawaban sebagian harus tetap terisi (prefill dari draft tersimpan di server).
+    await page.reload();
+    await page.waitForLoadState("networkidle");
+    const checkedAfterReload = page.locator('input[type="radio"]:checked');
+    await expect(checkedAfterReload).toHaveCount(10);
+  });
+
   test("partisipan mengisi dan mengirim seluruh item DCS", async ({ page }) => {
     await loginViaAuthentik(page, "part-e2e", "PartE2e123!");
     await page.goto("/kuesioner");
@@ -140,8 +172,8 @@ test.describe.serial("Kuesioner DCS — Alur Partisipan", () => {
     // Progress bar harus menunjukkan 42/42 sebelum submit
     await expect(page.getByText("42 / 42 pernyataan dijawab")).toBeVisible();
 
-    // Kirim jawaban
-    await page.getByRole("button", { name: "Kirim Jawaban" }).click();
+    // Kirim jawaban — tombol muncul di atas & bawah form (duplikat), pakai yang pertama.
+    await page.getByRole("button", { name: "Kirim Jawaban" }).first().click();
     await expect(page.getByText("Jawaban berhasil dikirim!")).toBeVisible({ timeout: 15_000 });
   });
 

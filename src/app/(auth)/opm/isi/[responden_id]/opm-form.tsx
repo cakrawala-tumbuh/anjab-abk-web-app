@@ -65,7 +65,9 @@ export function OpmForm({ respondenId, task, jawabanAwal, sudahSubmit, accessTok
 
   const [rating, setRating] = useState<Record<string, RatingState>>(initialValues);
   const [submitting, setSubmitting] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [saveMessage, setSaveMessage] = useState<string | null>(null);
   const [sukses, setSukses] = useState(false);
 
   const sortedTask = task.slice().sort((a, b) => a.urutan - b.urutan);
@@ -86,6 +88,45 @@ export function OpmForm({ respondenId, task, jawabanAwal, sudahSubmit, accessTok
     }));
   }
 
+  /** Hanya task yang sudah lengkap 3 dimensi bisa dikirim — item OPM tidak punya field parsial. */
+  function buildJawabanPayload() {
+    return sortedTask
+      .filter((t) => isTaskLengkap(rating[t.task_kode]))
+      .map((t) => {
+        const r = rating[t.task_kode]!;
+        return {
+          task_kode: t.task_kode,
+          importance: r.importance!,
+          frequency: r.frequency!,
+          criticality: r.criticality!,
+          catatan: r.catatan || null,
+        };
+      });
+  }
+
+  async function handleSave() {
+    setError(null);
+    setSaveMessage(null);
+    setSaving(true);
+    try {
+      const client = withServerAuth(accessToken);
+      const { error: apiError, response } = await client.PUT(
+        "/api/v1/opm/sesi/responden/{responden_id}/jawaban",
+        {
+          params: { path: { responden_id: respondenId } },
+          body: { jawaban: buildJawabanPayload() },
+        },
+      );
+      const reqId = response.headers.get("x-request-id");
+      if (apiError) throw toApiError(apiError, reqId);
+      setSaveMessage("Draft tersimpan.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Terjadi kesalahan saat menyimpan draft.");
+    } finally {
+      setSaving(false);
+    }
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!allComplete) {
@@ -93,26 +134,23 @@ export function OpmForm({ respondenId, task, jawabanAwal, sudahSubmit, accessTok
       return;
     }
     setError(null);
+    setSaveMessage(null);
     setSubmitting(true);
     try {
       const client = withServerAuth(accessToken);
-      const { error: apiError, response } = await client.POST(
+      const { error: saveError, response: saveResponse } = await client.PUT(
         "/api/v1/opm/sesi/responden/{responden_id}/jawaban",
         {
           params: { path: { responden_id: respondenId } },
-          body: {
-            jawaban: sortedTask.map((t) => {
-              const r = rating[t.task_kode]!;
-              return {
-                task_kode: t.task_kode,
-                importance: r.importance!,
-                frequency: r.frequency!,
-                criticality: r.criticality!,
-                catatan: r.catatan || null,
-              };
-            }),
-          },
+          body: { jawaban: buildJawabanPayload() },
         },
+      );
+      const saveReqId = saveResponse.headers.get("x-request-id");
+      if (saveError) throw toApiError(saveError, saveReqId);
+
+      const { error: apiError, response } = await client.POST(
+        "/api/v1/opm/sesi/responden/{responden_id}/jawaban/submit",
+        { params: { path: { responden_id: respondenId } } },
       );
       const reqId = response.headers.get("x-request-id");
       if (apiError) throw toApiError(apiError, reqId);
@@ -145,6 +183,36 @@ export function OpmForm({ respondenId, task, jawabanAwal, sudahSubmit, accessTok
       {error && (
         <div role="alert" className="rounded-md bg-red-50 p-4 text-sm text-red-700">
           {error}
+        </div>
+      )}
+      {saveMessage && !error && (
+        <div className="rounded-md bg-blue-50 p-4 text-sm text-blue-700">{saveMessage}</div>
+      )}
+
+      {!sudahSubmit && (
+        <div className="border-b border-gray-200 bg-white py-4">
+          <div className="flex items-center justify-between">
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              {jumlahLengkap} / {sortedTask.length} tugas lengkap
+            </p>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={handleSave}
+                disabled={saving || submitting}
+                className="rounded-md border border-gray-300 px-6 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {saving ? "Menyimpan…" : "Simpan"}
+              </button>
+              <button
+                type="submit"
+                disabled={submitting || saving || !allComplete}
+                className="rounded-md bg-blue-600 px-6 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {submitting ? "Mengirim…" : "Kirim Jawaban"}
+              </button>
+            </div>
+          </div>
         </div>
       )}
 
@@ -222,13 +290,23 @@ export function OpmForm({ respondenId, task, jawabanAwal, sudahSubmit, accessTok
             <p className="text-sm text-gray-500 dark:text-gray-400">
               {jumlahLengkap} / {sortedTask.length} tugas lengkap
             </p>
-            <button
-              type="submit"
-              disabled={submitting || !allComplete}
-              className="rounded-md bg-blue-600 px-6 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              {submitting ? "Mengirim…" : "Kirim Jawaban"}
-            </button>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={handleSave}
+                disabled={saving || submitting}
+                className="rounded-md border border-gray-300 px-6 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {saving ? "Menyimpan…" : "Simpan"}
+              </button>
+              <button
+                type="submit"
+                disabled={submitting || saving || !allComplete}
+                className="rounded-md bg-blue-600 px-6 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {submitting ? "Mengirim…" : "Kirim Jawaban"}
+              </button>
+            </div>
           </div>
         </div>
       )}
