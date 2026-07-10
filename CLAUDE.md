@@ -50,6 +50,29 @@ src/
 
 ## Revisi Desain
 
+### [2026-07-10] Shell gaya Gmail: sidebar kiri collapsible
+
+Top-nav horizontal lama diganti shell gaya Gmail — **top bar** + **sidebar kiri
+collapsible** (rail ikon ↔ full ikon+label di desktop, drawer overlay di mobile),
+meniru pola `school-partner-portal-web`. Menu bersifat role-based (admin vs
+partisipan); Master Data jadi grup collapsible bertingkat di sidebar (bukan tab
+horizontal lagi).
+
+- Komponen baru di `src/components/shell/`: `app-shell.tsx` (kerangka top bar +
+  sidebar + `<main>`, state `railExpanded` dipersist ke `localStorage` key
+  `anjab_sidebar_rail`, state `mobileOpen` tidak dipersist), `top-bar.tsx`
+  (hamburger, logo, nama user, `ThemeToggle`, link Keluar), `sidebar.tsx`
+  (konstanta menu `NAV_ADMIN`/`NAV_PARTISIPAN` + helper `navForGroups`/
+  `isActiveHref`, diekspor agar testable).
+- `src/app/(auth)/layout.tsx` kini merender `<AppShell groups={...} username={...}>`;
+  batas `max-w-6xl` lama dihapus (main jadi fluid).
+- `src/app/(auth)/master-data/layout.tsx`: tab horizontal `NAV_ITEMS` dihapus —
+  daftar 11 sub-item Master Data pindah ke `sidebar.tsx` (`MASTER_DATA_ITEMS`)
+  sebagai grup collapsible.
+- Dependency baru: `lucide-react` (ikon sidebar/top bar).
+- Sistem tema (`ThemeProvider`/`ThemeToggle` custom, class-based dark mode)
+  **tidak diubah** — bukan `next-themes`.
+
 ### [2026-07-04] Time Study: hapus sesi, penugasan berbasis partisipan
 
 Time Study tidak lagi memakai sesi. Admin menugaskan partisipan langsung (1

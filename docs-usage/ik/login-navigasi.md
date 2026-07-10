@@ -35,12 +35,34 @@ Kartu yang muncul bergantung peran:
 
 ---
 
-## C. Bilah Navigasi Atas
+## C. Top Bar & Sidebar
 
-- **ANJAB-ABK** (kiri) — kembali ke Dashboard.
-- Menu tengah (khusus Administrator): **Master Data**, **Partisipan**, **DCS**, **WCP**,
-  **OPM**, **Task Inventory**.
-- Kanan: nama Anda, **tombol tema** (terang/gelap), dan **Keluar**.
+Navigasi terdiri dari **top bar** (bilah atas) dan **sidebar** (menu kiri):
+
+- **Top bar**: ikon **☰** (kiri) untuk buka/tutup sidebar, logo **ANJAB-ABK**
+  (kembali ke Dashboard), dan di kanan: nama Anda, **tombol tema** (terang/gelap),
+  dan **Keluar**.
+- **Sidebar** (kiri) — daftar menu bergantung peran:
+
+  === "Administrator"
+
+        **Dashboard**, **Partisipan**, **Task Inventory**, **Time Study**, **OPM**,
+        **DCS**, **WCP**, dan grup **Master Data** (lihat [IK-02](master-data.md)
+        untuk 11 sub-menunya).
+
+  === "Partisipan"
+
+        **Dashboard** dan **Kuesioner Saya**.
+
+Di layar lebar (desktop), klik ikon **☰** untuk mempersempit sidebar menjadi
+rail berisi ikon saja, atau melebarkannya kembali menampilkan label menu —
+pilihan ini diingat aplikasi untuk kunjungan berikutnya. Di layar sempit
+(mobile/tablet), ikon **☰** membuka sidebar sebagai panel yang menutupi layar;
+ketuk di luar panel atau pilih menu untuk menutupnya.
+
+Grup **Master Data** dapat dibuka/ditutup dengan mengklik namanya di sidebar
+untuk menampilkan atau menyembunyikan 11 sub-menunya. Saat sidebar dipersempit
+menjadi rail, klik ikon Master Data langsung membuka halaman **Master Data**.
 
 ---
 

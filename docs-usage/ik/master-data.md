@@ -3,9 +3,11 @@
 Langkah teknis mengelola data referensi yang dipakai di seluruh aplikasi.
 Akses: **Administrator**.
 
-Buka **Master Data** dari bilah navigasi. Tab tersedia: **Jenjang Pendidikan**,
-**Sekolah**, **Jabatan**, **SME Panel**, **Mata Pelajaran**, **Instrumen DCS**,
-**Instrumen WCP**, **Instrumen TI**, **Tugas Pokok**, **Detil Tugas**, **Uraian Tugas**.
+Buka grup **Master Data** di sidebar kiri untuk menampilkan sub-menunya:
+**Jenjang Pendidikan**, **Sekolah**, **Jabatan**, **SME Panel**, **Mata Pelajaran**,
+**Instrumen DCS**, **Instrumen WCP**, **Instrumen TI**, **Tugas Pokok**, **Detil Tugas**,
+**Uraian Tugas**. Lihat [IK-01 bagian C](login-navigasi.md#c-top-bar-sidebar) untuk cara
+membuka/menutup grup ini.
 
 ---
 
@@ -162,4 +164,4 @@ kombinasi unit × jabatan yang akan disurvei sudah memiliki task.
 
 ---
 
-<!-- Screenshot: tab navigasi Master Data dan salah satu formulir tambah data -->
+<!-- Screenshot: grup Master Data terbuka di sidebar dan salah satu formulir tambah data -->

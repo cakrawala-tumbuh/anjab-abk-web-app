@@ -10,7 +10,7 @@ Akses: **Administrator**.
 
 ## A. Melihat Daftar Partisipan
 
-1. Buka **Partisipan** dari bilah navigasi (atau kartu **Kelola Partisipan** di Dashboard).
+1. Buka **Partisipan** dari sidebar (atau kartu **Kelola Partisipan** di Dashboard).
 2. Daftar menampilkan kolom: **Nama**, **Email**, **Satuan Pendidikan**,
    **Jabatan Utama**, **Masa Kerja**, **Status**.
 3. Klik **Nama** untuk membuka halaman detail partisipan.

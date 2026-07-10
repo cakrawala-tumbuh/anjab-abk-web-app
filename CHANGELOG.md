@@ -7,6 +7,20 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [2.2.0] - 2026-07-10
+
+### Diubah
+
+- **Shell gaya Gmail — sidebar kiri collapsible menggantikan top-nav horizontal.**
+  Navigasi kini terdiri dari top bar (hamburger, logo, nama user, tema, Keluar)
+  + sidebar kiri role-based: rail berisi ikon saja atau full ikon+label di
+  desktop (pilihan dipersist ke `localStorage`), drawer overlay penuh di
+  mobile. Menu **Master Data** menjadi grup collapsible bertingkat di sidebar
+  (11 sub-item) — tab horizontal di halaman Master Data dihapus.
+  - Komponen baru: `src/components/shell/{app-shell,top-bar,sidebar}.tsx`.
+  - Dependency baru: `lucide-react` (ikon sidebar/top bar).
+  - Sistem tema (`ThemeProvider`/`ThemeToggle` custom) tidak berubah.
+
 ## [2.1.0] - 2026-07-08
 
 ### Ditambahkan
