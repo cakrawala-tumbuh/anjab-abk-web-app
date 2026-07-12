@@ -609,7 +609,7 @@ export interface paths {
         get: operations["wcp_sesi_get"];
         put?: never;
         post?: never;
-        /** Hapus sesi WCP (hanya saat DRAFT) */
+        /** Hapus sesi WCP (DRAFT bebas; status lain wajib paksa=true) */
         delete: operations["wcp_sesi_delete"];
         options?: never;
         head?: never;
@@ -843,7 +843,7 @@ export interface paths {
         get: operations["opm_sesi_get"];
         put?: never;
         post?: never;
-        /** Hapus sesi OPM (hanya saat DRAFT) */
+        /** Hapus sesi OPM (DRAFT bebas; status lain wajib paksa=true) */
         delete: operations["opm_sesi_delete"];
         options?: never;
         head?: never;
@@ -1121,7 +1121,7 @@ export interface paths {
         get: operations["dcs_sesi_get"];
         put?: never;
         post?: never;
-        /** Hapus sesi DCS (hanya saat DRAFT) */
+        /** Hapus sesi DCS (DRAFT bebas; status lain wajib paksa=true) */
         delete: operations["dcs_sesi_delete"];
         options?: never;
         head?: never;
@@ -1387,7 +1387,7 @@ export interface paths {
         get: operations["taskinv_sesi_get"];
         put?: never;
         post?: never;
-        /** Hapus sesi Task Inventory (hanya saat DRAFT) */
+        /** Hapus sesi Task Inventory (DRAFT bebas; status lain wajib paksa=true) */
         delete: operations["taskinv_sesi_delete"];
         options?: never;
         head?: never;
@@ -8808,7 +8808,10 @@ export interface operations {
     };
     wcp_sesi_delete: {
         parameters: {
-            query?: never;
+            query?: {
+                /** @description Paksa hapus sesi non-DRAFT beserta SELURUH responden & jawabannya (permanen). */
+                paksa?: boolean;
+            };
             header?: never;
             path: {
                 /** @description ID sesi WCP. */
@@ -8834,6 +8837,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Bukan admin. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Sesi WCP tidak ditemukan. */
             404: {
                 headers: {
@@ -8843,13 +8855,13 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
-            /** @description Validation Error */
+            /** @description Sesi bukan DRAFT dan paksa tidak di-set. */
             422: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
             /** @description Terlalu banyak permintaan. */
@@ -9860,7 +9872,10 @@ export interface operations {
     };
     opm_sesi_delete: {
         parameters: {
-            query?: never;
+            query?: {
+                /** @description Paksa hapus sesi non-DRAFT beserta SELURUH responden & jawabannya (permanen). */
+                paksa?: boolean;
+            };
             header?: never;
             path: {
                 /** @description ID sesi OPM. */
@@ -9886,6 +9901,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Bukan admin. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Sesi OPM tidak ditemukan. */
             404: {
                 headers: {
@@ -9895,13 +9919,13 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
-            /** @description Validation Error */
+            /** @description Sesi bukan DRAFT dan paksa tidak di-set. */
             422: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
             /** @description Terlalu banyak permintaan. */
@@ -11039,7 +11063,10 @@ export interface operations {
     };
     dcs_sesi_delete: {
         parameters: {
-            query?: never;
+            query?: {
+                /** @description Paksa hapus sesi non-DRAFT beserta SELURUH responden & jawabannya (permanen). */
+                paksa?: boolean;
+            };
             header?: never;
             path: {
                 /** @description ID sesi DCS. */
@@ -11065,6 +11092,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Bukan admin. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Sesi DCS tidak ditemukan. */
             404: {
                 headers: {
@@ -11074,13 +11110,13 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
-            /** @description Validation Error */
+            /** @description Sesi bukan DRAFT dan paksa tidak di-set. */
             422: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
             /** @description Terlalu banyak permintaan. */
@@ -12151,7 +12187,10 @@ export interface operations {
     };
     taskinv_sesi_delete: {
         parameters: {
-            query?: never;
+            query?: {
+                /** @description Paksa hapus sesi non-DRAFT beserta SELURUH responden & jawabannya (permanen). */
+                paksa?: boolean;
+            };
             header?: never;
             path: {
                 /** @description ID sesi. */
@@ -12177,6 +12216,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Bukan admin. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Sesi Task Inventory tidak ditemukan. */
             404: {
                 headers: {
@@ -12186,13 +12234,13 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
-            /** @description Validation Error */
+            /** @description Sesi bukan DRAFT dan paksa tidak di-set. */
             422: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
             /** @description Terlalu banyak permintaan. */
@@ -15026,7 +15074,6 @@ export interface operations {
         };
     };
 }
-
 export type JabatanRead = components["schemas"]["JabatanRead"];
 export type JenjangPendidikanRead = components["schemas"]["JenjangPendidikanRead"];
 export type MataPelajaranRead = components["schemas"]["MataPelajaranRead"];

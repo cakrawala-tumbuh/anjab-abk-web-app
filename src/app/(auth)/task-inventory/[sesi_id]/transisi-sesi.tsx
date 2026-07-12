@@ -85,15 +85,19 @@ export function TransisiSesi({ sesi, accessToken }: Props) {
     }
   }
 
-  async function doHapus() {
-    if (!confirm("Hapus sesi ini? Tindakan tidak dapat dibatalkan.")) return;
+  async function doHapus(paksa: boolean) {
+    const pesan = paksa
+      ? "Hapus PAKSA sesi ini beserta SELURUH responden, seleksi, detail, dan " +
+        "keputusan Tahap 2-nya? Tindakan ini PERMANEN dan TIDAK DAPAT DIBATALKAN."
+      : "Hapus sesi ini? Tindakan tidak dapat dibatalkan.";
+    if (!confirm(pesan)) return;
     setLoading(true);
     setError(null);
     try {
       const client = withServerAuth(accessToken);
       const { error: apiError, response } = await client.DELETE(
         "/api/v1/task-inventory/sesi/{sesi_id}",
-        { params: { path: { sesi_id: sesi.id } } },
+        { params: { path: { sesi_id: sesi.id }, query: { paksa } } },
       );
       const reqId = response.headers.get("x-request-id");
       if (apiError) throw toApiError(apiError, reqId);
@@ -122,7 +126,7 @@ export function TransisiSesi({ sesi, accessToken }: Props) {
             {loading ? "Memproses…" : "Mulai Tahap 1"}
           </button>
           <button
-            onClick={doHapus}
+            onClick={() => doHapus(false)}
             disabled={loading}
             className="rounded-md border border-red-300 px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 disabled:opacity-60"
           >
@@ -175,6 +179,18 @@ export function TransisiSesi({ sesi, accessToken }: Props) {
         <p className="text-sm font-medium text-green-700">
           ✓ Analisis selesai. Hasil tersedia di bawah.
         </p>
+      )}
+
+      {sesi.status !== "DRAFT" && (
+        <div className="mt-1 w-full border-t border-red-200 pt-3 dark:border-red-900">
+          <button
+            onClick={() => doHapus(true)}
+            disabled={loading}
+            className="text-xs text-red-600 underline hover:text-red-800 disabled:opacity-50 dark:text-red-400 dark:hover:text-red-300"
+          >
+            Hapus paksa sesi ini — SELURUH responden, seleksi & detail ikut terhapus permanen
+          </button>
+        </div>
       )}
     </div>
   );

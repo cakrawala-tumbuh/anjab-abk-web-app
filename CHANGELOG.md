@@ -7,16 +7,39 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [2.3.0] - 2026-07-12
+
+### Ditambahkan
+
+- **Force-delete sesi (admin)** — `transisi-sesi.tsx` (DCS/WCP/OPM/Task
+  Inventory) kini menampilkan tombol "Hapus paksa sesi ini" untuk sesi
+  berstatus non-DRAFT, mengirim `paksa=true` ke backend dengan konfirmasi
+  tegas (SELURUH responden & jawaban ikut terhapus permanen). Tombol "Hapus
+  Sesi" biasa tetap hanya untuk DRAFT.
+- E2E `hapus-sesi.spec.ts` — cakupan pertama untuk alur delete sesi (DRAFT
+  langsung, non-DRAFT via force-delete).
+
+### Diperbaiki
+
+- **Error delete anggota SME panel yang ditelan diam-diam** —
+  `HapusAnggotaButton` (`anggota-form.tsx`) tidak memeriksa `error` dari
+  respons `DELETE`, sehingga kegagalan backend tidak pernah tampil ke user.
+
+### Diubah
+
+- `schema.ts` diregenerasi mengikuti `openapi.json` backend terbaru (query
+  param `paksa` pada endpoint DELETE sesi).
+
 ## [2.2.0] - 2026-07-10
 
 ### Diubah
 
 - **Shell gaya Gmail — sidebar kiri collapsible menggantikan top-nav horizontal.**
   Navigasi kini terdiri dari top bar (hamburger, logo, nama user, tema, Keluar)
-  + sidebar kiri role-based: rail berisi ikon saja atau full ikon+label di
-  desktop (pilihan dipersist ke `localStorage`), drawer overlay penuh di
-  mobile. Menu **Master Data** menjadi grup collapsible bertingkat di sidebar
-  (11 sub-item) — tab horizontal di halaman Master Data dihapus.
+  - sidebar kiri role-based: rail berisi ikon saja atau full ikon+label di
+    desktop (pilihan dipersist ke `localStorage`), drawer overlay penuh di
+    mobile. Menu **Master Data** menjadi grup collapsible bertingkat di sidebar
+    (11 sub-item) — tab horizontal di halaman Master Data dihapus.
   - Komponen baru: `src/components/shell/{app-shell,top-bar,sidebar}.tsx`.
   - Dependency baru: `lucide-react` (ikon sidebar/top bar).
   - Sistem tema (`ThemeProvider`/`ThemeToggle` custom) tidak berubah.

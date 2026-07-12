@@ -115,10 +115,16 @@ export function HapusAnggotaButton({ panelId, partisipanId, accessToken }: Hapus
     setLoading(true);
     try {
       const client = withServerAuth(accessToken);
-      await client.DELETE("/api/v1/sme-panel/{panel_id}/anggota/{partisipan_id}", {
-        params: { path: { panel_id: panelId, partisipan_id: partisipanId } },
-      });
+      const { error, response } = await client.DELETE(
+        "/api/v1/sme-panel/{panel_id}/anggota/{partisipan_id}",
+        {
+          params: { path: { panel_id: panelId, partisipan_id: partisipanId } },
+        },
+      );
+      if (error) throw toApiError(error, response.headers.get("x-request-id"));
       router.refresh();
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Terjadi kesalahan.");
     } finally {
       setLoading(false);
     }
