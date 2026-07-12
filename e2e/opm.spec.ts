@@ -269,11 +269,17 @@ test.describe.serial("OPM — Rating Tugas", () => {
     const jabatanNama = await tentukanJabatanKatalog(page);
     expect(jabatanNama.length).toBeGreaterThan(0);
 
-    // SME panel jabatan tsb, beranggotakan PARTISIPAN_NAMA.
+    // SME panel jabatan tsb, beranggotakan PARTISIPAN_NAMA. Sejak backend
+    // auto-populate responden TI dari SME panel saat sesi dibuat (lihat
+    // CLAUDE.md backend, revisi bulk-assign), sesi TI di bawah akan langsung
+    // punya 1 responden bertaut PARTISIPAN_NAMA tanpa langkah tambahan —
+    // `daftarkanRespondenPartisipan` (guard idempoten by nama) akan mendeteksi
+    // baris ini sudah ada dan tidak menambah duplikat, KARENA auto-populate
+    // ikut me-resolve `nama` dari data partisipan (bukan anonim).
     await pastikanSMEPanel(page, jabatanNama);
 
-    // Sesi Task Inventory PERIODE_TI → daftarkan responden bertaut partisipan →
-    // bekukan hingga Tahap 3 (task_frozen=True).
+    // Sesi Task Inventory PERIODE_TI → daftarkan responden bertaut partisipan
+    // (no-op bila sudah ter-auto-populate) → bekukan hingga Tahap 3.
     const tiSesiId = await bukaAtauBuatTiSesi(page, jabatanNama);
     await daftarkanRespondenPartisipan(page, tiSesiId);
     await bekukanTiSampaiTahap3(page, tiSesiId);

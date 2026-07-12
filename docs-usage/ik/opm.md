@@ -74,6 +74,19 @@ setelahnya.
 3. Untuk menghapus responden yang **belum mengisi**, klik **Hapus** pada baris terkait
    (konfirmasi muncul).
 
+### D.1 Menambah Banyak Responden Sekaligus
+
+Di bawah formulir **Tambah Responden**, tersedia bagian **Atau tugaskan banyak
+sekaligus**:
+
+1. Centang anggota SME panel yang belum terdaftar (**Pilih semua**/**Batalkan pilihan**
+   tersedia).
+2. Klik **Tugaskan Terpilih (N)**. Nama & label jabatan responden diisi otomatis —
+   tidak perlu diketik manual seperti formulir tunggal.
+3. Aplikasi menampilkan ringkasan berhasil/dilewati. Partisipan dilewati bila: sudah
+   terdaftar, duplikat dalam pilihan, bukan anggota SME panel, atau sesi sudah mencapai
+   **Maks. Responden**.
+
 ---
 
 ## E. Mengisi Kuesioner (Partisipan)

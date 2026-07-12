@@ -22,6 +22,12 @@ Status analisis: `DRAFT → TAHAP1 → TAHAP2 → TAHAP3 → CLOSED → ANALYZED
    - **Catatan (opsional)**.
 4. Klik **Mulai Analisis Jabatan**. Aplikasi membuka detail analisis dengan status **Draft**.
 
+!!! note "Responden otomatis dari SME Panel"
+Bila jabatan yang dipilih sudah memiliki **SME Panel** berisi anggota, seluruh
+anggota panel otomatis muncul sebagai responden begitu analisis dibuat — tanpa
+langkah tambahan. Bagian B di bawah tetap dipakai untuk menambah anggota yang
+bergabung belakangan, atau bila jabatan belum punya panel saat analisis dibuat.
+
 ---
 
 ## B. Mendaftarkan Responden
@@ -35,6 +41,18 @@ Status analisis: `DRAFT → TAHAP1 → TAHAP2 → TAHAP3 → CLOSED → ANALYZED
    **Tahap 1** dan **Tahap 3** = **Belum**.
 3. Untuk menghapus responden yang belum mengisi, klik **Hapus** pada kolom **Aksi**
    (konfirmasi _Hapus responden "{nama}" dari analisis ini?_).
+
+### B.1 Mendaftarkan Banyak Responden Sekaligus
+
+Di bawah formulir **Tambah Responden**, tersedia bagian **Atau tugaskan banyak
+sekaligus**:
+
+1. Centang anggota SME panel yang akan didaftarkan sebagai responden (**Pilih
+   semua**/**Batalkan pilihan** tersedia).
+2. Klik **Tugaskan Terpilih (N)**.
+3. Aplikasi menampilkan ringkasan berhasil/dilewati. Partisipan dilewati bila: sudah
+   terdaftar sebagai responden, duplikat dalam pilihan, **bukan anggota SME panel**
+   jabatan ini, atau sesi sudah mencapai **Maks. Responden**.
 
 ---
 

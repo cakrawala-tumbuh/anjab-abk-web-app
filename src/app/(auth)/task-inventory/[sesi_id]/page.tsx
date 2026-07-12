@@ -15,6 +15,7 @@ import type {
 import { TransisiSesi } from "./transisi-sesi";
 import { AturKoordinator } from "./atur-koordinator";
 import { TambahResponden } from "./tambah-responden";
+import { AssignRespondenBanyak } from "./assign-responden-banyak";
 import { HapusResponden } from "./hapus-responden";
 
 export const metadata = { title: "Detail Analisis Jabatan — Task Inventory — ANJAB-ABK" };
@@ -217,11 +218,23 @@ export default async function TiSesiDetailPage({ params }: Props) {
               agar daftar partisipan dapat dipilih.
             </div>
           ) : (
-            <TambahResponden
-              sesiId={sesi.id}
-              partisipan={partisipan}
-              accessToken={session?.accessToken}
-            />
+            <>
+              <TambahResponden
+                sesiId={sesi.id}
+                partisipan={partisipan}
+                accessToken={session?.accessToken}
+              />
+              <h3 className="mt-6 text-sm font-medium text-gray-500 dark:text-gray-400">
+                Atau tugaskan banyak sekaligus
+              </h3>
+              <div className="mt-2">
+                <AssignRespondenBanyak
+                  sesiId={sesi.id}
+                  partisipan={partisipan}
+                  accessToken={session?.accessToken}
+                />
+              </div>
+            </>
           )}
         </div>
       )}

@@ -44,12 +44,20 @@ export default async function TimeStudyPenugasanPage() {
             Studi Waktu — tugaskan partisipan untuk mencatat log harian mereka.
           </p>
         </div>
-        <Link
-          href="/time-study/buat"
-          className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
-        >
-          + Tugaskan Partisipan
-        </Link>
+        <div className="flex gap-3">
+          <Link
+            href="/time-study/tugaskan-banyak"
+            className="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-800"
+          >
+            + Tugaskan Banyak Sekaligus
+          </Link>
+          <Link
+            href="/time-study/buat"
+            className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+          >
+            + Tugaskan Partisipan
+          </Link>
+        </div>
       </div>
 
       {penugasan.length === 0 ? (

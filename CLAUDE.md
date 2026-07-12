@@ -50,6 +50,37 @@ src/
 
 ## Revisi Desain
 
+### [2026-07-13] UI penugasan massal (bulk) Time Study, Task Inventory, OPM
+
+Mengikuti endpoint bulk-assign baru di backend (`anjab-abk-backend`, lihat entri
+`[2026-07-13]` di `CLAUDE.md` backend) — TS, TI, OPM tidak seperti DCS/WCP:
+endpoint **single tetap ada**, jadi form bulk ditambahkan **berdampingan**, bukan
+menggantikan (`tambah-responden.tsx`/`ts-penugasan-form.tsx` tidak disentuh).
+
+- **Komponen baru**: `task-inventory/[sesi_id]/assign-responden-banyak.tsx`,
+  `opm/[sesi_id]/assign-responden-banyak.tsx` (checkbox multi-select, pola sama
+  dengan `wcp/assign-responden.tsx`) — dirender setelah form single yang sudah
+  ada di halaman detail sesi masing-masing, guard status sama (TI: DRAFT/TAHAP1;
+  OPM: DRAFT/OPEN).
+- **Halaman baru**: `/time-study/tugaskan-banyak` (TS tidak punya form kedua di
+  halaman yang sama — assign selalu di halaman terpisah). Filter partisipan =
+  belum punya `TsPenugasanRead` aktif.
+- **Response bulk BUKAN array datar** seperti WCP/DCS, melainkan
+  `{created: T[], skipped: [{partisipan_id, alasan}]}` — UI wajib menampilkan
+  ringkasan setelah submit (jumlah berhasil + daftar dilewati dengan alasan
+  berbahasa Indonesia). Mapping kode → label di `src/lib/format/bulk-skip-alasan.ts`,
+  dipakai identik di ketiga komponen baru.
+- **`src/lib/api/schema.ts` — perhatikan nama tipe generic Pydantic setelah
+  `gen:api`**: `BulkAssignResult[T]` di-generate sebagai
+  `BulkAssignResult_TsPenugasanRead_`/`BulkAssignResult_TiRespondenRead_`/
+  `BulkAssignResult_OpmRespondenRead_` (openapi-typescript menyuffix nama
+  generic dengan parameter tipenya) — di-alias di convenience re-exports
+  akhir file menjadi `TsPenugasanBulkResult`/`TiRespondenBulkResult`/
+  `OpmRespondenBulkResult` (lebih ergonomis dipakai di komponen).
+- **Daftar partisipan checkbox TI/OPM** memakai filter yang SAMA dengan prop
+  yang sudah diteruskan ke form single (anggota SME panel, untuk OPM dikurangi
+  yang sudah jadi responden) — tidak ada filter tambahan di komponen bulk.
+
 ### [2026-07-12] DCS & WCP: hapus sesi, ganti pola instrumen singleton + hasil agregat baru
 
 Mengikuti refactor backend (entitas sesi DCS/WCP dihapus, diganti pola

@@ -25,6 +25,22 @@ analisis" di alat ukur ini.
    - **Catatan** (opsional)
 4. Klik **Tugaskan**. Aplikasi membuka detail penugasan, berstatus **Aktif** sejak awal.
 
+### A.1 Menugaskan Banyak Partisipan Sekaligus
+
+Untuk menugaskan banyak partisipan dalam satu kali submit (mis. awal studi, seluruh
+guru satu satuan pendidikan sekaligus):
+
+1. Dari daftar penugasan, klik **+ Tugaskan Banyak Sekaligus**.
+2. Centang partisipan yang akan ditugaskan (tombol **Pilih semua**/**Batalkan pilihan**
+   tersedia untuk mempercepat).
+3. Isi **Catatan** (opsional) — berlaku untuk SELURUH partisipan yang dipilih.
+4. Klik **Tugaskan Terpilih (N)**.
+5. Aplikasi menampilkan ringkasan: jumlah partisipan yang berhasil ditugaskan, dan
+   daftar yang **dilewati** beserta alasannya (mis. "Sudah terdaftar" untuk partisipan
+   yang sudah punya penugasan aktif, "Duplikat dalam input" bila tercentang dua kali).
+   Partisipan yang dilewati **tidak** menggagalkan keseluruhan permintaan — sisanya
+   tetap berhasil ditugaskan.
+
 !!! note "Satu partisipan, satu penugasan"
 Setiap partisipan hanya dapat memiliki satu penugasan Time Study. Untuk menugaskan
 ulang partisipan yang penugasannya sudah dinonaktifkan, aktifkan kembali penugasan

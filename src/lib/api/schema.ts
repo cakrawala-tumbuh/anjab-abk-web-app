@@ -884,6 +884,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/opm/sesi/{sesi_id}/responden/bulk": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Tugaskan banyak partisipan sekaligus sebagai responden OPM (admin, idempoten) */
+        post: operations["opm_responden_create_banyak"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/opm/sesi/responden/{responden_id}": {
         parameters: {
             query?: never;
@@ -1443,6 +1460,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/task-inventory/sesi/{sesi_id}/responden/bulk": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Tugaskan banyak partisipan sekaligus sebagai responden (admin; saat DRAFT/TAHAP1) */
+        post: operations["taskinv_responden_create_banyak"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/task-inventory/sesi/responden/{responden_id}": {
         parameters: {
             query?: never;
@@ -1635,6 +1669,23 @@ export interface paths {
         put?: never;
         /** Tugaskan partisipan ke Time Study (admin) */
         post: operations["ts_penugasan_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/time-study/penugasan/bulk": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Tugaskan banyak partisipan sekaligus ke Time Study (admin, idempoten) */
+        post: operations["ts_penugasan_create_banyak"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1862,6 +1913,59 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** BulkAssignResult[OpmRespondenRead] */
+        BulkAssignResult_OpmRespondenRead_: {
+            /**
+             * Created
+             * @description Baris yang berhasil dibuat.
+             */
+            created: components["schemas"]["OpmRespondenRead"][];
+            /**
+             * Skipped
+             * @description Partisipan yang dilewati beserta alasannya.
+             */
+            skipped: components["schemas"]["BulkSkipped"][];
+        };
+        /** BulkAssignResult[TiRespondenRead] */
+        BulkAssignResult_TiRespondenRead_: {
+            /**
+             * Created
+             * @description Baris yang berhasil dibuat.
+             */
+            created: components["schemas"]["TiRespondenRead"][];
+            /**
+             * Skipped
+             * @description Partisipan yang dilewati beserta alasannya.
+             */
+            skipped: components["schemas"]["BulkSkipped"][];
+        };
+        /** BulkAssignResult[TsPenugasanRead] */
+        BulkAssignResult_TsPenugasanRead_: {
+            /**
+             * Created
+             * @description Baris yang berhasil dibuat.
+             */
+            created: components["schemas"]["TsPenugasanRead"][];
+            /**
+             * Skipped
+             * @description Partisipan yang dilewati beserta alasannya.
+             */
+            skipped: components["schemas"]["BulkSkipped"][];
+        };
+        /** BulkSkipped */
+        BulkSkipped: {
+            /**
+             * Partisipan Id
+             * @description ID partisipan yang dilewati.
+             */
+            partisipan_id: string;
+            /**
+             * Alasan
+             * @description Kode alasan dilewati: 'sudah_terdaftar' | 'duplikat_input' | 'bukan_anggota_sme_panel' | 'kapasitas_penuh'.
+             * @example sudah_terdaftar
+             */
+            alasan: string;
+        };
         /**
          * DcsHasilRead
          * @description Hasil analisis lengkap instrumen DCS (seluruh sub-skala + risk flag + K-Index).
@@ -3085,6 +3189,25 @@ export interface components {
              * @example 2026-06
              */
             sesi_periode: string;
+        };
+        /**
+         * OpmRespondenBulkCreate
+         * @description Payload penugasan (assign) responden OPM massal (bulk).
+         *
+         *     `nama`/`jabatan_label` diresolusi otomatis dari `PartisipanModel`/`JabatanModel`
+         *     (mengikuti pola auto-populate OPM saat sesi dibuat) — beda dari payload single
+         *     yang mewajibkan `jabatan_label` diisi manual.
+         */
+        OpmRespondenBulkCreate: {
+            /**
+             * Partisipan Ids
+             * @description Daftar ID partisipan (wajib anggota SME panel jabatan sesi ini).
+             * @example [
+             *       "par_a1b2c3d4",
+             *       "par_e5f6g7h8"
+             *     ]
+             */
+            partisipan_ids: string[];
         };
         /**
          * OpmRespondenCreate
@@ -4631,6 +4754,21 @@ export interface components {
             is_koordinator: boolean;
         };
         /**
+         * TiRespondenBulkCreate
+         * @description Payload penugasan (assign) responden Task Inventory massal (bulk).
+         */
+        TiRespondenBulkCreate: {
+            /**
+             * Partisipan Ids
+             * @description Daftar ID partisipan (wajib anggota SME panel jabatan sesi ini).
+             * @example [
+             *       "par_a1b2c3d4",
+             *       "par_e5f6g7h8"
+             *     ]
+             */
+            partisipan_ids: string[];
+        };
+        /**
          * TiRespondenCreate
          * @description Payload pendaftaran responden ke sesi Task Inventory.
          */
@@ -5255,6 +5393,32 @@ export interface components {
             /**
              * Catatan
              * @description Catatan opsional.
+             */
+            catatan?: string | null;
+        };
+        /**
+         * TsPenugasanBulkCreate
+         * @description Payload penugasan Time Study massal (bulk) ke banyak partisipan sekaligus.
+         */
+        TsPenugasanBulkCreate: {
+            /**
+             * Partisipan Ids
+             * @description Daftar ID partisipan yang ditugaskan mencatat Time Study.
+             * @example [
+             *       "par_a1b2c3d4",
+             *       "par_e5f6g7h8"
+             *     ]
+             */
+            partisipan_ids: string[];
+            /**
+             * Aktif
+             * @description Status aktif penugasan.
+             * @default true
+             */
+            aktif: boolean;
+            /**
+             * Catatan
+             * @description Catatan opsional, diterapkan ke seluruh baris dalam batch ini.
              */
             catatan?: string | null;
         };
@@ -9941,6 +10105,78 @@ export interface operations {
             };
         };
     };
+    opm_responden_create_banyak: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID sesi OPM. */
+                sesi_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["OpmRespondenBulkCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BulkAssignResult_OpmRespondenRead_"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin atau bukan pemilik responden. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Sesi OPM tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Sesi bukan DRAFT/OPEN. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
     opm_responden_get: {
         parameters: {
             query?: never;
@@ -12096,6 +12332,78 @@ export interface operations {
             };
         };
     };
+    taskinv_responden_create_banyak: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID sesi. */
+                sesi_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TiRespondenBulkCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BulkAssignResult_TiRespondenRead_"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin atau bukan pemilik responden. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Sesi tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Sesi bukan DRAFT/TAHAP1. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
     taskinv_responden_get: {
         parameters: {
             query?: never;
@@ -12996,6 +13304,66 @@ export interface operations {
             };
             /** @description Partisipan sudah memiliki penugasan Time Study. */
             409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    ts_penugasan_create_banyak: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TsPenugasanBulkCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BulkAssignResult_TsPenugasanRead_"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin atau bukan pemilik penugasan. */
+            403: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -14543,3 +14911,7 @@ export type OpmHasilSesiRead = components["schemas"]["OpmHasilSesiRead"];
 export type OpmHasilTaskRead = components["schemas"]["OpmHasilTaskRead"];
 export type TiCatalogPurgeResult = components["schemas"]["TiCatalogPurgeResult"];
 export type TiCatalogReseedResult = components["schemas"]["TiCatalogReseedResult"];
+export type BulkSkipped = components["schemas"]["BulkSkipped"];
+export type TsPenugasanBulkResult = components["schemas"]["BulkAssignResult_TsPenugasanRead_"];
+export type TiRespondenBulkResult = components["schemas"]["BulkAssignResult_TiRespondenRead_"];
+export type OpmRespondenBulkResult = components["schemas"]["BulkAssignResult_OpmRespondenRead_"];

@@ -7,6 +7,21 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+### Ditambahkan
+
+- **UI penugasan massal (bulk) untuk Time Study, Task Inventory, dan OPM.**
+  Mengonsumsi endpoint bulk-assign idempoten baru di `anjab-abk-backend`
+  (`{created, skipped}`). Form single yang sudah ada **tetap ada** —
+  komponen bulk ditambahkan berdampingan, bukan menggantikan:
+  - `/task-inventory/{sesi_id}`: bagian baru "Atau tugaskan banyak sekaligus"
+    di bawah form **Tambah Responden**.
+  - `/opm/{sesi_id}`: idem, di bawah form **Tambah Responden** OPM.
+  - `/time-study/tugaskan-banyak`: halaman baru (link "+ Tugaskan Banyak
+    Sekaligus" dari `/time-study`).
+  - Setelah submit, UI menampilkan jumlah berhasil **dan** daftar yang
+    dilewati beserta alasannya dalam Bahasa Indonesia (`sudah_terdaftar` →
+    "Sudah terdaftar", dst. — lihat `src/lib/format/bulk-skip-alasan.ts`).
+
 ## [3.0.0] - 2026-07-13
 
 ### Diubah

@@ -12,6 +12,7 @@ import type {
 } from "@/lib/api/schema";
 import { TransisiSesi } from "./transisi-sesi";
 import { TambahResponden } from "./tambah-responden";
+import { AssignRespondenBanyak } from "./assign-responden-banyak";
 import { HapusResponden } from "./hapus-responden";
 
 export const metadata = { title: "Detail Sesi OPM — ANJAB-ABK" };
@@ -173,6 +174,16 @@ export default async function OpmSesiDetailPage({ params }: Props) {
             jabatanLabel={sesi.jabatan_nama ?? sesi.jabatan_id}
             accessToken={session?.accessToken}
           />
+          <h3 className="mt-6 text-sm font-medium text-gray-500 dark:text-gray-400">
+            Atau tugaskan banyak sekaligus
+          </h3>
+          <div className="mt-2">
+            <AssignRespondenBanyak
+              sesiId={sesi.id}
+              partisipan={partisipanTersedia}
+              accessToken={session?.accessToken}
+            />
+          </div>
         </div>
       )}
 
