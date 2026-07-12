@@ -8244,6 +8244,128 @@
         }
       }
     },
+    "/api/v1/task-inventory/catalog/purge": {
+      "post": {
+        "tags": [
+          "taskinv.catalog"
+        ],
+        "summary": "Purge (hapus total) katalog master Task Inventory",
+        "operationId": "taskinv_catalog_purge",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TiCatalogPurgeResult"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan admin.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Masih ada sesi Task Inventory aktif.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/task-inventory/catalog/reseed": {
+      "post": {
+        "tags": [
+          "taskinv.catalog"
+        ],
+        "summary": "Reseed katalog master Task Inventory dari task_catalog.json",
+        "operationId": "taskinv_catalog_reseed",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TiCatalogReseedResult"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan admin.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
     "/api/v1/task-inventory/sesi": {
       "get": {
         "tags": [
@@ -16772,6 +16894,43 @@
         "title": "SekolahUpdate",
         "description": "Payload pembaruan sebagian sekolah."
       },
+      "TiCatalogPurgeCounts": {
+        "properties": {
+          "uraian_tugas": {
+            "type": "integer",
+            "title": "Uraian Tugas"
+          },
+          "detil_tugas": {
+            "type": "integer",
+            "title": "Detil Tugas"
+          },
+          "tugas_pokok": {
+            "type": "integer",
+            "title": "Tugas Pokok"
+          }
+        },
+        "type": "object",
+        "required": [
+          "uraian_tugas",
+          "detil_tugas",
+          "tugas_pokok"
+        ],
+        "title": "TiCatalogPurgeCounts",
+        "description": "Jumlah baris yang dihapus per tabel katalog."
+      },
+      "TiCatalogPurgeResult": {
+        "properties": {
+          "deleted": {
+            "$ref": "#/components/schemas/TiCatalogPurgeCounts"
+          }
+        },
+        "type": "object",
+        "required": [
+          "deleted"
+        ],
+        "title": "TiCatalogPurgeResult",
+        "description": "Hasil `POST /catalog/purge`."
+      },
       "TiCatalogRead": {
         "properties": {
           "kode": {
@@ -16994,6 +17153,48 @@
         ],
         "title": "TiCatalogRead",
         "description": "Satu item catalog task yang dikembalikan API."
+      },
+      "TiCatalogReseedCounts": {
+        "properties": {
+          "jabatan": {
+            "type": "integer",
+            "title": "Jabatan"
+          },
+          "tugas_pokok": {
+            "type": "integer",
+            "title": "Tugas Pokok"
+          },
+          "detil_tugas": {
+            "type": "integer",
+            "title": "Detil Tugas"
+          },
+          "uraian_tugas": {
+            "type": "integer",
+            "title": "Uraian Tugas"
+          }
+        },
+        "type": "object",
+        "required": [
+          "jabatan",
+          "tugas_pokok",
+          "detil_tugas",
+          "uraian_tugas"
+        ],
+        "title": "TiCatalogReseedCounts",
+        "description": "Jumlah baris yang di-seed per tabel katalog."
+      },
+      "TiCatalogReseedResult": {
+        "properties": {
+          "created": {
+            "$ref": "#/components/schemas/TiCatalogReseedCounts"
+          }
+        },
+        "type": "object",
+        "required": [
+          "created"
+        ],
+        "title": "TiCatalogReseedResult",
+        "description": "Hasil `POST /catalog/reseed`."
       },
       "TiDetailItem": {
         "properties": {

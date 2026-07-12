@@ -22,13 +22,13 @@ describe("navForGroups", () => {
 });
 
 describe("struktur menu admin", () => {
-  it("berisi grup Master Data dengan 11 sub-item", () => {
+  it("berisi grup Master Data dengan 12 sub-item", () => {
     const masterData = NAV_ADMIN.find((entry) => entry.href === "/master-data");
     expect(masterData?.kind).toBe("group");
-    expect(masterData && "items" in masterData ? masterData.items : []).toHaveLength(11);
+    expect(masterData && "items" in masterData ? masterData.items : []).toHaveLength(12);
   });
 
-  it("MASTER_DATA_ITEMS mencakup seluruh 11 sub-item yang diharapkan", () => {
+  it("MASTER_DATA_ITEMS mencakup seluruh 12 sub-item yang diharapkan", () => {
     expect(MASTER_DATA_ITEMS.map((item) => item.href)).toEqual([
       "/master-data/jenjang-pendidikan",
       "/master-data/sekolah",
@@ -38,6 +38,7 @@ describe("struktur menu admin", () => {
       "/master-data/dcs",
       "/master-data/wcp",
       "/master-data/task-inventory",
+      "/master-data/task-inventory/utilitas",
       "/master-data/tugas-pokok",
       "/master-data/detil-tugas",
       "/master-data/uraian-tugas",

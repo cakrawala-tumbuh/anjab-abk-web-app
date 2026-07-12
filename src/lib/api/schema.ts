@@ -1341,6 +1341,40 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/task-inventory/catalog/purge": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Purge (hapus total) katalog master Task Inventory */
+        post: operations["taskinv_catalog_purge"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/task-inventory/catalog/reseed": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Reseed katalog master Task Inventory dari task_catalog.json */
+        post: operations["taskinv_catalog_reseed"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/task-inventory/sesi": {
         parameters: {
             query?: never;
@@ -4293,6 +4327,25 @@ export interface components {
             aktif?: boolean | null;
         };
         /**
+         * TiCatalogPurgeCounts
+         * @description Jumlah baris yang dihapus per tabel katalog.
+         */
+        TiCatalogPurgeCounts: {
+            /** Uraian Tugas */
+            uraian_tugas: number;
+            /** Detil Tugas */
+            detil_tugas: number;
+            /** Tugas Pokok */
+            tugas_pokok: number;
+        };
+        /**
+         * TiCatalogPurgeResult
+         * @description Hasil `POST /catalog/purge`.
+         */
+        TiCatalogPurgeResult: {
+            deleted: components["schemas"]["TiCatalogPurgeCounts"];
+        };
+        /**
          * TiCatalogRead
          * @description Satu item catalog task yang dikembalikan API.
          */
@@ -4369,6 +4422,27 @@ export interface components {
             std_va_type?: ("VA-Core" | "VA-Enable" | "NVA-Residual" | "Context-Dependent" | "Needs Validation") | null;
             /** Std Dcs Flag */
             std_dcs_flag?: boolean | null;
+        };
+        /**
+         * TiCatalogReseedCounts
+         * @description Jumlah baris yang di-seed per tabel katalog.
+         */
+        TiCatalogReseedCounts: {
+            /** Jabatan */
+            jabatan: number;
+            /** Tugas Pokok */
+            tugas_pokok: number;
+            /** Detil Tugas */
+            detil_tugas: number;
+            /** Uraian Tugas */
+            uraian_tugas: number;
+        };
+        /**
+         * TiCatalogReseedResult
+         * @description Hasil `POST /catalog/reseed`.
+         */
+        TiCatalogReseedResult: {
+            created: components["schemas"]["TiCatalogReseedCounts"];
         };
         /**
          * TiDetailItem
@@ -12203,6 +12277,109 @@ export interface operations {
             };
         };
     };
+    taskinv_catalog_purge: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TiCatalogPurgeResult"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Masih ada sesi Task Inventory aktif. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    taskinv_catalog_reseed: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TiCatalogReseedResult"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
     taskinv_sesi_list: {
         parameters: {
             query?: {
@@ -15316,3 +15493,5 @@ export type OpmJawabanRead = components["schemas"]["OpmJawabanRead"];
 export type OpmKuesionerItemRead = components["schemas"]["OpmKuesionerItemRead"];
 export type OpmHasilSesiRead = components["schemas"]["OpmHasilSesiRead"];
 export type OpmHasilTaskRead = components["schemas"]["OpmHasilTaskRead"];
+export type TiCatalogPurgeResult = components["schemas"]["TiCatalogPurgeResult"];
+export type TiCatalogReseedResult = components["schemas"]["TiCatalogReseedResult"];

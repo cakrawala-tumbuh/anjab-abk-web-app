@@ -7,6 +7,20 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [2.5.0] - 2026-07-12
+
+### Ditambahkan
+
+- **Halaman utilitas reset katalog Task Inventory** (admin) di
+  `/master-data/task-inventory/utilitas` — tombol "Reset Katalog" memanggil
+  purge lalu reseed katalog master (`ti_uraian_tugas`/`ti_tugas_pokok`/
+  `ti_detil_tugas`) berurutan lewat endpoint admin baru
+  `anjab-abk-backend` v0.28.0. Menangani kegagalan parsial secara eksplisit
+  (purge sukses tapi reseed gagal → katalog kosong, pesan berbeda dari error
+  generik). Tautan baru ditambahkan ke sidebar Master Data.
+- Klien API bertipe (`schema.ts`) diregenerasi dari `openapi.json` terbaru
+  untuk mendukung endpoint purge/reseed di atas.
+
 ## [2.4.0] - 2026-07-12
 
 ### Ditambahkan
