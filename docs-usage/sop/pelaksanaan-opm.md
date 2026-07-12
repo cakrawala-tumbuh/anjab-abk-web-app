@@ -1,6 +1,6 @@
 # SOP Pelaksanaan — OPM (Rating Tugas)
 
-Prosedur baku menjalankan pengambilan data kuesioner **OPM** — dari membuka sesi hingga
+Prosedur baku menjalankan pengambilan data kuesioner **OPM** — dari membuka analisis hingga
 hasil tersedia.
 
 **Tujuan:** mengumpulkan rating Importance/Frequency/Criticality atas seluruh task
@@ -12,29 +12,29 @@ snapshot dari anggota SME panel jabatan terkait.
 
 **Langkah teknis:** [IK-08 OPM](../ik/opm.md).
 
-Status sesi: `Draft → Terbuka → Tertutup → Teranalisis`.
+Status analisis: `Draft → Terbuka → Tertutup → Teranalisis`.
 
 ---
 
 ## Alur Ringkas
 
 ```
-Buka Sesi → (responden sudah otomatis terisi dari SME panel)
+Buka Analisis → (responden sudah otomatis terisi dari SME panel)
    → anggota panel isi rating tiap task (Importance/Frequency/Criticality)
-   → pantau kelengkapan → Tutup Sesi → Jalankan Analisis → Hasil tersedia
+   → pantau kelengkapan → Tutup Analisis → Jalankan Analisis → Hasil tersedia
 ```
 
 ---
 
-## 1. Membuka Sesi
+## 1. Membuka Analisis
 
-1. Buka detail sesi OPM (status **Draft**).
-2. Klik **Buka Sesi** → status menjadi **Terbuka**.
-3. Responden pada sesi ini sudah terisi otomatis dari anggota SME panel jabatan tersebut
-   sejak sesi dibuat. Bila ada anggota panel baru yang perlu ditambahkan, gunakan
-   **Tambah Responden**.
+1. Buka detail Analisis Jabatan OPM (status **Draft**).
+2. Klik **Buka Analisis** → status menjadi **Terbuka**.
+3. Responden pada analisis ini sudah terisi otomatis dari anggota SME panel jabatan
+   tersebut sejak analisis dibuat. Bila ada anggota panel baru yang perlu ditambahkan,
+   gunakan **Tambah Responden**.
 
-> Langkah teknis: [IK-08 bagian B & D](../ik/opm.md#b-membuka-menutup-sesi-menjalankan-analisis).
+> Langkah teknis: [IK-08 bagian B & D](../ik/opm.md#b-membuka-menutup-analisis-menjalankan-analisis).
 
 ---
 
@@ -55,31 +55,31 @@ Setelah dikirim, jawaban final (dapat dilihat kembali dalam mode baca-saja).
 
 ## 3. Memantau Kelengkapan
 
-Pantau dari detail sesi: kartu **Task**, **Terdaftar**, **Sudah Mengisi**, serta kolom
-**Status Isian** per responden. Jangan menutup sesi sebelum jumlah pengisi memenuhi
+Pantau dari detail analisis: kartu **Task**, **Terdaftar**, **Sudah Mengisi**, serta kolom
+**Status Isian** per responden. Jangan menutup analisis sebelum jumlah pengisi memenuhi
 **Min. Responden**.
 
 ---
 
-## 4. Menutup Sesi, Menjalankan Analisis & Hasil
+## 4. Menutup Analisis, Menjalankan Analisis & Hasil
 
-1. Klik **Tutup Sesi** → status **Tertutup**.
+1. Klik **Tutup Analisis** → status **Tertutup**.
 2. Klik **Jalankan Analisis** → status **Teranalisis**, otomatis diarahkan ke halaman
    **Hasil**.
 3. Halaman **Hasil** menampilkan mean & SD tiap dimensi per task, beserta badge
    **Selection Essential** / **Workload Essential** dan proporsi individual.
 
-> Langkah teknis: [IK-08 bagian B & F](../ik/opm.md#b-membuka-menutup-sesi-menjalankan-analisis).
+> Langkah teknis: [IK-08 bagian B & F](../ik/opm.md#b-membuka-menutup-analisis-menjalankan-analisis).
 
 !!! danger "Tidak dapat dibatalkan"
-Penutupan sesi dan menjalankan analisis bersifat searah. Pastikan data lengkap
-sebelum menutup sesi.
+Penutupan analisis dan menjalankan analisis bersifat searah. Pastikan data lengkap
+sebelum menutup analisis.
 
 ---
 
 ## Daftar Periksa (Checklist) Pelaksanaan OPM
 
-- [ ] Sesi dibuka
+- [ ] Analisis dibuka
 - [ ] Anggota SME panel diberi tahu & dipandu mengisi rating tiap task
 - [ ] Jumlah pengisi memenuhi Min. Responden
-- [ ] Sesi ditutup, analisis dijalankan & hasil tersedia
+- [ ] Analisis ditutup, proses analisis dijalankan & hasil tersedia

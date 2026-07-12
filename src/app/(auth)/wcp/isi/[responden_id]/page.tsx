@@ -30,7 +30,7 @@ interface Props {
 async function fetchPageData(accessToken: string | undefined, respondenId: string) {
   const client = withServerAuth(accessToken);
   const [respondenRes, ...dimensiRes] = await Promise.all([
-    client.GET("/api/v1/wcp/sesi/responden/{responden_id}", {
+    client.GET("/api/v1/wcp/responden/{responden_id}", {
       params: { path: { responden_id: respondenId } },
     }),
     ...WCP_DIMENSI.map((kode) =>
@@ -43,7 +43,7 @@ async function fetchPageData(accessToken: string | undefined, respondenId: strin
   const responden = respondenRes.data as WcpRespondenRead;
   const dimensi = dimensiRes.map((r) => r.data).filter(Boolean) as WcpDimensiWithItemsRead[];
 
-  const jRes = await client.GET("/api/v1/wcp/sesi/responden/{responden_id}/jawaban", {
+  const jRes = await client.GET("/api/v1/wcp/responden/{responden_id}/jawaban", {
     params: { path: { responden_id: respondenId } },
   });
   const jawaban = (jRes.data ?? []) as WcpJawabanRead[];

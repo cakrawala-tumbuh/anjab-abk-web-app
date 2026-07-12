@@ -20,12 +20,12 @@ const STATUS_LABEL: Record<string, { label: string; cls: string; desc: string }>
   DRAFT: {
     label: "Draft",
     cls: "bg-gray-100 text-gray-600",
-    desc: "Sesi belum dibuka. Buka sesi agar responden dapat mengisi rating.",
+    desc: "Analisis belum dibuka. Buka analisis agar responden dapat mengisi rating.",
   },
   OPEN: {
     label: "Terbuka",
     cls: "bg-blue-100 text-blue-700",
-    desc: "Sesi aktif. Responden dapat mengisi rating, lalu tutup sesi bila sudah selesai.",
+    desc: "Analisis aktif. Responden dapat mengisi rating, lalu tutup analisis bila sudah selesai.",
   },
   CLOSED: {
     label: "Tertutup",
@@ -103,7 +103,7 @@ export default async function OpmSesiDetailPage({ params }: Props) {
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-sm text-gray-500">
         <Link href="/opm" className="hover:text-gray-700">
-          Sesi OPM
+          Analisis Jabatan — OPM
         </Link>
         <span>/</span>
         <span className="text-gray-900">{sesiLabel}</span>
@@ -229,7 +229,7 @@ export default async function OpmSesiDetailPage({ params }: Props) {
         {responden.length === 0 ? (
           <div className="rounded-lg border border-dashed border-gray-300 bg-white p-8 text-center">
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              Belum ada responden yang terdaftar di sesi ini.
+              Belum ada responden yang terdaftar di analisis ini.
             </p>
           </div>
         ) : (

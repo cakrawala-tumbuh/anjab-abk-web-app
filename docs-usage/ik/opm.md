@@ -8,56 +8,59 @@ Bagian **A–D** untuk **Administrator**, **E** untuk **Partisipan**. Untuk alur
 [SOP Pelaksanaan OPM](../sop/pelaksanaan-opm.md).
 
 OPM menilai **setiap task** hasil **Task Inventory** yang sudah dibekukan (Tahap 3) pada
-3 dimensi skala 1–5: **Importance**, **Frequency**, **Criticality**. Status sesi:
+3 dimensi skala 1–5: **Importance**, **Frequency**, **Criticality**. Status analisis:
 `Draft → Terbuka → Tertutup → Teranalisis`.
 
-!!! note "Satu sesi per jabatan"
-Setiap jabatan hanya boleh memiliki **satu** sesi OPM. Jabatan harus sudah memiliki
-**SME panel** dengan anggota, dan sesi Task Inventory sumbernya harus sudah dibekukan
-(status Tahap 3/Tertutup/Teranalisis dengan task terpilih).
+!!! note "Satu analisis per jabatan"
+Setiap jabatan hanya boleh memiliki **satu** Analisis Jabatan OPM. Jabatan harus sudah
+memiliki **SME panel** dengan anggota, dan Analisis Jabatan Task Inventory sumbernya
+harus sudah dibekukan (status Tahap 3/Tertutup/Teranalisis dengan task terpilih).
 
 ---
 
-## A. Membuat Sesi
+## A. Memulai Analisis Jabatan
 
-1. Buka **OPM** dari navigasi. Daftar sesi menampilkan **Keterangan**, **Jabatan**,
-   **Status**, **Jumlah Task**, **Dibuat**.
-2. Klik **+ Buat Sesi**.
+1. Buka **OPM** dari navigasi. Daftar Analisis Jabatan menampilkan **Keterangan**,
+   **Jabatan**, **Status**, **Jumlah Task**, **Dibuat**.
+2. Klik **+ Mulai Analisis Jabatan**.
 3. Isi formulir:
    - **Jabatan** (wajib) — hanya menampilkan jabatan yang sudah memiliki SME panel.
-   - **Sesi Task Inventory (sumber task)** (wajib) — hanya menampilkan sesi TI milik
-     jabatan terpilih yang sudah dibekukan (ditampilkan sebagai `periode — N task`).
+   - **Analisis Jabatan Task Inventory (sumber task)** (wajib) — hanya menampilkan
+     Analisis Jabatan TI milik jabatan terpilih yang sudah dibekukan (ditampilkan
+     sebagai `periode — N task`).
    - **Periode** (wajib, format `YYYY-MM`, mis. `2026-06`)
    - **Min. Responden** (default 3) dan **Maks. Responden** (default 10, harus ≥ min)
    - **Catatan (opsional)**
-4. Klik **Buat Sesi**. Task dari sesi TI sumber di-**snapshot** ke sesi OPM, dan
-   **responden dibuat otomatis** dari seluruh anggota SME panel jabatan tersebut.
+4. Klik **Mulai Analisis Jabatan**. Task dari Analisis Jabatan TI sumber di-**snapshot**
+   ke Analisis Jabatan OPM, dan **responden dibuat otomatis** dari seluruh anggota SME
+   panel jabatan tersebut.
 
-!!! warning "Belum ada sesi TI yang dibekukan"
-Jika dropdown **Sesi Task Inventory** kosong setelah memilih jabatan, berarti belum ada
-sesi TI jabatan tersebut yang mencapai Tahap 3 (task dibekukan). Selesaikan
-[IK-04 Task Inventory](task-inventory.md) sampai tahap 3 terlebih dahulu.
+!!! warning "Belum ada Analisis Jabatan TI yang dibekukan"
+Jika dropdown **Analisis Jabatan Task Inventory** kosong setelah memilih jabatan, berarti
+belum ada Analisis Jabatan TI jabatan tersebut yang mencapai Tahap 3 (task dibekukan).
+Selesaikan [IK-04 Task Inventory](task-inventory.md) sampai tahap 3 terlebih dahulu.
 
 ---
 
-## B. Membuka & Menutup Sesi, Menjalankan Analisis
+## B. Membuka & Menutup Analisis, Menjalankan Analisis
 
 Bagian transisi menampilkan tombol sesuai status:
 
 | Status   | Tombol                | Hasil                                              |
 | -------- | --------------------- | -------------------------------------------------- |
-| Draft    | **Buka Sesi**         | → Terbuka                                          |
-| Draft    | **Hapus Sesi**        | Menghapus sesi (_tidak dapat dibatalkan_)          |
-| Terbuka  | **Tutup Sesi**        | → Tertutup                                         |
+| Draft    | **Buka Analisis**     | → Terbuka                                          |
+| Draft    | **Hapus Analisis**    | Menghapus analisis (_tidak dapat dibatalkan_)      |
+| Terbuka  | **Tutup Analisis**    | → Tertutup                                         |
 | Tertutup | **Jalankan Analisis** | → Teranalisis, lalu diarahkan ke halaman **Hasil** |
 
 ---
 
 ## C. Task yang Dinilai (Snapshot)
 
-Detail sesi menampilkan tabel **Task yang Dinilai** — kode, uraian tugas, dan tugas pokok
-induk, hasil snapshot dari sesi Task Inventory sumber saat sesi OPM dibuat. Daftar ini
-tidak berubah meski sesi TI sumber berubah setelahnya.
+Detail analisis menampilkan tabel **Task yang Dinilai** — kode, uraian tugas, dan tugas
+pokok induk, hasil snapshot dari Analisis Jabatan Task Inventory sumber saat Analisis
+Jabatan OPM dibuat. Daftar ini tidak berubah meski Analisis Jabatan TI sumber berubah
+setelahnya.
 
 ---
 
@@ -66,7 +69,7 @@ tidak berubah meski sesi TI sumber berubah setelahnya.
 > Bagian **Tambah Responden**, tersedia saat status **Draft** atau **Terbuka**.
 
 1. Dropdown **Anggota SME Panel** hanya menampilkan partisipan yang merupakan anggota SME
-   panel jabatan sesi ini **dan belum terdaftar** sebagai responden.
+   panel jabatan analisis ini **dan belum terdaftar** sebagai responden.
 2. Pilih partisipan, klik **+ Daftarkan**.
 3. Untuk menghapus responden yang **belum mengisi**, klik **Hapus** pada baris terkait
    (konfirmasi muncul).
@@ -94,7 +97,7 @@ lagi dalam mode baca-saja.
 
 ## F. Melihat Hasil
 
-Setelah sesi **Teranalisis**, buka halaman **Hasil** dari detail sesi. Tabel menampilkan
+Setelah analisis **Teranalisis**, buka halaman **Hasil** dari detail analisis. Tabel menampilkan
 per task: rata-rata (mean) & simpangan baku (SD) tiap dimensi, badge **Selection
 Essential** dan **Workload Essential**, serta proporsi responden yang menandai task
 tersebut esensial secara individual.

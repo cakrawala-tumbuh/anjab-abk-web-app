@@ -17,7 +17,7 @@ interface Props {
 async function fetchPageData(accessToken: string | undefined, respondenId: string) {
   const client = withServerAuth(accessToken);
   const [respondenRes, ...subskalaRes] = await Promise.all([
-    client.GET("/api/v1/dcs/sesi/responden/{responden_id}", {
+    client.GET("/api/v1/dcs/responden/{responden_id}", {
       params: { path: { responden_id: respondenId } },
     }),
     ...DCS_SUBSKALA.map((kode) =>
@@ -30,7 +30,7 @@ async function fetchPageData(accessToken: string | undefined, respondenId: strin
   const responden = respondenRes.data as DcsRespondenRead;
   const subskala = subskalaRes.map((r) => r.data).filter(Boolean) as DcsSubSkalaWithItemsRead[];
 
-  const jRes = await client.GET("/api/v1/dcs/sesi/responden/{responden_id}/jawaban", {
+  const jRes = await client.GET("/api/v1/dcs/responden/{responden_id}/jawaban", {
     params: { path: { responden_id: respondenId } },
   });
   const jawaban = (jRes.data ?? []) as DcsJawabanRead[];

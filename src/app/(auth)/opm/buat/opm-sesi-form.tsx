@@ -123,10 +123,10 @@ export function OpmSesiForm({ jabatan, tiSesi, accessToken }: Props) {
         )}
       </div>
 
-      {/* Sesi Task Inventory */}
+      {/* Analisis Jabatan Task Inventory */}
       <div>
         <label htmlFor="ti_sesi_id" className="form-label">
-          Sesi Task Inventory (sumber task) <span aria-hidden>*</span>
+          Analisis Jabatan Task Inventory (sumber task) <span aria-hidden>*</span>
         </label>
         <select
           id="ti_sesi_id"
@@ -135,7 +135,7 @@ export function OpmSesiForm({ jabatan, tiSesi, accessToken }: Props) {
           className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:bg-gray-50"
           aria-invalid={!!errors.ti_sesi_id}
         >
-          <option value="">-- Pilih sesi Task Inventory --</option>
+          <option value="">-- Pilih Analisis Jabatan Task Inventory --</option>
           {tiSesiTersedia.map((t) => (
             <option key={t.id} value={t.id}>
               {t.periode} — {t.jumlah_task_terpilih} task
@@ -144,7 +144,7 @@ export function OpmSesiForm({ jabatan, tiSesi, accessToken }: Props) {
         </select>
         {jabatanId && tiSesiTersedia.length === 0 && (
           <p className="mt-1 text-xs text-yellow-600">
-            Belum ada sesi TI yang dibekukan untuk jabatan ini.
+            Belum ada Analisis Jabatan TI yang dibekukan untuk jabatan ini.
           </p>
         )}
         {errors.ti_sesi_id && (
@@ -233,7 +233,7 @@ export function OpmSesiForm({ jabatan, tiSesi, accessToken }: Props) {
           disabled={isSubmitting}
           className="rounded-md bg-blue-600 px-5 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
         >
-          {isSubmitting ? "Membuat…" : "Buat Sesi"}
+          {isSubmitting ? "Membuat…" : "Mulai Analisis Jabatan"}
         </button>
         <Link
           href="/opm"

@@ -50,6 +50,56 @@ src/
 
 ## Revisi Desain
 
+### [2026-07-12] DCS & WCP: hapus sesi, ganti pola instrumen singleton + hasil agregat baru
+
+Mengikuti refactor backend (entitas sesi DCS/WCP dihapus, diganti pola
+singleton — satu baris instrumen per alat ukur, status
+`OPEN → CLOSED → ANALYZED`). TI dan OPM **tidak disentuh** (istilah "sesi"
+tetap dipertahankan di sana).
+
+- **Route dihapus**: `/dcs/buat`, `/dcs/[sesi_id]` (dan seluruh isinya:
+  `dcs-sesi-form.tsx`, `transisi-sesi.tsx`, `tambah-responden.tsx`), idem
+  `/wcp/buat`, `/wcp/[sesi_id]`.
+- **`/dcs` dan `/wcp` ditulis ulang** dari listing sesi menjadi halaman
+  instrumen tunggal: kartu status (badge OPEN/CLOSED/ANALYZED, min_responden,
+  catatan, jumlah submit vs total), `assign-responden.tsx` (form multi-select
+  checkbox — menggantikan `tambah-responden.tsx`, satu submit untuk banyak
+  partisipan lewat `POST .../responden` dengan `partisipan_ids: string[]`),
+  `aksi-instrumen.tsx` (menggantikan `transisi-sesi.tsx`; **menambahkan**
+  tombol "Jalankan Analisis" yang sebelumnya tidak ada sama sekali di
+  DCS/WCP — disabled bila submit < min_responden dengan alasan tertulis),
+  `edit-instrumen.tsx` (PATCH `min_responden`/`catatan`, disclosure kecil),
+  dan `hapus-responden.tsx` (dipindah dari `[sesi_id]/hapus-responden.tsx`,
+  endpoint `DELETE /api/v1/{dcs|wcp}/responden/{id}`).
+- **`/dcs/hasil` dan `/wcp/hasil` — halaman baru**, sebelumnya tidak ada sama
+  sekali. Menampilkan hasil agregat dari `GET /{dcs|wcp}/hasil`: mean/stdev/
+  Cronbach alpha per subskala (DCS) atau dimensi (WCP), risk_flag, dan
+  (khusus DCS) K-Index psikososial + komponen WCP Risk. Redirect ke
+  `/dcs` atau `/wcp` bila status instrumen bukan `ANALYZED`.
+- Halaman hasil per-responden pindah dari
+  `/dcs/[sesi_id]/hasil-responden/[responden_id]` ke
+  `/dcs/hasil-responden/[responden_id]` (idem WCP) — konten sama, hanya
+  fetch yang tidak lagi butuh `sesi_id`.
+- Halaman pengisian partisipan `/dcs/isi/[responden_id]` & `/wcp/isi/[responden_id]`
+  **tidak berubah secara konsep** (tidak pernah menyentuh sesi) — hanya path
+  endpoint API yang disesuaikan (`/dcs/sesi/responden/{id}/...` →
+  `/dcs/responden/{id}/...`, idem WCP).
+- `src/app/(auth)/kuesioner/page.tsx`: kartu DCS & WCP (`InstrumenKuesionerCard`,
+  komponen baru terpisah dari `KuesionerCard` yang masih dipakai OPM/TI) kini
+  memakai `instrumen_status`/`catatan` — field `sesi_status`/`sesi_periode`/
+  `sesi_catatan` sudah tidak ada di respons `DcsKuesionerItemRead`/
+  `WcpKuesionerItemRead`. Karena instrumen singleton, maksimal satu kartu
+  DCS dan satu kartu WCP per partisipan.
+- `schema.ts`: `DcsSesiRead`/`WcpSesiRead` diganti `DcsInstrumenRead`/
+  `WcpInstrumenRead` + `DcsInstrumenUpdate`/`WcpInstrumenUpdate` di
+  convenience re-exports akhir file (append setelah `gen:api`, sama seperti
+  konvensi Task Inventory).
+- E2E: `e2e/sesi.spec.ts` (transisi sesi DCS/WCP) dihapus total.
+  `e2e/hapus-sesi.spec.ts` (pola hard-delete `paksa=true`) retarget dari DCS
+  ke Task Inventory — DCS/WCP tidak lagi punya tombol hapus sesi, tapi
+  pola/komponen yang sama masih dipakai OPM & TI. `e2e/kuesioner.spec.ts`
+  bagian DCS ditulis ulang untuk alur assign multi-select tanpa sesi.
+
 ### [2026-07-10] Shell gaya Gmail: sidebar kiri collapsible
 
 Top-nav horizontal lama diganti shell gaya Gmail — **top bar** + **sidebar kiri

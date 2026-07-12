@@ -7,20 +7,20 @@ Bagian **A–C** untuk **Administrator**, **D** untuk **Koordinator**, **E–F**
 [SOP Persiapan TI](../sop/persiapan-task-inventory.md) dan
 [SOP Pelaksanaan Task Inventory](../sop/pelaksanaan-task-inventory.md).
 
-Status sesi: `DRAFT → TAHAP1 → TAHAP2 → TAHAP3 → CLOSED → ANALYZED`.
+Status analisis: `DRAFT → TAHAP1 → TAHAP2 → TAHAP3 → CLOSED → ANALYZED`.
 
 ---
 
-## A. Membuat Sesi
+## A. Memulai Analisis Jabatan
 
 1. Buka **Task Inventory** dari navigasi (atau kartu di Dashboard).
-2. Klik **+ Buat Sesi**.
+2. Klik **+ Mulai Analisis Jabatan**.
 3. Isi formulir:
    - **Jabatan** (wajib) — daftar berisi nama jabatan yang tersedia di catalog Task Inventory.
    - **Periode** (wajib, format `YYYY-MM`).
    - **Min. Responden** (default 3) dan **Maks. Responden** (default 10, harus ≥ min).
    - **Catatan (opsional)**.
-4. Klik **Buat Sesi**. Aplikasi membuka detail sesi dengan status **Draft**.
+4. Klik **Mulai Analisis Jabatan**. Aplikasi membuka detail analisis dengan status **Draft**.
 
 ---
 
@@ -28,28 +28,28 @@ Status sesi: `DRAFT → TAHAP1 → TAHAP2 → TAHAP3 → CLOSED → ANALYZED`.
 
 > Dapat dilakukan saat status **DRAFT** atau **TAHAP1**.
 
-1. Di detail sesi, bagian **Tambah Responden**:
+1. Di detail analisis, bagian **Tambah Responden**:
    - **Pilih Partisipan (opsional)** — pilih dari daftar, atau
    - **Nama (opsional)** — ketik manual (mis. `Budi Santoso, S.Pd.`).
 2. Klik **+ Daftarkan**. Responden muncul di tabel **Daftar Responden** dengan status
    **Tahap 1** dan **Tahap 3** = **Belum**.
 3. Untuk menghapus responden yang belum mengisi, klik **Hapus** pada kolom **Aksi**
-   (konfirmasi _Hapus responden "{nama}" dari sesi ini?_).
+   (konfirmasi _Hapus responden "{nama}" dari analisis ini?_).
 
 ---
 
 ## C. Transisi Tahap (Administrator)
 
-Bagian **Transisi Sesi** menampilkan tombol sesuai status:
+Bagian transisi status menampilkan tombol sesuai status:
 
-| Status | Tombol                                   | Hasil                                     |
-| ------ | ---------------------------------------- | ----------------------------------------- |
-| Draft  | **Mulai Tahap 1**                        | Membuka seleksi (→ TAHAP1)                |
-| Draft  | **Hapus Sesi**                           | Menghapus sesi (_tidak dapat dibatalkan_) |
-| TAHAP1 | **Mulai Tahap 2 — Review Koordinator**   | → TAHAP2                                  |
-| TAHAP2 | **Mulai Tahap 3 — Bekukan Task Relevan** | Membekukan task final (→ TAHAP3)          |
-| TAHAP3 | **Tutup Sesi**                           | → CLOSED                                  |
-| CLOSED | **Jalankan Analisis**                    | → ANALYZED                                |
+| Status | Tombol                                   | Hasil                                         |
+| ------ | ---------------------------------------- | --------------------------------------------- |
+| Draft  | **Mulai Tahap 1**                        | Membuka seleksi (→ TAHAP1)                    |
+| Draft  | **Hapus Analisis**                       | Menghapus analisis (_tidak dapat dibatalkan_) |
+| TAHAP1 | **Mulai Tahap 2 — Review Koordinator**   | → TAHAP2                                      |
+| TAHAP2 | **Mulai Tahap 3 — Bekukan Task Relevan** | Membekukan task final (→ TAHAP3)              |
+| TAHAP3 | **Tutup Analisis**                       | → CLOSED                                      |
+| CLOSED | **Jalankan Analisis**                    | → ANALYZED                                    |
 
 !!! warning "Dialog konfirmasi" - **Mulai Tahap 2**: OK bila semua partisipan sudah submit Tahap 1; Cancel untuk
 memaksa lanjut walau belum semua. - **Mulai Tahap 3**: OK bila koordinator sudah memutuskan semua task partial; Cancel
@@ -62,7 +62,7 @@ Saat status **TAHAP2**, muncul kotak _Tahap 2 — Review Koordinator_ dengan tom
 
 ## D. Review Koordinator (Tahap 2)
 
-1. Dari detail sesi (status TAHAP2), klik **Buka Review Koordinator**.
+1. Dari detail analisis (status TAHAP2), klik **Buka Review Koordinator**.
 2. Halaman menampilkan tabel task **partial** (kolom **Task**, **Pilih** = jumlah pemilih,
    **Setujui?**). Kolom **Task** menampilkan **nama uraian tugas** (mis. _"Menyusun evaluasi
    karyawan"_) dengan kode task kecil di sampingnya sebagai keterangan.
@@ -106,7 +106,7 @@ Setelah dikirim, seleksi Tahap 1 terkunci. Status responden menjadi **✓ Selesa
 
 ## F. Mengisi Tahap 3 — Detailing (Partisipan)
 
-> Tersedia setelah status sesi **TAHAP3**.
+> Tersedia setelah status analisis **TAHAP3**.
 
 1. Buka **Isi Tahap 3** dari tabel responden (atau dari **Kuesioner Saya**).
 2. Untuk tiap task yang Anda kerjakan, **centang** kotaknya. Formulir rincian muncul:
@@ -128,7 +128,7 @@ Setelah dikirim, detail Tahap 3 terkunci. Tandai minimal satu tugas sebelum meng
 
 ## G. Melihat Hasil (Setelah Analisis)
 
-Saat status **ANALYZED**, detail sesi menampilkan:
+Saat status **ANALYZED**, detail analisis menampilkan:
 
 - **Task Terpilih** — kolom **Tugas Pokok**, **Uraian Tugas**, **Relevan** (jumlah & %).
 - **Hasil Agregasi (masukan ABK)** — total jam/minggu & jam/tahun, lalu per task:
@@ -136,5 +136,5 @@ Saat status **ANALYZED**, detail sesi menampilkan:
 
 ---
 
-<!-- Screenshot: detail sesi TI dengan bagian Transisi Sesi dan tabel responden -->
+<!-- Screenshot: detail analisis TI dengan bagian transisi status dan tabel responden -->
 <!-- Screenshot: form seleksi Tahap 1 langkah kaskade -->

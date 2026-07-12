@@ -57,8 +57,8 @@ export default async function KuesionerSayaPage() {
   const { dcs, wcp, ti, ts, opm } = await fetchKuesioner(session?.accessToken);
   const total = dcs.length + wcp.length + ti.length + ts.length + opm.length;
   const belumDiisi =
-    dcs.filter((k) => !k.sudah_submit && k.sesi_status === "OPEN").length +
-    wcp.filter((k) => !k.sudah_submit && k.sesi_status === "OPEN").length +
+    dcs.filter((k) => !k.sudah_submit && k.instrumen_status === "OPEN").length +
+    wcp.filter((k) => !k.sudah_submit && k.instrumen_status === "OPEN").length +
     ti.filter(tiPerluDiisi).length +
     ts.filter((k) => k.aktif).length +
     opm.filter((k) => !k.sudah_submit && k.sesi_status === "OPEN").length;
@@ -86,17 +86,16 @@ export default async function KuesionerSayaPage() {
         </div>
       )}
 
-      {/* DCS */}
+      {/* DCS — instrumen singleton: maksimal satu kartu */}
       {dcs.length > 0 && (
         <section>
           <h2 className="mb-3 text-lg font-medium text-gray-900">DCS — Demand-Control-Support</h2>
           <div className="space-y-3">
             {dcs.map((k) => (
-              <KuesionerCard
+              <InstrumenKuesionerCard
                 key={k.id}
-                label={k.sesi_catatan ?? k.sesi_periode}
-                periode={k.sesi_periode}
-                sesi_status={k.sesi_status}
+                label={k.catatan ?? "DCS"}
+                instrumen_status={k.instrumen_status}
                 sudah_submit={k.sudah_submit}
                 href={`/dcs/isi/${k.id}`}
                 tipe="DCS"
@@ -106,17 +105,16 @@ export default async function KuesionerSayaPage() {
         </section>
       )}
 
-      {/* WCP */}
+      {/* WCP — instrumen singleton: maksimal satu kartu */}
       {wcp.length > 0 && (
         <section>
           <h2 className="mb-3 text-lg font-medium text-gray-900">WCP — Work Condition Profile</h2>
           <div className="space-y-3">
             {wcp.map((k) => (
-              <KuesionerCard
+              <InstrumenKuesionerCard
                 key={k.id}
-                label={k.sesi_catatan ?? k.sesi_periode}
-                periode={k.sesi_periode}
-                sesi_status={k.sesi_status}
+                label={k.catatan ?? "WCP"}
+                instrumen_status={k.instrumen_status}
                 sudah_submit={k.sudah_submit}
                 href={`/wcp/isi/${k.id}`}
                 tipe="WCP"
@@ -236,6 +234,76 @@ function KuesionerCard({
         ) : (
           <span className="rounded-md border border-gray-200 px-4 py-2 text-sm text-gray-400">
             {STATUS_LABEL[sesi_status] ?? sesi_status}
+          </span>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Kartu kuesioner untuk instrumen singleton (DCS/WCP) — tidak ada periode/sesi,
+ * hanya `instrumen_status` (OPEN|CLOSED|ANALYZED) + `catatan` opsional.
+ */
+function InstrumenKuesionerCard({
+  label,
+  instrumen_status,
+  sudah_submit,
+  href,
+  tipe,
+}: {
+  label: string;
+  instrumen_status: string;
+  sudah_submit: boolean;
+  href: string;
+  tipe: string;
+}) {
+  const canFill = instrumen_status === "OPEN" && !sudah_submit;
+
+  return (
+    <div className="flex items-center justify-between rounded-lg border border-gray-200 bg-white p-4">
+      <div>
+        <p className="font-medium text-gray-900 dark:text-gray-50">{label}</p>
+        <p className="mt-0.5 text-sm text-gray-500">{tipe}</p>
+        <div className="mt-2 flex items-center gap-2">
+          <span
+            className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${
+              instrumen_status === "OPEN"
+                ? "bg-blue-100 text-blue-700"
+                : "bg-gray-100 text-gray-500"
+            }`}
+          >
+            {STATUS_LABEL[instrumen_status] ?? instrumen_status}
+          </span>
+          {sudah_submit ? (
+            <span className="inline-flex items-center gap-1 rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700">
+              <span aria-hidden>✓</span> Sudah diisi
+            </span>
+          ) : (
+            <span className="inline-flex rounded-full bg-yellow-100 px-2 py-0.5 text-xs text-yellow-700">
+              Belum diisi
+            </span>
+          )}
+        </div>
+      </div>
+      <div className="ml-4 shrink-0">
+        {canFill ? (
+          <Link
+            href={href}
+            className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+          >
+            Isi Sekarang
+          </Link>
+        ) : sudah_submit ? (
+          <Link
+            href={href}
+            className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+          >
+            Lihat Jawaban
+          </Link>
+        ) : (
+          <span className="rounded-md border border-gray-200 px-4 py-2 text-sm text-gray-400">
+            {STATUS_LABEL[instrumen_status] ?? instrumen_status}
           </span>
         )}
       </div>

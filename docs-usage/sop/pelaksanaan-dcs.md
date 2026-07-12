@@ -1,7 +1,7 @@
 # SOP Pelaksanaan — DCS (Demand-Control-Support)
 
-Prosedur baku menjalankan pengambilan data kuesioner **DCS** — dari membuka sesi hingga
-hasil tersedia.
+Prosedur baku menjalankan pengambilan data kuesioner **DCS** — dari menugaskan responden
+hingga hasil tersedia.
 
 **Tujuan:** mengumpulkan jawaban 42 item DCS dari responden yang tepat secara lengkap.
 
@@ -11,27 +11,27 @@ hasil tersedia.
 
 **Langkah teknis:** [IK-06 DCS](../ik/dcs.md).
 
-Status sesi: `Draft → Terbuka → Tertutup → Teranalisis`.
+Status instrumen: `Terbuka → Tertutup → Teranalisis` (instrumen tunggal, tanpa sesi).
 
 ---
 
 ## Alur Ringkas
 
 ```
-Buka Sesi → daftar responden → partisipan isi kuesioner (42 item)
-   → pantau kelengkapan → Tutup Sesi → hasil diproses
+Tugaskan responden → partisipan isi kuesioner (42 item)
+   → pantau kelengkapan → Tutup Pengisian → Jalankan Analisis → hasil tersedia
 ```
 
 ---
 
-## 1. Membuka Sesi & Mendaftarkan Responden
+## 1. Menugaskan Responden
 
-1. Buka detail sesi (status **Draft**).
-2. Klik **Buka Sesi** → status menjadi **Terbuka**.
-3. Pada **Tambah Responden**, pilih partisipan (mengisi otomatis Nama & Label Jabatan),
-   lalu klik **+ Daftarkan**.
+1. Buka halaman **DCS** (status **Terbuka** sejak awal — tidak perlu dibuka manual).
+2. Pada **Tugaskan Responden**, centang satu atau lebih partisipan, lalu klik
+   **Tugaskan Terpilih (N)**. Seluruh partisipan tercentang langsung menjadi responden
+   dalam satu kali submit.
 
-> Langkah teknis: [IK-06 bagian B–C](../ik/dcs.md#b-membuka-menutup-sesi).
+> Langkah teknis: [IK-06 bagian C](../ik/dcs.md#c-menugaskan-responden).
 
 ---
 
@@ -39,11 +39,12 @@ Buka Sesi → daftar responden → partisipan isi kuesioner (42 item)
 
 1. Informasikan ke responden bahwa kuesioner sudah aktif dan batas waktunya.
 2. Tiap responden membuka **Kuesioner Saya** → kartu **DCS** → **Isi Sekarang**, menjawab
-   seluruh item pada skala **1–5**, lalu **Kirim Jawaban**.
+   seluruh item pada skala **1–5**, lalu **Kirim Jawaban**. Progres dapat disimpan
+   sewaktu-waktu lewat **Simpan** sebelum finalisasi.
 
-> Langkah teknis: [IK-06 bagian D](../ik/dcs.md#d-mengisi-kuesioner-partisipan).
+> Langkah teknis: [IK-06 bagian E](../ik/dcs.md#e-mengisi-kuesioner-partisipan).
 
-!!! note "Semua item wajib & final"
+!!! note "Semua item wajib saat kirim final"
 Tombol **Kirim Jawaban** aktif hanya bila semua item terjawab. Setelah dikirim,
 jawaban final (dapat dilihat via **Lihat Jawaban**).
 
@@ -51,27 +52,32 @@ jawaban final (dapat dilihat via **Lihat Jawaban**).
 
 ## 3. Memantau Kelengkapan
 
-Pantau dari detail sesi: kartu **Terdaftar** dan **Sudah Mengisi**, serta kolom
-**Status Isian** per responden. Jangan menutup sesi sebelum jumlah pengisi memenuhi
+Pantau dari halaman **DCS**: kartu status menampilkan jumlah responden yang sudah mengisi
+dari total, dan Min. Responden. Jangan menutup pengisian sebelum jumlah pengisi memenuhi
 **Min. Responden**.
 
 ---
 
-## 4. Menutup Sesi & Hasil
+## 4. Menutup Pengisian & Menjalankan Analisis
 
-1. Klik **Tutup Sesi** → status **Tertutup**.
-2. Analisis diproses dari backend; hasil tersedia di halaman laporan setelah sesi tertutup.
+1. Klik **Tutup Pengisian** → status **Tertutup**.
+2. Klik **Jalankan Analisis** (aktif hanya bila submit ≥ Min. Responden) → status
+   **Teranalisis**, langsung diarahkan ke halaman hasil.
+3. Bila ternyata perlu tambahan responden, klik **Buka Ulang** untuk kembali ke status
+   **Terbuka** (hanya bila belum Teranalisis).
 
-> Langkah teknis: [IK-06 bagian B](../ik/dcs.md#b-membuka-menutup-sesi).
+> Langkah teknis: [IK-06 bagian B & D](../ik/dcs.md#b-aksi-instrumen).
 
-!!! danger "Tidak dapat dibatalkan"
-Penutupan sesi bersifat searah. Pastikan data lengkap sebelum menutup.
+!!! danger "Analisis tidak dapat dibatalkan"
+Setelah **Jalankan Analisis** berhasil (status Teranalisis), instrumen tidak dapat
+dibuka ulang lagi. Pastikan data lengkap sebelum menjalankan analisis.
 
 ---
 
 ## Daftar Periksa (Checklist) Pelaksanaan DCS
 
-- [ ] Sesi dibuka & responden didaftarkan
+- [ ] Responden ditugaskan
 - [ ] Responden diberi tahu & dipandu mengisi
 - [ ] Jumlah pengisi memenuhi Min. Responden
-- [ ] Sesi ditutup & hasil tersedia
+- [ ] Pengisian ditutup & analisis dijalankan
+- [ ] Hasil (K-Index & skor sub-skala) diverifikasi di `/dcs/hasil`

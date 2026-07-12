@@ -31,7 +31,7 @@ async function bukaAtauBuatSesi(page: Page): Promise<void> {
     await expect(page.locator("#jabatan_id option").nth(1)).toBeAttached({ timeout: 10_000 });
     await page.locator("#jabatan_id").selectOption({ index: 1 });
     await page.getByLabel("Periode").fill(PERIODE);
-    await page.getByRole("button", { name: "Buat Sesi" }).click();
+    await page.getByRole("button", { name: "Mulai Analisis Jabatan" }).click();
     await page.waitForURL(/\/task-inventory\/tises_/, { timeout: 15_000 });
   }
   await page.waitForLoadState("networkidle");

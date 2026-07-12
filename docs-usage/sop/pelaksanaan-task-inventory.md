@@ -1,6 +1,6 @@
 # SOP Pelaksanaan — Task Inventory (TI)
 
-Prosedur baku menjalankan pengambilan data **Task Inventory** — dari membuka sesi hingga
+Prosedur baku menjalankan pengambilan data **Task Inventory** — dari membuka analisis hingga
 menjalankan analisis.
 
 **Tujuan:** mengumpulkan seleksi relevansi tugas (Tahap 1), keputusan koordinator
@@ -12,7 +12,7 @@ menjalankan analisis.
 
 **Langkah teknis:** [IK-04 Task Inventory](../ik/task-inventory.md).
 
-Status sesi: `DRAFT → TAHAP1 → TAHAP2 → TAHAP3 → CLOSED → ANALYZED`.
+Status analisis: `DRAFT → TAHAP1 → TAHAP2 → TAHAP3 → CLOSED → ANALYZED`.
 
 ---
 
@@ -21,14 +21,14 @@ Status sesi: `DRAFT → TAHAP1 → TAHAP2 → TAHAP3 → CLOSED → ANALYZED`.
 ```
 Mulai Tahap 1 → daftar responden → partisipan isi Tahap 1
    → Mulai Tahap 2 (review koordinator) → Mulai Tahap 3 (bekukan task)
-   → partisipan isi Tahap 3 → Tutup Sesi → Jalankan Analisis
+   → partisipan isi Tahap 3 → Tutup Analisis → Jalankan Analisis
 ```
 
 ---
 
 ## 1. Membuka Tahap 1 & Mendaftarkan Responden
 
-1. Buka detail sesi (status **DRAFT**).
+1. Buka detail analisis (status **DRAFT**).
 2. Klik **Mulai Tahap 1** → status menjadi **TAHAP1**.
 3. Daftarkan responden sesuai anggota panel (boleh juga saat masih DRAFT). Pilih dari
    partisipan agar nama terisi, lalu klik **+ Daftarkan**.
@@ -76,9 +76,9 @@ Tahap 3.
 
 ---
 
-## 5. Menutup Sesi & Analisis
+## 5. Menutup Analisis & Jalankan Analisis
 
-1. Klik **Tutup Sesi** (dari TAHAP3) → status **CLOSED**.
+1. Klik **Tutup Analisis** (dari TAHAP3) → status **CLOSED**.
 2. Klik **Jalankan Analisis** → status **ANALYZED**.
 3. Tinjau **Task Terpilih** (relevansi) dan **Hasil Agregasi** (jam/minggu, jam/tahun,
    penanda risiko DCS) sebagai masukan ABK.
@@ -86,7 +86,7 @@ Tahap 3.
 > Langkah teknis: [IK-04 bagian G](../ik/task-inventory.md#g-melihat-hasil-setelah-analisis).
 
 !!! danger "Tidak dapat dibatalkan"
-Penutupan sesi dan transisi tahap bersifat searah. Pastikan data lengkap & jumlah
+Penutupan analisis dan transisi tahap bersifat searah. Pastikan data lengkap & jumlah
 pengisi memenuhi **Min. Responden** sebelum menutup/berpindah tahap.
 
 ---
@@ -98,5 +98,5 @@ pengisi memenuhi **Min. Responden** sebelum menutup/berpindah tahap.
 - [ ] Koordinator menyelesaikan review Tahap 2
 - [ ] Tahap 3 dibekukan & rincian CalHR diisi
 - [ ] Jumlah pengisi memenuhi Min. Responden
-- [ ] Sesi ditutup & analisis dijalankan
+- [ ] Analisis ditutup & proses analisis dijalankan
 - [ ] Hasil agregasi ditinjau

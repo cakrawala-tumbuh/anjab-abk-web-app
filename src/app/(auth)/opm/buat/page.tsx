@@ -6,7 +6,7 @@ import { toApiError } from "@/lib/api/errors";
 import type { JabatanRead, SMEPanelRead, TiSesiRead } from "@/lib/api/schema";
 import { OpmSesiForm } from "./opm-sesi-form";
 
-export const metadata = { title: "Buat Sesi OPM — ANJAB-ABK" };
+export const metadata = { title: "Mulai Analisis Jabatan — OPM — ANJAB-ABK" };
 
 async function fetchPageData(accessToken: string | undefined) {
   const client = withServerAuth(accessToken);
@@ -41,17 +41,17 @@ export default async function BuatOpmSesiPage() {
     <div className="space-y-6">
       <div className="flex items-center gap-2 text-sm text-gray-500">
         <Link href="/opm" className="hover:text-gray-700">
-          Sesi OPM
+          Analisis Jabatan — OPM
         </Link>
         <span>/</span>
-        <span className="text-gray-900">Buat Sesi</span>
+        <span className="text-gray-900">Mulai Analisis Jabatan</span>
       </div>
 
       <div>
-        <h1 className="page-heading">Buat Sesi OPM</h1>
+        <h1 className="page-heading">Mulai Analisis Jabatan — OPM</h1>
         <p className="page-subtext">
-          Pilih jabatan (wajib memiliki SME panel) dan sesi Task Inventory yang sudah dibekukan
-          sebagai sumber snapshot task. Responden dibuat otomatis dari anggota SME panel.
+          Pilih jabatan (wajib memiliki SME panel) dan Analisis Jabatan Task Inventory yang sudah
+          dibekukan sebagai sumber snapshot task. Responden dibuat otomatis dari anggota SME panel.
         </p>
       </div>
 

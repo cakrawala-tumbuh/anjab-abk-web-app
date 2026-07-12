@@ -5,7 +5,7 @@ import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
 import type { OpmSesiRead } from "@/lib/api/schema";
 
-export const metadata = { title: "Sesi OPM — ANJAB-ABK" };
+export const metadata = { title: "Analisis Jabatan — OPM — ANJAB-ABK" };
 
 const STATUS_LABEL: Record<string, { label: string; cls: string }> = {
   DRAFT: { label: "Draft", cls: "bg-gray-100 text-gray-600" },
@@ -34,29 +34,29 @@ export default async function OpmSesiPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="page-heading">Sesi OPM</h1>
+          <h1 className="page-heading">Analisis Jabatan — OPM</h1>
           <p className="page-subtext">
-            Rating Tugas (Importance/Frequency/Criticality) — kelola sesi penilaian per jabatan.
+            Rating Tugas (Importance/Frequency/Criticality) — kelola analisis penilaian per jabatan.
           </p>
         </div>
         <Link
           href="/opm/buat"
           className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
         >
-          + Buat Sesi
+          + Mulai Analisis Jabatan
         </Link>
       </div>
 
       {sesi.length === 0 ? (
         <div className="empty-state">
           <p className="text-sm text-gray-500 dark:text-gray-400">
-            Belum ada sesi OPM. Buat sesi pertama untuk mulai.
+            Belum ada Analisis Jabatan OPM. Mulai analisis pertama untuk memulai.
           </p>
           <Link
             href="/opm/buat"
             className="mt-4 inline-block rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
           >
-            Buat Sesi
+            Mulai Analisis Jabatan
           </Link>
         </div>
       ) : (

@@ -16,11 +16,11 @@ export function HapusResponden({ respondenId, nama, accessToken }: Props) {
   const [loading, setLoading] = useState(false);
 
   async function handleHapus() {
-    if (!confirm(`Hapus responden "${nama}" dari sesi ini?`)) return;
+    if (!confirm(`Hapus responden "${nama}" dari WCP?`)) return;
     setLoading(true);
     try {
       const client = withServerAuth(accessToken);
-      const { error, response } = await client.DELETE("/api/v1/dcs/sesi/responden/{responden_id}", {
+      const { error, response } = await client.DELETE("/api/v1/wcp/responden/{responden_id}", {
         params: { path: { responden_id: respondenId } },
       });
       const reqId = response.headers.get("x-request-id");

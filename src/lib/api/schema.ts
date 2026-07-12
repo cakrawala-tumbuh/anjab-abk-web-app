@@ -456,7 +456,7 @@ export interface paths {
         };
         /**
          * Daftar kuesioner DCS milik pengguna yang sedang login
-         * @description Kembalikan sesi DCS yang sudah di-assign ke partisipan dan berstatus OPEN.
+         * @description Kembalikan kuesioner DCS yang sudah di-assign ke partisipan, bila instrumen OPEN.
          *
          *     Partisipan hanya melihat kuesioner DCS yang telah di-assign secara eksplisit
          *     oleh admin (record responden sudah dibuat dengan ``partisipan_id`` mereka).
@@ -480,7 +480,7 @@ export interface paths {
         };
         /**
          * Daftar kuesioner WCP milik pengguna yang sedang login
-         * @description Kembalikan sesi WCP yang sudah di-assign ke partisipan dan berstatus OPEN.
+         * @description Kembalikan kuesioner WCP yang sudah di-assign ke partisipan, bila instrumen OPEN.
          *
          *     Partisipan hanya melihat kuesioner WCP yang telah di-assign secara eksplisit
          *     oleh admin (record responden sudah dibuat dengan ``partisipan_id`` mereka).
@@ -563,61 +563,25 @@ export interface paths {
         patch: operations["wcp_item_update"];
         trace?: never;
     };
-    "/api/v1/wcp/sesi": {
+    "/api/v1/wcp/instrumen": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** Daftar sesi WCP */
-        get: operations["wcp_sesi_list"];
-        put?: never;
-        /** Buat sesi WCP */
-        post: operations["wcp_sesi_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/wcp/sesi/search": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Cari sesi WCP (domain ala Odoo) */
-        post: operations["wcp_sesi_search"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/wcp/sesi/{sesi_id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Ambil sesi WCP */
-        get: operations["wcp_sesi_get"];
+        /** Ambil instrumen WCP (singleton) */
+        get: operations["wcp_instrumen_get"];
         put?: never;
         post?: never;
-        /** Hapus sesi WCP (DRAFT bebas; status lain wajib paksa=true) */
-        delete: operations["wcp_sesi_delete"];
+        delete?: never;
         options?: never;
         head?: never;
-        /** Perbarui sesi WCP (hanya saat DRAFT) */
-        patch: operations["wcp_sesi_update"];
+        /** Perbarui instrumen WCP (min_responden/catatan) */
+        patch: operations["wcp_instrumen_update"];
         trace?: never;
     };
-    "/api/v1/wcp/sesi/{sesi_id}/buka": {
+    "/api/v1/wcp/instrumen/tutup": {
         parameters: {
             query?: never;
             header?: never;
@@ -626,15 +590,15 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Buka sesi WCP (DRAFT → OPEN) */
-        post: operations["wcp_sesi_buka"];
+        /** Tutup instrumen WCP (OPEN → CLOSED) */
+        post: operations["wcp_instrumen_tutup"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/v1/wcp/sesi/{sesi_id}/tutup": {
+    "/api/v1/wcp/instrumen/buka-ulang": {
         parameters: {
             query?: never;
             header?: never;
@@ -643,25 +607,25 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Tutup sesi WCP (OPEN → CLOSED) */
-        post: operations["wcp_sesi_tutup"];
+        /** Buka ulang instrumen WCP (CLOSED → OPEN) */
+        post: operations["wcp_instrumen_buka_ulang"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/v1/wcp/sesi/{sesi_id}/responden": {
+    "/api/v1/wcp/responden": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** Daftar responden dalam sesi WCP (admin) */
+        /** Daftar seluruh responden WCP (admin) */
         get: operations["wcp_responden_list"];
         put?: never;
-        /** Daftarkan responden ke sesi WCP (admin) */
+        /** Tugaskan (assign) responden WCP — bulk (admin) */
         post: operations["wcp_responden_create"];
         delete?: never;
         options?: never;
@@ -669,7 +633,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/wcp/sesi/responden/{responden_id}": {
+    "/api/v1/wcp/responden/{responden_id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -687,7 +651,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/wcp/sesi/responden/{responden_id}/jawaban": {
+    "/api/v1/wcp/responden/{responden_id}/jawaban": {
         parameters: {
             query?: never;
             header?: never;
@@ -705,7 +669,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/wcp/sesi/responden/{responden_id}/jawaban/submit": {
+    "/api/v1/wcp/responden/{responden_id}/jawaban/submit": {
         parameters: {
             query?: never;
             header?: never;
@@ -722,7 +686,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/wcp/sesi/{sesi_id}/analisis": {
+    "/api/v1/wcp/analisis": {
         parameters: {
             query?: never;
             header?: never;
@@ -732,22 +696,22 @@ export interface paths {
         get?: never;
         put?: never;
         /** Jalankan analisis WCP (CLOSED → ANALYZED) */
-        post: operations["wcp_analisis_run"];
+        post: operations["wcp_analisis"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/v1/wcp/sesi/{sesi_id}/hasil": {
+    "/api/v1/wcp/hasil": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** Lihat hasil analisis sesi WCP */
-        get: operations["wcp_hasil_sesi_get"];
+        /** Lihat hasil analisis instrumen WCP */
+        get: operations["wcp_hasil"];
         put?: never;
         post?: never;
         delete?: never;
@@ -756,7 +720,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/wcp/sesi/responden/{responden_id}/hasil": {
+    "/api/v1/wcp/hasil-responden/{responden_id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -1075,61 +1039,25 @@ export interface paths {
         patch: operations["dcs_item_update"];
         trace?: never;
     };
-    "/api/v1/dcs/sesi": {
+    "/api/v1/dcs/instrumen": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** Daftar sesi DCS */
-        get: operations["dcs_sesi_list"];
-        put?: never;
-        /** Buat sesi DCS */
-        post: operations["dcs_sesi_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/dcs/sesi/search": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Cari sesi DCS (domain ala Odoo) */
-        post: operations["dcs_sesi_search"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/dcs/sesi/{sesi_id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Ambil sesi DCS */
-        get: operations["dcs_sesi_get"];
+        /** Ambil instrumen DCS (singleton) */
+        get: operations["dcs_instrumen_get"];
         put?: never;
         post?: never;
-        /** Hapus sesi DCS (DRAFT bebas; status lain wajib paksa=true) */
-        delete: operations["dcs_sesi_delete"];
+        delete?: never;
         options?: never;
         head?: never;
-        /** Perbarui sesi DCS (hanya saat DRAFT) */
-        patch: operations["dcs_sesi_update"];
+        /** Perbarui instrumen DCS (min_responden/catatan) */
+        patch: operations["dcs_instrumen_update"];
         trace?: never;
     };
-    "/api/v1/dcs/sesi/{sesi_id}/buka": {
+    "/api/v1/dcs/instrumen/tutup": {
         parameters: {
             query?: never;
             header?: never;
@@ -1138,15 +1066,15 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Buka sesi DCS (DRAFT → OPEN) */
-        post: operations["dcs_sesi_buka"];
+        /** Tutup instrumen DCS (OPEN → CLOSED) */
+        post: operations["dcs_instrumen_tutup"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/v1/dcs/sesi/{sesi_id}/tutup": {
+    "/api/v1/dcs/instrumen/buka-ulang": {
         parameters: {
             query?: never;
             header?: never;
@@ -1155,25 +1083,25 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Tutup sesi DCS (OPEN → CLOSED) */
-        post: operations["dcs_sesi_tutup"];
+        /** Buka ulang instrumen DCS (CLOSED → OPEN) */
+        post: operations["dcs_instrumen_buka_ulang"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/v1/dcs/sesi/{sesi_id}/responden": {
+    "/api/v1/dcs/responden": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** Daftar responden dalam sesi DCS (admin) */
+        /** Daftar seluruh responden DCS (admin) */
         get: operations["dcs_responden_list"];
         put?: never;
-        /** Daftarkan responden ke sesi DCS (admin) */
+        /** Tugaskan (assign) responden DCS — bulk (admin) */
         post: operations["dcs_responden_create"];
         delete?: never;
         options?: never;
@@ -1181,7 +1109,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/dcs/sesi/responden/{responden_id}": {
+    "/api/v1/dcs/responden/{responden_id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -1199,7 +1127,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/dcs/sesi/responden/{responden_id}/jawaban": {
+    "/api/v1/dcs/responden/{responden_id}/jawaban": {
         parameters: {
             query?: never;
             header?: never;
@@ -1217,7 +1145,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/dcs/sesi/responden/{responden_id}/jawaban/submit": {
+    "/api/v1/dcs/responden/{responden_id}/jawaban/submit": {
         parameters: {
             query?: never;
             header?: never;
@@ -1234,7 +1162,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/dcs/sesi/{sesi_id}/analisis": {
+    "/api/v1/dcs/analisis": {
         parameters: {
             query?: never;
             header?: never;
@@ -1244,22 +1172,22 @@ export interface paths {
         get?: never;
         put?: never;
         /** Jalankan analisis DCS (CLOSED → ANALYZED) */
-        post: operations["dcs_analisis_run"];
+        post: operations["dcs_analisis"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/v1/dcs/sesi/{sesi_id}/hasil": {
+    "/api/v1/dcs/hasil": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** Lihat hasil analisis sesi DCS */
-        get: operations["dcs_hasil_sesi_get"];
+        /** Lihat hasil analisis instrumen DCS */
+        get: operations["dcs_hasil"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1268,7 +1196,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/dcs/sesi/responden/{responden_id}/hasil": {
+    "/api/v1/dcs/hasil-responden/{responden_id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -1935,6 +1863,41 @@ export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
         /**
+         * DcsHasilRead
+         * @description Hasil analisis lengkap instrumen DCS (seluruh sub-skala + risk flag + K-Index).
+         */
+        DcsHasilRead: {
+            /**
+             * N Responden
+             * @description Total responden yang submit.
+             */
+            n_responden: number;
+            /**
+             * Sub Skala
+             * @description Hasil per sub-skala (3 entri).
+             */
+            sub_skala: components["schemas"]["DcsHasilSubSkalaRead"][];
+            /**
+             * Risk Flag
+             * @description Flag risiko DCS: HIGH = demand tinggi + control/support rendah; MODERATE = salah satu kondisi; LOW = tidak ada kondisi.
+             * @example MODERATE
+             * @enum {string}
+             */
+            risk_flag: "HIGH" | "MODERATE" | "LOW";
+            /**
+             * K Index
+             * @description K-Index psikososial (0–1). None jika instrumen WCP belum punya responden ber-submit. Rumus: 0,40×DemandPressure + 0,25×ControlDeficit + 0,25×SupportDeficit + 0,10×WCPRisk.
+             * @example 0.42
+             */
+            k_index?: number | null;
+            /**
+             * K Index Wcp Risk
+             * @description Komponen WCP risk yang dipakai dalam K-Index (0–1). None jika tidak ada.
+             * @example 0.65
+             */
+            k_index_wcp_risk?: number | null;
+        };
+        /**
          * DcsHasilRespondenRead
          * @description Hasil analisis untuk satu responden (3 sub-skala).
          */
@@ -1958,79 +1921,10 @@ export interface components {
             risk_flag: "HIGH" | "MODERATE" | "LOW";
         };
         /**
-         * DcsHasilSesiRead
-         * @description Hasil analisis lengkap satu sesi DCS (seluruh sub-skala + risk flag + K-Index).
+         * DcsHasilSubSkalaRead
+         * @description Hasil agregat satu sub-skala (seluruh responden ber-submit instrumen DCS).
          */
-        DcsHasilSesiRead: {
-            /**
-             * Sesi Id
-             * @description ID sesi.
-             */
-            sesi_id: string;
-            /**
-             * Periode
-             * @description Periode survei.
-             */
-            periode: string;
-            /**
-             * N Responden
-             * @description Total responden yang submit.
-             */
-            n_responden: number;
-            /**
-             * Sub Skala
-             * @description Hasil per sub-skala (3 entri).
-             */
-            sub_skala: components["schemas"]["DcsHasilSubSkalaSesiRead"][];
-            /**
-             * Risk Flag
-             * @description Flag risiko DCS: HIGH = demand tinggi + control/support rendah; MODERATE = salah satu kondisi; LOW = tidak ada kondisi.
-             * @example MODERATE
-             * @enum {string}
-             */
-            risk_flag: "HIGH" | "MODERATE" | "LOW";
-            /**
-             * K Index
-             * @description K-Index psikososial (0–1). None jika wcp_sesi_id tidak disertakan. Rumus: 0,40×DemandPressure + 0,25×ControlDeficit + 0,25×SupportDeficit + 0,10×WCPRisk.
-             * @example 0.42
-             */
-            k_index?: number | null;
-            /**
-             * K Index Wcp Risk
-             * @description Komponen WCP risk yang dipakai dalam K-Index (0–1). None jika tidak ada.
-             * @example 0.65
-             */
-            k_index_wcp_risk?: number | null;
-        };
-        /**
-         * DcsHasilSubSkalaRespondenRead
-         * @description Skor satu sub-skala untuk satu responden.
-         */
-        DcsHasilSubSkalaRespondenRead: {
-            /**
-             * Subskala Kode
-             * @description Kode sub-skala.
-             * @example DEMAND
-             */
-            subskala_kode: string;
-            /**
-             * Subskala Nama
-             * @description Nama sub-skala.
-             * @example Demand (Tuntutan Kerja)
-             */
-            subskala_nama: string;
-            /**
-             * Skor
-             * @description Rata-rata 14 item setelah reverse UF.
-             * @example 3.71
-             */
-            skor: number;
-        };
-        /**
-         * DcsHasilSubSkalaSesiRead
-         * @description Hasil agregat satu sub-skala untuk satu sesi (seluruh responden).
-         */
-        DcsHasilSubSkalaSesiRead: {
+        DcsHasilSubSkalaRead: {
             /**
              * Subskala Kode
              * @description Kode sub-skala.
@@ -2067,6 +1961,86 @@ export interface components {
              * @example 0.78
              */
             cronbach_alpha: number | null;
+        };
+        /**
+         * DcsHasilSubSkalaRespondenRead
+         * @description Skor satu sub-skala untuk satu responden.
+         */
+        DcsHasilSubSkalaRespondenRead: {
+            /**
+             * Subskala Kode
+             * @description Kode sub-skala.
+             * @example DEMAND
+             */
+            subskala_kode: string;
+            /**
+             * Subskala Nama
+             * @description Nama sub-skala.
+             * @example Demand (Tuntutan Kerja)
+             */
+            subskala_nama: string;
+            /**
+             * Skor
+             * @description Rata-rata 14 item setelah reverse UF.
+             * @example 3.71
+             */
+            skor: number;
+        };
+        /**
+         * DcsInstrumenRead
+         * @description Representasi instrumen DCS (satu baris tetap, `id='dcs'`).
+         */
+        DcsInstrumenRead: {
+            /**
+             * Id
+             * @description ID instrumen (selalu 'dcs').
+             * @example dcs
+             */
+            id: string;
+            /**
+             * Status
+             * @description Status instrumen.
+             * @example OPEN
+             * @enum {string}
+             */
+            status: "OPEN" | "CLOSED" | "ANALYZED";
+            /**
+             * Min Responden
+             * @description Jumlah minimum responden (cutoff analisis).
+             */
+            min_responden: number;
+            /**
+             * Catatan
+             * @description Catatan.
+             */
+            catatan?: string | null;
+            /**
+             * Closed At
+             * @description Waktu instrumen terakhir ditutup (None bila belum pernah).
+             */
+            closed_at?: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             * @description Waktu baris instrumen dibuat (oleh migrasi).
+             */
+            created_at: string;
+        };
+        /**
+         * DcsInstrumenUpdate
+         * @description Payload pembaruan parsial instrumen DCS (min_responden/catatan).
+         */
+        DcsInstrumenUpdate: {
+            /**
+             * Min Responden
+             * @description Jumlah minimum responden baru (cutoff analisis).
+             */
+            min_responden?: number | null;
+            /**
+             * Catatan
+             * @description Catatan baru.
+             */
+            catatan?: string | null;
         };
         /**
          * DcsItemRead
@@ -2201,7 +2175,7 @@ export interface components {
         };
         /**
          * DcsKuesionerItemRead
-         * @description Responden DCS diperkaya info sesi — dipakai endpoint /kuesioner/saya.
+         * @description Responden DCS diperkaya info instrumen — dipakai endpoint /kuesioner/saya.
          */
         DcsKuesionerItemRead: {
             /**
@@ -2211,16 +2185,10 @@ export interface components {
              */
             id: string;
             /**
-             * Sesi Id
-             * @description ID sesi DCS.
-             * @example dses_a1b2c3d4
+             * Catatan
+             * @description Catatan instrumen DCS.
              */
-            sesi_id: string;
-            /**
-             * Sesi Catatan
-             * @description Catatan sesi DCS.
-             */
-            sesi_catatan?: string | null;
+            catatan?: string | null;
             /**
              * Sudah Submit
              * @description True jika jawaban sudah disubmit.
@@ -2238,41 +2206,26 @@ export interface components {
              */
             created_at: string;
             /**
-             * Sesi Status
-             * @description Status sesi: DRAFT | OPEN | CLOSED | ANALYZED.
+             * Instrumen Status
+             * @description Status instrumen: OPEN | CLOSED | ANALYZED.
              * @example OPEN
              */
-            sesi_status: string;
-            /**
-             * Sesi Periode
-             * @description Periode sesi (YYYY-MM).
-             * @example 2025-06
-             */
-            sesi_periode: string;
+            instrumen_status: string;
         };
         /**
          * DcsRespondenCreate
-         * @description Payload pendaftaran responden ke dalam sesi DCS.
+         * @description Payload penugasan (assign) responden DCS — bulk, minimal 1 partisipan.
          */
         DcsRespondenCreate: {
             /**
-             * Nama
-             * @description Nama responden (opsional, boleh anonim).
-             * @example Budi Santoso, S.Pd.
+             * Partisipan Ids
+             * @description Daftar ID partisipan yang ditugaskan sebagai responden DCS (bulk).
+             * @example [
+             *       "par_a1b2c3d4",
+             *       "par_b2c3d4e5"
+             *     ]
              */
-            nama?: string | null;
-            /**
-             * Jabatan Label
-             * @description Label jabatan responden (teks bebas).
-             * @example Guru Matematika
-             */
-            jabatan_label: string;
-            /**
-             * Partisipan Id
-             * @description ID partisipan yang terhubung (opsional, untuk fitur 'Kuesioner Saya').
-             * @example par_a1b2c3d4
-             */
-            partisipan_id?: string | null;
+            partisipan_ids: string[];
         };
         /**
          * DcsRespondenRead
@@ -2285,12 +2238,6 @@ export interface components {
              * @example drsp_a1b2c3d4
              */
             id: string;
-            /**
-             * Sesi Id
-             * @description ID sesi induk.
-             * @example dses_a1b2c3d4
-             */
-            sesi_id: string;
             /**
              * Nama
              * @description Nama responden.
@@ -2322,109 +2269,6 @@ export interface components {
              * @description Waktu pendaftaran (UTC, ISO-8601).
              */
             created_at: string;
-        };
-        /**
-         * DcsSesiCreate
-         * @description Payload pembuatan sesi DCS.
-         */
-        DcsSesiCreate: {
-            /**
-             * Periode
-             * @description Periode survei format YYYY-MM.
-             * @example 2025-06
-             */
-            periode: string;
-            /**
-             * Min Responden
-             * @description Jumlah minimum responden.
-             * @default 6
-             * @example 6
-             */
-            min_responden: number;
-            /**
-             * Max Responden
-             * @description Jumlah maksimum responden.
-             * @default 8
-             * @example 8
-             */
-            max_responden: number;
-            /**
-             * Catatan
-             * @description Catatan opsional untuk sesi ini.
-             */
-            catatan?: string | null;
-        };
-        /**
-         * DcsSesiRead
-         * @description Representasi sesi DCS yang dikembalikan API.
-         */
-        DcsSesiRead: {
-            /**
-             * Id
-             * @description ID sesi.
-             * @example dses_a1b2c3d4
-             */
-            id: string;
-            /**
-             * Periode
-             * @description Periode survei (YYYY-MM).
-             * @example 2025-06
-             */
-            periode: string;
-            /**
-             * Status
-             * @description Status sesi.
-             * @example DRAFT
-             * @enum {string}
-             */
-            status: "DRAFT" | "OPEN" | "CLOSED" | "ANALYZED";
-            /**
-             * Min Responden
-             * @description Minimum responden.
-             */
-            min_responden: number;
-            /**
-             * Max Responden
-             * @description Maksimum responden.
-             */
-            max_responden: number;
-            /**
-             * Catatan
-             * @description Catatan.
-             */
-            catatan?: string | null;
-            /**
-             * Created At
-             * Format: date-time
-             * @description Waktu pembuatan (UTC, ISO-8601).
-             */
-            created_at: string;
-        };
-        /**
-         * DcsSesiUpdate
-         * @description Payload pembaruan sesi DCS (hanya saat DRAFT).
-         */
-        DcsSesiUpdate: {
-            /**
-             * Periode
-             * @description Periode baru.
-             */
-            periode?: string | null;
-            /**
-             * Min Responden
-             * @description Minimum responden baru.
-             */
-            min_responden?: number | null;
-            /**
-             * Max Responden
-             * @description Maksimum responden baru.
-             */
-            max_responden?: number | null;
-            /**
-             * Catatan
-             * @description Catatan baru.
-             */
-            catatan?: string | null;
         };
         /**
          * DcsSubSkalaRead
@@ -3487,32 +3331,6 @@ export interface components {
              */
             catatan?: string | null;
         };
-        /** Page[DcsSesiRead] */
-        Page_DcsSesiRead_: {
-            /**
-             * Items
-             * @description Item pada halaman ini.
-             */
-            items: components["schemas"]["DcsSesiRead"][];
-            /**
-             * Total
-             * @description Total item tersedia.
-             * @example 42
-             */
-            total: number;
-            /**
-             * Limit
-             * @description Maksimum item per halaman.
-             * @example 20
-             */
-            limit: number;
-            /**
-             * Offset
-             * @description Jumlah item yang dilewati.
-             * @example 0
-             */
-            offset: number;
-        };
         /** Page[DetilTugasRead] */
         Page_DetilTugasRead_: {
             /**
@@ -3806,32 +3624,6 @@ export interface components {
              * @description Item pada halaman ini.
              */
             items: components["schemas"]["UraianTugasRead"][];
-            /**
-             * Total
-             * @description Total item tersedia.
-             * @example 42
-             */
-            total: number;
-            /**
-             * Limit
-             * @description Maksimum item per halaman.
-             * @example 20
-             */
-            limit: number;
-            /**
-             * Offset
-             * @description Jumlah item yang dilewati.
-             * @example 0
-             */
-            offset: number;
-        };
-        /** Page[WcpSesiRead] */
-        Page_WcpSesiRead_: {
-            /**
-             * Items
-             * @description Item pada halaman ini.
-             */
-            items: components["schemas"]["WcpSesiRead"][];
             /**
              * Total
              * @description Total item tersedia.
@@ -5980,46 +5772,10 @@ export interface components {
             items: components["schemas"]["WcpItemRead"][];
         };
         /**
-         * WcpHasilDimensiRespondenRead
-         * @description Skor satu dimensi untuk satu responden.
+         * WcpHasilDimensiRead
+         * @description Hasil agregat satu dimensi (seluruh responden ber-submit instrumen WCP).
          */
-        WcpHasilDimensiRespondenRead: {
-            /**
-             * Dimensi Kode
-             * @description Kode dimensi.
-             * @example SC
-             */
-            dimensi_kode: string;
-            /**
-             * Dimensi Nama
-             * @description Nama dimensi.
-             * @example Stability of Change
-             */
-            dimensi_nama: string;
-            /**
-             * Is Risk
-             * @description True jika dimensi risiko.
-             */
-            is_risk: boolean;
-            /**
-             * Skor
-             * @description Rata-rata 6 item setelah reverse scoring.
-             * @example 3.83
-             */
-            skor: number;
-            /**
-             * Interpretasi
-             * @description Interpretasi skor.
-             * @example CUKUP
-             * @enum {string}
-             */
-            interpretasi: "BAIK" | "CUKUP" | "PERLU_PERHATIAN" | "AMAN" | "WASPADA" | "RISIKO_TINGGI";
-        };
-        /**
-         * WcpHasilDimensiSesiRead
-         * @description Hasil agregat satu dimensi untuk satu sesi (seluruh responden).
-         */
-        WcpHasilDimensiSesiRead: {
+        WcpHasilDimensiRead: {
             /**
              * Dimensi Kode
              * @description Kode dimensi.
@@ -6070,6 +5826,58 @@ export interface components {
             interpretasi: "BAIK" | "CUKUP" | "PERLU_PERHATIAN" | "AMAN" | "WASPADA" | "RISIKO_TINGGI";
         };
         /**
+         * WcpHasilDimensiRespondenRead
+         * @description Skor satu dimensi untuk satu responden.
+         */
+        WcpHasilDimensiRespondenRead: {
+            /**
+             * Dimensi Kode
+             * @description Kode dimensi.
+             * @example SC
+             */
+            dimensi_kode: string;
+            /**
+             * Dimensi Nama
+             * @description Nama dimensi.
+             * @example Stability of Change
+             */
+            dimensi_nama: string;
+            /**
+             * Is Risk
+             * @description True jika dimensi risiko.
+             */
+            is_risk: boolean;
+            /**
+             * Skor
+             * @description Rata-rata 6 item setelah reverse scoring.
+             * @example 3.83
+             */
+            skor: number;
+            /**
+             * Interpretasi
+             * @description Interpretasi skor.
+             * @example CUKUP
+             * @enum {string}
+             */
+            interpretasi: "BAIK" | "CUKUP" | "PERLU_PERHATIAN" | "AMAN" | "WASPADA" | "RISIKO_TINGGI";
+        };
+        /**
+         * WcpHasilRead
+         * @description Hasil analisis lengkap instrumen WCP (seluruh dimensi).
+         */
+        WcpHasilRead: {
+            /**
+             * N Responden
+             * @description Total responden yang submit.
+             */
+            n_responden: number;
+            /**
+             * Dimensi
+             * @description Hasil per dimensi (12 entri).
+             */
+            dimensi: components["schemas"]["WcpHasilDimensiRead"][];
+        };
+        /**
          * WcpHasilRespondenRead
          * @description Hasil analisis untuk satu responden (12 dimensi).
          */
@@ -6086,30 +5894,60 @@ export interface components {
             dimensi: components["schemas"]["WcpHasilDimensiRespondenRead"][];
         };
         /**
-         * WcpHasilSesiRead
-         * @description Hasil analisis lengkap satu sesi WCP (seluruh dimensi).
+         * WcpInstrumenRead
+         * @description Representasi instrumen WCP (satu baris tetap, `id='wcp'`).
          */
-        WcpHasilSesiRead: {
+        WcpInstrumenRead: {
             /**
-             * Sesi Id
-             * @description ID sesi.
+             * Id
+             * @description ID instrumen (selalu 'wcp').
+             * @example wcp
              */
-            sesi_id: string;
+            id: string;
             /**
-             * Periode
-             * @description Periode survei.
+             * Status
+             * @description Status instrumen.
+             * @example OPEN
+             * @enum {string}
              */
-            periode: string;
+            status: "OPEN" | "CLOSED" | "ANALYZED";
             /**
-             * N Responden
-             * @description Total responden yang submit.
+             * Min Responden
+             * @description Jumlah minimum responden (cutoff analisis).
              */
-            n_responden: number;
+            min_responden: number;
             /**
-             * Dimensi
-             * @description Hasil per dimensi (12 entri).
+             * Catatan
+             * @description Catatan.
              */
-            dimensi: components["schemas"]["WcpHasilDimensiSesiRead"][];
+            catatan?: string | null;
+            /**
+             * Closed At
+             * @description Waktu instrumen terakhir ditutup (None bila belum pernah).
+             */
+            closed_at?: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             * @description Waktu baris instrumen dibuat (oleh migrasi).
+             */
+            created_at: string;
+        };
+        /**
+         * WcpInstrumenUpdate
+         * @description Payload pembaruan parsial instrumen WCP (min_responden/catatan).
+         */
+        WcpInstrumenUpdate: {
+            /**
+             * Min Responden
+             * @description Jumlah minimum responden baru (cutoff analisis).
+             */
+            min_responden?: number | null;
+            /**
+             * Catatan
+             * @description Catatan baru.
+             */
+            catatan?: string | null;
         };
         /**
          * WcpItemRead
@@ -6249,7 +6087,7 @@ export interface components {
         };
         /**
          * WcpKuesionerItemRead
-         * @description Responden WCP diperkaya info sesi — dipakai endpoint /kuesioner/saya.
+         * @description Responden WCP diperkaya info instrumen — dipakai endpoint /kuesioner/saya.
          */
         WcpKuesionerItemRead: {
             /**
@@ -6259,16 +6097,10 @@ export interface components {
              */
             id: string;
             /**
-             * Sesi Id
-             * @description ID sesi WCP.
-             * @example wses_a1b2c3d4
+             * Catatan
+             * @description Catatan instrumen WCP.
              */
-            sesi_id: string;
-            /**
-             * Sesi Catatan
-             * @description Catatan sesi WCP.
-             */
-            sesi_catatan?: string | null;
+            catatan?: string | null;
             /**
              * Sudah Submit
              * @description True jika jawaban sudah disubmit.
@@ -6286,41 +6118,26 @@ export interface components {
              */
             created_at: string;
             /**
-             * Sesi Status
-             * @description Status sesi: DRAFT | OPEN | CLOSED | ANALYZED.
+             * Instrumen Status
+             * @description Status instrumen: OPEN | CLOSED | ANALYZED.
              * @example OPEN
              */
-            sesi_status: string;
-            /**
-             * Sesi Periode
-             * @description Periode sesi (YYYY-MM).
-             * @example 2025-06
-             */
-            sesi_periode: string;
+            instrumen_status: string;
         };
         /**
          * WcpRespondenCreate
-         * @description Payload pendaftaran responden ke dalam sesi WCP.
+         * @description Payload penugasan (assign) responden WCP — bulk, minimal 1 partisipan.
          */
         WcpRespondenCreate: {
             /**
-             * Nama
-             * @description Nama responden (opsional, boleh anonim).
-             * @example Budi Santoso, S.Pd.
+             * Partisipan Ids
+             * @description Daftar ID partisipan yang ditugaskan sebagai responden WCP (bulk).
+             * @example [
+             *       "par_a1b2c3d4",
+             *       "par_b2c3d4e5"
+             *     ]
              */
-            nama?: string | null;
-            /**
-             * Jabatan Label
-             * @description Label jabatan responden (teks bebas).
-             * @example Guru Matematika
-             */
-            jabatan_label: string;
-            /**
-             * Partisipan Id
-             * @description ID partisipan yang terhubung (opsional, untuk fitur 'Kuesioner Saya').
-             * @example par_a1b2c3d4
-             */
-            partisipan_id?: string | null;
+            partisipan_ids: string[];
         };
         /**
          * WcpRespondenRead
@@ -6333,12 +6150,6 @@ export interface components {
              * @example wrsp_a1b2c3d4
              */
             id: string;
-            /**
-             * Sesi Id
-             * @description ID sesi induk.
-             * @example wses_a1b2c3d4
-             */
-            sesi_id: string;
             /**
              * Nama
              * @description Nama responden.
@@ -6370,109 +6181,6 @@ export interface components {
              * @description Waktu pendaftaran (UTC, ISO-8601).
              */
             created_at: string;
-        };
-        /**
-         * WcpSesiCreate
-         * @description Payload pembuatan sesi WCP.
-         */
-        WcpSesiCreate: {
-            /**
-             * Periode
-             * @description Periode survei format YYYY-MM.
-             * @example 2025-06
-             */
-            periode: string;
-            /**
-             * Min Responden
-             * @description Jumlah minimum responden.
-             * @default 6
-             * @example 6
-             */
-            min_responden: number;
-            /**
-             * Max Responden
-             * @description Jumlah maksimum responden.
-             * @default 8
-             * @example 8
-             */
-            max_responden: number;
-            /**
-             * Catatan
-             * @description Catatan opsional untuk sesi ini.
-             */
-            catatan?: string | null;
-        };
-        /**
-         * WcpSesiRead
-         * @description Representasi sesi WCP yang dikembalikan API.
-         */
-        WcpSesiRead: {
-            /**
-             * Id
-             * @description ID sesi.
-             * @example wses_a1b2c3d4
-             */
-            id: string;
-            /**
-             * Periode
-             * @description Periode survei (YYYY-MM).
-             * @example 2025-06
-             */
-            periode: string;
-            /**
-             * Status
-             * @description Status sesi.
-             * @example DRAFT
-             * @enum {string}
-             */
-            status: "DRAFT" | "OPEN" | "CLOSED" | "ANALYZED";
-            /**
-             * Min Responden
-             * @description Minimum responden.
-             */
-            min_responden: number;
-            /**
-             * Max Responden
-             * @description Maksimum responden.
-             */
-            max_responden: number;
-            /**
-             * Catatan
-             * @description Catatan.
-             */
-            catatan?: string | null;
-            /**
-             * Created At
-             * Format: date-time
-             * @description Waktu pembuatan (UTC, ISO-8601).
-             */
-            created_at: string;
-        };
-        /**
-         * WcpSesiUpdate
-         * @description Payload pembaruan sesi WCP (hanya saat DRAFT).
-         */
-        WcpSesiUpdate: {
-            /**
-             * Periode
-             * @description Periode baru.
-             */
-            periode?: string | null;
-            /**
-             * Min Responden
-             * @description Minimum responden baru.
-             */
-            min_responden?: number | null;
-            /**
-             * Max Responden
-             * @description Maksimum responden baru.
-             */
-            max_responden?: number | null;
-            /**
-             * Catatan
-             * @description Catatan baru.
-             */
-            catatan?: string | null;
         };
     };
     responses: never;
@@ -8898,14 +8606,80 @@ export interface operations {
             };
         };
     };
-    wcp_sesi_list: {
+    wcp_instrumen_get: {
         parameters: {
-            query?: {
-                /** @description Maks item per halaman. */
-                limit?: number;
-                /** @description Jumlah item yang dilewati. */
-                offset?: number;
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WcpInstrumenRead"];
+                };
             };
+        };
+    };
+    wcp_instrumen_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WcpInstrumenUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WcpInstrumenRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    wcp_instrumen_tutup: {
+        parameters: {
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
@@ -8918,43 +8692,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Page_WcpSesiRead_"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    wcp_sesi_create: {
-        parameters: {
-            query?: never;
-            header?: {
-                /** @description Kunci idempotency opsional. */
-                "Idempotency-Key"?: string | null;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["WcpSesiCreate"];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["WcpSesiRead"];
+                    "application/json": components["schemas"]["WcpInstrumenRead"];
                 };
             };
             /** @description Token tidak ada/invalid. */
@@ -8966,22 +8704,13 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
-            /** @description Sesi untuk jabatan+periode sudah ada. */
-            409: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description Validation Error */
+            /** @description Transisi status tidak valid. */
             422: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
             /** @description Terlalu banyak permintaan. */
@@ -8995,49 +8724,13 @@ export interface operations {
             };
         };
     };
-    wcp_sesi_search: {
+    wcp_instrumen_buka_ulang: {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["SearchRequest"];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Page_WcpSesiRead_"];
-                };
-            };
-            /** @description Domain/field tidak valid. */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-        };
-    };
-    wcp_sesi_get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description ID sesi WCP. */
-                sesi_id: string;
-            };
-            cookie?: never;
-        };
         requestBody?: never;
         responses: {
             /** @description Successful Response */
@@ -9046,121 +8739,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["WcpSesiRead"];
-                };
-            };
-            /** @description Sesi WCP tidak ditemukan. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    wcp_sesi_delete: {
-        parameters: {
-            query?: {
-                /** @description Paksa hapus sesi non-DRAFT beserta SELURUH responden & jawabannya (permanen). */
-                paksa?: boolean;
-            };
-            header?: never;
-            path: {
-                /** @description ID sesi WCP. */
-                sesi_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Token tidak ada/invalid. */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description Bukan admin. */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description Sesi WCP tidak ditemukan. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description Sesi bukan DRAFT dan paksa tidak di-set. */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description Terlalu banyak permintaan. */
-            429: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-        };
-    };
-    wcp_sesi_update: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description ID sesi WCP. */
-                sesi_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["WcpSesiUpdate"];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["WcpSesiRead"];
+                    "application/json": components["schemas"]["WcpInstrumenRead"];
                 };
             };
             /** @description Token tidak ada/invalid. */
@@ -9172,140 +8751,13 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
-            /** @description Sesi WCP tidak ditemukan. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description Validation Error */
+            /** @description Transisi status tidak valid. */
             422: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-            /** @description Terlalu banyak permintaan. */
-            429: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
                     "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-        };
-    };
-    wcp_sesi_buka: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description ID sesi WCP. */
-                sesi_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["WcpSesiRead"];
-                };
-            };
-            /** @description Token tidak ada/invalid. */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description Sesi WCP tidak ditemukan. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-            /** @description Terlalu banyak permintaan. */
-            429: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-        };
-    };
-    wcp_sesi_tutup: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description ID sesi WCP. */
-                sesi_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["WcpSesiRead"];
-                };
-            };
-            /** @description Token tidak ada/invalid. */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description Sesi WCP tidak ditemukan. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
             /** @description Terlalu banyak permintaan. */
@@ -9323,10 +8775,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: never;
-            path: {
-                /** @description ID sesi WCP. */
-                sesi_id: string;
-            };
+            path?: never;
             cookie?: never;
         };
         requestBody?: never;
@@ -9358,34 +8807,13 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
-            /** @description Sesi WCP tidak ditemukan. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
         };
     };
     wcp_responden_create: {
         parameters: {
             query?: never;
             header?: never;
-            path: {
-                /** @description ID sesi WCP. */
-                sesi_id: string;
-            };
+            path?: never;
             cookie?: never;
         };
         requestBody: {
@@ -9400,7 +8828,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["WcpRespondenRead"];
+                    "application/json": components["schemas"]["WcpRespondenRead"][];
                 };
             };
             /** @description Token tidak ada/invalid. */
@@ -9421,16 +8849,7 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
-            /** @description Sesi WCP tidak ditemukan. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description Partisipan sudah terdaftar sebagai responden WCP. */
+            /** @description Instrumen WCP tidak OPEN, atau salah satu partisipan sudah terdaftar sebagai responden WCP. */
             409: {
                 headers: {
                     [name: string]: unknown;
@@ -9704,7 +9123,7 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
-            /** @description Responden sudah submit final. */
+            /** @description Responden sudah submit final, atau instrumen tidak OPEN. */
             422: {
                 headers: {
                     [name: string]: unknown;
@@ -9772,7 +9191,7 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
-            /** @description Responden sudah submit, atau jawaban tersimpan belum lengkap. */
+            /** @description Responden sudah submit, jawaban tersimpan belum lengkap, atau instrumen tidak OPEN. */
             422: {
                 headers: {
                     [name: string]: unknown;
@@ -9792,14 +9211,11 @@ export interface operations {
             };
         };
     };
-    wcp_analisis_run: {
+    wcp_analisis: {
         parameters: {
             query?: never;
             header?: never;
-            path: {
-                /** @description ID sesi WCP. */
-                sesi_id: string;
-            };
+            path?: never;
             cookie?: never;
         };
         requestBody?: never;
@@ -9810,7 +9226,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["WcpHasilSesiRead"];
+                    "application/json": components["schemas"]["WcpHasilRead"];
                 };
             };
             /** @description Token tidak ada/invalid. */
@@ -9822,24 +9238,6 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
-            /** @description Sesi WCP tidak ditemukan. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
             /** @description Terlalu banyak permintaan. */
             429: {
                 headers: {
@@ -9851,14 +9249,11 @@ export interface operations {
             };
         };
     };
-    wcp_hasil_sesi_get: {
+    wcp_hasil: {
         parameters: {
             query?: never;
             header?: never;
-            path: {
-                /** @description ID sesi WCP. */
-                sesi_id: string;
-            };
+            path?: never;
             cookie?: never;
         };
         requestBody?: never;
@@ -9869,25 +9264,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["WcpHasilSesiRead"];
-                };
-            };
-            /** @description Sesi WCP tidak ditemukan. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
+                    "application/json": components["schemas"]["WcpHasilRead"];
                 };
             };
         };
@@ -11153,14 +10530,80 @@ export interface operations {
             };
         };
     };
-    dcs_sesi_list: {
+    dcs_instrumen_get: {
         parameters: {
-            query?: {
-                /** @description Maks item per halaman. */
-                limit?: number;
-                /** @description Jumlah item yang dilewati. */
-                offset?: number;
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DcsInstrumenRead"];
+                };
             };
+        };
+    };
+    dcs_instrumen_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DcsInstrumenUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DcsInstrumenRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    dcs_instrumen_tutup: {
+        parameters: {
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
@@ -11173,43 +10616,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Page_DcsSesiRead_"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    dcs_sesi_create: {
-        parameters: {
-            query?: never;
-            header?: {
-                /** @description Kunci idempotency opsional. */
-                "Idempotency-Key"?: string | null;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["DcsSesiCreate"];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["DcsSesiRead"];
+                    "application/json": components["schemas"]["DcsInstrumenRead"];
                 };
             };
             /** @description Token tidak ada/invalid. */
@@ -11221,22 +10628,13 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
-            /** @description Sesi untuk jabatan+periode sudah ada. */
-            409: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description Validation Error */
+            /** @description Transisi status tidak valid. */
             422: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
             /** @description Terlalu banyak permintaan. */
@@ -11250,49 +10648,13 @@ export interface operations {
             };
         };
     };
-    dcs_sesi_search: {
+    dcs_instrumen_buka_ulang: {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["SearchRequest"];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Page_DcsSesiRead_"];
-                };
-            };
-            /** @description Domain/field tidak valid. */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-        };
-    };
-    dcs_sesi_get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description ID sesi DCS. */
-                sesi_id: string;
-            };
-            cookie?: never;
-        };
         requestBody?: never;
         responses: {
             /** @description Successful Response */
@@ -11301,121 +10663,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["DcsSesiRead"];
-                };
-            };
-            /** @description Sesi DCS tidak ditemukan. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    dcs_sesi_delete: {
-        parameters: {
-            query?: {
-                /** @description Paksa hapus sesi non-DRAFT beserta SELURUH responden & jawabannya (permanen). */
-                paksa?: boolean;
-            };
-            header?: never;
-            path: {
-                /** @description ID sesi DCS. */
-                sesi_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Token tidak ada/invalid. */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description Bukan admin. */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description Sesi DCS tidak ditemukan. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description Sesi bukan DRAFT dan paksa tidak di-set. */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description Terlalu banyak permintaan. */
-            429: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-        };
-    };
-    dcs_sesi_update: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description ID sesi DCS. */
-                sesi_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["DcsSesiUpdate"];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["DcsSesiRead"];
+                    "application/json": components["schemas"]["DcsInstrumenRead"];
                 };
             };
             /** @description Token tidak ada/invalid. */
@@ -11427,140 +10675,13 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
-            /** @description Sesi DCS tidak ditemukan. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description Validation Error */
+            /** @description Transisi status tidak valid. */
             422: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-            /** @description Terlalu banyak permintaan. */
-            429: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
                     "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-        };
-    };
-    dcs_sesi_buka: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description ID sesi DCS. */
-                sesi_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["DcsSesiRead"];
-                };
-            };
-            /** @description Token tidak ada/invalid. */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description Sesi DCS tidak ditemukan. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-            /** @description Terlalu banyak permintaan. */
-            429: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-        };
-    };
-    dcs_sesi_tutup: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description ID sesi DCS. */
-                sesi_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["DcsSesiRead"];
-                };
-            };
-            /** @description Token tidak ada/invalid. */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description Sesi DCS tidak ditemukan. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
             /** @description Terlalu banyak permintaan. */
@@ -11578,10 +10699,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: never;
-            path: {
-                /** @description ID sesi DCS. */
-                sesi_id: string;
-            };
+            path?: never;
             cookie?: never;
         };
         requestBody?: never;
@@ -11613,34 +10731,13 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
-            /** @description Sesi DCS tidak ditemukan. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
         };
     };
     dcs_responden_create: {
         parameters: {
             query?: never;
             header?: never;
-            path: {
-                /** @description ID sesi DCS. */
-                sesi_id: string;
-            };
+            path?: never;
             cookie?: never;
         };
         requestBody: {
@@ -11655,7 +10752,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["DcsRespondenRead"];
+                    "application/json": components["schemas"]["DcsRespondenRead"][];
                 };
             };
             /** @description Token tidak ada/invalid. */
@@ -11676,16 +10773,7 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
-            /** @description Sesi DCS tidak ditemukan. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description Partisipan sudah terdaftar sebagai responden DCS. */
+            /** @description Instrumen DCS tidak OPEN, atau salah satu partisipan sudah terdaftar sebagai responden DCS. */
             409: {
                 headers: {
                     [name: string]: unknown;
@@ -11959,7 +11047,7 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
-            /** @description Responden sudah submit final. */
+            /** @description Responden sudah submit final, atau instrumen tidak OPEN. */
             422: {
                 headers: {
                     [name: string]: unknown;
@@ -12027,7 +11115,7 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
-            /** @description Responden sudah submit, atau jawaban tersimpan belum lengkap. */
+            /** @description Responden sudah submit, jawaban tersimpan belum lengkap, atau instrumen tidak OPEN. */
             422: {
                 headers: {
                     [name: string]: unknown;
@@ -12047,17 +11135,11 @@ export interface operations {
             };
         };
     };
-    dcs_analisis_run: {
+    dcs_analisis: {
         parameters: {
-            query?: {
-                /** @description ID sesi WCP yang bersesuaian untuk menghitung K-Index. Jika tidak disertakan, k_index akan bernilai null. */
-                wcp_sesi_id?: string | null;
-            };
+            query?: never;
             header?: never;
-            path: {
-                /** @description ID sesi DCS. */
-                sesi_id: string;
-            };
+            path?: never;
             cookie?: never;
         };
         requestBody?: never;
@@ -12068,7 +11150,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["DcsHasilSesiRead"];
+                    "application/json": components["schemas"]["DcsHasilRead"];
                 };
             };
             /** @description Token tidak ada/invalid. */
@@ -12080,24 +11162,6 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
-            /** @description Sesi DCS tidak ditemukan. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
             /** @description Terlalu banyak permintaan. */
             429: {
                 headers: {
@@ -12109,17 +11173,11 @@ export interface operations {
             };
         };
     };
-    dcs_hasil_sesi_get: {
+    dcs_hasil: {
         parameters: {
-            query?: {
-                /** @description ID sesi WCP untuk menyertakan K-Index dalam respons. */
-                wcp_sesi_id?: string | null;
-            };
+            query?: never;
             header?: never;
-            path: {
-                /** @description ID sesi DCS. */
-                sesi_id: string;
-            };
+            path?: never;
             cookie?: never;
         };
         requestBody?: never;
@@ -12130,25 +11188,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["DcsHasilSesiRead"];
-                };
-            };
-            /** @description Sesi DCS tidak ditemukan. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
+                    "application/json": components["schemas"]["DcsHasilRead"];
                 };
             };
         };
@@ -15451,11 +14491,15 @@ export type DcsItemRead = components["schemas"]["DcsItemRead"];
 export type DcsJawabanRead = components["schemas"]["DcsJawabanRead"];
 export type DcsKuesionerItemRead = components["schemas"]["DcsKuesionerItemRead"];
 export type DcsRespondenRead = components["schemas"]["DcsRespondenRead"];
-export type DcsSesiRead = components["schemas"]["DcsSesiRead"];
+export type DcsRespondenCreate = components["schemas"]["DcsRespondenCreate"];
+export type DcsInstrumenRead = components["schemas"]["DcsInstrumenRead"];
+export type DcsInstrumenUpdate = components["schemas"]["DcsInstrumenUpdate"];
 export type DcsSubSkalaRead = components["schemas"]["DcsSubSkalaRead"];
 export type DcsSubSkalaWithItemsRead = components["schemas"]["DcsSubSkalaWithItemsRead"];
 export type DcsArahItem = components["schemas"]["DcsItemRead"]["arah"];
+export type DcsHasilRead = components["schemas"]["DcsHasilRead"];
 export type DcsHasilRespondenRead = components["schemas"]["DcsHasilRespondenRead"];
+export type DcsHasilSubSkalaRead = components["schemas"]["DcsHasilSubSkalaRead"];
 export type DcsHasilSubSkalaRespondenRead = components["schemas"]["DcsHasilSubSkalaRespondenRead"];
 export type WcpDimensiRead = components["schemas"]["WcpDimensiRead"];
 export type WcpDimensiWithItemsRead = components["schemas"]["WcpDimensiWithItemsRead"];
@@ -15463,8 +14507,12 @@ export type WcpItemRead = components["schemas"]["WcpItemRead"];
 export type WcpJawabanRead = components["schemas"]["WcpJawabanRead"];
 export type WcpKuesionerItemRead = components["schemas"]["WcpKuesionerItemRead"];
 export type WcpRespondenRead = components["schemas"]["WcpRespondenRead"];
-export type WcpSesiRead = components["schemas"]["WcpSesiRead"];
+export type WcpRespondenCreate = components["schemas"]["WcpRespondenCreate"];
+export type WcpInstrumenRead = components["schemas"]["WcpInstrumenRead"];
+export type WcpInstrumenUpdate = components["schemas"]["WcpInstrumenUpdate"];
+export type WcpHasilRead = components["schemas"]["WcpHasilRead"];
 export type WcpHasilRespondenRead = components["schemas"]["WcpHasilRespondenRead"];
+export type WcpHasilDimensiRead = components["schemas"]["WcpHasilDimensiRead"];
 export type WcpHasilDimensiRespondenRead = components["schemas"]["WcpHasilDimensiRespondenRead"];
 export type WcpReverseType = "NONE" | "R" | "UF" | "R_STAR";
 export type TiCatalogRead = components["schemas"]["TiCatalogRead"];

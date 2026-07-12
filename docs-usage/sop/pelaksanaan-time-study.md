@@ -1,10 +1,10 @@
 # SOP Pelaksanaan — Time Study (TS)
 
-Prosedur baku menjalankan pengambilan data **Time Study** — dari membuka sesi hingga
-menjalankan analisis.
+Prosedur baku menjalankan pengambilan data **Time Study** — dari penugasan partisipan
+hingga pencatatan log harian selesai.
 
 **Tujuan:** mengumpulkan log harian (jam masuk–keluar, kategori hari, distribusi waktu)
-secara lengkap selama periode pencatatan, lalu memprosesnya.
+secara lengkap selama rentang pencatatan.
 
 **Penanggung jawab:** Administrator studi.
 
@@ -12,69 +12,74 @@ secara lengkap selama periode pencatatan, lalu memprosesnya.
 
 **Langkah teknis:** [IK-05 Time Study](../ik/time-study.md).
 
-Status sesi: `Draft → Terbuka → Tertutup → Teranalisis`.
+Time Study tidak memakai sesi maupun tahap analisis — hanya status penugasan
+**Aktif**/**Nonaktif**.
 
 ---
 
 ## Alur Ringkas
 
 ```
-Buka Sesi → daftar responden → partisipan catat log harian (selama periode)
-   → pantau kelengkapan → Tutup Sesi → Jalankan Analisis
+Tugaskan partisipan (langsung Aktif) → partisipan catat log harian (selama rentang)
+   → pantau kelengkapan → Nonaktifkan penugasan setelah rentang selesai
 ```
 
 ---
 
-## 1. Membuka Sesi & Mendaftarkan Responden
+## 1. Menugaskan Partisipan
 
-1. Buka detail sesi (status **Draft**).
-2. Klik **Buka Sesi** → status menjadi **Terbuka**.
-3. Pada bagian **Tambah Responden**, pilih partisipan (mengisi otomatis Nama & Label
-   Jabatan), lalu klik **+ Daftarkan**.
+1. Buka **Time Study**, klik **+ Tugaskan Partisipan**.
+2. Pilih partisipan (jabatan ditampilkan otomatis), isi **Catatan** bila perlu, klik
+   **Tugaskan**. Penugasan langsung berstatus **Aktif** — tidak perlu dibuka manual.
 
-> Langkah teknis: [IK-05 bagian B–C](../ik/time-study.md#b-membuka-menutup-sesi).
+> Langkah teknis: [IK-05 bagian A](../ik/time-study.md#a-menugaskan-partisipan).
 
 ---
 
 ## 2. Pencatatan Log oleh Partisipan
 
-1. Informasikan ke responden **rentang hari pencatatan** (mis. dua minggu kerja) dan
+1. Informasikan ke partisipan **rentang hari pencatatan** (mis. dua minggu kerja) dan
    batas waktunya.
-2. Tiap responden membuka **Time Study** dari **Kuesioner Saya**, lalu **+ Tambah Log**
+2. Tiap partisipan membuka **Time Study** dari **Kuesioner Saya**, lalu **+ Tambah Log**
    setiap hari kerja: tanggal, waktu masuk–keluar, kategori hari
    (**Hijau**/**Kuning**/**Merah**), dan distribusi waktu enam kategori.
-3. Log dapat diedit selama sesi masih **Terbuka**.
+3. Log dapat diedit selama penugasan masih **Aktif**.
 
-> Langkah teknis: [IK-05 bagian E–F](../ik/time-study.md#e-mengisi-log-harian-partisipan).
+> Langkah teknis: [IK-05 bagian C–D](../ik/time-study.md#c-mengisi-log-harian-partisipan).
 
 !!! tip "Catat harian, jangan menumpuk"
-Dorong responden mengisi log di hari yang sama agar estimasi waktu lebih akurat.
+Dorong partisipan mengisi log di hari yang sama agar estimasi waktu lebih akurat.
 
 ---
 
 ## 3. Memantau Kelengkapan
 
-Pantau dari detail sesi: kartu **Responden Terdaftar** dan kelengkapan log tiap responden.
-Pastikan jumlah hari pencatatan memadai sebelum menutup sesi.
+Pantau dari detail penugasan: statistik **Log Harian Terisi** menunjukkan jumlah hari
+yang sudah dicatat. Pastikan jumlah hari pencatatan memadai sebelum menonaktifkan
+penugasan.
 
 ---
 
-## 4. Menutup Sesi & Analisis
+## 4. Menonaktifkan Penugasan Setelah Selesai
 
-1. Klik **Tutup Sesi** → status **Tertutup**. (Pendaftaran & penambahan log berhenti.)
-2. Klik **Jalankan Analisis** → status **Teranalisis**; hasil tersedia di halaman laporan.
+Setelah rentang pencatatan selesai, klik **Nonaktifkan Penugasan** pada detail
+penugasan → status **Nonaktif**. Partisipan tidak dapat lagi menambah/mengedit log,
+tetapi data log yang sudah ada tetap dapat dilihat. Bila rentang perlu diperpanjang,
+klik **Aktifkan Kembali**.
 
-> Langkah teknis: [IK-05 bagian B & D](../ik/time-study.md#d-menjalankan-analisis).
+> Langkah teknis: [IK-05 bagian B](../ik/time-study.md#b-mengelola-penugasan-aktifnonaktif-hapus).
 
-!!! danger "Tidak dapat dibatalkan"
-Penutupan sesi bersifat searah. Pastikan log sudah lengkap sebelum menutup.
+!!! note "Tidak ada tahap analisis di aplikasi ini"
+Berbeda dari TI/OPM/DCS/WCP, Time Study tidak memiliki tombol "Jalankan Analisis" atau
+halaman hasil agregat di aplikasi ini — log harian yang terkumpul diolah lebih lanjut
+di luar alur penugasan (mis. untuk kebutuhan ABK).
 
 ---
 
 ## Daftar Periksa (Checklist) Pelaksanaan TS
 
-- [ ] Sesi dibuka & responden didaftarkan
+- [ ] Partisipan ditugaskan (penugasan berstatus Aktif)
 - [ ] Rentang & batas waktu pencatatan disosialisasikan
-- [ ] Responden mencatat log harian sepanjang periode
+- [ ] Partisipan mencatat log harian sepanjang rentang
 - [ ] Kelengkapan log dipantau
-- [ ] Sesi ditutup & analisis dijalankan
+- [ ] Penugasan dinonaktifkan setelah rentang pencatatan selesai

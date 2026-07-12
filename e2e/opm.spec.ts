@@ -106,7 +106,7 @@ async function bukaAtauBuatTiSesi(page: Page, jabatanNama: string): Promise<stri
       .getAttribute("value");
     await select.selectOption(optValue!);
     await page.getByLabel("Periode").fill(PERIODE_TI);
-    await page.getByRole("button", { name: "Buat Sesi" }).click();
+    await page.getByRole("button", { name: "Mulai Analisis Jabatan" }).click();
     await page.waitForURL(/\/task-inventory\/tises_/, { timeout: 15_000 });
   }
   await page.waitForLoadState("networkidle");
@@ -244,7 +244,7 @@ async function bukaAtauBuatOpmSesi(page: Page, jabatanNama: string): Promise<str
     await page.getByLabel("Min. Responden").fill("1");
     await page.getByLabel("Maks. Responden").fill("10");
 
-    await page.getByRole("button", { name: "Buat Sesi" }).click();
+    await page.getByRole("button", { name: "Mulai Analisis Jabatan" }).click();
     await page.waitForURL(/\/opm\/opses_/, { timeout: 15_000 });
   }
   await page.waitForLoadState("networkidle");
@@ -299,8 +299,8 @@ test.describe.serial("OPM — Rating Tugas", () => {
     // Responden otomatis memuat nama partisipan.
     await expect(page.locator("tbody").getByText(PARTISIPAN_NAMA)).toBeVisible();
 
-    // Buka sesi bila masih DRAFT.
-    const bukaBtn = page.getByRole("button", { name: "Buka Sesi" });
+    // Buka analisis bila masih DRAFT.
+    const bukaBtn = page.getByRole("button", { name: "Buka Analisis" });
     if (await bukaBtn.isVisible({ timeout: 2_000 }).catch(() => false)) {
       const resp = page.waitForResponse((r) => r.url().includes("/buka") && r.status() === 200, {
         timeout: 10_000,
@@ -378,7 +378,7 @@ test.describe.serial("OPM — Rating Tugas", () => {
     expect(await checkedRadios.count()).toBeGreaterThanOrEqual(3);
   });
 
-  test("admin: tutup sesi, jalankan analisis, verifikasi hasil", async ({ page }) => {
+  test("admin: tutup analisis, jalankan analisis, verifikasi hasil", async ({ page }) => {
     test.setTimeout(60_000);
     await loginViaAuthentik(page, "admin-e2e", "AdminE2e123!");
 
@@ -395,7 +395,7 @@ test.describe.serial("OPM — Rating Tugas", () => {
         .isVisible()
         .catch(() => false))
     ) {
-      const tutupBtn = page.getByRole("button", { name: "Tutup Sesi" });
+      const tutupBtn = page.getByRole("button", { name: "Tutup Analisis" });
       if (await tutupBtn.isVisible({ timeout: 2_000 }).catch(() => false)) {
         const resp = page.waitForResponse((r) => r.url().includes("/tutup") && r.status() === 200, {
           timeout: 10_000,

@@ -7,6 +7,82 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [3.0.0] - 2026-07-13
+
+### Diubah
+
+- **BREAKING** (mengikuti refactor `anjab-abk-backend` terbaru — lihat entri
+  `[2026-07-12]` di `CLAUDE.md` backend): DCS & WCP tidak lagi
+  memakai entitas "sesi" — diganti pola instrumen singleton (satu baris
+  instrumen tetap per alat ukur, status `OPEN → CLOSED → ANALYZED`). Alur
+  admin turun dari 4 langkah (buat sesi → buka sesi → tambah responden satu
+  per satu → jalankan analisis dari backend) menjadi 1 halaman: buka `/dcs`
+  atau `/wcp`, pilih partisipan lewat form multi-select, tugaskan sekaligus,
+  lalu kelola status & jalankan analisis dari UI.
+- Route `/dcs/buat`, `/dcs/[sesi_id]`, `/wcp/buat`, `/wcp/[sesi_id]` **dihapus**.
+  `/dcs` dan `/wcp` kini merender halaman instrumen tunggal (bukan listing
+  sesi): kartu status, form `assign-responden.tsx` (multi-select bulk,
+  menggantikan `tambah-responden.tsx`), `aksi-instrumen.tsx` (menggantikan
+  `transisi-sesi.tsx`; juga menambahkan tombol "Jalankan Analisis" yang
+  sebelumnya tidak ada sama sekali di DCS/WCP), dan `edit-instrumen.tsx`
+  (ubah `min_responden`/`catatan`).
+- Halaman hasil per-responden pindah dari `/dcs/[sesi_id]/hasil-responden/[id]`
+  ke `/dcs/hasil-responden/[id]` (idem WCP).
+- `src/app/(auth)/kuesioner/page.tsx`: kartu DCS & WCP memakai
+  `instrumen_status`/`catatan` (field `sesi_*` sudah tidak ada di respons
+  backend) — maksimal satu kartu per alat ukur (instrumen singleton).
+- **Task Inventory & OPM — perubahan istilah kosmetik saja, bukan skema.**
+  Label yang dilihat pengguna diganti dari "Sesi"/"sesi" menjadi
+  "Analisis Jabatan"/"analisis" agar tidak lagi terbaca seperti sesi studi
+  DCS/WCP/Time Study, padahal satu baris TI atau OPM merepresentasikan **satu
+  analisis untuk satu jabatan**. Skema database, path endpoint, dan
+  variabel/prop/route `sesi_id` (mis. `TiSesiRead`, `params.sesi_id`) **tidak
+  disentuh**. Contoh perubahan: "Sesi Task Inventory"/"Sesi OPM" →
+  "Analisis Jabatan — Task Inventory"/"Analisis Jabatan — OPM"; tombol
+  "Buat Sesi" → "Mulai Analisis Jabatan"; "Tutup Sesi"/"Buka Sesi"/"Hapus Sesi"
+  → "Tutup Analisis"/"Buka Analisis"/"Hapus Analisis". Transisi Tahap 1/2/3 TI
+  tidak berubah (istilah domain yang benar). `docs-usage/ik/task-inventory.md`,
+  `docs-usage/ik/opm.md`, dan SOP Persiapan/Pelaksanaan TI & OPM diperbarui
+  agar konsisten dengan label baru. `e2e/opm.spec.ts`, `e2e/tahap1.spec.ts`,
+  dan `e2e/hapus-sesi.spec.ts` disesuaikan ke label tombol baru.
+
+### Ditambahkan
+
+- **`/dcs/hasil`** — halaman hasil agregat DCS baru (sebelumnya tidak ada):
+  K-Index psikososial + komponen WCP Risk, dan skor per sub-skala
+  (mean/stdev/Cronbach alpha). Hanya dapat diakses saat status `ANALYZED`;
+  selain itu redirect ke `/dcs`.
+- **`/wcp/hasil`** — halaman hasil agregat WCP baru (sebelumnya tidak ada):
+  skor per dimensi (mean/stdev/Cronbach alpha/interpretasi). Hanya dapat
+  diakses saat status `ANALYZED`; selain itu redirect ke `/wcp`.
+- Klien API bertipe (`schema.ts`) diregenerasi dari `openapi.json` backend
+  terbaru untuk mendukung endpoint instrumen/responden/hasil DCS & WCP di atas.
+
+### Dihapus
+
+- `e2e/sesi.spec.ts` (menguji transisi sesi DCS/WCP yang sudah tidak ada).
+  `e2e/hapus-sesi.spec.ts` dipertahankan tetapi retarget ke Task Inventory
+  (pola hapus-sesi paksa masih berlaku di TI/OPM, tidak lagi di DCS/WCP).
+  `e2e/kuesioner.spec.ts` (bagian DCS) ditulis ulang untuk alur assign
+  langsung tanpa sesi. TI dan OPM tidak berubah.
+
+### Diperbaiki
+
+- `docs-usage/`: sisa referensi "sesi" yang menyesatkan untuk DCS/WCP di
+  halaman lintas-alat-ukur (`sop/index.md`, `referensi/faq.md`,
+  `ik/index.md`, `memulai/index.md`, `ik/partisipan.md`) diperbaiki agar
+  konsisten dengan instrumen singleton di atas — termasuk koreksi jawaban
+  FAQ "penutupan sesi tidak bisa dibatalkan" yang sudah tidak akurat untuk
+  DCS/WCP (kini bisa **Buka Ulang** selama belum `ANALYZED`).
+- `docs-usage/ik/time-study.md`, `sop/persiapan-time-study.md`,
+  `sop/pelaksanaan-time-study.md`: ditulis ulang total — dokumen lama masih
+  mendeskripsikan sesi Time Study (`Draft → Terbuka → Tertutup → Teranalisis`,
+  form Jabatan/Periode, tombol "Jalankan Analisis") yang sudah dihapus sejak
+  revisi `[2026-07-04]`. Sekarang mendeskripsikan alur nyata: penugasan
+  langsung per partisipan (`+ Tugaskan Partisipan`), toggle Aktif/Nonaktif,
+  tanpa sesi maupun tahap analisis. Referensi silang di `sop/index.md`,
+  `referensi/faq.md`, `memulai/index.md`, `ik/login-navigasi.md` disesuaikan.
+
 ## [2.5.0] - 2026-07-12
 
 ### Ditambahkan

@@ -53,7 +53,7 @@ export default async function OpmHasilPage({ params }: Props) {
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-sm text-gray-500">
         <Link href="/opm" className="hover:text-gray-700">
-          Sesi OPM
+          Analisis Jabatan — OPM
         </Link>
         <span>/</span>
         <Link href={`/opm/${sesi_id}`} className="hover:text-gray-700">

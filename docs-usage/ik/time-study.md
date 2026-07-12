@@ -2,66 +2,58 @@
 
 Langkah teknis menjalankan alat ukur **Time Study** di aplikasi.
 
-Bagian **A–D** untuk **Administrator**, **E–F** untuk **Partisipan**. Untuk alur, lihat
+Bagian **A–B** untuk **Administrator**, **C–D** untuk **Partisipan**. Untuk alur, lihat
 [SOP Persiapan TS](../sop/persiapan-time-study.md) dan
 [SOP Pelaksanaan Time Study](../sop/pelaksanaan-time-study.md).
 
-Status sesi: `Draft → Terbuka → Tertutup → Teranalisis`.
+Time Study **tidak memakai sesi maupun tahap analisis**. Setiap partisipan langsung
+**ditugaskan** (1 partisipan = 1 penugasan), lalu mencatat log harian selama
+penugasannya berstatus **Aktif**. Tidak ada langkah "buka/tutup sesi" atau "jalankan
+analisis" di alat ukur ini.
 
 ---
 
-## A. Membuat Sesi
+## A. Menugaskan Partisipan
 
-1. Buka **Time Study** dari Dashboard. Daftar sesi menampilkan kolom **Jabatan**,
-   **Periode**, **Status**, **Dibuat**.
-2. Klik **+ Buat Sesi**.
+1. Buka **Time Study** dari Dashboard. Daftar penugasan menampilkan kolom **Partisipan**,
+   **Jabatan** (jabatan utama partisipan, otomatis), **Status** (**Aktif**/**Nonaktif**),
+   **Ditugaskan**.
+2. Klik **+ Tugaskan Partisipan**.
 3. Isi formulir:
-   - **Jabatan** (wajib, pilih dari dropdown)
-   - **Periode** (wajib, format `YYYY-MM`, mis. `2026-06`)
+   - **Partisipan** (wajib, pilih dari dropdown — jabatan ditampilkan otomatis dari data
+     partisipan)
    - **Catatan** (opsional)
-4. Klik **Buat Sesi**. Aplikasi membuka detail sesi dengan status **Draft**.
+4. Klik **Tugaskan**. Aplikasi membuka detail penugasan, berstatus **Aktif** sejak awal.
+
+!!! note "Satu partisipan, satu penugasan"
+Setiap partisipan hanya dapat memiliki satu penugasan Time Study. Untuk menugaskan
+ulang partisipan yang penugasannya sudah dinonaktifkan, aktifkan kembali penugasan
+yang ada (lihat bagian B) — bukan membuat penugasan baru.
 
 ---
 
-## B. Membuka & Menutup Sesi
+## B. Mengelola Penugasan (Aktif/Nonaktif, Hapus)
 
-Bagian **Transisi Sesi** menampilkan tombol sesuai status:
+Dari detail penugasan (`/time-study/{id}`):
 
-| Status   | Tombol                | Hasil                                   |
-| -------- | --------------------- | --------------------------------------- |
-| Draft    | **Buka Sesi**         | → Terbuka (responden dapat didaftarkan) |
-| Draft    | **Hapus Sesi**        | Menghapus sesi                          |
-| Terbuka  | **Tutup Sesi**        | → Tertutup                              |
-| Tertutup | **Jalankan Analisis** | → Teranalisis                           |
+| Status   | Tombol                      | Hasil                                                     |
+| -------- | --------------------------- | ---------------------------------------------------------- |
+| Aktif    | **Nonaktifkan Penugasan**   | → Nonaktif (log baru tidak dapat ditambah/diubah)         |
+| Nonaktif | **Aktifkan Kembali**        | → Aktif kembali                                            |
+| —        | **Hapus Penugasan**         | Menghapus penugasan (konfirmasi: riwayat log harian tidak lagi bisa diakses lewat penugasan ini) |
 
----
-
-## C. Mendaftarkan Responden
-
-> Hanya saat status **Terbuka**. Bagian **Tambah Responden**.
-
-1. **Pilih dari Partisipan (opsional)** — memilih partisipan mengisi otomatis **Nama** dan
-   **Label Jabatan**.
-2. **Nama** (opsional) dan **Label Jabatan** (wajib, mis. `Guru Matematika`).
-3. Klik **+ Daftarkan**. Responden muncul di **Daftar Responden** (kolom **#**, **Nama**,
-   **Jabatan**, **Didaftarkan**, **Aksi**).
-4. Untuk menghapus, klik **Hapus** pada kolom **Aksi** (konfirmasi muncul).
+Halaman ini juga menampilkan statistik **Log Harian Terisi** (jumlah log) dan tanggal
+**Ditugaskan**.
 
 ---
 
-## D. Menjalankan Analisis
-
-Setelah sesi **Tertutup**, klik **Jalankan Analisis**. Status menjadi **Teranalisis** dan
-muncul _"✓ Analisis selesai. Lihat hasil di halaman laporan."_
-
----
-
-## E. Mengisi Log Harian (Partisipan)
+## C. Mengisi Log Harian (Partisipan)
 
 1. Buka **Time Study** dari **Kuesioner Saya**. Halaman **Log Harian — Time Study**
    menampilkan tabel log: **Tanggal**, **Masuk–Keluar**, **Inti**, **Karakter**,
    **Pengembangan**, **Strategis**, **Administrasi**, **Istirahat**, **Warna Hari**, **Aksi**.
-2. Klik **+ Tambah Log** (atau **Tambah Log Hari Ini** bila belum ada log).
+2. Klik **+ Tambah Log** (atau **Tambah Log Hari Ini** bila belum ada log). Tombol ini
+   hanya muncul selama penugasan **Aktif**.
 3. Isi formulir:
    - **Tanggal** (default hari ini)
    - **Waktu Masuk** dan **Waktu Keluar** (format jam:menit)
@@ -74,15 +66,17 @@ muncul _"✓ Analisis selesai. Lihat hasil di halaman laporan."_
 
 ---
 
-## F. Mengedit Log (Partisipan)
+## D. Mengedit Log (Partisipan)
 
-1. Pada tabel log, klik **Edit** di kolom **Aksi**.
+1. Pada tabel log, klik **Edit** di kolom **Aksi** (hanya muncul selama penugasan **Aktif**).
 2. Ubah nilai yang diperlukan (formulir sama dengan tambah log).
 3. Klik **Simpan Perubahan**.
 
-!!! note "Selama sesi terbuka"
-Log dapat ditambah dan diedit selama sesi masih **Terbuka**.
+!!! note "Selama penugasan aktif"
+Log dapat ditambah dan diedit selama penugasan masih **Aktif**. Saat **Nonaktif**,
+tombol tambah/edit disembunyikan — data log yang sudah ada tetap dapat dilihat.
 
 ---
 
+<!-- Screenshot: halaman penugasan Time Study dengan daftar partisipan dan status Aktif/Nonaktif -->
 <!-- Screenshot: form Tambah Log Harian dengan distribusi waktu per kategori -->

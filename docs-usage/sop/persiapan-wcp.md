@@ -2,8 +2,8 @@
 
 Prosedur baku menyiapkan prasyarat sebelum pengambilan data kuesioner **WCP**.
 
-**Tujuan:** memastikan instrumen WCP, partisipan, dan sesi survei siap sehingga partisipan
-dapat mengisi kuesioner dengan benar.
+**Tujuan:** memastikan instrumen WCP dan partisipan siap sehingga partisipan dapat mengisi
+kuesioner dengan benar.
 
 **Penanggung jawab:** Administrator studi ANJAB-ABK.
 
@@ -25,11 +25,8 @@ Setiap item dijawab pada skala Likert 1–5:
 | 4     | Setuju              |
 | 5     | Sangat Setuju       |
 
-Status sesi: `DRAFT → Terbuka → Tertutup → Teranalisis`.
-
-!!! note "Sesi tidak terikat jabatan"
-Sesi WCP tidak memerlukan pemilihan jabatan saat dibuat. Partisipan dengan jabatan
-apapun dapat ditugaskan ke sesi yang sama.
+**Instrumen tunggal (singleton):** WCP tidak lagi memakai konsep sesi — satu baris
+instrumen tetap untuk seluruh studi, berstatus `Terbuka → Tertutup → Teranalisis`.
 
 ---
 
@@ -51,28 +48,28 @@ apapun dapat ditugaskan ke sesi yang sama.
    teks item. Bila perlu, sunting pernyataan, tipe scoring, atau urutan item
    (langkah: [IK-02](../ik/master-data.md#instrumen-wcp)).
 
-!!! warning "Bekukan instrumen sebelum sesi berjalan"
+!!! warning "Bekukan instrumen sebelum pengisian berjalan"
 Hindari mengubah item setelah responden mulai mengisi, agar jawaban tetap konsisten
 dan dapat dibandingkan.
 
-### 2. Buat sesi WCP
+### 2. Tinjau pengaturan instrumen WCP
 
-Buat sesi dengan parameter berikut (langkah: [IK-07 WCP](../ik/wcp.md#a-membuat-sesi)):
+Buka halaman **WCP** — instrumen sudah tersedia sejak awal (berstatus **Terbuka**), tanpa
+perlu dibuat. Sesuaikan pengaturan bila perlu (langkah: [IK-07 WCP](../ik/wcp.md#a-halaman-instrumen-wcp)):
 
-| Parameter           | Pedoman pengisian                               |
-| ------------------- | ----------------------------------------------- |
-| **Periode**         | Format `YYYY-MM` (mis. `2026-06`).              |
-| **Min. Responden**  | Default 6. Minimum agar hasil layak dianalisis. |
-| **Maks. Responden** | Default 8. Harus ≥ Min. Responden.              |
-| **Catatan**         | Opsional — keterangan sesi.                     |
+| Parameter          | Pedoman pengisian                               |
+| ------------------ | ----------------------------------------------- |
+| **Min. Responden** | Default 6. Minimum agar hasil layak dianalisis. |
+| **Catatan**        | Opsional — keterangan instrumen.                |
 
 ### 3. Siapkan daftar responden
 
-Identifikasi partisipan yang akan menjadi responden. Responden didaftarkan **setelah sesi
-dibuka** (pada tahap pelaksanaan).
+Identifikasi partisipan yang akan menjadi responden. Responden ditugaskan (assign)
+langsung dari halaman **WCP** pada tahap pelaksanaan — satu kali submit untuk banyak
+partisipan sekaligus.
 
 !!! success "Selesai persiapan"
-Setelah instrumen ditinjau, sesi dibuat, dan daftar responden disiapkan, lanjut ke
+Setelah instrumen ditinjau dan daftar responden disiapkan, lanjut ke
 [SOP Pelaksanaan WCP](pelaksanaan-wcp.md).
 
 ---
@@ -81,5 +78,5 @@ Setelah instrumen ditinjau, sesi dibuat, dan daftar responden disiapkan, lanjut 
 
 - [ ] Partisipan terdaftar
 - [ ] Instrumen WCP (12 dimensi, 72 item) ditinjau & final
-- [ ] Sesi WCP dibuat dengan periode & batas responden yang benar
+- [ ] Pengaturan instrumen (Min. Responden/Catatan) sesuai
 - [ ] Daftar responden disiapkan

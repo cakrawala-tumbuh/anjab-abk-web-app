@@ -2,8 +2,8 @@
 
 Prosedur baku menyiapkan prasyarat sebelum pengambilan data **Time Study**.
 
-**Tujuan:** memastikan sesi log harian siap diisi partisipan untuk merekam distribusi
-waktu aktivitas kerja per jabatan.
+**Tujuan:** memastikan partisipan yang tepat sudah ditugaskan sehingga dapat mulai
+mencatat log harian aktivitas kerja.
 
 **Penanggung jawab:** Administrator studi ANJAB-ABK.
 
@@ -12,8 +12,11 @@ waktu aktivitas kerja per jabatan.
 ## Tentang Time Study
 
 Time Study (Studi Waktu) merekam **log harian** pegawai: jam masuk–keluar, kategori hari,
-dan distribusi waktu ke enam kategori aktivitas. Status sesi:
-`DRAFT → Terbuka → Tertutup → Teranalisis`.
+dan distribusi waktu ke enam kategori aktivitas.
+
+**Tanpa sesi, tanpa tahap analisis:** partisipan langsung **ditugaskan** (1 partisipan =
+1 penugasan), lalu mencatat log selama penugasannya berstatus **Aktif**. Tidak ada
+langkah membuat/membuka sesi maupun menjalankan analisis di alat ukur ini.
 
 Kategori hari yang dicatat:
 
@@ -34,50 +37,39 @@ Enam kategori distribusi waktu per hari:
 
 ## Prasyarat
 
-| No  | Prasyarat                                                       | IK terkait                                        |
-| --- | --------------------------------------------------------------- | ------------------------------------------------- |
-| 1   | **Jabatan** yang akan disurvei sudah terdaftar                  | [IK-02 Master Data](../ik/master-data.md#jabatan) |
-| 2   | **Partisipan** (pegawai yang akan mencatat log) sudah terdaftar | [IK-03 Partisipan](../ik/partisipan.md)           |
+| No  | Prasyarat                                                                          | IK terkait                               |
+| --- | ------------------------------------------------------------------------------------ | ------------------------------------------ |
+| 1   | **Partisipan** (pegawai yang akan mencatat log) sudah terdaftar dengan jabatan utama yang benar | [IK-03 Partisipan](../ik/partisipan.md) |
 
 ---
 
 ## Langkah Persiapan
 
-### 1. Tentukan jabatan & periode survei
+### 1. Identifikasi partisipan & rentang pencatatan
 
-1. Tetapkan jabatan yang akan disurvei waktunya.
-2. Tetapkan **periode** pencatatan (format `YYYY-MM`) dan rentang hari pencatatan yang
-   diharapkan (mis. dua minggu kerja). Sosialisasikan rentang ini ke partisipan.
+1. Tetapkan pegawai yang akan mencatat log Time Study.
+2. Tetapkan rentang hari pencatatan yang diharapkan (mis. dua minggu kerja) dan
+   sosialisasikan ke partisipan sebelum menugaskan.
 
-### 2. Buat sesi Time Study
+### 2. Tugaskan partisipan
 
-Buat sesi dengan parameter berikut (langkah: [IK-05 Time Study](../ik/time-study.md#a-membuat-sesi)):
+Tugaskan tiap partisipan langsung dari halaman **Time Study** — tidak perlu membuat
+atau membuka sesi terlebih dahulu; penugasan langsung berstatus **Aktif** (langkah:
+[IK-05 Time Study bagian A](../ik/time-study.md#a-menugaskan-partisipan)):
 
-| Parameter   | Pedoman pengisian                        |
-| ----------- | ---------------------------------------- |
-| **Jabatan** | Wajib. Pilih jabatan target.             |
-| **Periode** | Format `YYYY-MM` (mis. `2026-06`).       |
-| **Catatan** | Opsional — instruksi/rentang pencatatan. |
-
-### 3. Siapkan daftar responden
-
-Identifikasi pegawai yang akan mencatat log untuk jabatan tersebut. Responden didaftarkan
-**setelah sesi dibuka** (pada tahap pelaksanaan).
-
-!!! tip "Pre-isi dari partisipan"
-Saat mendaftarkan responden, memilih partisipan akan mengisi otomatis **Nama** dan
-**Label Jabatan**, sehingga lebih cepat dan konsisten.
+| Parameter       | Pedoman pengisian                                          |
+| ---------------- | ------------------------------------------------------------ |
+| **Partisipan**  | Wajib. Jabatan ditampilkan otomatis dari data partisipan.   |
+| **Catatan**     | Opsional — instruksi/rentang pencatatan.                     |
 
 !!! success "Selesai persiapan"
-Setelah sesi dibuat dan daftar responden disiapkan, lanjut ke
+Setelah seluruh partisipan target ditugaskan, lanjut ke
 [SOP Pelaksanaan Time Study](pelaksanaan-time-study.md).
 
 ---
 
 ## Daftar Periksa (Checklist) Persiapan TS
 
-- [ ] Jabatan target terdaftar di Master Data
-- [ ] Partisipan terdaftar
-- [ ] Periode & rentang hari pencatatan ditetapkan dan disosialisasikan
-- [ ] Sesi TS dibuat dengan jabatan & periode yang benar
-- [ ] Daftar responden disiapkan
+- [ ] Partisipan (dengan jabatan utama yang benar) terdaftar
+- [ ] Rentang hari pencatatan ditetapkan dan disosialisasikan
+- [ ] Partisipan target ditugaskan (penugasan berstatus Aktif)

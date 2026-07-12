@@ -6,7 +6,7 @@ import { toApiError } from "@/lib/api/errors";
 import type { TiKombinasiRead } from "@/lib/api/schema";
 import { TiSesiForm } from "./ti-sesi-form";
 
-export const metadata = { title: "Buat Sesi Task Inventory — ANJAB-ABK" };
+export const metadata = { title: "Mulai Analisis Jabatan — Task Inventory — ANJAB-ABK" };
 
 async function fetchKombinasi(accessToken: string | undefined): Promise<TiKombinasiRead[]> {
   const client = withServerAuth(accessToken);
@@ -29,11 +29,11 @@ export default async function BuatTiSesiPage() {
           Task Inventory
         </Link>
         <span>/</span>
-        <span className="text-gray-900">Buat Sesi</span>
+        <span className="text-gray-900">Mulai Analisis Jabatan</span>
       </div>
 
       <div>
-        <h1 className="page-heading">Buat Sesi Task Inventory</h1>
+        <h1 className="page-heading">Mulai Analisis Jabatan — Task Inventory</h1>
         <p className="page-subtext">
           Pilih kombinasi unit & kategori jabatan beserta periode. Setelah dibuat, mulai Tahap 1
           untuk membuka seleksi relevansi task.

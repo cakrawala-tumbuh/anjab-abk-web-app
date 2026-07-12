@@ -3,7 +3,7 @@
 export default function Error({ error }: { error: Error }) {
   return (
     <div className="rounded-md bg-red-50 p-4 text-sm text-red-700">
-      <strong>Gagal memuat detail sesi.</strong> {error.message}
+      <strong>Gagal memuat detail analisis.</strong> {error.message}
     </div>
   );
 }

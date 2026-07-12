@@ -31,22 +31,33 @@ Jenjang Pendidikan → Sekolah → Mata Pelajaran → Jabatan → SME Panel → 
 Uraian/Detil Tugas. Partisipan dibuat setelah Sekolah & Jabatan ada. Lihat
 [IK-02](../ik/master-data.md#urutan-pengisian-dependensi).
 
-??? question "Kenapa sesi DCS/WCP tidak meminta jabatan?"
-Sesi DCS dan WCP tidak terikat jabatan; partisipan dengan jabatan apapun dapat
-ditugaskan ke sesi yang sama.
+??? question "Kenapa saya tidak bisa membuat sesi DCS/WCP baru?"
+DCS dan WCP adalah **instrumen tunggal (singleton)** — satu instrumen dipakai untuk
+seluruh studi, sudah tersedia sejak awal berstatus **Terbuka**. Tidak ada lagi konsep
+"buat sesi"; administrator langsung menugaskan partisipan sebagai responden dari
+halaman **DCS**/**WCP**. Ini berbeda dari Task Inventory dan OPM, yang tetap memakai
+satu analisis per jabatan (disebut "sesi" secara teknis, tapi kini ditampilkan sebagai
+**Analisis Jabatan**).
 
 ??? question "Kapan responden bisa didaftarkan?"
-**Time Study/DCS/WCP**: saat sesi **Terbuka**. **Task Inventory**: saat **DRAFT** atau
-**TAHAP1**. **OPM**: responden terisi **otomatis** dari anggota SME panel saat sesi dibuat;
-penambahan manual dilakukan lewat **Tambah Responden** di detail sesi.
+**DCS/WCP**: kapan saja selama instrumen berstatus **Terbuka** (instrumen sudah
+tersedia sejak awal, tidak perlu dibuka manual). **Time Study**: kapan saja — partisipan
+langsung ditugaskan (1 partisipan = 1 penugasan), tanpa sesi untuk dibuka. **Task
+Inventory**: saat **DRAFT** atau **TAHAP1**. **OPM**: responden terisi **otomatis** dari
+anggota SME panel saat Analisis Jabatan dibuat; penambahan manual dilakukan lewat
+**Tambah Responden** di detail analisis.
 
-??? question "Apakah penutupan sesi bisa dibatalkan?"
-Tidak. Penutupan sesi dan transisi tahap bersifat searah. Pastikan data lengkap
-sebelum menutup atau berpindah tahap.
+??? question "Apakah penutupan sesi/instrumen bisa dibatalkan?"
+Tergantung alat ukur. **DCS/WCP**: instrumen yang sudah **Tertutup** dapat dibuka
+kembali lewat **Buka Ulang**, selama belum **Teranalisis**. **Time Study**: penugasan
+yang dinonaktifkan dapat **diaktifkan kembali** kapan saja (**Aktifkan Kembali**) — tidak
+ada batasan searah. **Task Inventory, OPM**: penutupan sesi/analisis dan transisi tahap
+bersifat **searah** (tidak dapat dibatalkan). Pastikan data lengkap sebelum menutup atau
+berpindah tahap/status.
 
 ??? question "Berapa responden minimum agar hasil sahih?"
-Ikuti nilai **Min. Responden** pada sesi (default TI = 3; DCS/WCP = 6; OPM = 3). Jangan
-menutup sesi sebelum jumlah pengisi memenuhi minimum.
+Ikuti nilai **Min. Responden** (default TI = 3; DCS/WCP = 6; OPM = 3). Jangan menutup
+pengisian/sesi sebelum jumlah pengisi memenuhi minimum.
 
 ---
 
@@ -69,8 +80,10 @@ Anda harus mengisi Tahap 1 **terpisah** untuk tiap panel.
 ## Partisipan
 
 ??? question "Di mana saya mengisi alat ukur?"
-Buka **Kuesioner Saya** dari Dashboard. Alat ukur muncul otomatis saat administrator
-membuka sesi dan mendaftarkan Anda sebagai responden.
+Buka **Kuesioner Saya** dari Dashboard. Alat ukur muncul otomatis begitu administrator
+menugaskan/mendaftarkan Anda sebagai responden dan alat ukur tersebut berstatus
+terbuka/aktif (DCS/WCP sudah terbuka sejak awal; Time Study aktif sejak ditugaskan;
+TI/OPM perlu sesi/analisisnya dibuka lebih dulu oleh administrator).
 
 ??? question "Tombol Kirim Jawaban tidak aktif."
 Pada DCS/WCP, semua pernyataan wajib dijawab dulu. Periksa penghitung _"{terjawab} /
@@ -78,7 +91,7 @@ Pada DCS/WCP, semua pernyataan wajib dijawab dulu. Periksa penghitung _"{terjawa
 Criticality) untuk **setiap task** wajib terisi.
 
 ??? question "Bisakah saya mengubah jawaban setelah dikirim?" - **DCS/WCP, OPM & Task Inventory**: tidak — jawaban final (DCS/WCP & OPM dapat dilihat
-lagi dalam mode hanya-baca). - **Time Study**: log dapat diedit selama sesi masih **Terbuka**.
+lagi dalam mode hanya-baca). - **Time Study**: log dapat diedit selama penugasan masih **Aktif**.
 
 ??? question "Apa arti warna hari di Time Study?"
 **Hijau** = Hari Biasa, **Kuning** = Hari Sibuk, **Merah** = Hari Puncak.

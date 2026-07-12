@@ -48,7 +48,7 @@ export function WcpForm({ respondenId, dimensi, jawabanAwal, sudahSubmit, access
     try {
       const client = withServerAuth(accessToken);
       const { error: apiError, response } = await client.PUT(
-        "/api/v1/wcp/sesi/responden/{responden_id}/jawaban",
+        "/api/v1/wcp/responden/{responden_id}/jawaban",
         {
           params: { path: { responden_id: respondenId } },
           body: { jawaban: buildJawabanPayload() },
@@ -76,7 +76,7 @@ export function WcpForm({ respondenId, dimensi, jawabanAwal, sudahSubmit, access
     try {
       const client = withServerAuth(accessToken);
       const { error: saveError, response: saveResponse } = await client.PUT(
-        "/api/v1/wcp/sesi/responden/{responden_id}/jawaban",
+        "/api/v1/wcp/responden/{responden_id}/jawaban",
         {
           params: { path: { responden_id: respondenId } },
           body: { jawaban: buildJawabanPayload() },
@@ -86,7 +86,7 @@ export function WcpForm({ respondenId, dimensi, jawabanAwal, sudahSubmit, access
       if (saveError) throw toApiError(saveError, saveReqId);
 
       const { error: apiError, response } = await client.POST(
-        "/api/v1/wcp/sesi/responden/{responden_id}/jawaban/submit",
+        "/api/v1/wcp/responden/{responden_id}/jawaban/submit",
         { params: { path: { responden_id: respondenId } } },
       );
       const reqId = response.headers.get("x-request-id");

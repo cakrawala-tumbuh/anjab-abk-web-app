@@ -48,7 +48,7 @@ export function DcsForm({ respondenId, subskala, jawabanAwal, sudahSubmit, acces
     try {
       const client = withServerAuth(accessToken);
       const { error: apiError, response } = await client.PUT(
-        "/api/v1/dcs/sesi/responden/{responden_id}/jawaban",
+        "/api/v1/dcs/responden/{responden_id}/jawaban",
         {
           params: { path: { responden_id: respondenId } },
           body: { jawaban: buildJawabanPayload() },
@@ -76,7 +76,7 @@ export function DcsForm({ respondenId, subskala, jawabanAwal, sudahSubmit, acces
     try {
       const client = withServerAuth(accessToken);
       const { error: saveError, response: saveResponse } = await client.PUT(
-        "/api/v1/dcs/sesi/responden/{responden_id}/jawaban",
+        "/api/v1/dcs/responden/{responden_id}/jawaban",
         {
           params: { path: { responden_id: respondenId } },
           body: { jawaban: buildJawabanPayload() },
@@ -86,7 +86,7 @@ export function DcsForm({ respondenId, subskala, jawabanAwal, sudahSubmit, acces
       if (saveError) throw toApiError(saveError, saveReqId);
 
       const { error: apiError, response } = await client.POST(
-        "/api/v1/dcs/sesi/responden/{responden_id}/jawaban/submit",
+        "/api/v1/dcs/responden/{responden_id}/jawaban/submit",
         { params: { path: { responden_id: respondenId } } },
       );
       const reqId = response.headers.get("x-request-id");

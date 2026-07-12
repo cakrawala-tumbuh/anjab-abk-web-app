@@ -20,10 +20,11 @@ detail klik tombol, mengisi formulir, dan menginput data. IK adalah pelengkap
 ## Konvensi Penulisan IK
 
 - **Teks tebal** menandai label tombol/menu/field persis seperti di aplikasi
-  (mis. **+ Buat Sesi**, **Kirim Jawaban**).
+  (mis. **+ Mulai Analisis Jabatan**, **Kirim Jawaban**).
 - Tanda `→` menunjukkan navigasi berurutan (mis. **Master Data → Jabatan**).
 - Format kode seperti `YYYY-MM` menandai format input.
 
 !!! note "Akses sesuai peran"
-Sebagian besar IK Master Data, Partisipan, dan pembuatan sesi hanya tersedia bagi
-**Administrator**. Partisipan hanya mengisi alat ukur melalui **Kuesioner Saya**.
+Sebagian besar IK Master Data, Partisipan, dan pengaturan sesi/instrumen alat ukur
+hanya tersedia bagi **Administrator**. Partisipan hanya mengisi alat ukur melalui
+**Kuesioner Saya**.

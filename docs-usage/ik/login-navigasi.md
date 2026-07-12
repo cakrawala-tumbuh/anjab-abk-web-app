@@ -27,7 +27,7 @@ Kartu yang muncul bergantung peran:
 
     - **Kelola Partisipan** → halaman Partisipan.
     - **Task Inventory** → daftar sesi TI.
-    - **Time Study** → daftar sesi TS.
+    - **Time Study** → daftar penugasan TS.
 
 === "Partisipan"
 

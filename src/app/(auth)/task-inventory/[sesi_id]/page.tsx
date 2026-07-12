@@ -17,7 +17,7 @@ import { AturKoordinator } from "./atur-koordinator";
 import { TambahResponden } from "./tambah-responden";
 import { HapusResponden } from "./hapus-responden";
 
-export const metadata = { title: "Detail Sesi Task Inventory — ANJAB-ABK" };
+export const metadata = { title: "Detail Analisis Jabatan — Task Inventory — ANJAB-ABK" };
 
 const STATUS_LABEL: Record<string, { label: string; cls: string; desc: string }> = {
   DRAFT: {

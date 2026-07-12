@@ -16,7 +16,7 @@ export function HapusResponden({ respondenId, nama, accessToken }: Props) {
   const [loading, setLoading] = useState(false);
 
   async function handleHapus() {
-    if (!confirm(`Hapus responden "${nama}" dari sesi ini?`)) return;
+    if (!confirm(`Hapus responden "${nama}" dari analisis ini?`)) return;
     setLoading(true);
     try {
       const client = withServerAuth(accessToken);

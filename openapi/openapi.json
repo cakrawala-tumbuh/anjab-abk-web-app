@@ -3254,7 +3254,7 @@
           "dcs.kuesioner"
         ],
         "summary": "Daftar kuesioner DCS milik pengguna yang sedang login",
-        "description": "Kembalikan sesi DCS yang sudah di-assign ke partisipan dan berstatus OPEN.\n\nPartisipan hanya melihat kuesioner DCS yang telah di-assign secara eksplisit\noleh admin (record responden sudah dibuat dengan ``partisipan_id`` mereka).\nTidak ada enrollment otomatis.",
+        "description": "Kembalikan kuesioner DCS yang sudah di-assign ke partisipan, bila instrumen OPEN.\n\nPartisipan hanya melihat kuesioner DCS yang telah di-assign secara eksplisit\noleh admin (record responden sudah dibuat dengan ``partisipan_id`` mereka).\nTidak ada enrollment otomatis.",
         "operationId": "dcs_kuesioner_saya",
         "responses": {
           "200": {
@@ -3295,7 +3295,7 @@
           "wcp.kuesioner"
         ],
         "summary": "Daftar kuesioner WCP milik pengguna yang sedang login",
-        "description": "Kembalikan sesi WCP yang sudah di-assign ke partisipan dan berstatus OPEN.\n\nPartisipan hanya melihat kuesioner WCP yang telah di-assign secara eksplisit\noleh admin (record responden sudah dibuat dengan ``partisipan_id`` mereka).\nTidak ada enrollment otomatis.",
+        "description": "Kembalikan kuesioner WCP yang sudah di-assign ke partisipan, bila instrumen OPEN.\n\nPartisipan hanya melihat kuesioner WCP yang telah di-assign secara eksplisit\noleh admin (record responden sudah dibuat dengan ``partisipan_id`` mereka).\nTidak ada enrollment otomatis.",
         "operationId": "wcp_kuesioner_saya",
         "responses": {
           "200": {
@@ -3556,182 +3556,37 @@
         }
       }
     },
-    "/api/v1/wcp/sesi": {
+    "/api/v1/wcp/instrumen": {
       "get": {
         "tags": [
-          "wcp.sesi"
+          "wcp.instrumen"
         ],
-        "summary": "Daftar sesi WCP",
-        "operationId": "wcp_sesi_list",
-        "parameters": [
-          {
-            "name": "limit",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "maximum": 500,
-              "minimum": 1,
-              "description": "Maks item per halaman.",
-              "default": 20,
-              "title": "Limit"
-            },
-            "description": "Maks item per halaman."
-          },
-          {
-            "name": "offset",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "minimum": 0,
-              "description": "Jumlah item yang dilewati.",
-              "default": 0,
-              "title": "Offset"
-            },
-            "description": "Jumlah item yang dilewati."
-          }
-        ],
+        "summary": "Ambil instrumen WCP (singleton)",
+        "operationId": "wcp_instrumen_get",
         "responses": {
           "200": {
             "description": "Successful Response",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Page_WcpSesiRead_"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
+                  "$ref": "#/components/schemas/WcpInstrumenRead"
                 }
               }
             }
           }
         }
       },
-      "post": {
+      "patch": {
         "tags": [
-          "wcp.sesi"
+          "wcp.instrumen"
         ],
-        "summary": "Buat sesi WCP",
-        "operationId": "wcp_sesi_create",
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "Idempotency-Key",
-            "in": "header",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "description": "Kunci idempotency opsional.",
-              "title": "Idempotency-Key"
-            },
-            "description": "Kunci idempotency opsional."
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/WcpSesiCreate"
-              },
-              "examples": {
-                "contoh": {
-                  "summary": "Sesi WCP 2025-06",
-                  "value": {
-                    "periode": "2025-06",
-                    "min_responden": 6,
-                    "max_responden": 8
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/WcpSesiRead"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Token tidak ada/invalid.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "429": {
-            "description": "Terlalu banyak permintaan.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Sesi untuk jabatan+periode sudah ada.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/wcp/sesi/search": {
-      "post": {
-        "tags": [
-          "wcp.sesi"
-        ],
-        "summary": "Cari sesi WCP (domain ala Odoo)",
-        "operationId": "wcp_sesi_search",
+        "summary": "Perbarui instrumen WCP (min_responden/catatan)",
+        "operationId": "wcp_instrumen_update",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/SearchRequest"
+                "$ref": "#/components/schemas/WcpInstrumenUpdate"
               }
             }
           },
@@ -3743,13 +3598,13 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Page_WcpSesiRead_"
+                  "$ref": "#/components/schemas/WcpInstrumenRead"
                 }
               }
             }
           },
-          "422": {
-            "description": "Domain/field tidak valid.",
+          "401": {
+            "description": "Token tidak ada/invalid.",
             "content": {
               "application/json": {
                 "schema": {
@@ -3757,43 +3612,9 @@
                 }
               }
             }
-          }
-        }
-      }
-    },
-    "/api/v1/wcp/sesi/{sesi_id}": {
-      "get": {
-        "tags": [
-          "wcp.sesi"
-        ],
-        "summary": "Ambil sesi WCP",
-        "operationId": "wcp_sesi_get",
-        "parameters": [
-          {
-            "name": "sesi_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "description": "ID sesi WCP.",
-              "title": "Sesi Id"
-            },
-            "description": "ID sesi WCP."
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/WcpSesiRead"
-                }
-              }
-            }
           },
-          "404": {
-            "description": "Sesi WCP tidak ditemukan.",
+          "429": {
+            "description": "Terlalu banyak permintaan.",
             "content": {
               "application/json": {
                 "schema": {
@@ -3809,223 +3630,31 @@
                 "schema": {
                   "$ref": "#/components/schemas/HTTPValidationError"
                 }
-              }
-            }
-          }
-        }
-      },
-      "patch": {
-        "tags": [
-          "wcp.sesi"
-        ],
-        "summary": "Perbarui sesi WCP (hanya saat DRAFT)",
-        "operationId": "wcp_sesi_update",
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "sesi_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "description": "ID sesi WCP.",
-              "title": "Sesi Id"
-            },
-            "description": "ID sesi WCP."
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/WcpSesiUpdate"
               }
             }
           }
         },
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/WcpSesiRead"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Token tidak ada/invalid.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "429": {
-            "description": "Terlalu banyak permintaan.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Sesi WCP tidak ditemukan.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "wcp.sesi"
-        ],
-        "summary": "Hapus sesi WCP (DRAFT bebas; status lain wajib paksa=true)",
-        "operationId": "wcp_sesi_delete",
         "security": [
           {
             "BearerAuth": []
           }
-        ],
-        "parameters": [
-          {
-            "name": "sesi_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "description": "ID sesi WCP.",
-              "title": "Sesi Id"
-            },
-            "description": "ID sesi WCP."
-          },
-          {
-            "name": "paksa",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "boolean",
-              "description": "Paksa hapus sesi non-DRAFT beserta SELURUH responden & jawabannya (permanen).",
-              "default": false,
-              "title": "Paksa"
-            },
-            "description": "Paksa hapus sesi non-DRAFT beserta SELURUH responden & jawabannya (permanen)."
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "Successful Response"
-          },
-          "401": {
-            "description": "Token tidak ada/invalid.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "429": {
-            "description": "Terlalu banyak permintaan.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Bukan admin.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Sesi WCP tidak ditemukan.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Sesi bukan DRAFT dan paksa tidak di-set.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          }
-        }
+        ]
       }
     },
-    "/api/v1/wcp/sesi/{sesi_id}/buka": {
+    "/api/v1/wcp/instrumen/tutup": {
       "post": {
         "tags": [
-          "wcp.sesi"
+          "wcp.instrumen"
         ],
-        "summary": "Buka sesi WCP (DRAFT → OPEN)",
-        "operationId": "wcp_sesi_buka",
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "sesi_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "description": "ID sesi WCP.",
-              "title": "Sesi Id"
-            },
-            "description": "ID sesi WCP."
-          }
-        ],
+        "summary": "Tutup instrumen WCP (OPEN → CLOSED)",
+        "operationId": "wcp_instrumen_tutup",
         "responses": {
           "200": {
             "description": "Successful Response",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/WcpSesiRead"
+                  "$ref": "#/components/schemas/WcpInstrumenRead"
                 }
               }
             }
@@ -4050,8 +3679,8 @@
               }
             }
           },
-          "404": {
-            "description": "Sesi WCP tidak ditemukan.",
+          "422": {
+            "description": "Transisi status tidak valid.",
             "content": {
               "application/json": {
                 "schema": {
@@ -4059,52 +3688,29 @@
                 }
               }
             }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
           }
-        }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
       }
     },
-    "/api/v1/wcp/sesi/{sesi_id}/tutup": {
+    "/api/v1/wcp/instrumen/buka-ulang": {
       "post": {
         "tags": [
-          "wcp.sesi"
+          "wcp.instrumen"
         ],
-        "summary": "Tutup sesi WCP (OPEN → CLOSED)",
-        "operationId": "wcp_sesi_tutup",
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "sesi_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "description": "ID sesi WCP.",
-              "title": "Sesi Id"
-            },
-            "description": "ID sesi WCP."
-          }
-        ],
+        "summary": "Buka ulang instrumen WCP (CLOSED → OPEN)",
+        "operationId": "wcp_instrumen_buka_ulang",
         "responses": {
           "200": {
             "description": "Successful Response",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/WcpSesiRead"
+                  "$ref": "#/components/schemas/WcpInstrumenRead"
                 }
               }
             }
@@ -4129,8 +3735,8 @@
               }
             }
           },
-          "404": {
-            "description": "Sesi WCP tidak ditemukan.",
+          "422": {
+            "description": "Transisi status tidak valid.",
             "content": {
               "application/json": {
                 "schema": {
@@ -4138,55 +3744,32 @@
                 }
               }
             }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
           }
-        }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
       }
     },
-    "/api/v1/wcp/sesi/{sesi_id}/responden": {
+    "/api/v1/wcp/responden": {
       "get": {
         "tags": [
           "wcp.responden"
         ],
-        "summary": "Daftar responden dalam sesi WCP (admin)",
+        "summary": "Daftar seluruh responden WCP (admin)",
         "operationId": "wcp_responden_list",
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "sesi_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "description": "ID sesi WCP.",
-              "title": "Sesi Id"
-            },
-            "description": "ID sesi WCP."
-          }
-        ],
         "responses": {
           "200": {
             "description": "Successful Response",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
                   "items": {
                     "$ref": "#/components/schemas/WcpRespondenRead"
                   },
+                  "type": "array",
                   "title": "Response Wcp Responden List"
                 }
               }
@@ -4211,62 +3794,29 @@
                 }
               }
             }
-          },
-          "404": {
-            "description": "Sesi WCP tidak ditemukan.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
           }
-        }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
       },
       "post": {
         "tags": [
           "wcp.responden"
         ],
-        "summary": "Daftarkan responden ke sesi WCP (admin)",
+        "summary": "Tugaskan (assign) responden WCP — bulk (admin)",
         "operationId": "wcp_responden_create",
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "sesi_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "description": "ID sesi WCP.",
-              "title": "Sesi Id"
-            },
-            "description": "ID sesi WCP."
-          }
-        ],
         "requestBody": {
-          "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/WcpRespondenCreate"
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "201": {
@@ -4274,7 +3824,11 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/WcpRespondenRead"
+                  "items": {
+                    "$ref": "#/components/schemas/WcpRespondenRead"
+                  },
+                  "type": "array",
+                  "title": "Response Wcp Responden Create"
                 }
               }
             }
@@ -4309,18 +3863,8 @@
               }
             }
           },
-          "404": {
-            "description": "Sesi WCP tidak ditemukan.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
-            "description": "Partisipan sudah terdaftar sebagai responden WCP.",
+            "description": "Instrumen WCP tidak OPEN, atau salah satu partisipan sudah terdaftar sebagai responden WCP.",
             "content": {
               "application/json": {
                 "schema": {
@@ -4339,10 +3883,15 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
       }
     },
-    "/api/v1/wcp/sesi/responden/{responden_id}": {
+    "/api/v1/wcp/responden/{responden_id}": {
       "get": {
         "tags": [
           "wcp.responden"
@@ -4501,7 +4050,7 @@
         }
       }
     },
-    "/api/v1/wcp/sesi/responden/{responden_id}/jawaban": {
+    "/api/v1/wcp/responden/{responden_id}/jawaban": {
       "put": {
         "tags": [
           "wcp.responden"
@@ -4602,7 +4151,7 @@
             }
           },
           "422": {
-            "description": "Responden sudah submit final.",
+            "description": "Responden sudah submit final, atau instrumen tidak OPEN.",
             "content": {
               "application/json": {
                 "schema": {
@@ -4695,7 +4244,7 @@
         }
       }
     },
-    "/api/v1/wcp/sesi/responden/{responden_id}/jawaban/submit": {
+    "/api/v1/wcp/responden/{responden_id}/jawaban/submit": {
       "post": {
         "tags": [
           "wcp.responden"
@@ -4776,7 +4325,7 @@
             }
           },
           "422": {
-            "description": "Responden sudah submit, atau jawaban tersimpan belum lengkap.",
+            "description": "Responden sudah submit, jawaban tersimpan belum lengkap, atau instrumen tidak OPEN.",
             "content": {
               "application/json": {
                 "schema": {
@@ -4788,38 +4337,20 @@
         }
       }
     },
-    "/api/v1/wcp/sesi/{sesi_id}/analisis": {
+    "/api/v1/wcp/analisis": {
       "post": {
         "tags": [
           "wcp.hasil"
         ],
         "summary": "Jalankan analisis WCP (CLOSED → ANALYZED)",
-        "operationId": "wcp_analisis_run",
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "sesi_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "description": "ID sesi WCP.",
-              "title": "Sesi Id"
-            },
-            "description": "ID sesi WCP."
-          }
-        ],
+        "operationId": "wcp_analisis",
         "responses": {
           "200": {
             "description": "Successful Response",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/WcpHasilSesiRead"
+                  "$ref": "#/components/schemas/WcpHasilRead"
                 }
               }
             }
@@ -4843,77 +4374,29 @@
                 }
               }
             }
-          },
-          "404": {
-            "description": "Sesi WCP tidak ditemukan.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
           }
-        }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
       }
     },
-    "/api/v1/wcp/sesi/{sesi_id}/hasil": {
+    "/api/v1/wcp/hasil": {
       "get": {
         "tags": [
           "wcp.hasil"
         ],
-        "summary": "Lihat hasil analisis sesi WCP",
-        "operationId": "wcp_hasil_sesi_get",
-        "parameters": [
-          {
-            "name": "sesi_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "description": "ID sesi WCP.",
-              "title": "Sesi Id"
-            },
-            "description": "ID sesi WCP."
-          }
-        ],
+        "summary": "Lihat hasil analisis instrumen WCP",
+        "operationId": "wcp_hasil",
         "responses": {
           "200": {
             "description": "Successful Response",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/WcpHasilSesiRead"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Sesi WCP tidak ditemukan.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
+                  "$ref": "#/components/schemas/WcpHasilRead"
                 }
               }
             }
@@ -4921,7 +4404,7 @@
         }
       }
     },
-    "/api/v1/wcp/sesi/responden/{responden_id}/hasil": {
+    "/api/v1/wcp/hasil-responden/{responden_id}": {
       "get": {
         "tags": [
           "wcp.hasil"
@@ -6657,182 +6140,37 @@
         }
       }
     },
-    "/api/v1/dcs/sesi": {
+    "/api/v1/dcs/instrumen": {
       "get": {
         "tags": [
-          "dcs.sesi"
+          "dcs.instrumen"
         ],
-        "summary": "Daftar sesi DCS",
-        "operationId": "dcs_sesi_list",
-        "parameters": [
-          {
-            "name": "limit",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "maximum": 500,
-              "minimum": 1,
-              "description": "Maks item per halaman.",
-              "default": 20,
-              "title": "Limit"
-            },
-            "description": "Maks item per halaman."
-          },
-          {
-            "name": "offset",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "minimum": 0,
-              "description": "Jumlah item yang dilewati.",
-              "default": 0,
-              "title": "Offset"
-            },
-            "description": "Jumlah item yang dilewati."
-          }
-        ],
+        "summary": "Ambil instrumen DCS (singleton)",
+        "operationId": "dcs_instrumen_get",
         "responses": {
           "200": {
             "description": "Successful Response",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Page_DcsSesiRead_"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
+                  "$ref": "#/components/schemas/DcsInstrumenRead"
                 }
               }
             }
           }
         }
       },
-      "post": {
+      "patch": {
         "tags": [
-          "dcs.sesi"
+          "dcs.instrumen"
         ],
-        "summary": "Buat sesi DCS",
-        "operationId": "dcs_sesi_create",
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "Idempotency-Key",
-            "in": "header",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "description": "Kunci idempotency opsional.",
-              "title": "Idempotency-Key"
-            },
-            "description": "Kunci idempotency opsional."
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/DcsSesiCreate"
-              },
-              "examples": {
-                "contoh": {
-                  "summary": "Sesi DCS 2025-06",
-                  "value": {
-                    "periode": "2025-06",
-                    "min_responden": 6,
-                    "max_responden": 8
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DcsSesiRead"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Token tidak ada/invalid.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "429": {
-            "description": "Terlalu banyak permintaan.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Sesi untuk jabatan+periode sudah ada.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/dcs/sesi/search": {
-      "post": {
-        "tags": [
-          "dcs.sesi"
-        ],
-        "summary": "Cari sesi DCS (domain ala Odoo)",
-        "operationId": "dcs_sesi_search",
+        "summary": "Perbarui instrumen DCS (min_responden/catatan)",
+        "operationId": "dcs_instrumen_update",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/SearchRequest"
+                "$ref": "#/components/schemas/DcsInstrumenUpdate"
               }
             }
           },
@@ -6844,13 +6182,13 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Page_DcsSesiRead_"
+                  "$ref": "#/components/schemas/DcsInstrumenRead"
                 }
               }
             }
           },
-          "422": {
-            "description": "Domain/field tidak valid.",
+          "401": {
+            "description": "Token tidak ada/invalid.",
             "content": {
               "application/json": {
                 "schema": {
@@ -6858,43 +6196,9 @@
                 }
               }
             }
-          }
-        }
-      }
-    },
-    "/api/v1/dcs/sesi/{sesi_id}": {
-      "get": {
-        "tags": [
-          "dcs.sesi"
-        ],
-        "summary": "Ambil sesi DCS",
-        "operationId": "dcs_sesi_get",
-        "parameters": [
-          {
-            "name": "sesi_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "description": "ID sesi DCS.",
-              "title": "Sesi Id"
-            },
-            "description": "ID sesi DCS."
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DcsSesiRead"
-                }
-              }
-            }
           },
-          "404": {
-            "description": "Sesi DCS tidak ditemukan.",
+          "429": {
+            "description": "Terlalu banyak permintaan.",
             "content": {
               "application/json": {
                 "schema": {
@@ -6910,223 +6214,31 @@
                 "schema": {
                   "$ref": "#/components/schemas/HTTPValidationError"
                 }
-              }
-            }
-          }
-        }
-      },
-      "patch": {
-        "tags": [
-          "dcs.sesi"
-        ],
-        "summary": "Perbarui sesi DCS (hanya saat DRAFT)",
-        "operationId": "dcs_sesi_update",
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "sesi_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "description": "ID sesi DCS.",
-              "title": "Sesi Id"
-            },
-            "description": "ID sesi DCS."
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/DcsSesiUpdate"
               }
             }
           }
         },
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DcsSesiRead"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Token tidak ada/invalid.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "429": {
-            "description": "Terlalu banyak permintaan.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Sesi DCS tidak ditemukan.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "dcs.sesi"
-        ],
-        "summary": "Hapus sesi DCS (DRAFT bebas; status lain wajib paksa=true)",
-        "operationId": "dcs_sesi_delete",
         "security": [
           {
             "BearerAuth": []
           }
-        ],
-        "parameters": [
-          {
-            "name": "sesi_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "description": "ID sesi DCS.",
-              "title": "Sesi Id"
-            },
-            "description": "ID sesi DCS."
-          },
-          {
-            "name": "paksa",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "boolean",
-              "description": "Paksa hapus sesi non-DRAFT beserta SELURUH responden & jawabannya (permanen).",
-              "default": false,
-              "title": "Paksa"
-            },
-            "description": "Paksa hapus sesi non-DRAFT beserta SELURUH responden & jawabannya (permanen)."
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "Successful Response"
-          },
-          "401": {
-            "description": "Token tidak ada/invalid.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "429": {
-            "description": "Terlalu banyak permintaan.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Bukan admin.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Sesi DCS tidak ditemukan.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Sesi bukan DRAFT dan paksa tidak di-set.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          }
-        }
+        ]
       }
     },
-    "/api/v1/dcs/sesi/{sesi_id}/buka": {
+    "/api/v1/dcs/instrumen/tutup": {
       "post": {
         "tags": [
-          "dcs.sesi"
+          "dcs.instrumen"
         ],
-        "summary": "Buka sesi DCS (DRAFT → OPEN)",
-        "operationId": "dcs_sesi_buka",
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "sesi_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "description": "ID sesi DCS.",
-              "title": "Sesi Id"
-            },
-            "description": "ID sesi DCS."
-          }
-        ],
+        "summary": "Tutup instrumen DCS (OPEN → CLOSED)",
+        "operationId": "dcs_instrumen_tutup",
         "responses": {
           "200": {
             "description": "Successful Response",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DcsSesiRead"
+                  "$ref": "#/components/schemas/DcsInstrumenRead"
                 }
               }
             }
@@ -7151,8 +6263,8 @@
               }
             }
           },
-          "404": {
-            "description": "Sesi DCS tidak ditemukan.",
+          "422": {
+            "description": "Transisi status tidak valid.",
             "content": {
               "application/json": {
                 "schema": {
@@ -7160,52 +6272,29 @@
                 }
               }
             }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
           }
-        }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
       }
     },
-    "/api/v1/dcs/sesi/{sesi_id}/tutup": {
+    "/api/v1/dcs/instrumen/buka-ulang": {
       "post": {
         "tags": [
-          "dcs.sesi"
+          "dcs.instrumen"
         ],
-        "summary": "Tutup sesi DCS (OPEN → CLOSED)",
-        "operationId": "dcs_sesi_tutup",
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "sesi_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "description": "ID sesi DCS.",
-              "title": "Sesi Id"
-            },
-            "description": "ID sesi DCS."
-          }
-        ],
+        "summary": "Buka ulang instrumen DCS (CLOSED → OPEN)",
+        "operationId": "dcs_instrumen_buka_ulang",
         "responses": {
           "200": {
             "description": "Successful Response",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DcsSesiRead"
+                  "$ref": "#/components/schemas/DcsInstrumenRead"
                 }
               }
             }
@@ -7230,8 +6319,8 @@
               }
             }
           },
-          "404": {
-            "description": "Sesi DCS tidak ditemukan.",
+          "422": {
+            "description": "Transisi status tidak valid.",
             "content": {
               "application/json": {
                 "schema": {
@@ -7239,55 +6328,32 @@
                 }
               }
             }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
           }
-        }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
       }
     },
-    "/api/v1/dcs/sesi/{sesi_id}/responden": {
+    "/api/v1/dcs/responden": {
       "get": {
         "tags": [
           "dcs.responden"
         ],
-        "summary": "Daftar responden dalam sesi DCS (admin)",
+        "summary": "Daftar seluruh responden DCS (admin)",
         "operationId": "dcs_responden_list",
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "sesi_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "description": "ID sesi DCS.",
-              "title": "Sesi Id"
-            },
-            "description": "ID sesi DCS."
-          }
-        ],
         "responses": {
           "200": {
             "description": "Successful Response",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
                   "items": {
                     "$ref": "#/components/schemas/DcsRespondenRead"
                   },
+                  "type": "array",
                   "title": "Response Dcs Responden List"
                 }
               }
@@ -7312,62 +6378,29 @@
                 }
               }
             }
-          },
-          "404": {
-            "description": "Sesi DCS tidak ditemukan.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
           }
-        }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
       },
       "post": {
         "tags": [
           "dcs.responden"
         ],
-        "summary": "Daftarkan responden ke sesi DCS (admin)",
+        "summary": "Tugaskan (assign) responden DCS — bulk (admin)",
         "operationId": "dcs_responden_create",
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "sesi_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "description": "ID sesi DCS.",
-              "title": "Sesi Id"
-            },
-            "description": "ID sesi DCS."
-          }
-        ],
         "requestBody": {
-          "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/DcsRespondenCreate"
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "201": {
@@ -7375,7 +6408,11 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DcsRespondenRead"
+                  "items": {
+                    "$ref": "#/components/schemas/DcsRespondenRead"
+                  },
+                  "type": "array",
+                  "title": "Response Dcs Responden Create"
                 }
               }
             }
@@ -7410,18 +6447,8 @@
               }
             }
           },
-          "404": {
-            "description": "Sesi DCS tidak ditemukan.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
-            "description": "Partisipan sudah terdaftar sebagai responden DCS.",
+            "description": "Instrumen DCS tidak OPEN, atau salah satu partisipan sudah terdaftar sebagai responden DCS.",
             "content": {
               "application/json": {
                 "schema": {
@@ -7440,10 +6467,15 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
       }
     },
-    "/api/v1/dcs/sesi/responden/{responden_id}": {
+    "/api/v1/dcs/responden/{responden_id}": {
       "get": {
         "tags": [
           "dcs.responden"
@@ -7602,7 +6634,7 @@
         }
       }
     },
-    "/api/v1/dcs/sesi/responden/{responden_id}/jawaban": {
+    "/api/v1/dcs/responden/{responden_id}/jawaban": {
       "put": {
         "tags": [
           "dcs.responden"
@@ -7703,7 +6735,7 @@
             }
           },
           "422": {
-            "description": "Responden sudah submit final.",
+            "description": "Responden sudah submit final, atau instrumen tidak OPEN.",
             "content": {
               "application/json": {
                 "schema": {
@@ -7796,7 +6828,7 @@
         }
       }
     },
-    "/api/v1/dcs/sesi/responden/{responden_id}/jawaban/submit": {
+    "/api/v1/dcs/responden/{responden_id}/jawaban/submit": {
       "post": {
         "tags": [
           "dcs.responden"
@@ -7877,7 +6909,7 @@
             }
           },
           "422": {
-            "description": "Responden sudah submit, atau jawaban tersimpan belum lengkap.",
+            "description": "Responden sudah submit, jawaban tersimpan belum lengkap, atau instrumen tidak OPEN.",
             "content": {
               "application/json": {
                 "schema": {
@@ -7889,56 +6921,20 @@
         }
       }
     },
-    "/api/v1/dcs/sesi/{sesi_id}/analisis": {
+    "/api/v1/dcs/analisis": {
       "post": {
         "tags": [
           "dcs.hasil"
         ],
         "summary": "Jalankan analisis DCS (CLOSED → ANALYZED)",
-        "operationId": "dcs_analisis_run",
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "sesi_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "description": "ID sesi DCS.",
-              "title": "Sesi Id"
-            },
-            "description": "ID sesi DCS."
-          },
-          {
-            "name": "wcp_sesi_id",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "description": "ID sesi WCP yang bersesuaian untuk menghitung K-Index. Jika tidak disertakan, k_index akan bernilai null.",
-              "title": "Wcp Sesi Id"
-            },
-            "description": "ID sesi WCP yang bersesuaian untuk menghitung K-Index. Jika tidak disertakan, k_index akan bernilai null."
-          }
-        ],
+        "operationId": "dcs_analisis",
         "responses": {
           "200": {
             "description": "Successful Response",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DcsHasilSesiRead"
+                  "$ref": "#/components/schemas/DcsHasilRead"
                 }
               }
             }
@@ -7962,95 +6958,29 @@
                 }
               }
             }
-          },
-          "404": {
-            "description": "Sesi DCS tidak ditemukan.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
           }
-        }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
       }
     },
-    "/api/v1/dcs/sesi/{sesi_id}/hasil": {
+    "/api/v1/dcs/hasil": {
       "get": {
         "tags": [
           "dcs.hasil"
         ],
-        "summary": "Lihat hasil analisis sesi DCS",
-        "operationId": "dcs_hasil_sesi_get",
-        "parameters": [
-          {
-            "name": "sesi_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "description": "ID sesi DCS.",
-              "title": "Sesi Id"
-            },
-            "description": "ID sesi DCS."
-          },
-          {
-            "name": "wcp_sesi_id",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "description": "ID sesi WCP untuk menyertakan K-Index dalam respons.",
-              "title": "Wcp Sesi Id"
-            },
-            "description": "ID sesi WCP untuk menyertakan K-Index dalam respons."
-          }
-        ],
+        "summary": "Lihat hasil analisis instrumen DCS",
+        "operationId": "dcs_hasil",
         "responses": {
           "200": {
             "description": "Successful Response",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DcsHasilSesiRead"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Sesi DCS tidak ditemukan.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
+                  "$ref": "#/components/schemas/DcsHasilRead"
                 }
               }
             }
@@ -8058,7 +6988,7 @@
         }
       }
     },
-    "/api/v1/dcs/sesi/responden/{responden_id}/hasil": {
+    "/api/v1/dcs/hasil-responden/{responden_id}": {
       "get": {
         "tags": [
           "dcs.hasil"
@@ -12678,6 +11608,74 @@
   },
   "components": {
     "schemas": {
+      "DcsHasilRead": {
+        "properties": {
+          "n_responden": {
+            "type": "integer",
+            "title": "N Responden",
+            "description": "Total responden yang submit."
+          },
+          "sub_skala": {
+            "items": {
+              "$ref": "#/components/schemas/DcsHasilSubSkalaRead"
+            },
+            "type": "array",
+            "title": "Sub Skala",
+            "description": "Hasil per sub-skala (3 entri)."
+          },
+          "risk_flag": {
+            "type": "string",
+            "enum": [
+              "HIGH",
+              "MODERATE",
+              "LOW"
+            ],
+            "title": "Risk Flag",
+            "description": "Flag risiko DCS: HIGH = demand tinggi + control/support rendah; MODERATE = salah satu kondisi; LOW = tidak ada kondisi.",
+            "examples": [
+              "MODERATE"
+            ]
+          },
+          "k_index": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "K Index",
+            "description": "K-Index psikososial (0–1). None jika instrumen WCP belum punya responden ber-submit. Rumus: 0,40×DemandPressure + 0,25×ControlDeficit + 0,25×SupportDeficit + 0,10×WCPRisk.",
+            "examples": [
+              0.42
+            ]
+          },
+          "k_index_wcp_risk": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "K Index Wcp Risk",
+            "description": "Komponen WCP risk yang dipakai dalam K-Index (0–1). None jika tidak ada.",
+            "examples": [
+              0.65
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "n_responden",
+          "sub_skala",
+          "risk_flag"
+        ],
+        "title": "DcsHasilRead",
+        "description": "Hasil analisis lengkap instrumen DCS (seluruh sub-skala + risk flag + K-Index)."
+      },
       "DcsHasilRespondenRead": {
         "properties": {
           "responden_id": {
@@ -12716,123 +11714,7 @@
         "title": "DcsHasilRespondenRead",
         "description": "Hasil analisis untuk satu responden (3 sub-skala)."
       },
-      "DcsHasilSesiRead": {
-        "properties": {
-          "sesi_id": {
-            "type": "string",
-            "title": "Sesi Id",
-            "description": "ID sesi."
-          },
-          "periode": {
-            "type": "string",
-            "title": "Periode",
-            "description": "Periode survei."
-          },
-          "n_responden": {
-            "type": "integer",
-            "title": "N Responden",
-            "description": "Total responden yang submit."
-          },
-          "sub_skala": {
-            "items": {
-              "$ref": "#/components/schemas/DcsHasilSubSkalaSesiRead"
-            },
-            "type": "array",
-            "title": "Sub Skala",
-            "description": "Hasil per sub-skala (3 entri)."
-          },
-          "risk_flag": {
-            "type": "string",
-            "enum": [
-              "HIGH",
-              "MODERATE",
-              "LOW"
-            ],
-            "title": "Risk Flag",
-            "description": "Flag risiko DCS: HIGH = demand tinggi + control/support rendah; MODERATE = salah satu kondisi; LOW = tidak ada kondisi.",
-            "examples": [
-              "MODERATE"
-            ]
-          },
-          "k_index": {
-            "anyOf": [
-              {
-                "type": "number"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "K Index",
-            "description": "K-Index psikososial (0–1). None jika wcp_sesi_id tidak disertakan. Rumus: 0,40×DemandPressure + 0,25×ControlDeficit + 0,25×SupportDeficit + 0,10×WCPRisk.",
-            "examples": [
-              0.42
-            ]
-          },
-          "k_index_wcp_risk": {
-            "anyOf": [
-              {
-                "type": "number"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "K Index Wcp Risk",
-            "description": "Komponen WCP risk yang dipakai dalam K-Index (0–1). None jika tidak ada.",
-            "examples": [
-              0.65
-            ]
-          }
-        },
-        "type": "object",
-        "required": [
-          "sesi_id",
-          "periode",
-          "n_responden",
-          "sub_skala",
-          "risk_flag"
-        ],
-        "title": "DcsHasilSesiRead",
-        "description": "Hasil analisis lengkap satu sesi DCS (seluruh sub-skala + risk flag + K-Index)."
-      },
-      "DcsHasilSubSkalaRespondenRead": {
-        "properties": {
-          "subskala_kode": {
-            "type": "string",
-            "title": "Subskala Kode",
-            "description": "Kode sub-skala.",
-            "examples": [
-              "DEMAND"
-            ]
-          },
-          "subskala_nama": {
-            "type": "string",
-            "title": "Subskala Nama",
-            "description": "Nama sub-skala.",
-            "examples": [
-              "Demand (Tuntutan Kerja)"
-            ]
-          },
-          "skor": {
-            "type": "number",
-            "title": "Skor",
-            "description": "Rata-rata 14 item setelah reverse UF.",
-            "examples": [
-              3.71
-            ]
-          }
-        },
-        "type": "object",
-        "required": [
-          "subskala_kode",
-          "subskala_nama",
-          "skor"
-        ],
-        "title": "DcsHasilSubSkalaRespondenRead",
-        "description": "Skor satu sub-skala untuk satu responden."
-      },
-      "DcsHasilSubSkalaSesiRead": {
+      "DcsHasilSubSkalaRead": {
         "properties": {
           "subskala_kode": {
             "type": "string",
@@ -12899,8 +11781,148 @@
           "skor_std",
           "cronbach_alpha"
         ],
-        "title": "DcsHasilSubSkalaSesiRead",
-        "description": "Hasil agregat satu sub-skala untuk satu sesi (seluruh responden)."
+        "title": "DcsHasilSubSkalaRead",
+        "description": "Hasil agregat satu sub-skala (seluruh responden ber-submit instrumen DCS)."
+      },
+      "DcsHasilSubSkalaRespondenRead": {
+        "properties": {
+          "subskala_kode": {
+            "type": "string",
+            "title": "Subskala Kode",
+            "description": "Kode sub-skala.",
+            "examples": [
+              "DEMAND"
+            ]
+          },
+          "subskala_nama": {
+            "type": "string",
+            "title": "Subskala Nama",
+            "description": "Nama sub-skala.",
+            "examples": [
+              "Demand (Tuntutan Kerja)"
+            ]
+          },
+          "skor": {
+            "type": "number",
+            "title": "Skor",
+            "description": "Rata-rata 14 item setelah reverse UF.",
+            "examples": [
+              3.71
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "subskala_kode",
+          "subskala_nama",
+          "skor"
+        ],
+        "title": "DcsHasilSubSkalaRespondenRead",
+        "description": "Skor satu sub-skala untuk satu responden."
+      },
+      "DcsInstrumenRead": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id",
+            "description": "ID instrumen (selalu 'dcs').",
+            "examples": [
+              "dcs"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "OPEN",
+              "CLOSED",
+              "ANALYZED"
+            ],
+            "title": "Status",
+            "description": "Status instrumen.",
+            "examples": [
+              "OPEN"
+            ]
+          },
+          "min_responden": {
+            "type": "integer",
+            "title": "Min Responden",
+            "description": "Jumlah minimum responden (cutoff analisis)."
+          },
+          "catatan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Catatan",
+            "description": "Catatan."
+          },
+          "closed_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Closed At",
+            "description": "Waktu instrumen terakhir ditutup (None bila belum pernah)."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At",
+            "description": "Waktu baris instrumen dibuat (oleh migrasi)."
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "status",
+          "min_responden",
+          "created_at"
+        ],
+        "title": "DcsInstrumenRead",
+        "description": "Representasi instrumen DCS (satu baris tetap, `id='dcs'`)."
+      },
+      "DcsInstrumenUpdate": {
+        "properties": {
+          "min_responden": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Min Responden",
+            "description": "Jumlah minimum responden baru (cutoff analisis)."
+          },
+          "catatan": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Catatan",
+            "description": "Catatan baru."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "DcsInstrumenUpdate",
+        "description": "Payload pembaruan parsial instrumen DCS (min_responden/catatan)."
       },
       "DcsItemRead": {
         "properties": {
@@ -13131,15 +12153,7 @@
               "drsp_a1b2c3d4"
             ]
           },
-          "sesi_id": {
-            "type": "string",
-            "title": "Sesi Id",
-            "description": "ID sesi DCS.",
-            "examples": [
-              "dses_a1b2c3d4"
-            ]
-          },
-          "sesi_catatan": {
+          "catatan": {
             "anyOf": [
               {
                 "type": "string"
@@ -13148,8 +12162,8 @@
                 "type": "null"
               }
             ],
-            "title": "Sesi Catatan",
-            "description": "Catatan sesi DCS."
+            "title": "Catatan",
+            "description": "Catatan instrumen DCS."
           },
           "sudah_submit": {
             "type": "boolean",
@@ -13175,86 +12189,50 @@
             "title": "Created At",
             "description": "Waktu pendaftaran."
           },
-          "sesi_status": {
+          "instrumen_status": {
             "type": "string",
-            "title": "Sesi Status",
-            "description": "Status sesi: DRAFT | OPEN | CLOSED | ANALYZED.",
+            "title": "Instrumen Status",
+            "description": "Status instrumen: OPEN | CLOSED | ANALYZED.",
             "examples": [
               "OPEN"
-            ]
-          },
-          "sesi_periode": {
-            "type": "string",
-            "title": "Sesi Periode",
-            "description": "Periode sesi (YYYY-MM).",
-            "examples": [
-              "2025-06"
             ]
           }
         },
         "type": "object",
         "required": [
           "id",
-          "sesi_id",
           "sudah_submit",
           "created_at",
-          "sesi_status",
-          "sesi_periode"
+          "instrumen_status"
         ],
         "title": "DcsKuesionerItemRead",
-        "description": "Responden DCS diperkaya info sesi — dipakai endpoint /kuesioner/saya."
+        "description": "Responden DCS diperkaya info instrumen — dipakai endpoint /kuesioner/saya."
       },
       "DcsRespondenCreate": {
         "properties": {
-          "nama": {
-            "anyOf": [
-              {
-                "type": "string",
-                "maxLength": 200
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Nama",
-            "description": "Nama responden (opsional, boleh anonim).",
+          "partisipan_ids": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "minItems": 1,
+            "title": "Partisipan Ids",
+            "description": "Daftar ID partisipan yang ditugaskan sebagai responden DCS (bulk).",
             "examples": [
-              "Budi Santoso, S.Pd."
-            ]
-          },
-          "jabatan_label": {
-            "type": "string",
-            "maxLength": 200,
-            "minLength": 1,
-            "title": "Jabatan Label",
-            "description": "Label jabatan responden (teks bebas).",
-            "examples": [
-              "Guru Matematika"
-            ]
-          },
-          "partisipan_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Partisipan Id",
-            "description": "ID partisipan yang terhubung (opsional, untuk fitur 'Kuesioner Saya').",
-            "examples": [
-              "par_a1b2c3d4"
+              [
+                "par_a1b2c3d4",
+                "par_b2c3d4e5"
+              ]
             ]
           }
         },
         "additionalProperties": false,
         "type": "object",
         "required": [
-          "jabatan_label"
+          "partisipan_ids"
         ],
         "title": "DcsRespondenCreate",
-        "description": "Payload pendaftaran responden ke dalam sesi DCS."
+        "description": "Payload penugasan (assign) responden DCS — bulk, minimal 1 partisipan."
       },
       "DcsRespondenRead": {
         "properties": {
@@ -13264,14 +12242,6 @@
             "description": "ID responden.",
             "examples": [
               "drsp_a1b2c3d4"
-            ]
-          },
-          "sesi_id": {
-            "type": "string",
-            "title": "Sesi Id",
-            "description": "ID sesi induk.",
-            "examples": [
-              "dses_a1b2c3d4"
             ]
           },
           "nama": {
@@ -13331,203 +12301,12 @@
         "type": "object",
         "required": [
           "id",
-          "sesi_id",
           "jabatan_label",
           "sudah_submit",
           "created_at"
         ],
         "title": "DcsRespondenRead",
         "description": "Representasi responden yang dikembalikan API."
-      },
-      "DcsSesiCreate": {
-        "properties": {
-          "periode": {
-            "type": "string",
-            "maxLength": 7,
-            "minLength": 7,
-            "pattern": "^\\d{4}-\\d{2}$",
-            "title": "Periode",
-            "description": "Periode survei format YYYY-MM.",
-            "examples": [
-              "2025-06"
-            ]
-          },
-          "min_responden": {
-            "type": "integer",
-            "minimum": 1.0,
-            "title": "Min Responden",
-            "description": "Jumlah minimum responden.",
-            "default": 6,
-            "examples": [
-              6
-            ]
-          },
-          "max_responden": {
-            "type": "integer",
-            "minimum": 1.0,
-            "title": "Max Responden",
-            "description": "Jumlah maksimum responden.",
-            "default": 8,
-            "examples": [
-              8
-            ]
-          },
-          "catatan": {
-            "anyOf": [
-              {
-                "type": "string",
-                "maxLength": 500
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Catatan",
-            "description": "Catatan opsional untuk sesi ini."
-          }
-        },
-        "additionalProperties": false,
-        "type": "object",
-        "required": [
-          "periode"
-        ],
-        "title": "DcsSesiCreate",
-        "description": "Payload pembuatan sesi DCS."
-      },
-      "DcsSesiRead": {
-        "properties": {
-          "id": {
-            "type": "string",
-            "title": "Id",
-            "description": "ID sesi.",
-            "examples": [
-              "dses_a1b2c3d4"
-            ]
-          },
-          "periode": {
-            "type": "string",
-            "title": "Periode",
-            "description": "Periode survei (YYYY-MM).",
-            "examples": [
-              "2025-06"
-            ]
-          },
-          "status": {
-            "type": "string",
-            "enum": [
-              "DRAFT",
-              "OPEN",
-              "CLOSED",
-              "ANALYZED"
-            ],
-            "title": "Status",
-            "description": "Status sesi.",
-            "examples": [
-              "DRAFT"
-            ]
-          },
-          "min_responden": {
-            "type": "integer",
-            "title": "Min Responden",
-            "description": "Minimum responden."
-          },
-          "max_responden": {
-            "type": "integer",
-            "title": "Max Responden",
-            "description": "Maksimum responden."
-          },
-          "catatan": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Catatan",
-            "description": "Catatan."
-          },
-          "created_at": {
-            "type": "string",
-            "format": "date-time",
-            "title": "Created At",
-            "description": "Waktu pembuatan (UTC, ISO-8601)."
-          }
-        },
-        "type": "object",
-        "required": [
-          "id",
-          "periode",
-          "status",
-          "min_responden",
-          "max_responden",
-          "created_at"
-        ],
-        "title": "DcsSesiRead",
-        "description": "Representasi sesi DCS yang dikembalikan API."
-      },
-      "DcsSesiUpdate": {
-        "properties": {
-          "periode": {
-            "anyOf": [
-              {
-                "type": "string",
-                "maxLength": 7,
-                "minLength": 7,
-                "pattern": "^\\d{4}-\\d{2}$"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Periode",
-            "description": "Periode baru."
-          },
-          "min_responden": {
-            "anyOf": [
-              {
-                "type": "integer",
-                "minimum": 1.0
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Min Responden",
-            "description": "Minimum responden baru."
-          },
-          "max_responden": {
-            "anyOf": [
-              {
-                "type": "integer",
-                "minimum": 1.0
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Max Responden",
-            "description": "Maksimum responden baru."
-          },
-          "catatan": {
-            "anyOf": [
-              {
-                "type": "string",
-                "maxLength": 500
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Catatan",
-            "description": "Catatan baru."
-          }
-        },
-        "additionalProperties": false,
-        "type": "object",
-        "title": "DcsSesiUpdate",
-        "description": "Payload pembaruan sesi DCS (hanya saat DRAFT)."
       },
       "DcsSubSkalaRead": {
         "properties": {
@@ -15393,50 +14172,6 @@
         "title": "OpmSesiUpdate",
         "description": "Payload pembaruan sesi OPM (hanya saat DRAFT).\n\n`jabatan_id` dan `ti_sesi_id` tidak dapat diubah — ganti sumber berarti hapus\nsesi lalu buat ulang."
       },
-      "Page_DcsSesiRead_": {
-        "properties": {
-          "items": {
-            "items": {
-              "$ref": "#/components/schemas/DcsSesiRead"
-            },
-            "type": "array",
-            "title": "Items",
-            "description": "Item pada halaman ini."
-          },
-          "total": {
-            "type": "integer",
-            "title": "Total",
-            "description": "Total item tersedia.",
-            "examples": [
-              42
-            ]
-          },
-          "limit": {
-            "type": "integer",
-            "title": "Limit",
-            "description": "Maksimum item per halaman.",
-            "examples": [
-              20
-            ]
-          },
-          "offset": {
-            "type": "integer",
-            "title": "Offset",
-            "description": "Jumlah item yang dilewati.",
-            "examples": [
-              0
-            ]
-          }
-        },
-        "type": "object",
-        "required": [
-          "items",
-          "total",
-          "limit",
-          "offset"
-        ],
-        "title": "Page[DcsSesiRead]"
-      },
       "Page_DetilTugasRead_": {
         "properties": {
           "items": {
@@ -15964,50 +14699,6 @@
           "offset"
         ],
         "title": "Page[UraianTugasRead]"
-      },
-      "Page_WcpSesiRead_": {
-        "properties": {
-          "items": {
-            "items": {
-              "$ref": "#/components/schemas/WcpSesiRead"
-            },
-            "type": "array",
-            "title": "Items",
-            "description": "Item pada halaman ini."
-          },
-          "total": {
-            "type": "integer",
-            "title": "Total",
-            "description": "Total item tersedia.",
-            "examples": [
-              42
-            ]
-          },
-          "limit": {
-            "type": "integer",
-            "title": "Limit",
-            "description": "Maksimum item per halaman.",
-            "examples": [
-              20
-            ]
-          },
-          "offset": {
-            "type": "integer",
-            "title": "Offset",
-            "description": "Jumlah item yang dilewati.",
-            "examples": [
-              0
-            ]
-          }
-        },
-        "type": "object",
-        "required": [
-          "items",
-          "total",
-          "limit",
-          "offset"
-        ],
-        "title": "Page[WcpSesiRead]"
       },
       "PartisipanCreate": {
         "properties": {
@@ -20064,66 +18755,7 @@
         "title": "WcpDimensiWithItemsRead",
         "description": "Representasi dimensi WCP beserta 6 item-nya."
       },
-      "WcpHasilDimensiRespondenRead": {
-        "properties": {
-          "dimensi_kode": {
-            "type": "string",
-            "title": "Dimensi Kode",
-            "description": "Kode dimensi.",
-            "examples": [
-              "SC"
-            ]
-          },
-          "dimensi_nama": {
-            "type": "string",
-            "title": "Dimensi Nama",
-            "description": "Nama dimensi.",
-            "examples": [
-              "Stability of Change"
-            ]
-          },
-          "is_risk": {
-            "type": "boolean",
-            "title": "Is Risk",
-            "description": "True jika dimensi risiko."
-          },
-          "skor": {
-            "type": "number",
-            "title": "Skor",
-            "description": "Rata-rata 6 item setelah reverse scoring.",
-            "examples": [
-              3.83
-            ]
-          },
-          "interpretasi": {
-            "type": "string",
-            "enum": [
-              "BAIK",
-              "CUKUP",
-              "PERLU_PERHATIAN",
-              "AMAN",
-              "WASPADA",
-              "RISIKO_TINGGI"
-            ],
-            "title": "Interpretasi",
-            "description": "Interpretasi skor.",
-            "examples": [
-              "CUKUP"
-            ]
-          }
-        },
-        "type": "object",
-        "required": [
-          "dimensi_kode",
-          "dimensi_nama",
-          "is_risk",
-          "skor",
-          "interpretasi"
-        ],
-        "title": "WcpHasilDimensiRespondenRead",
-        "description": "Skor satu dimensi untuk satu responden."
-      },
-      "WcpHasilDimensiSesiRead": {
+      "WcpHasilDimensiRead": {
         "properties": {
           "dimensi_kode": {
             "type": "string",
@@ -20213,8 +18845,91 @@
           "cronbach_alpha",
           "interpretasi"
         ],
-        "title": "WcpHasilDimensiSesiRead",
-        "description": "Hasil agregat satu dimensi untuk satu sesi (seluruh responden)."
+        "title": "WcpHasilDimensiRead",
+        "description": "Hasil agregat satu dimensi (seluruh responden ber-submit instrumen WCP)."
+      },
+      "WcpHasilDimensiRespondenRead": {
+        "properties": {
+          "dimensi_kode": {
+            "type": "string",
+            "title": "Dimensi Kode",
+            "description": "Kode dimensi.",
+            "examples": [
+              "SC"
+            ]
+          },
+          "dimensi_nama": {
+            "type": "string",
+            "title": "Dimensi Nama",
+            "description": "Nama dimensi.",
+            "examples": [
+              "Stability of Change"
+            ]
+          },
+          "is_risk": {
+            "type": "boolean",
+            "title": "Is Risk",
+            "description": "True jika dimensi risiko."
+          },
+          "skor": {
+            "type": "number",
+            "title": "Skor",
+            "description": "Rata-rata 6 item setelah reverse scoring.",
+            "examples": [
+              3.83
+            ]
+          },
+          "interpretasi": {
+            "type": "string",
+            "enum": [
+              "BAIK",
+              "CUKUP",
+              "PERLU_PERHATIAN",
+              "AMAN",
+              "WASPADA",
+              "RISIKO_TINGGI"
+            ],
+            "title": "Interpretasi",
+            "description": "Interpretasi skor.",
+            "examples": [
+              "CUKUP"
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "dimensi_kode",
+          "dimensi_nama",
+          "is_risk",
+          "skor",
+          "interpretasi"
+        ],
+        "title": "WcpHasilDimensiRespondenRead",
+        "description": "Skor satu dimensi untuk satu responden."
+      },
+      "WcpHasilRead": {
+        "properties": {
+          "n_responden": {
+            "type": "integer",
+            "title": "N Responden",
+            "description": "Total responden yang submit."
+          },
+          "dimensi": {
+            "items": {
+              "$ref": "#/components/schemas/WcpHasilDimensiRead"
+            },
+            "type": "array",
+            "title": "Dimensi",
+            "description": "Hasil per dimensi (12 entri)."
+          }
+        },
+        "type": "object",
+        "required": [
+          "n_responden",
+          "dimensi"
+        ],
+        "title": "WcpHasilRead",
+        "description": "Hasil analisis lengkap instrumen WCP (seluruh dimensi)."
       },
       "WcpHasilRespondenRead": {
         "properties": {
@@ -20240,41 +18955,109 @@
         "title": "WcpHasilRespondenRead",
         "description": "Hasil analisis untuk satu responden (12 dimensi)."
       },
-      "WcpHasilSesiRead": {
+      "WcpInstrumenRead": {
         "properties": {
-          "sesi_id": {
+          "id": {
             "type": "string",
-            "title": "Sesi Id",
-            "description": "ID sesi."
+            "title": "Id",
+            "description": "ID instrumen (selalu 'wcp').",
+            "examples": [
+              "wcp"
+            ]
           },
-          "periode": {
+          "status": {
             "type": "string",
-            "title": "Periode",
-            "description": "Periode survei."
+            "enum": [
+              "OPEN",
+              "CLOSED",
+              "ANALYZED"
+            ],
+            "title": "Status",
+            "description": "Status instrumen.",
+            "examples": [
+              "OPEN"
+            ]
           },
-          "n_responden": {
+          "min_responden": {
             "type": "integer",
-            "title": "N Responden",
-            "description": "Total responden yang submit."
+            "title": "Min Responden",
+            "description": "Jumlah minimum responden (cutoff analisis)."
           },
-          "dimensi": {
-            "items": {
-              "$ref": "#/components/schemas/WcpHasilDimensiSesiRead"
-            },
-            "type": "array",
-            "title": "Dimensi",
-            "description": "Hasil per dimensi (12 entri)."
+          "catatan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Catatan",
+            "description": "Catatan."
+          },
+          "closed_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Closed At",
+            "description": "Waktu instrumen terakhir ditutup (None bila belum pernah)."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At",
+            "description": "Waktu baris instrumen dibuat (oleh migrasi)."
           }
         },
         "type": "object",
         "required": [
-          "sesi_id",
-          "periode",
-          "n_responden",
-          "dimensi"
+          "id",
+          "status",
+          "min_responden",
+          "created_at"
         ],
-        "title": "WcpHasilSesiRead",
-        "description": "Hasil analisis lengkap satu sesi WCP (seluruh dimensi)."
+        "title": "WcpInstrumenRead",
+        "description": "Representasi instrumen WCP (satu baris tetap, `id='wcp'`)."
+      },
+      "WcpInstrumenUpdate": {
+        "properties": {
+          "min_responden": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Min Responden",
+            "description": "Jumlah minimum responden baru (cutoff analisis)."
+          },
+          "catatan": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Catatan",
+            "description": "Catatan baru."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "WcpInstrumenUpdate",
+        "description": "Payload pembaruan parsial instrumen WCP (min_responden/catatan)."
       },
       "WcpItemRead": {
         "properties": {
@@ -20512,15 +19295,7 @@
               "wrsp_a1b2c3d4"
             ]
           },
-          "sesi_id": {
-            "type": "string",
-            "title": "Sesi Id",
-            "description": "ID sesi WCP.",
-            "examples": [
-              "wses_a1b2c3d4"
-            ]
-          },
-          "sesi_catatan": {
+          "catatan": {
             "anyOf": [
               {
                 "type": "string"
@@ -20529,8 +19304,8 @@
                 "type": "null"
               }
             ],
-            "title": "Sesi Catatan",
-            "description": "Catatan sesi WCP."
+            "title": "Catatan",
+            "description": "Catatan instrumen WCP."
           },
           "sudah_submit": {
             "type": "boolean",
@@ -20556,86 +19331,50 @@
             "title": "Created At",
             "description": "Waktu pendaftaran."
           },
-          "sesi_status": {
+          "instrumen_status": {
             "type": "string",
-            "title": "Sesi Status",
-            "description": "Status sesi: DRAFT | OPEN | CLOSED | ANALYZED.",
+            "title": "Instrumen Status",
+            "description": "Status instrumen: OPEN | CLOSED | ANALYZED.",
             "examples": [
               "OPEN"
-            ]
-          },
-          "sesi_periode": {
-            "type": "string",
-            "title": "Sesi Periode",
-            "description": "Periode sesi (YYYY-MM).",
-            "examples": [
-              "2025-06"
             ]
           }
         },
         "type": "object",
         "required": [
           "id",
-          "sesi_id",
           "sudah_submit",
           "created_at",
-          "sesi_status",
-          "sesi_periode"
+          "instrumen_status"
         ],
         "title": "WcpKuesionerItemRead",
-        "description": "Responden WCP diperkaya info sesi — dipakai endpoint /kuesioner/saya."
+        "description": "Responden WCP diperkaya info instrumen — dipakai endpoint /kuesioner/saya."
       },
       "WcpRespondenCreate": {
         "properties": {
-          "nama": {
-            "anyOf": [
-              {
-                "type": "string",
-                "maxLength": 200
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Nama",
-            "description": "Nama responden (opsional, boleh anonim).",
+          "partisipan_ids": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "minItems": 1,
+            "title": "Partisipan Ids",
+            "description": "Daftar ID partisipan yang ditugaskan sebagai responden WCP (bulk).",
             "examples": [
-              "Budi Santoso, S.Pd."
-            ]
-          },
-          "jabatan_label": {
-            "type": "string",
-            "maxLength": 200,
-            "minLength": 1,
-            "title": "Jabatan Label",
-            "description": "Label jabatan responden (teks bebas).",
-            "examples": [
-              "Guru Matematika"
-            ]
-          },
-          "partisipan_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Partisipan Id",
-            "description": "ID partisipan yang terhubung (opsional, untuk fitur 'Kuesioner Saya').",
-            "examples": [
-              "par_a1b2c3d4"
+              [
+                "par_a1b2c3d4",
+                "par_b2c3d4e5"
+              ]
             ]
           }
         },
         "additionalProperties": false,
         "type": "object",
         "required": [
-          "jabatan_label"
+          "partisipan_ids"
         ],
         "title": "WcpRespondenCreate",
-        "description": "Payload pendaftaran responden ke dalam sesi WCP."
+        "description": "Payload penugasan (assign) responden WCP — bulk, minimal 1 partisipan."
       },
       "WcpRespondenRead": {
         "properties": {
@@ -20645,14 +19384,6 @@
             "description": "ID responden.",
             "examples": [
               "wrsp_a1b2c3d4"
-            ]
-          },
-          "sesi_id": {
-            "type": "string",
-            "title": "Sesi Id",
-            "description": "ID sesi induk.",
-            "examples": [
-              "wses_a1b2c3d4"
             ]
           },
           "nama": {
@@ -20712,203 +19443,12 @@
         "type": "object",
         "required": [
           "id",
-          "sesi_id",
           "jabatan_label",
           "sudah_submit",
           "created_at"
         ],
         "title": "WcpRespondenRead",
         "description": "Representasi responden yang dikembalikan API."
-      },
-      "WcpSesiCreate": {
-        "properties": {
-          "periode": {
-            "type": "string",
-            "maxLength": 7,
-            "minLength": 7,
-            "pattern": "^\\d{4}-\\d{2}$",
-            "title": "Periode",
-            "description": "Periode survei format YYYY-MM.",
-            "examples": [
-              "2025-06"
-            ]
-          },
-          "min_responden": {
-            "type": "integer",
-            "minimum": 1.0,
-            "title": "Min Responden",
-            "description": "Jumlah minimum responden.",
-            "default": 6,
-            "examples": [
-              6
-            ]
-          },
-          "max_responden": {
-            "type": "integer",
-            "minimum": 1.0,
-            "title": "Max Responden",
-            "description": "Jumlah maksimum responden.",
-            "default": 8,
-            "examples": [
-              8
-            ]
-          },
-          "catatan": {
-            "anyOf": [
-              {
-                "type": "string",
-                "maxLength": 500
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Catatan",
-            "description": "Catatan opsional untuk sesi ini."
-          }
-        },
-        "additionalProperties": false,
-        "type": "object",
-        "required": [
-          "periode"
-        ],
-        "title": "WcpSesiCreate",
-        "description": "Payload pembuatan sesi WCP."
-      },
-      "WcpSesiRead": {
-        "properties": {
-          "id": {
-            "type": "string",
-            "title": "Id",
-            "description": "ID sesi.",
-            "examples": [
-              "wses_a1b2c3d4"
-            ]
-          },
-          "periode": {
-            "type": "string",
-            "title": "Periode",
-            "description": "Periode survei (YYYY-MM).",
-            "examples": [
-              "2025-06"
-            ]
-          },
-          "status": {
-            "type": "string",
-            "enum": [
-              "DRAFT",
-              "OPEN",
-              "CLOSED",
-              "ANALYZED"
-            ],
-            "title": "Status",
-            "description": "Status sesi.",
-            "examples": [
-              "DRAFT"
-            ]
-          },
-          "min_responden": {
-            "type": "integer",
-            "title": "Min Responden",
-            "description": "Minimum responden."
-          },
-          "max_responden": {
-            "type": "integer",
-            "title": "Max Responden",
-            "description": "Maksimum responden."
-          },
-          "catatan": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Catatan",
-            "description": "Catatan."
-          },
-          "created_at": {
-            "type": "string",
-            "format": "date-time",
-            "title": "Created At",
-            "description": "Waktu pembuatan (UTC, ISO-8601)."
-          }
-        },
-        "type": "object",
-        "required": [
-          "id",
-          "periode",
-          "status",
-          "min_responden",
-          "max_responden",
-          "created_at"
-        ],
-        "title": "WcpSesiRead",
-        "description": "Representasi sesi WCP yang dikembalikan API."
-      },
-      "WcpSesiUpdate": {
-        "properties": {
-          "periode": {
-            "anyOf": [
-              {
-                "type": "string",
-                "maxLength": 7,
-                "minLength": 7,
-                "pattern": "^\\d{4}-\\d{2}$"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Periode",
-            "description": "Periode baru."
-          },
-          "min_responden": {
-            "anyOf": [
-              {
-                "type": "integer",
-                "minimum": 1.0
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Min Responden",
-            "description": "Minimum responden baru."
-          },
-          "max_responden": {
-            "anyOf": [
-              {
-                "type": "integer",
-                "minimum": 1.0
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Max Responden",
-            "description": "Maksimum responden baru."
-          },
-          "catatan": {
-            "anyOf": [
-              {
-                "type": "string",
-                "maxLength": 500
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Catatan",
-            "description": "Catatan baru."
-          }
-        },
-        "additionalProperties": false,
-        "type": "object",
-        "title": "WcpSesiUpdate",
-        "description": "Payload pembaruan sesi WCP (hanya saat DRAFT)."
       }
     },
     "securitySchemes": {

@@ -7,7 +7,6 @@ import type {
   WcpHasilDimensiRespondenRead,
   WcpHasilRespondenRead,
   WcpRespondenRead,
-  WcpSesiRead,
 } from "@/lib/api/schema";
 
 export const metadata = { title: "Hasil WCP Responden — ANJAB-ABK" };
@@ -25,33 +24,25 @@ const INTERPRETASI_LABEL: Record<string, { label: string; cls: string }> = {
 };
 
 interface Props {
-  params: Promise<{ sesi_id: string; responden_id: string }>;
+  params: Promise<{ responden_id: string }>;
 }
 
-async function fetchPageData(accessToken: string | undefined, sesiId: string, respondenId: string) {
+async function fetchPageData(accessToken: string | undefined, respondenId: string) {
   const client = withServerAuth(accessToken);
-  const [sesiRes, respondenRes, hasilRes] = await Promise.all([
-    client.GET("/api/v1/wcp/sesi/{sesi_id}", {
-      params: { path: { sesi_id: sesiId } },
+  const [respondenRes, hasilRes] = await Promise.all([
+    client.GET("/api/v1/wcp/responden/{responden_id}", {
+      params: { path: { responden_id: respondenId } },
     }),
-    client.GET("/api/v1/wcp/sesi/{sesi_id}/responden", {
-      params: { path: { sesi_id: sesiId } },
-    }),
-    client.GET("/api/v1/wcp/sesi/responden/{responden_id}/hasil", {
+    client.GET("/api/v1/wcp/hasil-responden/{responden_id}", {
       params: { path: { responden_id: respondenId } },
     }),
   ]);
-  const reqId = sesiRes.response.headers.get("x-request-id");
-  if (!sesiRes.data) throw toApiError(null, reqId);
+  const reqId = respondenRes.response.headers.get("x-request-id");
+  if (!respondenRes.data) throw toApiError(null, reqId);
   if (!hasilRes.data) throw toApiError(null, hasilRes.response.headers.get("x-request-id"));
 
-  const responden = ((respondenRes.data ?? []) as WcpRespondenRead[]).find(
-    (r) => r.id === respondenId,
-  );
-
   return {
-    sesi: sesiRes.data as WcpSesiRead,
-    responden: responden ?? null,
+    responden: respondenRes.data as WcpRespondenRead,
     hasil: hasilRes.data as WcpHasilRespondenRead,
   };
 }
@@ -60,26 +51,17 @@ export default async function WcpHasilRespondenPage({ params }: Props) {
   const session = await auth();
   if (!isAdmin(session)) notFound();
 
-  const { sesi_id, responden_id } = await params;
-  const { sesi, responden, hasil } = await fetchPageData(
-    session?.accessToken,
-    sesi_id,
-    responden_id,
-  );
+  const { responden_id } = await params;
+  const { responden, hasil } = await fetchPageData(session?.accessToken, responden_id);
 
-  const sesiLabel = sesi.catatan ?? sesi.periode;
-  const namaResponden = responden?.nama ?? "Anonim";
+  const namaResponden = responden.nama ?? "Anonim";
 
   return (
     <div className="space-y-6">
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-sm text-gray-500">
         <Link href="/wcp" className="hover:text-gray-700">
-          Sesi WCP
-        </Link>
-        <span>/</span>
-        <Link href={`/wcp/${sesi_id}`} className="hover:text-gray-700">
-          {sesiLabel}
+          WCP
         </Link>
         <span>/</span>
         <span className="text-gray-900">{namaResponden}</span>
@@ -88,14 +70,14 @@ export default async function WcpHasilRespondenPage({ params }: Props) {
       {/* Header */}
       <div>
         <h1 className="page-heading">Hasil WCP — {namaResponden}</h1>
-        <p className="page-subtext">
-          Sesi: <span className="font-mono">{sesiLabel}</span>
-        </p>
+        <p className="page-subtext">{responden.jabatan_label}</p>
       </div>
 
       {/* Skor per dimensi */}
       <div>
-        <h2 className="mb-4 text-lg font-medium text-gray-900">Skor per Dimensi</h2>
+        <h2 className="mb-4 text-lg font-medium text-gray-900 dark:text-gray-50">
+          Skor per Dimensi
+        </h2>
         <div className="table-container">
           <table className="w-full text-sm">
             <thead className="bg-gray-50 dark:bg-gray-800">
@@ -119,8 +101,10 @@ export default async function WcpHasilRespondenPage({ params }: Props) {
                 };
                 return (
                   <tr key={d.dimensi_kode} className="hover:bg-gray-50 dark:hover:bg-gray-800/50">
-                    <td className="px-4 py-3 text-gray-900">{d.dimensi_nama}</td>
-                    <td className="px-4 py-3 text-right font-medium text-gray-700">{d.skor}</td>
+                    <td className="px-4 py-3 text-gray-900 dark:text-gray-100">{d.dimensi_nama}</td>
+                    <td className="px-4 py-3 text-right font-medium text-gray-700 dark:text-gray-300">
+                      {d.skor}
+                    </td>
                     <td className="px-4 py-3">
                       <span
                         className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${interp.cls}`}

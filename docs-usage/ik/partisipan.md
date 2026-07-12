@@ -45,7 +45,7 @@ Setelah partisipan terdaftar, ia dapat:
 
 - Dijadikan **anggota SME Panel** (untuk Task Inventory dan OPM) — lihat
   [IK-02 → SME Panel](master-data.md#sme-panel).
-- Didaftarkan sebagai **responden** di sesi Task Inventory, Time Study, DCS, WCP, atau OPM
+- Didaftarkan sebagai **responden** di Task Inventory, Time Study, DCS, WCP, atau OPM
   (responden OPM terisi otomatis dari anggota SME panel) — lihat IK masing-masing alat ukur.
 
 ---

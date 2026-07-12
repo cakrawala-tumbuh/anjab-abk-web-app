@@ -2,7 +2,7 @@
 
 Prosedur baku menyiapkan segala prasyarat sebelum pengambilan data **Task Inventory**.
 
-**Tujuan:** memastikan catalog tugas, panel ahli, koordinator, dan sesi telah siap
+**Tujuan:** memastikan catalog tugas, panel ahli, koordinator, dan analisis telah siap
 sehingga partisipan dapat menyeleksi relevansi tugas (Tahap 1) dan merinci beban kerja
 (Tahap 3) dengan benar.
 
@@ -21,7 +21,7 @@ kerjanya** (komponen CalHR). Alurnya **3 tahap**:
 | **Tahap 2 — Review Koordinator** | Koordinator SME panel | Memutuskan relevansi tugas yang **tidak dipilih bulat** (partial) oleh semua anggota.           |
 | **Tahap 3 — Detailing**          | Anggota SME panel     | Mengisi rincian beban kerja (CalHR) untuk tugas final.                                          |
 
-Status sesi: `DRAFT → TAHAP1 → TAHAP2 → TAHAP3 → CLOSED → ANALYZED`.
+Status analisis: `DRAFT → TAHAP1 → TAHAP2 → TAHAP3 → CLOSED → ANALYZED`.
 
 !!! note "Pembekuan tugas"
 Pada transisi **Tahap 2 → Tahap 3**, daftar tugas dibekukan =
@@ -41,7 +41,7 @@ _tugas yang dipilih bulat (unanimous)_ **∪** _tugas partial yang disetujui koo
 !!! warning "Catalog tugas bersifat read-only"
 Catalog Task Inventory bersumber dari data bawaan sistem dan hanya dapat ditinjau,
 bukan dibuat dari aplikasi. Pastikan kombinasi unit × jabatan yang akan disurvei
-sudah memiliki task di catalog sebelum membuat sesi.
+sudah memiliki task di catalog sebelum memulai analisis.
 
 ---
 
@@ -62,9 +62,9 @@ sudah memiliki task di catalog sebelum membuat sesi.
 Partisipan yang menjadi anggota di lebih dari satu panel harus mengisi Tahap 1
 secara terpisah untuk tiap panel.
 
-### 3. Buat sesi Task Inventory
+### 3. Mulai Analisis Jabatan Task Inventory
 
-Buat sesi dengan parameter berikut (detail langkah: [IK-04 Task Inventory](../ik/task-inventory.md#a-membuat-sesi)):
+Mulai analisis dengan parameter berikut (detail langkah: [IK-04 Task Inventory](../ik/task-inventory.md#a-memulai-analisis-jabatan)):
 
 | Parameter           | Pedoman pengisian                                                             |
 | ------------------- | ----------------------------------------------------------------------------- |
@@ -72,17 +72,17 @@ Buat sesi dengan parameter berikut (detail langkah: [IK-04 Task Inventory](../ik
 | **Periode**         | Format `YYYY-MM` (mis. `2026-06`).                                            |
 | **Min. Responden**  | Default 3. Jumlah minimum responden agar hasil layak diagregasi.              |
 | **Maks. Responden** | Default 10. Harus ≥ Min. Responden.                                           |
-| **Catatan**         | Opsional — keterangan sesi.                                                   |
+| **Catatan**         | Opsional — keterangan analisis.                                               |
 
 ### 4. Daftarkan responden
 
-1. Buka detail sesi (status **DRAFT**).
+1. Buka detail analisis (status **DRAFT**).
 2. Daftarkan responden dari daftar partisipan, sesuai anggota panel.
    (Langkah: [IK-04 Task Inventory](../ik/task-inventory.md#b-mendaftarkan-responden).)
 
 !!! success "Selesai persiapan"
-Setelah catalog terverifikasi, panel & koordinator ditetapkan, sesi dibuat, dan
-responden terdaftar — sesi siap dibuka. Lanjut ke
+Setelah catalog terverifikasi, panel & koordinator ditetapkan, analisis dibuat, dan
+responden terdaftar — analisis siap dibuka. Lanjut ke
 [SOP Pelaksanaan Task Inventory](pelaksanaan-task-inventory.md).
 
 ---
@@ -94,5 +94,5 @@ responden terdaftar — sesi siap dibuka. Lanjut ke
 - [ ] SME Panel dibuat & anggota diisi
 - [ ] Koordinator panel ditetapkan
 - [ ] Partisipan/anggota panel terdaftar
-- [ ] Sesi TI dibuat dengan periode & batas responden yang benar
-- [ ] Responden terdaftar di sesi
+- [ ] Analisis Jabatan TI dibuat dengan periode & batas responden yang benar
+- [ ] Responden terdaftar di analisis
