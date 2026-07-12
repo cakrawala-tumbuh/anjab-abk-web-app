@@ -7,6 +7,34 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [2.4.0] - 2026-07-12
+
+### Ditambahkan
+
+- **Nilai standar CalHR di master data Uraian Tugas.** Form tambah/edit
+  (`uraian-tugas-form.tsx`) punya bagian "Nilai Standar Tahap 3" (sumber
+  bukti, kondisi, frekuensi, durasi, jam/minggu, peak4w, AI mode, VA type,
+  flag DCS) — bila diisi, otomatis mem-prefill isian awal partisipan Tahap 3.
+  Daftar Uraian Tugas menandai baris yang punya standar dengan badge
+  "Standar".
+- `detail-form.tsx` (Tahap 3): entri task otomatis ter-prefill dari nilai
+  standar master (bila ada), partisipan tinggal menyatakan setuju atau
+  mengubahnya (`setuju_standar`).
+
+### Diubah
+
+- **BREAKING** (mengikuti `anjab-abk-backend` v0.27.0): `std_durasi_per_kali`
+  berubah tipe dari angka ke teks bebas (`"Bervariasi"`, `"<2 jam"`, dst) —
+  input di form master data jadi `type="text"`. Di form isian Tahap 3, kolom
+  ini **tidak lagi di-prefill** dari nilai standar (tidak ada angka menit
+  untuk disalin) — nilainya ditampilkan sebagai petunjuk di samping input,
+  partisipan tetap mengisi angkanya sendiri.
+- `VA_TYPE` (`components/calhr.ts`) diperluas dari 3 jadi 5 nilai (tambah
+  `Context-Dependent`, `Needs Validation`), mengikuti perluasan `VaType` di
+  backend — dipakai bersama form master data & isian Tahap 3.
+- `openapi/openapi.json` + `src/lib/api/schema.ts` di-generate ulang dari
+  `anjab-abk-backend` v0.27.0.
+
 ## [2.3.0] - 2026-07-12
 
 ### Ditambahkan

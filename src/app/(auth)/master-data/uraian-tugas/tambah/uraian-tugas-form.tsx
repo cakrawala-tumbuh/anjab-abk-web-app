@@ -8,6 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
+import { AI_MODE, KONDISI, SUMBER_BUKTI, VA_TYPE } from "@/components/calhr";
 import type { DetilTugasRead, JabatanRead, TugasPokokRead } from "@/lib/api/schema";
 
 const schema = z.object({
@@ -21,6 +22,15 @@ const schema = z.object({
   tugas_pokok_id: z.string().min(1, "Tugas pokok wajib dipilih"),
   detil_tugas_id: z.string().min(1, "Detil tugas wajib dipilih"),
   jabatan_id: z.string().min(1, "Jabatan wajib dipilih"),
+  std_sumber_bukti: z.enum(SUMBER_BUKTI).optional(),
+  std_kondisi: z.enum(KONDISI).optional(),
+  std_frekuensi_teks: z.string().max(100).optional(),
+  std_durasi_per_kali: z.string().max(100).optional(),
+  std_jam_per_minggu: z.number().min(0).optional(),
+  std_peak4w_hours: z.number().min(0).optional(),
+  std_ai_mode: z.enum(AI_MODE).optional(),
+  std_va_type: z.enum(VA_TYPE).optional(),
+  std_dcs_flag: z.boolean().optional(),
 });
 
 type FormValues = z.infer<typeof schema>;
@@ -96,6 +106,15 @@ export function TambahUraianTugasForm({
         tugas_pokok_id: values.tugas_pokok_id,
         detil_tugas_id: values.detil_tugas_id,
         jabatan_id: values.jabatan_id,
+        std_sumber_bukti: values.std_sumber_bukti || null,
+        std_kondisi: values.std_kondisi || null,
+        std_frekuensi_teks: values.std_frekuensi_teks || null,
+        std_durasi_per_kali: values.std_durasi_per_kali || null,
+        std_jam_per_minggu: values.std_jam_per_minggu ?? null,
+        std_peak4w_hours: values.std_peak4w_hours ?? null,
+        std_ai_mode: values.std_ai_mode || null,
+        std_va_type: values.std_va_type || null,
+        std_dcs_flag: values.std_dcs_flag ?? null,
       };
 
       if (editId) {
@@ -293,6 +312,159 @@ export function TambahUraianTugasForm({
             {errors.jabatan_id.message}
           </p>
         )}
+      </div>
+
+      <div className="border-t border-gray-200 pt-5">
+        <h3 className="text-sm font-semibold text-gray-800">Nilai Standar Tahap 3</h3>
+        <p className="mt-1 text-xs text-gray-500">
+          Bila diisi, nilai ini akan otomatis muncul sebagai isian awal partisipan di Tahap 3.
+          Partisipan cukup menyatakan setuju; bila tidak setuju, ia dapat mengubahnya. Kosongkan
+          bila tugas ini tidak punya standar.
+        </p>
+
+        <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div>
+            <label htmlFor="std_sumber_bukti" className="form-label">
+              Sumber Bukti
+            </label>
+            <select
+              id="std_sumber_bukti"
+              {...register("std_sumber_bukti")}
+              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            >
+              <option value="">— tidak ada standar —</option>
+              {SUMBER_BUKTI.map((v) => (
+                <option key={v} value={v}>
+                  {v}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label htmlFor="std_kondisi" className="form-label">
+              Kondisi
+            </label>
+            <select
+              id="std_kondisi"
+              {...register("std_kondisi")}
+              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            >
+              <option value="">— tidak ada standar —</option>
+              {KONDISI.map((v) => (
+                <option key={v} value={v}>
+                  {v}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label htmlFor="std_frekuensi_teks" className="form-label">
+              Frekuensi
+            </label>
+            <input
+              id="std_frekuensi_teks"
+              type="text"
+              {...register("std_frekuensi_teks")}
+              placeholder="cth. Mingguan"
+              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="std_durasi_per_kali" className="form-label">
+              Durasi/kali
+            </label>
+            <input
+              id="std_durasi_per_kali"
+              type="text"
+              placeholder="cth. 60 menit, Bervariasi, <2 jam"
+              {...register("std_durasi_per_kali")}
+              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="std_jam_per_minggu" className="form-label">
+              Jam/minggu
+            </label>
+            <input
+              id="std_jam_per_minggu"
+              type="number"
+              min={0}
+              step="0.5"
+              {...register("std_jam_per_minggu", {
+                setValueAs: (v) => (v === "" ? undefined : Number(v)),
+              })}
+              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="std_peak4w_hours" className="form-label">
+              Jam peak (4 minggu)
+            </label>
+            <input
+              id="std_peak4w_hours"
+              type="number"
+              min={0}
+              step="0.5"
+              {...register("std_peak4w_hours", {
+                setValueAs: (v) => (v === "" ? undefined : Number(v)),
+              })}
+              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="std_ai_mode" className="form-label">
+              AI Mode
+            </label>
+            <select
+              id="std_ai_mode"
+              {...register("std_ai_mode")}
+              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            >
+              <option value="">— tidak ada standar —</option>
+              {AI_MODE.map((v) => (
+                <option key={v} value={v}>
+                  {v}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label htmlFor="std_va_type" className="form-label">
+              VA Type
+            </label>
+            <select
+              id="std_va_type"
+              {...register("std_va_type")}
+              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            >
+              <option value="">— tidak ada standar —</option>
+              {VA_TYPE.map((v) => (
+                <option key={v} value={v}>
+                  {v}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="flex items-end pb-2">
+            <label htmlFor="std_dcs_flag" className="flex items-center gap-2 text-sm text-gray-600">
+              <input
+                id="std_dcs_flag"
+                type="checkbox"
+                {...register("std_dcs_flag")}
+                className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+              />
+              Ada risiko DCS
+            </label>
+          </div>
+        </div>
       </div>
 
       <div className="flex items-center gap-3 pt-2">

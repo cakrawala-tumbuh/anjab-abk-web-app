@@ -67,6 +67,9 @@ export default async function UraianTugasPage() {
                   Tugas Pokok
                 </th>
                 <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
+                  Standar
+                </th>
+                <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
                   Aksi
                 </th>
               </tr>
@@ -88,6 +91,13 @@ export default async function UraianTugasPage() {
                   <td className="px-4 py-3 text-gray-600 dark:text-gray-400">{ut.jabatan_id}</td>
                   <td className="px-4 py-3 text-gray-600 dark:text-gray-400">
                     {pokokMap[ut.tugas_pokok_id] ?? ut.tugas_pokok_id}
+                  </td>
+                  <td className="px-4 py-3">
+                    {ut.std_frekuensi_teks !== null && (
+                      <span className="inline-flex rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300">
+                        Standar
+                      </span>
+                    )}
                   </td>
                   <td className="px-4 py-3">
                     <Link

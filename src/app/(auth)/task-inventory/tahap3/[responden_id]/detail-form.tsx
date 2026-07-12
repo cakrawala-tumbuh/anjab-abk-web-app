@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { z } from "zod";
 import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
+import { AI_MODE, KONDISI, SUMBER_BUKTI, VA_TYPE } from "@/components/calhr";
 import type { TiDetailItem, TiDetailRead, TiTaskTerpilihRead } from "@/lib/api/schema";
 
 /** Skema validasi satu entri detail CalHR (dipakai juga di unit test). */
@@ -17,18 +18,21 @@ export const detailItemSchema = z.object({
   jam_per_minggu: z.number().min(0, "Jam/minggu ≥ 0"),
   peak4w_hours: z.number().min(0).default(0),
   ai_mode: z.enum(["Human-led", "Co-Pilot", "AI-assisted"]),
-  va_type: z.enum(["VA-Core", "VA-Enable", "NVA-Residual"]),
+  va_type: z.enum([
+    "VA-Core",
+    "VA-Enable",
+    "NVA-Residual",
+    "Context-Dependent",
+    "Needs Validation",
+  ]),
   dcs_flag: z.boolean().default(false),
+  setuju_standar: z.boolean().default(true),
   catatan: z.string().max(500).optional(),
 });
 
-const SUMBER_BUKTI = ["Formal", "Aktual", "Keduanya"] as const;
-const KONDISI = ["Baseline", "Peak", "Both"] as const;
-const AI_MODE = ["Human-led", "Co-Pilot", "AI-assisted"] as const;
-const VA_TYPE = ["VA-Core", "VA-Enable", "NVA-Residual"] as const;
-
 interface RowState {
   checked: boolean;
+  setuju_standar: boolean;
   sumber_bukti: TiDetailItem["sumber_bukti"];
   kondisi: TiDetailItem["kondisi"];
   frekuensi_teks: string;
@@ -40,18 +44,40 @@ interface RowState {
   dcs_flag: boolean;
 }
 
-function defaultRow(): RowState {
+/** Task punya nilai standar bila minimal satu field `std_*` non-null. */
+function punyaStandar(t: TiTaskTerpilihRead): boolean {
+  return (
+    t.std_sumber_bukti != null ||
+    t.std_kondisi != null ||
+    t.std_frekuensi_teks != null ||
+    t.std_durasi_per_kali != null ||
+    t.std_jam_per_minggu != null ||
+    t.std_peak4w_hours != null ||
+    t.std_ai_mode != null ||
+    t.std_va_type != null ||
+    t.std_dcs_flag != null
+  );
+}
+
+/** Seed isian dari nilai standar master; jatuh ke default lama per-field bila std_* null.
+ *
+ * `durasi_per_kali` SENGAJA tidak di-prefill dari `std_durasi_per_kali` — kolom standar
+ * itu teks bebas (mis. "Bervariasi", "<2 jam"), bukan angka menit. Nilainya ditampilkan
+ * sebagai petunjuk di samping input; responden tetap mengisi angkanya sendiri.
+ */
+function rowDariStandar(t: TiTaskTerpilihRead): RowState {
   return {
     checked: false,
-    sumber_bukti: "Aktual",
-    kondisi: "Baseline",
-    frekuensi_teks: "Mingguan",
+    setuju_standar: true,
+    sumber_bukti: t.std_sumber_bukti ?? "Aktual",
+    kondisi: t.std_kondisi ?? "Baseline",
+    frekuensi_teks: t.std_frekuensi_teks ?? "Mingguan",
     durasi_per_kali: 60,
-    jam_per_minggu: 1,
-    peak4w_hours: 0,
-    ai_mode: "Human-led",
-    va_type: "VA-Core",
-    dcs_flag: false,
+    jam_per_minggu: t.std_jam_per_minggu ?? 1,
+    peak4w_hours: t.std_peak4w_hours ?? 0,
+    ai_mode: t.std_ai_mode ?? "Human-led",
+    va_type: t.std_va_type ?? "VA-Core",
+    dcs_flag: t.std_dcs_flag ?? false,
   };
 }
 
@@ -68,9 +94,10 @@ export function DetailForm({ respondenId, tasks, detailAwal, accessToken }: Prop
     Object.fromEntries(
       tasks.map((t) => {
         const existing = detailAwal.find((d) => d.task_kode === t.kode);
-        if (!existing) return [t.kode, defaultRow()];
+        if (!existing) return [t.kode, rowDariStandar(t)];
         const row: RowState = {
           checked: true,
+          setuju_standar: existing.setuju_standar,
           sumber_bukti: existing.sumber_bukti,
           kondisi: existing.kondisi,
           frekuensi_teks: existing.frekuensi_teks,
@@ -94,7 +121,17 @@ export function DetailForm({ respondenId, tasks, detailAwal, accessToken }: Prop
     setRows((prev) => ({ ...prev, [kode]: { ...prev[kode], ...patch } }));
   }
 
+  function toggleSetuju(t: TiTaskTerpilihRead, setuju: boolean) {
+    if (setuju) {
+      const std = rowDariStandar(t);
+      update(t.kode, { ...std, checked: true, setuju_standar: true });
+    } else {
+      update(t.kode, { setuju_standar: false });
+    }
+  }
+
   const checkedCount = Object.values(rows).filter((r) => r.checked).length;
+  const adaTaskBerstandar = tasks.some(punyaStandar);
 
   /** Kumpulkan entri detail yang ditandai & valid; null bila ada isian tidak valid. */
   function buildDetailPayload(): { detail: TiDetailItem[] } | null {
@@ -113,6 +150,7 @@ export function DetailForm({ respondenId, tasks, detailAwal, accessToken }: Prop
         ai_mode: r.ai_mode,
         va_type: r.va_type,
         dcs_flag: r.dcs_flag,
+        setuju_standar: r.setuju_standar,
       });
       if (!parsed.success) {
         setError(`Periksa isian pada task "${t.uraian_tugas}".`);
@@ -179,9 +217,9 @@ export function DetailForm({ respondenId, tasks, detailAwal, accessToken }: Prop
   }
 
   const selectCls =
-    "rounded-md border border-gray-300 px-2 py-1 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500";
+    "rounded-md border border-gray-300 px-2 py-1 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-500";
   const numCls =
-    "w-24 rounded-md border border-gray-300 px-2 py-1 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500";
+    "w-24 rounded-md border border-gray-300 px-2 py-1 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-500";
 
   return (
     <div className="space-y-5">
@@ -192,6 +230,13 @@ export function DetailForm({ respondenId, tasks, detailAwal, accessToken }: Prop
       )}
       {saveMessage && !error && (
         <div className="rounded-md bg-blue-50 p-4 text-sm text-blue-700">{saveMessage}</div>
+      )}
+
+      {adaTaskBerstandar && (
+        <p className="text-sm text-gray-600 dark:text-gray-400">
+          Sebagian tugas sudah terisi dengan nilai standar. Bila isian sudah sesuai dengan pekerjaan
+          Anda, biarkan tercentang. Bila tidak sesuai, hapus centang lalu ubah isiannya.
+        </p>
       )}
 
       <div className="flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50 px-4 py-3">
@@ -219,6 +264,8 @@ export function DetailForm({ respondenId, tasks, detailAwal, accessToken }: Prop
       <div className="space-y-4">
         {tasks.map((t) => {
           const r = rows[t.kode];
+          const berstandar = punyaStandar(t);
+          const terkunci = r.checked && berstandar && r.setuju_standar;
           return (
             <div key={t.kode} className="rounded-lg border border-gray-200 bg-white p-4">
               <label className="flex cursor-pointer items-start gap-3">
@@ -235,113 +282,143 @@ export function DetailForm({ respondenId, tasks, detailAwal, accessToken }: Prop
               </label>
 
               {r.checked && (
-                <div className="mt-4 grid gap-3 pl-7 sm:grid-cols-2 lg:grid-cols-3">
-                  <label className="text-xs text-gray-600">
-                    Sumber Bukti
-                    <select
-                      value={r.sumber_bukti}
-                      onChange={(e) =>
-                        update(t.kode, { sumber_bukti: e.target.value as RowState["sumber_bukti"] })
-                      }
-                      className={`mt-1 block w-full ${selectCls}`}
-                    >
-                      {SUMBER_BUKTI.map((v) => (
-                        <option key={v}>{v}</option>
-                      ))}
-                    </select>
-                  </label>
-                  <label className="text-xs text-gray-600">
-                    Kondisi
-                    <select
-                      value={r.kondisi}
-                      onChange={(e) =>
-                        update(t.kode, { kondisi: e.target.value as RowState["kondisi"] })
-                      }
-                      className={`mt-1 block w-full ${selectCls}`}
-                    >
-                      {KONDISI.map((v) => (
-                        <option key={v}>{v}</option>
-                      ))}
-                    </select>
-                  </label>
-                  <label className="text-xs text-gray-600">
-                    Frekuensi
-                    <input
-                      type="text"
-                      value={r.frekuensi_teks}
-                      onChange={(e) => update(t.kode, { frekuensi_teks: e.target.value })}
-                      className={`mt-1 block w-full ${selectCls}`}
-                    />
-                  </label>
-                  <label className="text-xs text-gray-600">
-                    Durasi/kali (menit)
-                    <input
-                      type="number"
-                      min={0}
-                      value={r.durasi_per_kali}
-                      onChange={(e) => update(t.kode, { durasi_per_kali: Number(e.target.value) })}
-                      className={`mt-1 block ${numCls}`}
-                    />
-                  </label>
-                  <label className="text-xs text-gray-600">
-                    Jam/minggu
-                    <input
-                      type="number"
-                      min={0}
-                      step="0.5"
-                      value={r.jam_per_minggu}
-                      onChange={(e) => update(t.kode, { jam_per_minggu: Number(e.target.value) })}
-                      className={`mt-1 block ${numCls}`}
-                    />
-                  </label>
-                  <label className="text-xs text-gray-600">
-                    Jam peak (4 minggu)
-                    <input
-                      type="number"
-                      min={0}
-                      step="0.5"
-                      value={r.peak4w_hours}
-                      onChange={(e) => update(t.kode, { peak4w_hours: Number(e.target.value) })}
-                      className={`mt-1 block ${numCls}`}
-                    />
-                  </label>
-                  <label className="text-xs text-gray-600">
-                    AI Mode
-                    <select
-                      value={r.ai_mode}
-                      onChange={(e) =>
-                        update(t.kode, { ai_mode: e.target.value as RowState["ai_mode"] })
-                      }
-                      className={`mt-1 block w-full ${selectCls}`}
-                    >
-                      {AI_MODE.map((v) => (
-                        <option key={v}>{v}</option>
-                      ))}
-                    </select>
-                  </label>
-                  <label className="text-xs text-gray-600">
-                    VA Type
-                    <select
-                      value={r.va_type}
-                      onChange={(e) =>
-                        update(t.kode, { va_type: e.target.value as RowState["va_type"] })
-                      }
-                      className={`mt-1 block w-full ${selectCls}`}
-                    >
-                      {VA_TYPE.map((v) => (
-                        <option key={v}>{v}</option>
-                      ))}
-                    </select>
-                  </label>
-                  <label className="flex items-center gap-2 self-end text-xs text-gray-600">
-                    <input
-                      type="checkbox"
-                      checked={r.dcs_flag}
-                      onChange={(e) => update(t.kode, { dcs_flag: e.target.checked })}
-                      className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                    />
-                    Ada risiko DCS
-                  </label>
+                <div className="mt-4 pl-7">
+                  {berstandar && (
+                    <label className="mb-3 flex items-center gap-2 text-xs font-medium text-gray-700">
+                      <input
+                        type="checkbox"
+                        checked={r.setuju_standar}
+                        onChange={(e) => toggleSetuju(t, e.target.checked)}
+                        className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                      />
+                      Setuju dengan isian standar
+                    </label>
+                  )}
+                  <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                    <label className="text-xs text-gray-600">
+                      Sumber Bukti
+                      <select
+                        value={r.sumber_bukti}
+                        disabled={terkunci}
+                        onChange={(e) =>
+                          update(t.kode, {
+                            sumber_bukti: e.target.value as RowState["sumber_bukti"],
+                          })
+                        }
+                        className={`mt-1 block w-full ${selectCls}`}
+                      >
+                        {SUMBER_BUKTI.map((v) => (
+                          <option key={v}>{v}</option>
+                        ))}
+                      </select>
+                    </label>
+                    <label className="text-xs text-gray-600">
+                      Kondisi
+                      <select
+                        value={r.kondisi}
+                        disabled={terkunci}
+                        onChange={(e) =>
+                          update(t.kode, { kondisi: e.target.value as RowState["kondisi"] })
+                        }
+                        className={`mt-1 block w-full ${selectCls}`}
+                      >
+                        {KONDISI.map((v) => (
+                          <option key={v}>{v}</option>
+                        ))}
+                      </select>
+                    </label>
+                    <label className="text-xs text-gray-600">
+                      Frekuensi
+                      <input
+                        type="text"
+                        value={r.frekuensi_teks}
+                        disabled={terkunci}
+                        onChange={(e) => update(t.kode, { frekuensi_teks: e.target.value })}
+                        className={`mt-1 block w-full ${selectCls}`}
+                      />
+                    </label>
+                    <label className="text-xs text-gray-600">
+                      Durasi/kali (menit)
+                      {t.std_durasi_per_kali && (
+                        <span className="ml-1 font-normal text-gray-400">
+                          (petunjuk standar: {t.std_durasi_per_kali})
+                        </span>
+                      )}
+                      <input
+                        type="number"
+                        min={0}
+                        value={r.durasi_per_kali}
+                        onChange={(e) =>
+                          update(t.kode, { durasi_per_kali: Number(e.target.value) })
+                        }
+                        className={`mt-1 block ${numCls}`}
+                      />
+                    </label>
+                    <label className="text-xs text-gray-600">
+                      Jam/minggu
+                      <input
+                        type="number"
+                        min={0}
+                        step="0.5"
+                        value={r.jam_per_minggu}
+                        disabled={terkunci}
+                        onChange={(e) => update(t.kode, { jam_per_minggu: Number(e.target.value) })}
+                        className={`mt-1 block ${numCls}`}
+                      />
+                    </label>
+                    <label className="text-xs text-gray-600">
+                      Jam peak (4 minggu)
+                      <input
+                        type="number"
+                        min={0}
+                        step="0.5"
+                        value={r.peak4w_hours}
+                        disabled={terkunci}
+                        onChange={(e) => update(t.kode, { peak4w_hours: Number(e.target.value) })}
+                        className={`mt-1 block ${numCls}`}
+                      />
+                    </label>
+                    <label className="text-xs text-gray-600">
+                      AI Mode
+                      <select
+                        value={r.ai_mode}
+                        disabled={terkunci}
+                        onChange={(e) =>
+                          update(t.kode, { ai_mode: e.target.value as RowState["ai_mode"] })
+                        }
+                        className={`mt-1 block w-full ${selectCls}`}
+                      >
+                        {AI_MODE.map((v) => (
+                          <option key={v}>{v}</option>
+                        ))}
+                      </select>
+                    </label>
+                    <label className="text-xs text-gray-600">
+                      VA Type
+                      <select
+                        value={r.va_type}
+                        disabled={terkunci}
+                        onChange={(e) =>
+                          update(t.kode, { va_type: e.target.value as RowState["va_type"] })
+                        }
+                        className={`mt-1 block w-full ${selectCls}`}
+                      >
+                        {VA_TYPE.map((v) => (
+                          <option key={v}>{v}</option>
+                        ))}
+                      </select>
+                    </label>
+                    <label className="flex items-center gap-2 self-end text-xs text-gray-600">
+                      <input
+                        type="checkbox"
+                        checked={r.dcs_flag}
+                        disabled={terkunci}
+                        onChange={(e) => update(t.kode, { dcs_flag: e.target.checked })}
+                        className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 disabled:opacity-60"
+                      />
+                      Ada risiko DCS
+                    </label>
+                  </div>
                 </div>
               )}
             </div>

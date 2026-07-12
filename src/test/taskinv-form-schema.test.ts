@@ -85,4 +85,20 @@ describe("TiDetailItemSchema", () => {
       expect(result.data.dcs_flag).toBe(false);
     }
   });
+
+  it("menerapkan default setuju_standar = true bila tidak dikirim", () => {
+    const result = detailItemSchema.safeParse(VALID_DETAIL);
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.setuju_standar).toBe(true);
+    }
+  });
+
+  it("menerima setuju_standar eksplisit false", () => {
+    const result = detailItemSchema.safeParse({ ...VALID_DETAIL, setuju_standar: false });
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.setuju_standar).toBe(false);
+    }
+  });
 });

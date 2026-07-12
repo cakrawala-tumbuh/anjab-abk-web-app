@@ -4351,6 +4351,24 @@ export interface components {
              * @example 1
              */
             urutan: number;
+            /** Std Sumber Bukti */
+            std_sumber_bukti?: ("Formal" | "Aktual" | "Keduanya") | null;
+            /** Std Kondisi */
+            std_kondisi?: ("Baseline" | "Peak" | "Both") | null;
+            /** Std Frekuensi Teks */
+            std_frekuensi_teks?: string | null;
+            /** Std Durasi Per Kali */
+            std_durasi_per_kali?: string | null;
+            /** Std Jam Per Minggu */
+            std_jam_per_minggu?: number | null;
+            /** Std Peak4W Hours */
+            std_peak4w_hours?: number | null;
+            /** Std Ai Mode */
+            std_ai_mode?: ("Human-led" | "Co-Pilot" | "AI-assisted") | null;
+            /** Std Va Type */
+            std_va_type?: ("VA-Core" | "VA-Enable" | "NVA-Residual" | "Context-Dependent" | "Needs Validation") | null;
+            /** Std Dcs Flag */
+            std_dcs_flag?: boolean | null;
         };
         /**
          * TiDetailItem
@@ -4406,13 +4424,19 @@ export interface components {
              * @description VA-Core/VA-Enable/NVA-Residual.
              * @enum {string}
              */
-            va_type: "VA-Core" | "VA-Enable" | "NVA-Residual";
+            va_type: "VA-Core" | "VA-Enable" | "NVA-Residual" | "Context-Dependent" | "Needs Validation";
             /**
              * Dcs Flag
              * @description True bila ada risiko DCS.
              * @default false
              */
             dcs_flag: boolean;
+            /**
+             * Setuju Standar
+             * @description True bila partisipan menerima nilai standar master apa adanya.
+             * @default true
+             */
+            setuju_standar: boolean;
             /**
              * Catatan
              * @description Catatan ambiguitas.
@@ -4472,9 +4496,11 @@ export interface components {
              * Va Type
              * @enum {string}
              */
-            va_type: "VA-Core" | "VA-Enable" | "NVA-Residual";
+            va_type: "VA-Core" | "VA-Enable" | "NVA-Residual" | "Context-Dependent" | "Needs Validation";
             /** Dcs Flag */
             dcs_flag: boolean;
+            /** Setuju Standar */
+            setuju_standar: boolean;
             /** Catatan */
             catatan?: string | null;
         };
@@ -4623,6 +4649,16 @@ export interface components {
              * @description Jumlah responden yang menandai risiko DCS.
              */
             dcs_flag_count: number;
+            /**
+             * N Setuju Standar
+             * @description Jumlah responden yang menerima nilai standar.
+             */
+            n_setuju_standar: number;
+            /**
+             * N Ubah Standar
+             * @description Jumlah responden yang mengubah dari nilai standar.
+             */
+            n_ubah_standar: number;
         };
         /**
          * TiKombinasiRead
@@ -5094,6 +5130,24 @@ export interface components {
              * @description Persentase partisipan (terhadap submit Tahap 1).
              */
             pct_relevan: number;
+            /** Std Sumber Bukti */
+            std_sumber_bukti?: ("Formal" | "Aktual" | "Keduanya") | null;
+            /** Std Kondisi */
+            std_kondisi?: ("Baseline" | "Peak" | "Both") | null;
+            /** Std Frekuensi Teks */
+            std_frekuensi_teks?: string | null;
+            /** Std Durasi Per Kali */
+            std_durasi_per_kali?: string | null;
+            /** Std Jam Per Minggu */
+            std_jam_per_minggu?: number | null;
+            /** Std Peak4W Hours */
+            std_peak4w_hours?: number | null;
+            /** Std Ai Mode */
+            std_ai_mode?: ("Human-led" | "Co-Pilot" | "AI-assisted") | null;
+            /** Std Va Type */
+            std_va_type?: ("VA-Core" | "VA-Enable" | "NVA-Residual" | "Context-Dependent" | "Needs Validation") | null;
+            /** Std Dcs Flag */
+            std_dcs_flag?: boolean | null;
         };
         /**
          * TsKuesionerItemRead
@@ -5526,6 +5580,51 @@ export interface components {
              * @example tp_a1b2c3d4
              */
             tugas_pokok_id: string;
+            /**
+             * Std Sumber Bukti
+             * @description Nilai standar sumber bukti (prefill Tahap 3).
+             */
+            std_sumber_bukti?: ("Formal" | "Aktual" | "Keduanya") | null;
+            /**
+             * Std Kondisi
+             * @description Nilai standar kondisi.
+             */
+            std_kondisi?: ("Baseline" | "Peak" | "Both") | null;
+            /**
+             * Std Frekuensi Teks
+             * @description Nilai standar frekuensi.
+             */
+            std_frekuensi_teks?: string | null;
+            /**
+             * Std Durasi Per Kali
+             * @description Nilai standar durasi per pelaksanaan (teks bebas).
+             */
+            std_durasi_per_kali?: string | null;
+            /**
+             * Std Jam Per Minggu
+             * @description Nilai standar jam per minggu.
+             */
+            std_jam_per_minggu?: number | null;
+            /**
+             * Std Peak4W Hours
+             * @description Nilai standar jam pada 4 minggu peak.
+             */
+            std_peak4w_hours?: number | null;
+            /**
+             * Std Ai Mode
+             * @description Nilai standar AI mode.
+             */
+            std_ai_mode?: ("Human-led" | "Co-Pilot" | "AI-assisted") | null;
+            /**
+             * Std Va Type
+             * @description Nilai standar VA type.
+             */
+            std_va_type?: ("VA-Core" | "VA-Enable" | "NVA-Residual" | "Context-Dependent" | "Needs Validation") | null;
+            /**
+             * Std Dcs Flag
+             * @description Nilai standar flag risiko DCS.
+             */
+            std_dcs_flag?: boolean | null;
         };
         /**
          * UraianTugasRead
@@ -5581,6 +5680,51 @@ export interface components {
              */
             tugas_pokok_id: string;
             /**
+             * Std Sumber Bukti
+             * @description Nilai standar sumber bukti (prefill Tahap 3).
+             */
+            std_sumber_bukti?: ("Formal" | "Aktual" | "Keduanya") | null;
+            /**
+             * Std Kondisi
+             * @description Nilai standar kondisi.
+             */
+            std_kondisi?: ("Baseline" | "Peak" | "Both") | null;
+            /**
+             * Std Frekuensi Teks
+             * @description Nilai standar frekuensi.
+             */
+            std_frekuensi_teks?: string | null;
+            /**
+             * Std Durasi Per Kali
+             * @description Nilai standar durasi per pelaksanaan (teks bebas).
+             */
+            std_durasi_per_kali?: string | null;
+            /**
+             * Std Jam Per Minggu
+             * @description Nilai standar jam per minggu.
+             */
+            std_jam_per_minggu?: number | null;
+            /**
+             * Std Peak4W Hours
+             * @description Nilai standar jam pada 4 minggu peak.
+             */
+            std_peak4w_hours?: number | null;
+            /**
+             * Std Ai Mode
+             * @description Nilai standar AI mode.
+             */
+            std_ai_mode?: ("Human-led" | "Co-Pilot" | "AI-assisted") | null;
+            /**
+             * Std Va Type
+             * @description Nilai standar VA type.
+             */
+            std_va_type?: ("VA-Core" | "VA-Enable" | "NVA-Residual" | "Context-Dependent" | "Needs Validation") | null;
+            /**
+             * Std Dcs Flag
+             * @description Nilai standar flag risiko DCS.
+             */
+            std_dcs_flag?: boolean | null;
+            /**
              * Created At
              * Format: date-time
              * @description Waktu pembuatan (UTC, ISO-8601).
@@ -5627,6 +5771,51 @@ export interface components {
              * @description ID tugas pokok induk baru.
              */
             tugas_pokok_id?: string | null;
+            /**
+             * Std Sumber Bukti
+             * @description Nilai standar sumber bukti (prefill Tahap 3).
+             */
+            std_sumber_bukti?: ("Formal" | "Aktual" | "Keduanya") | null;
+            /**
+             * Std Kondisi
+             * @description Nilai standar kondisi.
+             */
+            std_kondisi?: ("Baseline" | "Peak" | "Both") | null;
+            /**
+             * Std Frekuensi Teks
+             * @description Nilai standar frekuensi.
+             */
+            std_frekuensi_teks?: string | null;
+            /**
+             * Std Durasi Per Kali
+             * @description Nilai standar durasi per pelaksanaan (teks bebas).
+             */
+            std_durasi_per_kali?: string | null;
+            /**
+             * Std Jam Per Minggu
+             * @description Nilai standar jam per minggu.
+             */
+            std_jam_per_minggu?: number | null;
+            /**
+             * Std Peak4W Hours
+             * @description Nilai standar jam pada 4 minggu peak.
+             */
+            std_peak4w_hours?: number | null;
+            /**
+             * Std Ai Mode
+             * @description Nilai standar AI mode.
+             */
+            std_ai_mode?: ("Human-led" | "Co-Pilot" | "AI-assisted") | null;
+            /**
+             * Std Va Type
+             * @description Nilai standar VA type.
+             */
+            std_va_type?: ("VA-Core" | "VA-Enable" | "NVA-Residual" | "Context-Dependent" | "Needs Validation") | null;
+            /**
+             * Std Dcs Flag
+             * @description Nilai standar flag risiko DCS.
+             */
+            std_dcs_flag?: boolean | null;
         };
         /** ValidationError */
         ValidationError: {
@@ -15074,6 +15263,7 @@ export interface operations {
         };
     };
 }
+
 export type JabatanRead = components["schemas"]["JabatanRead"];
 export type JenjangPendidikanRead = components["schemas"]["JenjangPendidikanRead"];
 export type MataPelajaranRead = components["schemas"]["MataPelajaranRead"];

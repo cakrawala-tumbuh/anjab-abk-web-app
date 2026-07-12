@@ -12,7 +12,7 @@
       "name": "MIT",
       "identifier": "MIT"
     },
-    "version": "0.21.2"
+    "version": "0.26.0"
   },
   "paths": {
     "/api/v1/health": {
@@ -16859,6 +16859,127 @@
             "examples": [
               1
             ]
+          },
+          "std_sumber_bukti": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "Formal",
+                  "Aktual",
+                  "Keduanya"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Std Sumber Bukti"
+          },
+          "std_kondisi": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "Baseline",
+                  "Peak",
+                  "Both"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Std Kondisi"
+          },
+          "std_frekuensi_teks": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Std Frekuensi Teks"
+          },
+          "std_durasi_per_kali": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Std Durasi Per Kali"
+          },
+          "std_jam_per_minggu": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Std Jam Per Minggu"
+          },
+          "std_peak4w_hours": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Std Peak4W Hours"
+          },
+          "std_ai_mode": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "Human-led",
+                  "Co-Pilot",
+                  "AI-assisted"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Std Ai Mode"
+          },
+          "std_va_type": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "VA-Core",
+                  "VA-Enable",
+                  "NVA-Residual",
+                  "Context-Dependent",
+                  "Needs Validation"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Std Va Type"
+          },
+          "std_dcs_flag": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Std Dcs Flag"
           }
         },
         "type": "object",
@@ -16942,7 +17063,9 @@
             "enum": [
               "VA-Core",
               "VA-Enable",
-              "NVA-Residual"
+              "NVA-Residual",
+              "Context-Dependent",
+              "Needs Validation"
             ],
             "title": "Va Type",
             "description": "VA-Core/VA-Enable/NVA-Residual."
@@ -16952,6 +17075,12 @@
             "title": "Dcs Flag",
             "description": "True bila ada risiko DCS.",
             "default": false
+          },
+          "setuju_standar": {
+            "type": "boolean",
+            "title": "Setuju Standar",
+            "description": "True bila partisipan menerima nilai standar master apa adanya.",
+            "default": true
           },
           "catatan": {
             "anyOf": [
@@ -17055,13 +17184,19 @@
             "enum": [
               "VA-Core",
               "VA-Enable",
-              "NVA-Residual"
+              "NVA-Residual",
+              "Context-Dependent",
+              "Needs Validation"
             ],
             "title": "Va Type"
           },
           "dcs_flag": {
             "type": "boolean",
             "title": "Dcs Flag"
+          },
+          "setuju_standar": {
+            "type": "boolean",
+            "title": "Setuju Standar"
           },
           "catatan": {
             "anyOf": [
@@ -17089,7 +17224,8 @@
           "peak4w_hours",
           "ai_mode",
           "va_type",
-          "dcs_flag"
+          "dcs_flag",
+          "setuju_standar"
         ],
         "title": "TiDetailRead",
         "description": "Representasi satu entri detail Tahap 2."
@@ -17253,6 +17389,16 @@
             "type": "integer",
             "title": "Dcs Flag Count",
             "description": "Jumlah responden yang menandai risiko DCS."
+          },
+          "n_setuju_standar": {
+            "type": "integer",
+            "title": "N Setuju Standar",
+            "description": "Jumlah responden yang menerima nilai standar."
+          },
+          "n_ubah_standar": {
+            "type": "integer",
+            "title": "N Ubah Standar",
+            "description": "Jumlah responden yang mengubah dari nilai standar."
           }
         },
         "type": "object",
@@ -17270,7 +17416,9 @@
           "peak4w_hours_mean",
           "ai_mode_dist",
           "va_type_dist",
-          "dcs_flag_count"
+          "dcs_flag_count",
+          "n_setuju_standar",
+          "n_ubah_standar"
         ],
         "title": "TiHasilTaskRead",
         "description": "Hasil agregasi satu task lintas responden (masukan ABK)."
@@ -18083,6 +18231,127 @@
             "type": "number",
             "title": "Pct Relevan",
             "description": "Persentase partisipan (terhadap submit Tahap 1)."
+          },
+          "std_sumber_bukti": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "Formal",
+                  "Aktual",
+                  "Keduanya"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Std Sumber Bukti"
+          },
+          "std_kondisi": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "Baseline",
+                  "Peak",
+                  "Both"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Std Kondisi"
+          },
+          "std_frekuensi_teks": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Std Frekuensi Teks"
+          },
+          "std_durasi_per_kali": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Std Durasi Per Kali"
+          },
+          "std_jam_per_minggu": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Std Jam Per Minggu"
+          },
+          "std_peak4w_hours": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Std Peak4W Hours"
+          },
+          "std_ai_mode": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "Human-led",
+                  "Co-Pilot",
+                  "AI-assisted"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Std Ai Mode"
+          },
+          "std_va_type": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "VA-Core",
+                  "VA-Enable",
+                  "NVA-Residual",
+                  "Context-Dependent",
+                  "Needs Validation"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Std Va Type"
+          },
+          "std_dcs_flag": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Std Dcs Flag"
           }
         },
         "type": "object",
@@ -18832,6 +19101,140 @@
             "examples": [
               "tp_a1b2c3d4"
             ]
+          },
+          "std_sumber_bukti": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "Formal",
+                  "Aktual",
+                  "Keduanya"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Std Sumber Bukti",
+            "description": "Nilai standar sumber bukti (prefill Tahap 3)."
+          },
+          "std_kondisi": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "Baseline",
+                  "Peak",
+                  "Both"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Std Kondisi",
+            "description": "Nilai standar kondisi."
+          },
+          "std_frekuensi_teks": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 100
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Std Frekuensi Teks",
+            "description": "Nilai standar frekuensi."
+          },
+          "std_durasi_per_kali": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 100
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Std Durasi Per Kali",
+            "description": "Nilai standar durasi per pelaksanaan (teks bebas)."
+          },
+          "std_jam_per_minggu": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Std Jam Per Minggu",
+            "description": "Nilai standar jam per minggu."
+          },
+          "std_peak4w_hours": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Std Peak4W Hours",
+            "description": "Nilai standar jam pada 4 minggu peak."
+          },
+          "std_ai_mode": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "Human-led",
+                  "Co-Pilot",
+                  "AI-assisted"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Std Ai Mode",
+            "description": "Nilai standar AI mode."
+          },
+          "std_va_type": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "VA-Core",
+                  "VA-Enable",
+                  "NVA-Residual",
+                  "Context-Dependent",
+                  "Needs Validation"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Std Va Type",
+            "description": "Nilai standar VA type."
+          },
+          "std_dcs_flag": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Std Dcs Flag",
+            "description": "Nilai standar flag risiko DCS."
           }
         },
         "additionalProperties": false,
@@ -18919,6 +19322,140 @@
             "examples": [
               "tp_a1b2c3d4"
             ]
+          },
+          "std_sumber_bukti": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "Formal",
+                  "Aktual",
+                  "Keduanya"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Std Sumber Bukti",
+            "description": "Nilai standar sumber bukti (prefill Tahap 3)."
+          },
+          "std_kondisi": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "Baseline",
+                  "Peak",
+                  "Both"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Std Kondisi",
+            "description": "Nilai standar kondisi."
+          },
+          "std_frekuensi_teks": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 100
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Std Frekuensi Teks",
+            "description": "Nilai standar frekuensi."
+          },
+          "std_durasi_per_kali": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 100
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Std Durasi Per Kali",
+            "description": "Nilai standar durasi per pelaksanaan (teks bebas)."
+          },
+          "std_jam_per_minggu": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Std Jam Per Minggu",
+            "description": "Nilai standar jam per minggu."
+          },
+          "std_peak4w_hours": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Std Peak4W Hours",
+            "description": "Nilai standar jam pada 4 minggu peak."
+          },
+          "std_ai_mode": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "Human-led",
+                  "Co-Pilot",
+                  "AI-assisted"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Std Ai Mode",
+            "description": "Nilai standar AI mode."
+          },
+          "std_va_type": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "VA-Core",
+                  "VA-Enable",
+                  "NVA-Residual",
+                  "Context-Dependent",
+                  "Needs Validation"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Std Va Type",
+            "description": "Nilai standar VA type."
+          },
+          "std_dcs_flag": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Std Dcs Flag",
+            "description": "Nilai standar flag risiko DCS."
           },
           "created_at": {
             "type": "string",
@@ -19034,6 +19571,140 @@
             ],
             "title": "Tugas Pokok Id",
             "description": "ID tugas pokok induk baru."
+          },
+          "std_sumber_bukti": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "Formal",
+                  "Aktual",
+                  "Keduanya"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Std Sumber Bukti",
+            "description": "Nilai standar sumber bukti (prefill Tahap 3)."
+          },
+          "std_kondisi": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "Baseline",
+                  "Peak",
+                  "Both"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Std Kondisi",
+            "description": "Nilai standar kondisi."
+          },
+          "std_frekuensi_teks": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 100
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Std Frekuensi Teks",
+            "description": "Nilai standar frekuensi."
+          },
+          "std_durasi_per_kali": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 100
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Std Durasi Per Kali",
+            "description": "Nilai standar durasi per pelaksanaan (teks bebas)."
+          },
+          "std_jam_per_minggu": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Std Jam Per Minggu",
+            "description": "Nilai standar jam per minggu."
+          },
+          "std_peak4w_hours": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Std Peak4W Hours",
+            "description": "Nilai standar jam pada 4 minggu peak."
+          },
+          "std_ai_mode": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "Human-led",
+                  "Co-Pilot",
+                  "AI-assisted"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Std Ai Mode",
+            "description": "Nilai standar AI mode."
+          },
+          "std_va_type": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "VA-Core",
+                  "VA-Enable",
+                  "NVA-Residual",
+                  "Context-Dependent",
+                  "Needs Validation"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Std Va Type",
+            "description": "Nilai standar VA type."
+          },
+          "std_dcs_flag": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Std Dcs Flag",
+            "description": "Nilai standar flag risiko DCS."
           }
         },
         "additionalProperties": false,
