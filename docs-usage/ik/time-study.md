@@ -36,11 +36,11 @@ yang ada (lihat bagian B) — bukan membuat penugasan baru.
 
 Dari detail penugasan (`/time-study/{id}`):
 
-| Status   | Tombol                      | Hasil                                                     |
-| -------- | --------------------------- | ---------------------------------------------------------- |
-| Aktif    | **Nonaktifkan Penugasan**   | → Nonaktif (log baru tidak dapat ditambah/diubah)         |
-| Nonaktif | **Aktifkan Kembali**        | → Aktif kembali                                            |
-| —        | **Hapus Penugasan**         | Menghapus penugasan (konfirmasi: riwayat log harian tidak lagi bisa diakses lewat penugasan ini) |
+| Status   | Tombol                    | Hasil                                                                                            |
+| -------- | ------------------------- | ------------------------------------------------------------------------------------------------ |
+| Aktif    | **Nonaktifkan Penugasan** | → Nonaktif (log baru tidak dapat ditambah/diubah)                                                |
+| Nonaktif | **Aktifkan Kembali**      | → Aktif kembali                                                                                  |
+| —        | **Hapus Penugasan**       | Menghapus penugasan (konfirmasi: riwayat log harian tidak lagi bisa diakses lewat penugasan ini) |
 
 Halaman ini juga menampilkan statistik **Log Harian Terisi** (jumlah log) dan tanggal
 **Ditugaskan**.

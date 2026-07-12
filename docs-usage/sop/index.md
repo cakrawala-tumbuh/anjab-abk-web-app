@@ -13,13 +13,13 @@ dan (untuk TI/OPM) pembuatan sesi/analisis. DCS, WCP, dan Time Study tidak memil
 langkah pembuatan sesi: DCS/WCP karena instrumennya tunggal (singleton, tersedia sejak
 awal), Time Study karena partisipan langsung ditugaskan (1 partisipan = 1 penugasan).
 
-| SOP                                                     | Alat Ukur | Ringkas                                                             |
-| ------------------------------------------------------- | --------- | ------------------------------------------------------------------- |
-| [Persiapan Task Inventory](persiapan-task-inventory.md) | TI        | Catalog tugas per jabatan, panel SME, koordinator, analisis 3 tahap |
-| [Persiapan Time Study](persiapan-time-study.md)         | TS        | Partisipan, penugasan langsung (tanpa sesi, tanpa tahap analisis)    |
+| SOP                                                     | Alat Ukur | Ringkas                                                                                |
+| ------------------------------------------------------- | --------- | -------------------------------------------------------------------------------------- |
+| [Persiapan Task Inventory](persiapan-task-inventory.md) | TI        | Catalog tugas per jabatan, panel SME, koordinator, analisis 3 tahap                    |
+| [Persiapan Time Study](persiapan-time-study.md)         | TS        | Partisipan, penugasan langsung (tanpa sesi, tanpa tahap analisis)                      |
 | [Persiapan DCS](persiapan-dcs.md)                       | DCS       | Instrumen 3 sub-skala, partisipan, penugasan responden (instrumen tunggal, tanpa sesi) |
 | [Persiapan WCP](persiapan-wcp.md)                       | WCP       | Instrumen 12 dimensi, partisipan, penugasan responden (instrumen tunggal, tanpa sesi)  |
-| [Persiapan OPM](persiapan-opm.md)                       | OPM       | Jabatan ber-SME panel, Task Inventory dibekukan, analisis rating    |
+| [Persiapan OPM](persiapan-opm.md)                       | OPM       | Jabatan ber-SME panel, Task Inventory dibekukan, analisis rating                       |
 
 ## 2. SOP Pelaksanaan Pengambilan Data (per Alat Ukur)
 

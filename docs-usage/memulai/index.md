@@ -8,10 +8,10 @@ Halaman ini membantu Anda mengenali aplikasi sebelum menjalankan SOP dan IK.
 
 Aplikasi membedakan dua peran berdasarkan grup akun:
 
-| Peran             | Yang dapat dilakukan                                                                                          |
-| ----------------- | ------------------------------------------------------------------------------------------------------------- |
+| Peran             | Yang dapat dilakukan                                                                                                                                                                                                                                      |
+| ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Administrator** | Mengelola master data, partisipan, panel SME, mengelola sesi/instrumen/penugasan tiap alat ukur (DCS/WCP sudah tersedia sejak awal; TI/OPM dibuat sebagai sesi/analisis; Time Study ditugaskan langsung per partisipan tanpa sesi), menjalankan analisis. |
-| **Partisipan**    | Mengisi alat ukur (kuesioner / seleksi / log) yang ditugaskan kepadanya melalui menu **Kuesioner Saya**.      |
+| **Partisipan**    | Mengisi alat ukur (kuesioner / seleksi / log) yang ditugaskan kepadanya melalui menu **Kuesioner Saya**.                                                                                                                                                  |
 
 !!! note "Peran ditentukan oleh administrator identitas"
 Jika akun Anda belum tergabung ke grup manapun, dashboard menampilkan pesan

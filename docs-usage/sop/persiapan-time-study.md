@@ -37,8 +37,8 @@ Enam kategori distribusi waktu per hari:
 
 ## Prasyarat
 
-| No  | Prasyarat                                                                          | IK terkait                               |
-| --- | ------------------------------------------------------------------------------------ | ------------------------------------------ |
+| No  | Prasyarat                                                                                       | IK terkait                              |
+| --- | ----------------------------------------------------------------------------------------------- | --------------------------------------- |
 | 1   | **Partisipan** (pegawai yang akan mencatat log) sudah terdaftar dengan jabatan utama yang benar | [IK-03 Partisipan](../ik/partisipan.md) |
 
 ---
@@ -57,10 +57,10 @@ Tugaskan tiap partisipan langsung dari halaman **Time Study** — tidak perlu me
 atau membuka sesi terlebih dahulu; penugasan langsung berstatus **Aktif** (langkah:
 [IK-05 Time Study bagian A](../ik/time-study.md#a-menugaskan-partisipan)):
 
-| Parameter       | Pedoman pengisian                                          |
-| ---------------- | ------------------------------------------------------------ |
-| **Partisipan**  | Wajib. Jabatan ditampilkan otomatis dari data partisipan.   |
-| **Catatan**     | Opsional — instruksi/rentang pencatatan.                     |
+| Parameter      | Pedoman pengisian                                         |
+| -------------- | --------------------------------------------------------- |
+| **Partisipan** | Wajib. Jabatan ditampilkan otomatis dari data partisipan. |
+| **Catatan**    | Opsional — instruksi/rentang pencatatan.                  |
 
 !!! success "Selesai persiapan"
 Setelah seluruh partisipan target ditugaskan, lanjut ke
