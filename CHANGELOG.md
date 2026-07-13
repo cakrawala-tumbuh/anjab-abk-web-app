@@ -7,6 +7,8 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [4.0.2] - 2026-07-13
+
 ### Diperbaiki
 
 - **Editor item DCS & WCP tidak mereload data setelah simpan** (backlog 016).
