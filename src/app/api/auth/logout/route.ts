@@ -6,7 +6,7 @@ import { config } from "@/lib/config";
 export const dynamic = "force-dynamic";
 
 /**
- * GET /api/auth/logout
+ * POST /api/auth/logout
  *
  * Melakukan RP-initiated logout ke Authentik:
  * 1. Membaca sesi untuk mendapatkan id_token_hint
@@ -14,9 +14,14 @@ export const dynamic = "force-dynamic";
  * 3. Redirect ke end-session endpoint Authentik dengan post_logout_redirect_uri
  *
  * Auth.js v5 beta tidak mendukung external redirectTo dari server action,
- * sehingga logout OIDC ditangani via route handler ini.
+ * sehingga logout OIDC ditangani via route handler kustom ini (bukan
+ * `signOut()` Auth.js) — dipicu lewat `<form method="post">` di `top-bar.tsx`,
+ * BUKAN `GET`. Efek samping route ini destruktif (menghapus cookie sesi +
+ * meng-invalidate sesi Authentik), jadi tidak boleh bisa dipicu navigasi pasif
+ * seperti prefetch `<Link>`, crawler, atau bookmark — itulah kenapa hanya
+ * `POST` yang diterima (lihat entri CHANGELOG terkait investigasi ini).
  */
-export async function GET() {
+export async function POST() {
   const session = await auth();
   const idToken = session?.idToken;
   const issuer = config.auth.issuer;

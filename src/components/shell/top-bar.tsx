@@ -34,15 +34,20 @@ export function TopBar({
           </span>
         )}
         <ThemeToggle />
-        {/* Logout via route handler — Auth.js v5 beta tidak mendukung external
-            redirectTo dari server action, sehingga dipakai GET ke /api/auth/logout
-            yang menangani RP-initiated logout ke Authentik. */}
-        <Link
-          href="/api/auth/logout"
-          className="text-sm text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
-        >
-          Keluar
-        </Link>
+        {/* Logout via route handler POST — Auth.js v5 beta tidak mendukung external
+            redirectTo dari server action, sehingga RP-initiated logout ke Authentik
+            ditangani route handler kustom di /api/auth/logout. Dipicu lewat FORM POST
+            (bukan <Link> GET) karena handler ini punya efek samping destruktif
+            (hapus cookie sesi + invalidate sesi Authentik) yang tidak boleh bisa
+            terpicu navigasi pasif seperti prefetch Next.js. */}
+        <form action="/api/auth/logout" method="post">
+          <button
+            type="submit"
+            className="text-sm text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
+          >
+            Keluar
+          </button>
+        </form>
       </div>
     </header>
   );

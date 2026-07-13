@@ -25,20 +25,23 @@ test.describe("Alur Login OIDC (Authentik)", () => {
 });
 
 test.describe("Alur Logout (Keluar)", () => {
-  test("tautan Keluar ada di navigasi setelah login", async ({ page }) => {
+  test("tombol Keluar ada di navigasi setelah login", async ({ page }) => {
     await loginViaAuthentik(page, "admin-e2e", "AdminE2e123!");
-    await expect(page.getByRole("link", { name: "Keluar" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Keluar" })).toBeVisible();
   });
 
   test("klik Keluar mengarahkan ke Authentik end-session endpoint", async ({ page }) => {
     await loginViaAuthentik(page, "admin-e2e", "AdminE2e123!");
 
-    // Intercept respons dari route handler logout sebelum browser mengikuti redirect
-    const responsePromise = page.waitForResponse((r) => r.url().includes("/api/auth/logout"), {
-      timeout: 10_000,
-    });
+    // Intercept respons dari route handler logout sebelum browser mengikuti redirect.
+    // Keluar kini dipicu form POST (bukan <Link> GET) — lihat CHANGELOG "logout
+    // rentan prefetch pasif" — jadi filter juga memastikan method-nya POST.
+    const responsePromise = page.waitForResponse(
+      (r) => r.url().includes("/api/auth/logout") && r.request().method() === "POST",
+      { timeout: 10_000 },
+    );
 
-    await page.getByRole("link", { name: "Keluar" }).click();
+    await page.getByRole("button", { name: "Keluar" }).click();
     const response = await responsePromise;
 
     // Route handler harus merespons dengan redirect (3xx)
@@ -48,5 +51,20 @@ test.describe("Alur Logout (Keluar)", () => {
     const location = response.headers()["location"] ?? "";
     expect(location).toContain(":9300");
     expect(location).toContain("end-session");
+  });
+
+  test("navigasi pasif (prefetch) tidak memicu GET ke /api/auth/logout", async ({ page }) => {
+    const getLogoutRequests: string[] = [];
+    page.on("request", (req) => {
+      if (req.url().includes("/api/auth/logout") && req.method() === "GET") {
+        getLogoutRequests.push(req.url());
+      }
+    });
+
+    await loginViaAuthentik(page, "admin-e2e", "AdminE2e123!");
+    // Beri waktu Next.js melakukan prefetch link yang ada di viewport.
+    await page.waitForTimeout(2_000);
+
+    expect(getLogoutRequests).toHaveLength(0);
   });
 });

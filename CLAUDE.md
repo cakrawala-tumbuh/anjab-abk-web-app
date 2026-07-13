@@ -50,6 +50,51 @@ src/
 
 ## Revisi Desain
 
+### [2026-07-13] Logout: dari `<Link>` GET menjadi `<form method="post">` — GET punya efek samping
+
+Temuan simulasi end-to-end deployment YPII: `matcher` middleware tidak mengecualikan
+aset publik PWA (manifest/sw.js/ikon), dan `<Link href="/api/auth/logout">` di top bar
+di-prefetch Next.js secara pasif setiap page load.
+
+- **Middleware** (`src/middleware.ts`): `config.matcher` ditambah pengecualian
+  `manifest.webmanifest`, `sw.js`, `favicon.svg`, `icon.svg`. Pola yang sama
+  **diduplikasi** (bukan diimpor) di `src/lib/middleware/matcher.ts` khusus untuk unit
+  test — Next.js mewajibkan `config.matcher` middleware berupa **literal statis**;
+  mereferensikan konstanta dari modul lain membuat `next build` gagal ("Next.js can't
+  recognize the exported `config` field"). Bila pola berubah, sinkronkan kedua tempat.
+- **Logout** (`src/app/api/auth/logout/route.ts`, `src/components/shell/top-bar.tsx`):
+  investigasi menemukan `GET /api/auth/logout` **destruktif** (hapus cookie sesi +
+  redirect ke `end-session` Authentik yang meng-invalidate SSO) — `prefetch={false}` saja
+  tidak cukup untuk mengamankannya dari navigasi pasif. Route handler diubah jadi
+  **`POST`-only** (logika RP-initiated logout tidak berubah, hanya method); tombol
+  "Keluar" diubah dari `<Link>` menjadi `<form action="/api/auth/logout" method="post">`
+  dengan tombol submit bergaya link. `GET` **tidak dipertahankan** — bukan callback
+  provider OAuth, jadi tidak ada alasan untuk tetap menerima navigasi pasif.
+  `e2e/auth.spec.ts` disesuaikan (assertion `role="link"` → `role="button"` untuk
+  "Keluar", ditambah test regresi "tidak ada GET pasif ke /api/auth/logout").
+
+### [2026-07-13] Task Inventory: kontrol "paksa" transisi jadi checkbox eksplisit (bukan Cancel)
+
+Temuan simulasi end-to-end deployment YPII: pola lama `const paksa = !confirm(...)` di
+`transisi-sesi.tsx` membuat menekan **Cancel** pada dialog "Mulai Tahap 2"/"Mulai Tahap 3"
+justru **memaksa** transisi berjalan — berbahaya untuk aksi yang tidak bisa dibatalkan.
+Bentuk kontrol berubah signifikan:
+
+- `confirm()` sekarang hanya menjawab lanjut/batal. Cancel → `return`, tidak ada
+  panggilan API sama sekali.
+- Mode paksa menjadi **state komponen** (`paksaTahap2`/`paksaTahap3`, `useState`),
+  dikendalikan checkbox terpisah yang **hanya dirender saat memang relevan**: checkbox
+  "Lanjutkan walau … belum submit Tahap 1" muncul hanya bila `belumSubmitTahap1 > 0`;
+  checkbox "Lanjutkan walau … belum diputuskan koordinator" muncul hanya bila
+  `belumDiputuskanTahap2 > 0`. Kedua angka ini prop baru `TransisiSesi` yang dipasok
+  dari `[sesi_id]/page.tsx` — `belumSubmitTahap1` dari data `responden` yang sudah
+  di-fetch di halaman itu (tanpa panggilan API tambahan), `belumDiputuskanTahap2` dari
+  panggilan baru ke `GET /task-inventory/sesi/{sesi_id}/tahap2` (pola conditional-fetch
+  yang sama dengan `taskTerpilih`/`hasil`, hanya dipanggil saat `status === "TAHAP2"`).
+- Duplikasi try/catch pemanggilan POST Tahap 2 & Tahap 3 disatukan ke satu helper
+  `post()` (overload: tanpa `paksa` untuk mulai-tahap1/tutup/analisis, dengan `paksa:
+boolean` wajib untuk mulai-tahap2/mulai-tahap3).
+
 ### [2026-07-13] UI penugasan massal (bulk) Time Study, Task Inventory, OPM
 
 Mengikuti endpoint bulk-assign baru di backend (`anjab-abk-backend`, lihat entri

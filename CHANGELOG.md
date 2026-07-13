@@ -7,6 +7,67 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [4.0.0] - 2026-07-13
+
+### Diperbaiki
+
+- **Task Inventory — sisa migrasi alur 2 → 3 tahap di UI** (temuan simulasi end-to-end
+  deployment YPII, 2026-07-13):
+  - Halaman daftar `/task-inventory`: map label status (`STATUS_LABEL`, dipindah ke
+    `src/lib/format/ti-status.ts` agar testable tanpa mengimpor Auth.js) sebelumnya
+    tidak punya entri `TAHAP3` (tampil sebagai kode mentah `TAHAP3`) dan melabeli
+    `TAHAP2` sebagai "Detailing" — padahal Tahap 2 = Review Koordinator, Tahap 3 =
+    Detailing. Sekarang keenam status (`DRAFT`…`ANALYZED`) punya label yang benar.
+  - Teks "alur 2 tahap" yang tersisa di subtitle `/task-inventory` dan kartu dashboard
+    diganti "alur 3 tahap" (catatan historis di `CLAUDE.md`/`CHANGELOG.md` tidak disentuh).
+  - Banner Tahap 3 (`detail-form.tsx`) tidak lagi menyuruh "biarkan tercentang" saat
+    tidak ada satu pun task yang tercentang secara default — teks kini menjelaskan
+    perilaku aktual (centang task yang dikerjakan; isian standar otomatis terisi saat
+    dicentang). **Default checkbox tetap tidak tercentang** — tidak diubah, karena
+    mencentang otomatis berisiko membuat partisipan tanpa sadar mengklaim mengerjakan
+    task yang tidak ia kerjakan (merusak integritas data ABK).
+- **BREAKING (perilaku, disengaja): semantik dialog konfirmasi transisi Task Inventory
+  dibalik.** Pola lama `const paksa = !confirm(...)` membuat menekan **Cancel** justru
+  **memaksa** transisi Tahap 2/Tahap 3 berjalan — berbahaya karena aksi ini tidak bisa
+  dibatalkan. Sekarang: `confirm()` hanya menjawab lanjut/batal (Cancel = `return` tanpa
+  efek samping, status sesi **tidak** berubah); mode paksa adalah kontrol checkbox
+  eksplisit terpisah ("Lanjutkan walau … belum …") yang **hanya muncul** saat memang
+  masih ada partisipan belum submit Tahap 1 (Mulai Tahap 2) atau task partial belum
+  diputuskan koordinator (Mulai Tahap 3). Duplikasi try/catch Tahap 2 & Tahap 3 disatukan
+  ke satu helper `post()` (`transisi-sesi.tsx`) yang menerima query opsional `paksa`.
+  Admin yang terbiasa dengan kebiasaan lama "Cancel = paksa" perlu menyesuaikan.
+- **PWA rusak total di setiap halaman** (temuan simulasi end-to-end deployment YPII,
+  2026-07-13): `matcher` middleware Auth.js tidak mengecualikan aset publik, sehingga
+  `GET /manifest.webmanifest` dan `GET /sw.js` di-redirect ke `/login` dan mengembalikan
+  HTML alih-alih JSON/JS — browser melaporkan `Manifest: … Syntax error` di console pada
+  tiap halaman dan aplikasi tidak bisa di-install sebagai PWA. Matcher kini mengecualikan
+  `manifest.webmanifest`, `sw.js`, `favicon.svg`, `icon.svg` secara spesifik (bukan
+  melonggarkan proteksi untuk semua path berekstensi) — lihat `src/middleware.ts`. Pola
+  yang sama diduplikasi (bukan diimpor — Next.js mewajibkan `config.matcher` middleware
+  berupa literal statis, lihat komentar di `src/middleware.ts`) di
+  `src/lib/middleware/matcher.ts` khusus untuk unit test.
+- **Link "Keluar" di-prefetch Next.js secara pasif, memicu GET ke route logout tanpa
+  klik** (temuan sama). Gejala teramati: error CORS berulang ke endpoint `end-session`
+  Authentik pada setiap page load, dipicu `GET /api/auth/logout?_rsc=…` — jelas sebuah
+  prefetch RSC, bukan klik pengguna.
+  - **Hasil investigasi (wajib dicatat, lihat Langkah 3 backlog 010):** `GET
+/api/auth/logout` **punya efek samping destruktif** — ia menghapus seluruh cookie
+    sesi Auth.js dan mengarahkan browser ke `end-session` Authentik (meng-invalidate
+    sesi SSO). Karena itu, sekadar `prefetch={false}` pada `<Link>` **tidak cukup** — ia
+    hanya menutup satu jalur pemicu (prefetch Next.js), bukan navigasi pasif lain
+    (mis. crawler, bookmark, middleware/extension yang mem-fetch link di halaman).
+  - **Perubahan**: route handler logout diubah dari `GET` menjadi **`POST`-only**
+    (`src/app/api/auth/logout/route.ts`) — logika RP-initiated logout (hapus cookie +
+    redirect 303 ke `end-session` Authentik) tidak berubah, hanya method yang diterima.
+    Tombol "Keluar" di `src/components/shell/top-bar.tsx` diubah dari `<Link href=
+"/api/auth/logout">` menjadi `<form action="/api/auth/logout" method="post">` dengan
+    tombol submit bergaya link — navigasi pasif tidak bisa lagi memicu POST.
+  - `e2e/auth.spec.ts` disesuaikan: assertion `getByRole("link", { name: "Keluar" })` →
+    `getByRole("button", …)`, ditambah test baru yang memverifikasi tidak ada `GET
+/api/auth/logout` selama page load/navigasi normal.
+
+## [3.1.0] - 2026-07-13
+
 ### Ditambahkan
 
 - **UI penugasan massal (bulk) untuk Time Study, Task Inventory, dan OPM.**
