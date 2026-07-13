@@ -10,6 +10,7 @@ import type {
   TiHasilTaskRead,
   TiRespondenRead,
   TiSesiRead,
+  TiTahap2ReviewRead,
   TiTaskTerpilihRead,
 } from "@/lib/api/schema";
 import { TransisiSesi } from "./transisi-sesi";
@@ -96,6 +97,16 @@ async function fetchPageData(accessToken: string | undefined, sesiId: string) {
     hasil = (hRes.data ?? null) as TiHasilSesiRead | null;
   }
 
+  // Jumlah task partial yang belum diputuskan koordinator — dipakai tombol "Mulai Tahap 3".
+  let belumDiputuskanTahap2 = 0;
+  if (sesi.status === "TAHAP2") {
+    const reviewRes = await client.GET("/api/v1/task-inventory/sesi/{sesi_id}/tahap2", {
+      params: { path: { sesi_id: sesiId } },
+    });
+    const review = (reviewRes.data ?? null) as TiTahap2ReviewRead | null;
+    belumDiputuskanTahap2 = review?.jumlah_belum_diputuskan ?? 0;
+  }
+
   const smePanel = (smeRes.data?.items?.[0] ?? null) as SMEPanelRead | null;
   const allowedIds = new Set<string>(smePanel?.partisipan_ids ?? []);
   const allPartisipan = (partisipanRes.data?.items ?? []) as PartisipanRead[];
@@ -108,6 +119,7 @@ async function fetchPageData(accessToken: string | undefined, sesiId: string) {
     partisipan,
     taskTerpilih,
     hasil,
+    belumDiputuskanTahap2,
   };
 }
 
@@ -116,10 +128,8 @@ export default async function TiSesiDetailPage({ params }: Props) {
   if (!isAdmin(session)) notFound();
 
   const { sesi_id } = await params;
-  const { sesi, responden, smePanel, partisipan, taskTerpilih, hasil } = await fetchPageData(
-    session?.accessToken,
-    sesi_id,
-  );
+  const { sesi, responden, smePanel, partisipan, taskTerpilih, hasil, belumDiputuskanTahap2 } =
+    await fetchPageData(session?.accessToken, sesi_id);
 
   const st = STATUS_LABEL[sesi.status] ?? {
     label: sesi.status,
@@ -178,7 +188,12 @@ export default async function TiSesiDetailPage({ params }: Props) {
       </div>
 
       {/* Aksi transisi status */}
-      <TransisiSesi sesi={sesi} accessToken={session?.accessToken} />
+      <TransisiSesi
+        sesi={sesi}
+        accessToken={session?.accessToken}
+        belumSubmitTahap1={responden.length - tahap1Submit}
+        belumDiputuskanTahap2={belumDiputuskanTahap2}
+      />
 
       {/* Pengaturan koordinator SME panel */}
       <AturKoordinator

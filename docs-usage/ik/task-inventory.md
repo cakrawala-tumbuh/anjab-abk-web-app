@@ -69,9 +69,17 @@ Bagian transisi status menampilkan tombol sesuai status:
 | TAHAP3 | **Tutup Analisis**                       | → CLOSED                                      |
 | CLOSED | **Jalankan Analisis**                    | → ANALYZED                                    |
 
-!!! warning "Dialog konfirmasi" - **Mulai Tahap 2**: OK bila semua partisipan sudah submit Tahap 1; Cancel untuk
-memaksa lanjut walau belum semua. - **Mulai Tahap 3**: OK bila koordinator sudah memutuskan semua task partial; Cancel
-memaksa lanjut (task yang belum diputuskan diabaikan).
+!!! warning "Dialog konfirmasi"
+**OK** = lanjutkan transisi, **Cancel** = batal (status analisis tidak berubah). Ini
+berlaku sama untuk semua tombol transisi — Cancel **tidak pernah** memaksa apa pun.
+
+    Untuk **Mulai Tahap 2** dan **Mulai Tahap 3**, bila masih ada yang belum selesai
+    (partisipan belum submit Tahap 1, atau task partial belum diputuskan koordinator),
+    muncul **checkbox terpisah** di bawah tombol — "Lanjutkan walau … belum …". Checkbox
+    ini hanya tampil saat memang masih ada yang belum selesai, dan harus dicentang secara
+    eksplisit sebelum menekan tombol bila ingin memaksa lanjut; klik OK pada dialog
+    konfirmasi tanpa mencentangnya akan tetap menolak transisi di sisi server bila syarat
+    belum terpenuhi.
 
 Saat status **TAHAP2**, muncul kotak _Tahap 2 — Review Koordinator_ dengan tombol
 **Buka Review Koordinator**.

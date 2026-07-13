@@ -6,29 +6,50 @@ import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
 import type { TiSesiRead } from "@/lib/api/schema";
 
+type SimplePath =
+  | "/api/v1/task-inventory/sesi/{sesi_id}/mulai-tahap1"
+  | "/api/v1/task-inventory/sesi/{sesi_id}/tutup"
+  | "/api/v1/task-inventory/sesi/{sesi_id}/analisis";
+
+type PaksaPath =
+  | "/api/v1/task-inventory/sesi/{sesi_id}/mulai-tahap2"
+  | "/api/v1/task-inventory/sesi/{sesi_id}/mulai-tahap3";
+
 interface Props {
   sesi: TiSesiRead;
   accessToken: string | undefined;
+  /** Jumlah partisipan yang belum submit Tahap 1 — dipakai untuk tombol "Mulai Tahap 2". */
+  belumSubmitTahap1?: number;
+  /** Jumlah task partial yang belum diputuskan koordinator — dipakai untuk "Mulai Tahap 3". */
+  belumDiputuskanTahap2?: number;
 }
 
-export function TransisiSesi({ sesi, accessToken }: Props) {
+export function TransisiSesi({
+  sesi,
+  accessToken,
+  belumSubmitTahap1 = 0,
+  belumDiputuskanTahap2 = 0,
+}: Props) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [paksaTahap2, setPaksaTahap2] = useState(false);
+  const [paksaTahap3, setPaksaTahap3] = useState(false);
 
-  async function post(
-    path:
-      | "/api/v1/task-inventory/sesi/{sesi_id}/mulai-tahap1"
-      | "/api/v1/task-inventory/sesi/{sesi_id}/tutup"
-      | "/api/v1/task-inventory/sesi/{sesi_id}/analisis",
-  ) {
+  /** Helper bersama: kirim POST transisi, opsional query `paksa`, refresh pada sukses. */
+  async function post(path: SimplePath): Promise<void>;
+  async function post(path: PaksaPath, paksa: boolean): Promise<void>;
+  async function post(path: SimplePath | PaksaPath, paksa?: boolean): Promise<void> {
     setLoading(true);
     setError(null);
     try {
       const client = withServerAuth(accessToken);
-      const { error: apiError, response } = await client.POST(path, {
-        params: { path: { sesi_id: sesi.id } },
-      });
+      const { error: apiError, response } =
+        paksa === undefined
+          ? await client.POST(path as SimplePath, { params: { path: { sesi_id: sesi.id } } })
+          : await client.POST(path as PaksaPath, {
+              params: { path: { sesi_id: sesi.id }, query: { paksa } },
+            });
       const reqId = response.headers.get("x-request-id");
       if (apiError) throw toApiError(apiError, reqId);
       router.refresh();
@@ -39,50 +60,24 @@ export function TransisiSesi({ sesi, accessToken }: Props) {
     }
   }
 
-  async function mulaiTahap2() {
-    const paksa = !confirm(
-      "Mulai Tahap 2 sekarang? Tekan OK bila semua partisipan sudah submit Tahap 1, " +
-        "atau Cancel untuk memaksa lanjut walau belum semua submit.",
-    );
-    setLoading(true);
-    setError(null);
-    try {
-      const client = withServerAuth(accessToken);
-      const { error: apiError, response } = await client.POST(
-        "/api/v1/task-inventory/sesi/{sesi_id}/mulai-tahap2",
-        { params: { path: { sesi_id: sesi.id }, query: { paksa } } },
-      );
-      const reqId = response.headers.get("x-request-id");
-      if (apiError) throw toApiError(apiError, reqId);
-      router.refresh();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Terjadi kesalahan.");
-    } finally {
-      setLoading(false);
-    }
+  function mulaiTahap2() {
+    const pesan =
+      paksaTahap2 && belumSubmitTahap1 > 0
+        ? `Mulai Tahap 2 sekarang? Masih ada ${belumSubmitTahap1} partisipan yang belum submit ` +
+          'Tahap 1 — mereka akan dilewati sesuai centang "lanjutkan walau belum semua submit".'
+        : "Mulai Tahap 2 sekarang? Pastikan semua partisipan sudah submit Tahap 1.";
+    if (!confirm(pesan)) return;
+    void post("/api/v1/task-inventory/sesi/{sesi_id}/mulai-tahap2", paksaTahap2);
   }
 
-  async function mulaiTahap3() {
-    const paksa = !confirm(
-      "Mulai Tahap 3 sekarang? Tekan OK bila koordinator sudah memutuskan semua task partial, " +
-        "atau Cancel untuk memaksa lanjut (task yang belum diputuskan akan diabaikan).",
-    );
-    setLoading(true);
-    setError(null);
-    try {
-      const client = withServerAuth(accessToken);
-      const { error: apiError, response } = await client.POST(
-        "/api/v1/task-inventory/sesi/{sesi_id}/mulai-tahap3",
-        { params: { path: { sesi_id: sesi.id }, query: { paksa } } },
-      );
-      const reqId = response.headers.get("x-request-id");
-      if (apiError) throw toApiError(apiError, reqId);
-      router.refresh();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Terjadi kesalahan.");
-    } finally {
-      setLoading(false);
-    }
+  function mulaiTahap3() {
+    const pesan =
+      paksaTahap3 && belumDiputuskanTahap2 > 0
+        ? `Mulai Tahap 3 sekarang? Masih ada ${belumDiputuskanTahap2} task partial yang belum ` +
+          'diputuskan koordinator — sesuai centang "lanjutkan walau belum diputuskan", task tersebut akan diabaikan.'
+        : "Mulai Tahap 3 sekarang? Pastikan koordinator sudah memutuskan semua task partial.";
+    if (!confirm(pesan)) return;
+    void post("/api/v1/task-inventory/sesi/{sesi_id}/mulai-tahap3", paksaTahap3);
   }
 
   async function doHapus(paksa: boolean) {
@@ -136,23 +131,49 @@ export function TransisiSesi({ sesi, accessToken }: Props) {
       )}
 
       {sesi.status === "TAHAP1" && (
-        <button
-          onClick={mulaiTahap2}
-          disabled={loading}
-          className="rounded-md bg-violet-600 px-4 py-2 text-sm font-medium text-white hover:bg-violet-700 disabled:opacity-60"
-        >
-          {loading ? "Memproses…" : "Mulai Tahap 2 — Review Koordinator"}
-        </button>
+        <div className="flex flex-col gap-2">
+          <button
+            onClick={mulaiTahap2}
+            disabled={loading}
+            className="rounded-md bg-violet-600 px-4 py-2 text-sm font-medium text-white hover:bg-violet-700 disabled:opacity-60"
+          >
+            {loading ? "Memproses…" : "Mulai Tahap 2 — Review Koordinator"}
+          </button>
+          {belumSubmitTahap1 > 0 && (
+            <label className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400">
+              <input
+                type="checkbox"
+                checked={paksaTahap2}
+                onChange={(e) => setPaksaTahap2(e.target.checked)}
+                className="h-4 w-4 rounded border-gray-300 text-violet-600 focus:ring-violet-500"
+              />
+              Lanjutkan walau {belumSubmitTahap1} partisipan belum submit Tahap 1
+            </label>
+          )}
+        </div>
       )}
 
       {sesi.status === "TAHAP2" && (
-        <button
-          onClick={mulaiTahap3}
-          disabled={loading}
-          className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-60"
-        >
-          {loading ? "Memproses…" : "Mulai Tahap 3 — Bekukan Task Relevan"}
-        </button>
+        <div className="flex flex-col gap-2">
+          <button
+            onClick={mulaiTahap3}
+            disabled={loading}
+            className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-60"
+          >
+            {loading ? "Memproses…" : "Mulai Tahap 3 — Bekukan Task Relevan"}
+          </button>
+          {belumDiputuskanTahap2 > 0 && (
+            <label className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400">
+              <input
+                type="checkbox"
+                checked={paksaTahap3}
+                onChange={(e) => setPaksaTahap3(e.target.checked)}
+                className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+              />
+              Lanjutkan walau {belumDiputuskanTahap2} task belum diputuskan koordinator
+            </label>
+          )}
+        </div>
       )}
 
       {sesi.status === "TAHAP3" && (

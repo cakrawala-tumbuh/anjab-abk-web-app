@@ -234,8 +234,9 @@ export function DetailForm({ respondenId, tasks, detailAwal, accessToken }: Prop
 
       {adaTaskBerstandar && (
         <p className="text-sm text-gray-600 dark:text-gray-400">
-          Sebagian tugas sudah terisi dengan nilai standar. Bila isian sudah sesuai dengan pekerjaan
-          Anda, biarkan tercentang. Bila tidak sesuai, hapus centang lalu ubah isiannya.
+          Centang tugas yang Anda kerjakan. Sebagian tugas sudah punya isian standar yang otomatis
+          terpakai saat dicentang — bila sudah sesuai, biarkan apa adanya; bila tidak, hapus centang
+          &quot;Setuju dengan isian standar&quot; lalu ubah isiannya.
         </p>
       )}
 

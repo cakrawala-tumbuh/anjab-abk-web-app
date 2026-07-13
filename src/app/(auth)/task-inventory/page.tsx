@@ -3,17 +3,10 @@ import { notFound } from "next/navigation";
 import { auth, isAdmin } from "@/lib/auth/auth";
 import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
+import { STATUS_LABEL } from "@/lib/format/ti-status";
 import type { TiSesiRead } from "@/lib/api/schema";
 
 export const metadata = { title: "Analisis Jabatan — Task Inventory — ANJAB-ABK" };
-
-const STATUS_LABEL: Record<string, { label: string; cls: string }> = {
-  DRAFT: { label: "Draft", cls: "bg-gray-100 text-gray-600" },
-  TAHAP1: { label: "Tahap 1 — Seleksi", cls: "bg-blue-100 text-blue-700" },
-  TAHAP2: { label: "Tahap 2 — Detailing", cls: "bg-indigo-100 text-indigo-700" },
-  CLOSED: { label: "Tertutup", cls: "bg-yellow-100 text-yellow-700" },
-  ANALYZED: { label: "Teranalisis", cls: "bg-green-100 text-green-700" },
-};
 
 async function fetchSesi(accessToken: string | undefined): Promise<TiSesiRead[]> {
   const client = withServerAuth(accessToken);
@@ -37,7 +30,8 @@ export default async function TaskInventoryPage() {
         <div>
           <h1 className="page-heading">Analisis Jabatan — Task Inventory</h1>
           <p className="page-subtext">
-            Inventori tugas (CalHR 5-komponen) — alur 2 tahap: seleksi relevansi lalu detailing.
+            Inventori tugas (CalHR 5-komponen) — alur 3 tahap: seleksi, review koordinator,
+            detailing.
           </p>
         </div>
         <Link

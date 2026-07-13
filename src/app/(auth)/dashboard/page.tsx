@@ -30,7 +30,8 @@ export default async function DashboardPage() {
           >
             <h2 className="font-medium text-gray-900 dark:text-gray-50">Task Inventory</h2>
             <p className="page-subtext">
-              Inventori tugas 2 tahap: seleksi relevansi lalu detailing beban kerja.
+              Inventori tugas 3 tahap: seleksi relevansi, review koordinator, lalu detailing beban
+              kerja.
             </p>
           </Link>
         )}
