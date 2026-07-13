@@ -7,6 +7,23 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+### Diperbaiki
+
+- **Editor item DCS & WCP tidak mereload data setelah simpan** (backlog 016).
+  Tombol "Simpan" di `/master-data/dcs/{kode}` dan `/master-data/wcp/{kode}` berhasil
+  mem-`PATCH` item ke backend, tapi hanya menambal salinan lokal `useState` — satu-satunya
+  komponen mutasi di web app yang tidak memanggil `router.refresh()`. Akibatnya perubahan
+  `urutan` tidak pernah terlihat: backend mengurutkan item berdasarkan kolom itu, tapi
+  tabel tidak di-render ulang, jadi baris tampil dengan nomor urut baru di posisi lamanya
+  sampai user menekan F5 manual.
+  - `dcs-item-editor.tsx` dan `wcp-item-editor.tsx`: cermin state `rows` dibuang; tabel kini
+    dirender langsung dari prop `items` (Server Component), dan `router.refresh()` dipanggil
+    setelah PATCH sukses untuk memasok data segar.
+  - `hapus-penugasan.tsx` (Time Study): ditambahkan `router.refresh()` setelah `router.push()`
+    agar seragam dengan tombol hapus lain di Master Data (kosmetik, bukan bug — Router Cache
+    sudah dimatikan lewat `staleTimes: 0`).
+  - Test baru: `src/test/dcs-item-editor.test.tsx`, `src/test/wcp-item-editor.test.tsx`.
+
 ## [4.0.1] - 2026-07-13
 
 ### Diperbaiki

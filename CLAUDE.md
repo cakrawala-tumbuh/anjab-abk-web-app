@@ -50,6 +50,27 @@ src/
 
 ## Revisi Desain
 
+### [2026-07-13] Editor item DCS/WCP: cermin `useState` dibuang, data dipasok Server Component + `router.refresh()`
+
+Tombol "Simpan" di editor item `/master-data/dcs/{kode}` dan `/master-data/wcp/{kode}`
+mem-`PATCH` item ke backend, tapi hanya menambal salinan lokal `useState` (`rows`) — satu-
+satunya komponen mutasi di seluruh web app yang tidak memanggil `router.refresh()`.
+Akibatnya perubahan `urutan` tidak pernah terlihat: backend mengurutkan item berdasarkan
+kolom itu, tapi tabel tidak di-render ulang.
+
+- Perbaikannya **bukan** sekadar menambahkan `router.refresh()` di samping `setRows(...)`.
+  State `rows` yang di-seed dari prop sekali saja dibuang total — tabel dirender **langsung
+  dari prop `items`**, dan `router.refresh()` (dipanggil setelah PATCH sukses) yang memasok
+  data segarnya. Ini pola standar 46+ tempat lain di repo (Server Component + `router.refresh()`).
+- **Pola cermin-state (`useState` yang di-seed dari prop lalu jadi sumber render) dilarang
+  diperkenalkan lagi di komponen baru** — state itu tidak pernah tersinkron ulang dengan
+  server kecuali eksplisit di-refresh, dan mudah luput karena hasil PATCH/POST *terlihat*
+  ter-update di layar (state lokal ditambal dari respons), padahal sumber kebenarannya
+  (urutan, field lain yang diubah proses lain) sudah melenceng.
+- `hapus-penugasan.tsx` (Time Study) diseragamkan: `router.refresh()` ditambahkan setelah
+  `router.push()`, konsisten dengan tombol hapus Master Data lainnya — sebelumnya "bekerja"
+  karena Router Cache mati (`staleTimes: 0`), bukan karena eksplisit benar.
+
 ### [2026-07-13] Logout: dari `<Link>` GET menjadi `<form method="post">` — GET punya efek samping
 
 Temuan simulasi end-to-end deployment YPII: `matcher` middleware tidak mengecualikan

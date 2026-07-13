@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
 import type { WcpItemRead, WcpReverseType } from "@/lib/api/schema";
@@ -18,12 +19,12 @@ const REVERSE_LABEL: Record<WcpReverseType, string> = {
 };
 
 export function WcpItemEditor({ items, accessToken }: Props) {
-  const [rows, setRows] = useState<WcpItemRead[]>(items);
+  const router = useRouter();
   const [editingId, setEditingId] = useState<string | null>(null);
 
-  function applyUpdate(updated: WcpItemRead) {
-    setRows((prev) => prev.map((r) => (r.item_id === updated.item_id ? updated : r)));
+  function handleSaved() {
     setEditingId(null);
+    router.refresh();
   }
 
   return (
@@ -41,14 +42,14 @@ export function WcpItemEditor({ items, accessToken }: Props) {
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
-          {rows.map((item) =>
+          {items.map((item) =>
             editingId === item.item_id ? (
               <WcpItemEditRow
                 key={item.item_id}
                 item={item}
                 accessToken={accessToken}
                 onCancel={() => setEditingId(null)}
-                onSaved={applyUpdate}
+                onSaved={handleSaved}
               />
             ) : (
               <tr key={item.item_id} className="align-top hover:bg-gray-50">
@@ -84,7 +85,7 @@ interface RowProps {
   item: WcpItemRead;
   accessToken: string | undefined;
   onCancel: () => void;
-  onSaved: (updated: WcpItemRead) => void;
+  onSaved: () => void;
 }
 
 function WcpItemEditRow({ item, accessToken, onCancel, onSaved }: RowProps) {
@@ -111,7 +112,7 @@ function WcpItemEditRow({ item, accessToken, onCancel, onSaved }: RowProps) {
       });
       const requestId = response.headers.get("x-request-id");
       if (apiError || !data) throw toApiError(apiError, requestId);
-      onSaved(data);
+      onSaved();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Gagal menyimpan.");
       setSaving(false);

@@ -34,6 +34,7 @@ export function HapusPenugasan({ penugasanId, nama, accessToken }: Props) {
       const reqId = response.headers.get("x-request-id");
       if (error) throw toApiError(error, reqId);
       router.push("/time-study");
+      router.refresh();
     } catch (err) {
       alert(err instanceof Error ? err.message : "Gagal menghapus penugasan.");
       setLoading(false);
