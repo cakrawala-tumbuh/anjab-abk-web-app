@@ -64,7 +64,7 @@ kolom itu, tapi tabel tidak di-render ulang.
   data segarnya. Ini pola standar 46+ tempat lain di repo (Server Component + `router.refresh()`).
 - **Pola cermin-state (`useState` yang di-seed dari prop lalu jadi sumber render) dilarang
   diperkenalkan lagi di komponen baru** — state itu tidak pernah tersinkron ulang dengan
-  server kecuali eksplisit di-refresh, dan mudah luput karena hasil PATCH/POST *terlihat*
+  server kecuali eksplisit di-refresh, dan mudah luput karena hasil PATCH/POST _terlihat_
   ter-update di layar (state lokal ditambal dari respons), padahal sumber kebenarannya
   (urutan, field lain yang diubah proses lain) sudah melenceng.
 - `hapus-penugasan.tsx` (Time Study) diseragamkan: `router.refresh()` ditambahkan setelah

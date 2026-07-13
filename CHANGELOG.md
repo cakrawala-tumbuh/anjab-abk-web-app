@@ -7,6 +7,15 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [4.0.3] - 2026-07-13
+
+### Diperbaiki
+
+- **Formatting `CLAUDE.md` tidak lolos Prettier** — entri Revisi Desain yang ditambahkan di
+  v4.0.2 memakai `*terlihat*` yang oleh Prettier dinormalisasi jadi `_terlihat_`; CI
+  `Automated Test` gagal di step `prettier --check .` (tag `v4.0.2` sudah terlanjur dirilis
+  dengan gate lint merah). Tidak ada perubahan kode aplikasi.
+
 ## [4.0.2] - 2026-07-13
 
 ### Diperbaiki
