@@ -7,6 +7,8 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [4.0.1] - 2026-07-13
+
 ### Diperbaiki
 
 - **Counter "Belum diputuskan" di header Task Inventory Tahap 2 tidak reaktif** (backlog 011).
