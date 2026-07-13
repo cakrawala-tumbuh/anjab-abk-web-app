@@ -6,7 +6,7 @@ import { toApiError } from "@/lib/api/errors";
 import type { JabatanRead, MataPelajaranRead, PartisipanRead, SekolahRead } from "@/lib/api/schema";
 import { EditPartisipanForm } from "./edit-partisipan-form";
 
-export const metadata = { title: "Detail Partisipan — ANJAB-ABK" };
+export const metadata = { title: "Detail Partisipan" };
 
 interface Props {
   params: Promise<{ id: string }>;

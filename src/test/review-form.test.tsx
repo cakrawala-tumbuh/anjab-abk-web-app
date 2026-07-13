@@ -88,6 +88,66 @@ describe("ReviewForm — Requirement B: read-only menyembunyikan kontrol edit", 
   });
 });
 
+describe("ReviewForm — Requirement (011): counter 'Belum diputuskan' di header reaktif", () => {
+  // Fixture dengan 2 task belum diputuskan (TIaaa, TIccc) + 1 sudah (TIbbb) agar
+  // penurunan counter (2 → 1 → hilang) bisa diuji bertahap, bukan langsung ke 0.
+  const reviewMultiPending: TiTahap2ReviewRead = {
+    sesi_id: "sesi_1",
+    tasks: [
+      { task_kode: "TIaaa", n_relevan: 2, n_total: 3, disetujui: null },
+      { task_kode: "TIbbb", n_relevan: 1, n_total: 3, disetujui: true },
+      { task_kode: "TIccc", n_relevan: 1, n_total: 3, disetujui: null },
+    ],
+    jumlah_belum_diputuskan: 2,
+  };
+
+  function renderWithMultiPending(readOnly = false) {
+    return render(
+      <ReviewForm
+        sesiId="sesi_1"
+        review={reviewMultiPending}
+        accessToken="tok"
+        readOnly={readOnly}
+        kodeToUraian={{}}
+      />,
+    );
+  }
+
+  it("counter di header tampil sesuai jumlah task belum diputuskan saat render awal", () => {
+    renderWithMultiPending();
+    expect(screen.getByText("Belum diputuskan:").closest("span")).toHaveTextContent(
+      "Belum diputuskan: 2",
+    );
+  });
+
+  it("counter berkurang seketika saat satu task diputuskan, tanpa reload/refresh", () => {
+    renderWithMultiPending();
+    const yaButtons = screen.getAllByRole("button", { name: "Ya" });
+    // Urutan baris tabel = urutan review.tasks: TIaaa, TIbbb, TIccc.
+    fireEvent.click(yaButtons[0]); // putuskan TIaaa
+
+    expect(screen.getByText("Belum diputuskan:").closest("span")).toHaveTextContent(
+      "Belum diputuskan: 1",
+    );
+    expect(refresh).not.toHaveBeenCalled();
+  });
+
+  it("counter menghilang begitu semua task sudah diputuskan via klik (tanpa Simpan)", () => {
+    renderWithMultiPending();
+    const yaButtons = screen.getAllByRole("button", { name: "Ya" });
+    fireEvent.click(yaButtons[0]); // putuskan TIaaa
+    fireEvent.click(yaButtons[2]); // putuskan TIccc (satu-satunya sisa)
+
+    expect(screen.queryByText("Belum diputuskan:")).toBeNull();
+    expect(refresh).not.toHaveBeenCalled();
+  });
+
+  it("readOnly=true: counter tidak pernah ditampilkan meski ada task belum diputuskan", () => {
+    renderWithMultiPending(true);
+    expect(screen.queryByText("Belum diputuskan:")).toBeNull();
+  });
+});
+
 describe("ReviewForm — submit memakai kode, bukan nama", () => {
   it("payload POST menggunakan task_kode, bukan nama uraian tugas", async () => {
     renderForm(false);

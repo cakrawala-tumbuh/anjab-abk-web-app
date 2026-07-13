@@ -6,7 +6,7 @@ import { toApiError } from "@/lib/api/errors";
 import type { OpmJawabanRead, OpmRespondenRead, OpmSesiTaskRead } from "@/lib/api/schema";
 import { OpmForm } from "./opm-form";
 
-export const metadata = { title: "Isi Kuesioner OPM — ANJAB-ABK" };
+export const metadata = { title: "Isi Kuesioner OPM" };
 
 interface Props {
   params: Promise<{ responden_id: string }>;

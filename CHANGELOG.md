@@ -7,6 +7,52 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+### Diperbaiki
+
+- **Counter "Belum diputuskan" di header Task Inventory Tahap 2 tidak reaktif** (backlog 011).
+  Temuan simulasi end-to-end deployment YPII: counter di bagian atas halaman
+  `/task-inventory/tahap2/[sesi_id]` dihitung dari `review.jumlah_belum_diputuskan` hasil fetch
+  server sekali di awal (`page.tsx`), sehingga tidak berubah saat koordinator klik Ya/Tidak per
+  baris — berbeda dengan counter di action bar (`review-form.tsx`) yang sudah reaktif memakai
+  state client `keputusan`, membuat dua indikator untuk fakta yang sama menampilkan angka
+  berbeda pada saat bersamaan.
+  - `review-form.tsx`: blok "Belum diputuskan: N" dipindahkan ke bagian atas komponen ini,
+    memakai `belumDiputuskan` (computed dari state `keputusan`) sebagai satu-satunya sumber
+    kebenaran — sama seperti yang sudah dipakai action bar. Kondisi tampil tetap
+    `!readOnly && belumDiputuskan > 0`.
+  - `page.tsx`: span statis `Belum diputuskan: {review.jumlah_belum_diputuskan}` dihapus dari
+    header server; "Total partial: {review.tasks.length}" tetap tampil di sana karena angka ini
+    memang tidak berubah oleh interaksi Ya/Tidak.
+  - Test baru di `src/test/review-form.test.tsx`: counter berkurang seketika saat satu task
+    diputuskan (tanpa `router.refresh()`), dan hilang begitu semua task sudah diputuskan via
+    klik (sebelum tombol Simpan ditekan).
+- **Sisa terminologi "Sesi" pada teks yang dilihat pengguna TI/OPM** (backlog 004).
+  Sebagian besar sudah diganti "Analisis Jabatan" di commit sebelumnya (item 003/007);
+  sisa 5 occurrence dirapikan:
+  - `opm/buat/opm-sesi-form.tsx`: pesan validasi Zod "Sesi Task Inventory wajib dipilih"
+    → "Analisis Jabatan Task Inventory wajib dipilih".
+  - `task-inventory/tahap1/[responden_id]/page.tsx` dan `tahap3/[responden_id]/page.tsx`:
+    "Sesi tidak sedang dalam Tahap 1/3 (status: …)" → "Analisis jabatan ini tidak sedang
+    dalam Tahap 1/3 (status: …)".
+  - `task-inventory/tahap2/[sesi_id]/page.tsx`: "Sesi sudah melewati Tahap 2 …" →
+    "Analisis jabatan ini sudah melewati Tahap 2 …".
+  - `opm/[sesi_id]/page.tsx`: metadata title "Detail Sesi OPM — ANJAB-ABK" →
+    "Detail Analisis Jabatan — OPM — ANJAB-ABK" (konsisten dengan pola
+    `task-inventory/[sesi_id]/page.tsx`).
+  - `docs-usage/ik/task-inventory.md`, `docs-usage/ik/opm.md`,
+    `docs-usage/ik/login-navigasi.md`: sisa kata "sesi" pada prosa yang menjelaskan
+    perilaku TI/OPM diselaraskan ke "analisis jabatan".
+  - `sesi_id` di URL/route, nama variabel, dan tipe (`TiSesiRead`/`OpmSesiRead`) **tidak
+    disentuh** — sesuai keputusan item 004 (kosmetik/terminologi saja).
+- **Title halaman terduplikasi "— ANJAB-ABK — ANJAB-ABK" di 30 halaman** (backlog 012).
+  Temuan simulasi end-to-end Task Inventory deployment YPII (panel Kepala Sekolah): title
+  di hampir semua halaman grup `(auth)` menyertakan akhiran manual `" — ANJAB-ABK"`,
+  padahal root layout (`src/app/layout.tsx`) sudah punya `title.template: "%s — ANJAB-ABK"`
+  yang otomatis menambahkannya — hasilnya title dobel di tab browser. Akhiran `" — ANJAB-ABK"`
+  dihapus dari 30 string `title` manual (DCS, WCP, OPM, Task Inventory, Time Study, Partisipan,
+  Kuesioner Saya); sisa teks tidak diubah. Halaman `master-data/*` (sudah berakhiran
+  `"— Master Data"`) dan root layout tidak disentuh.
+
 ## [4.0.0] - 2026-07-13
 
 ### Diperbaiki

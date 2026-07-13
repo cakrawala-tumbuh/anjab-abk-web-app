@@ -69,6 +69,14 @@ export function ReviewForm({ sesiId, review, accessToken, readOnly, kodeToUraian
 
   return (
     <div className="space-y-4">
+      {!readOnly && belumDiputuskan > 0 && (
+        <div className="flex gap-4 text-sm text-gray-600">
+          <span className="text-amber-600">
+            Belum diputuskan: <strong>{belumDiputuskan}</strong>
+          </span>
+        </div>
+      )}
+
       {error && (
         <div role="alert" className="form-server-error">
           {error}

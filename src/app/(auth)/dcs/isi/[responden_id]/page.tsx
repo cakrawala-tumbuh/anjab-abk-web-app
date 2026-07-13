@@ -6,7 +6,7 @@ import { toApiError } from "@/lib/api/errors";
 import type { DcsRespondenRead, DcsSubSkalaWithItemsRead, DcsJawabanRead } from "@/lib/api/schema";
 import { DcsForm } from "./dcs-form";
 
-export const metadata = { title: "Isi Kuesioner DCS — ANJAB-ABK" };
+export const metadata = { title: "Isi Kuesioner DCS" };
 
 const DCS_SUBSKALA = ["DEMAND", "CONTROL", "SUPPORT"] as const;
 

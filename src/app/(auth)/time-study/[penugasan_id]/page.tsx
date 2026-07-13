@@ -12,7 +12,7 @@ type TsLogRead = components["schemas"]["TsLogRead"];
 type PartisipanRead = components["schemas"]["PartisipanRead"];
 type JabatanRead = components["schemas"]["JabatanRead"];
 
-export const metadata = { title: "Detail Penugasan Time Study — ANJAB-ABK" };
+export const metadata = { title: "Detail Penugasan Time Study" };
 
 interface Props {
   params: Promise<{ penugasan_id: string }>;

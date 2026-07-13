@@ -11,7 +11,7 @@ import type {
 } from "@/lib/api/schema";
 import { DetailForm } from "./detail-form";
 
-export const metadata = { title: "Tahap 3 — Detailing — ANJAB-ABK" };
+export const metadata = { title: "Tahap 3 — Detailing" };
 
 interface Props {
   params: Promise<{ responden_id: string }>;
@@ -90,7 +90,7 @@ export default async function Tahap3Page({ params }: Props) {
         </div>
       ) : sesi.status !== "TAHAP3" ? (
         <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
-          Sesi tidak sedang dalam Tahap 3 (status: {sesi.status}).
+          Analisis jabatan ini tidak sedang dalam Tahap 3 (status: {sesi.status}).
         </div>
       ) : (
         <DetailForm

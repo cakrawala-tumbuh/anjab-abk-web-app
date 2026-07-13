@@ -6,7 +6,7 @@ import { toApiError } from "@/lib/api/errors";
 import type { JabatanRead, SMEPanelRead, TiSesiRead } from "@/lib/api/schema";
 import { OpmSesiForm } from "./opm-sesi-form";
 
-export const metadata = { title: "Mulai Analisis Jabatan — OPM — ANJAB-ABK" };
+export const metadata = { title: "Mulai Analisis Jabatan — OPM" };
 
 async function fetchPageData(accessToken: string | undefined) {
   const client = withServerAuth(accessToken);

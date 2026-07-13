@@ -8,7 +8,7 @@ import { TsPenugasanForm } from "./ts-penugasan-form";
 type PartisipanRead = components["schemas"]["PartisipanRead"];
 type JabatanRead = components["schemas"]["JabatanRead"];
 
-export const metadata = { title: "Tugaskan Partisipan — Time Study — ANJAB-ABK" };
+export const metadata = { title: "Tugaskan Partisipan — Time Study" };
 
 async function fetchPageData(accessToken: string | undefined) {
   const client = withServerAuth(accessToken);

@@ -52,7 +52,7 @@ sekaligus**:
 2. Klik **Tugaskan Terpilih (N)**.
 3. Aplikasi menampilkan ringkasan berhasil/dilewati. Partisipan dilewati bila: sudah
    terdaftar sebagai responden, duplikat dalam pilihan, **bukan anggota SME panel**
-   jabatan ini, atau sesi sudah mencapai **Maks. Responden**.
+   jabatan ini, atau analisis jabatan ini sudah mencapai **Maks. Responden**.
 
 ---
 

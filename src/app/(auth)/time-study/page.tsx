@@ -9,7 +9,7 @@ type TsPenugasanRead = components["schemas"]["TsPenugasanRead"];
 type PartisipanRead = components["schemas"]["PartisipanRead"];
 type JabatanRead = components["schemas"]["JabatanRead"];
 
-export const metadata = { title: "Time Study — ANJAB-ABK" };
+export const metadata = { title: "Time Study" };
 
 async function fetchPageData(accessToken: string | undefined) {
   const client = withServerAuth(accessToken);

@@ -6,7 +6,7 @@ import { toApiError } from "@/lib/api/errors";
 import type { WcpRespondenRead, WcpDimensiWithItemsRead, WcpJawabanRead } from "@/lib/api/schema";
 import { WcpForm } from "./wcp-form";
 
-export const metadata = { title: "Isi Kuesioner WCP — ANJAB-ABK" };
+export const metadata = { title: "Isi Kuesioner WCP" };
 
 const WCP_DIMENSI = [
   "SC",

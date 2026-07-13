@@ -8,7 +8,7 @@ import type { components } from "@/lib/api/schema";
 type TsLogRead = components["schemas"]["TsLogRead"];
 type TsPenugasanRead = components["schemas"]["TsPenugasanRead"];
 
-export const metadata = { title: "Time Study — Log Harian — ANJAB-ABK" };
+export const metadata = { title: "Time Study — Log Harian" };
 
 const DAY_COLOR_LABEL: Record<string, { label: string; cls: string }> = {
   GREEN: { label: "Hijau (Hari Biasa)", cls: "bg-green-100 text-green-700" },

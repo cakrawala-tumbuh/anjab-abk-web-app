@@ -11,7 +11,7 @@ import type {
 } from "@/lib/api/schema";
 import { ReviewForm } from "./review-form";
 
-export const metadata = { title: "Tahap 2 — Review Koordinator — ANJAB-ABK" };
+export const metadata = { title: "Tahap 2 — Review Koordinator" };
 
 interface Props {
   params: Promise<{ sesi_id: string }>;
@@ -103,8 +103,8 @@ export default async function Tahap2KoordinatorPage({ params }: Props) {
 
       {canEdit && sesi.status !== "TAHAP2" && (
         <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
-          Sesi sudah melewati Tahap 2 (status: <strong>{sesi.status}</strong>). Keputusan tidak
-          dapat diubah.
+          Analisis jabatan ini sudah melewati Tahap 2 (status: <strong>{sesi.status}</strong>).
+          Keputusan tidak dapat diubah.
         </div>
       )}
 
@@ -121,11 +121,6 @@ export default async function Tahap2KoordinatorPage({ params }: Props) {
             <span>
               Total partial: <strong>{review.tasks.length}</strong>
             </span>
-            {!readOnly && review.jumlah_belum_diputuskan > 0 && (
-              <span className="text-amber-600">
-                Belum diputuskan: <strong>{review.jumlah_belum_diputuskan}</strong>
-              </span>
-            )}
           </div>
           <ReviewForm
             sesiId={sesi_id}

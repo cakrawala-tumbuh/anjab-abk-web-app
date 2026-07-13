@@ -5,7 +5,7 @@ import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
 import type { OpmHasilSesiRead, OpmHasilTaskRead, OpmSesiRead } from "@/lib/api/schema";
 
-export const metadata = { title: "Hasil OPM — ANJAB-ABK" };
+export const metadata = { title: "Hasil OPM" };
 
 interface Props {
   params: Promise<{ sesi_id: string }>;

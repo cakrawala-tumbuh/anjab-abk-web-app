@@ -5,7 +5,7 @@ import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
 import type { OpmSesiRead } from "@/lib/api/schema";
 
-export const metadata = { title: "Analisis Jabatan — OPM — ANJAB-ABK" };
+export const metadata = { title: "Analisis Jabatan — OPM" };
 
 const STATUS_LABEL: Record<string, { label: string; cls: string }> = {
   DRAFT: { label: "Draft", cls: "bg-gray-100 text-gray-600" },

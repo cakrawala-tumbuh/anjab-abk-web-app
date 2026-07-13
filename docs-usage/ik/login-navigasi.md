@@ -26,7 +26,7 @@ Kartu yang muncul bergantung peran:
 === "Administrator"
 
     - **Kelola Partisipan** → halaman Partisipan.
-    - **Task Inventory** → daftar sesi TI.
+    - **Task Inventory** → daftar Analisis Jabatan Task Inventory.
     - **Time Study** → daftar penugasan TS.
 
 === "Partisipan"

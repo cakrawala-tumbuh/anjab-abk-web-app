@@ -15,7 +15,7 @@ import { TambahResponden } from "./tambah-responden";
 import { AssignRespondenBanyak } from "./assign-responden-banyak";
 import { HapusResponden } from "./hapus-responden";
 
-export const metadata = { title: "Detail Sesi OPM — ANJAB-ABK" };
+export const metadata = { title: "Detail Analisis Jabatan — OPM" };
 
 const STATUS_LABEL: Record<string, { label: string; cls: string; desc: string }> = {
   DRAFT: {

@@ -9,7 +9,7 @@ import type {
   WcpRespondenRead,
 } from "@/lib/api/schema";
 
-export const metadata = { title: "Hasil WCP Responden — ANJAB-ABK" };
+export const metadata = { title: "Hasil WCP Responden" };
 
 const INTERPRETASI_LABEL: Record<string, { label: string; cls: string }> = {
   BAIK: { label: "Baik", cls: "bg-green-100 text-green-700" },

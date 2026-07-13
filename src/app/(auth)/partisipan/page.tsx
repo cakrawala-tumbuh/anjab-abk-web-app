@@ -5,7 +5,7 @@ import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
 import type { JabatanRead, PartisipanRead, SekolahRead } from "@/lib/api/schema";
 
-export const metadata = { title: "Partisipan — ANJAB-ABK" };
+export const metadata = { title: "Partisipan" };
 
 async function fetchAll(accessToken: string | undefined) {
   const client = withServerAuth(accessToken);

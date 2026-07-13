@@ -14,7 +14,7 @@ import { AksiInstrumen } from "./aksi-instrumen";
 import { HapusResponden } from "./hapus-responden";
 import { EditInstrumen } from "./edit-instrumen";
 
-export const metadata = { title: "WCP — ANJAB-ABK" };
+export const metadata = { title: "WCP" };
 
 const STATUS_LABEL: Record<string, { label: string; cls: string; desc: string }> = {
   OPEN: {

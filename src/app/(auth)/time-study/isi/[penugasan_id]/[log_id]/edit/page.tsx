@@ -8,7 +8,7 @@ import { TsLogEditForm } from "./ts-log-edit-form";
 
 type TsLogRead = components["schemas"]["TsLogRead"];
 
-export const metadata = { title: "Edit Log Harian — Time Study — ANJAB-ABK" };
+export const metadata = { title: "Edit Log Harian — Time Study" };
 
 interface Props {
   params: Promise<{ penugasan_id: string; log_id: string }>;

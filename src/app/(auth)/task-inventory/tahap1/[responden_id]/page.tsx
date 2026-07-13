@@ -6,7 +6,7 @@ import { toApiError } from "@/lib/api/errors";
 import type { TiCatalogRead, TiRespondenRead, TiSeleksiRead, TiSesiRead } from "@/lib/api/schema";
 import { SeleksiForm } from "./seleksi-form";
 
-export const metadata = { title: "Tahap 1 — Seleksi Relevansi — ANJAB-ABK" };
+export const metadata = { title: "Tahap 1 — Seleksi Relevansi" };
 
 interface Props {
   params: Promise<{ responden_id: string }>;
@@ -78,7 +78,7 @@ export default async function Tahap1Page({ params }: Props) {
         </div>
       ) : sesi.status !== "TAHAP1" ? (
         <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
-          Sesi tidak sedang dalam Tahap 1 (status: {sesi.status}).
+          Analisis jabatan ini tidak sedang dalam Tahap 1 (status: {sesi.status}).
         </div>
       ) : (
         <SeleksiForm

@@ -9,7 +9,7 @@ import type {
   DcsRespondenRead,
 } from "@/lib/api/schema";
 
-export const metadata = { title: "Hasil DCS Responden — ANJAB-ABK" };
+export const metadata = { title: "Hasil DCS Responden" };
 
 const RISK_LABEL: Record<string, { label: string; cls: string }> = {
   HIGH: { label: "Tinggi", cls: "bg-red-100 text-red-700" },

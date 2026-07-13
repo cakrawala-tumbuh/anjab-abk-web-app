@@ -84,8 +84,8 @@ sekaligus**:
 2. Klik **Tugaskan Terpilih (N)**. Nama & label jabatan responden diisi otomatis —
    tidak perlu diketik manual seperti formulir tunggal.
 3. Aplikasi menampilkan ringkasan berhasil/dilewati. Partisipan dilewati bila: sudah
-   terdaftar, duplikat dalam pilihan, bukan anggota SME panel, atau sesi sudah mencapai
-   **Maks. Responden**.
+   terdaftar, duplikat dalam pilihan, bukan anggota SME panel, atau analisis jabatan ini
+   sudah mencapai **Maks. Responden**.
 
 ---
 

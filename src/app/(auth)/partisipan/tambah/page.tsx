@@ -5,7 +5,7 @@ import { toApiError } from "@/lib/api/errors";
 import type { JabatanRead, MataPelajaranRead, SekolahRead } from "@/lib/api/schema";
 import { TambahPartisipanForm } from "./partisipan-form";
 
-export const metadata = { title: "Tambah Partisipan — ANJAB-ABK" };
+export const metadata = { title: "Tambah Partisipan" };
 
 async function fetchReferenceData(accessToken: string | undefined) {
   const client = withServerAuth(accessToken);

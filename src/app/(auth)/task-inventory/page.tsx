@@ -6,7 +6,7 @@ import { toApiError } from "@/lib/api/errors";
 import { STATUS_LABEL } from "@/lib/format/ti-status";
 import type { TiSesiRead } from "@/lib/api/schema";
 
-export const metadata = { title: "Analisis Jabatan — Task Inventory — ANJAB-ABK" };
+export const metadata = { title: "Analisis Jabatan — Task Inventory" };
 
 async function fetchSesi(accessToken: string | undefined): Promise<TiSesiRead[]> {
   const client = withServerAuth(accessToken);

@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { auth, isPartisipan } from "@/lib/auth/auth";
 import { TsLogForm } from "./ts-log-form";
 
-export const metadata = { title: "Tambah Log Harian — Time Study — ANJAB-ABK" };
+export const metadata = { title: "Tambah Log Harian — Time Study" };
 
 interface Props {
   params: Promise<{ penugasan_id: string }>;

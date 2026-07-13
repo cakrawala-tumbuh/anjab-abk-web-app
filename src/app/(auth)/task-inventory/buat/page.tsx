@@ -6,7 +6,7 @@ import { toApiError } from "@/lib/api/errors";
 import type { TiKombinasiRead } from "@/lib/api/schema";
 import { TiSesiForm } from "./ti-sesi-form";
 
-export const metadata = { title: "Mulai Analisis Jabatan — Task Inventory — ANJAB-ABK" };
+export const metadata = { title: "Mulai Analisis Jabatan — Task Inventory" };
 
 async function fetchKombinasi(accessToken: string | undefined): Promise<TiKombinasiRead[]> {
   const client = withServerAuth(accessToken);

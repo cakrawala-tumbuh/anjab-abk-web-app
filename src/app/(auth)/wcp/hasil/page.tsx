@@ -5,7 +5,7 @@ import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
 import type { WcpHasilDimensiRead, WcpHasilRead, WcpInstrumenRead } from "@/lib/api/schema";
 
-export const metadata = { title: "Hasil WCP — ANJAB-ABK" };
+export const metadata = { title: "Hasil WCP" };
 
 const INTERPRETASI_LABEL: Record<string, string> = {
   BAIK: "bg-green-100 text-green-700",

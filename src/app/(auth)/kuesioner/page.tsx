@@ -12,7 +12,7 @@ import type {
 
 type TsKuesionerItemRead = components["schemas"]["TsKuesionerItemRead"];
 
-export const metadata = { title: "Kuesioner Saya — ANJAB-ABK" };
+export const metadata = { title: "Kuesioner Saya" };
 
 const STATUS_LABEL: Record<string, string> = {
   OPEN: "Terbuka",

@@ -5,7 +5,7 @@ import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
 import type { DcsHasilRead, DcsHasilSubSkalaRead, DcsInstrumenRead } from "@/lib/api/schema";
 
-export const metadata = { title: "Hasil DCS — ANJAB-ABK" };
+export const metadata = { title: "Hasil DCS" };
 
 const RISK_LABEL: Record<string, { label: string; cls: string }> = {
   HIGH: { label: "Tinggi", cls: "bg-red-100 text-red-700" },

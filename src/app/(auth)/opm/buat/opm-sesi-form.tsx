@@ -13,7 +13,7 @@ import type { JabatanRead, TiSesiRead } from "@/lib/api/schema";
 export const schema = z
   .object({
     jabatan_id: z.string().min(1, "Jabatan wajib dipilih"),
-    ti_sesi_id: z.string().min(1, "Sesi Task Inventory wajib dipilih"),
+    ti_sesi_id: z.string().min(1, "Analisis Jabatan Task Inventory wajib dipilih"),
     periode: z
       .string()
       .regex(/^\d{4}-\d{2}$/, "Format periode: YYYY-MM (cth. 2026-06)")
