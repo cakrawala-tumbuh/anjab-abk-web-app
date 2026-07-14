@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { auth, isPartisipan } from "@/lib/auth/auth";
 import { withServerAuth } from "@/lib/api/client";
-import { toApiError } from "@/lib/api/errors";
+import { apiErrorDari, toApiError } from "@/lib/api/errors";
 import type { OpmJawabanRead, OpmRespondenRead, OpmSesiTaskRead } from "@/lib/api/schema";
 import { OpmForm } from "./opm-form";
 
@@ -22,15 +22,21 @@ async function fetchPageData(accessToken: string | undefined, respondenId: strin
 
   const responden = respondenRes.data as OpmRespondenRead;
 
+  // Data kritis: daftar task ADALAH kuesionernya. Kegagalan yang ditelan jadi
+  // `[]` merender formulir kosong yang tampak sah — dilarang.
   const taskRes = await client.GET("/api/v1/opm/sesi/{sesi_id}/task", {
     params: { path: { sesi_id: responden.sesi_id } },
   });
-  const task = (taskRes.data ?? []) as OpmSesiTaskRead[];
+  if (!taskRes.data) throw apiErrorDari(taskRes);
+  const task = taskRes.data as OpmSesiTaskRead[];
 
+  // Jawaban tersimpan: 200 + array kosong bila belum mengisi (kondisi sah);
+  // kegagalan harus melempar, bukan tampil sebagai "belum diisi".
   const jRes = await client.GET("/api/v1/opm/sesi/responden/{responden_id}/jawaban", {
     params: { path: { responden_id: respondenId } },
   });
-  const jawaban = (jRes.data ?? []) as OpmJawabanRead[];
+  if (!jRes.data) throw apiErrorDari(jRes);
+  const jawaban = jRes.data as OpmJawabanRead[];
 
   return { responden, task, jawaban };
 }

@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { auth, isPartisipan } from "@/lib/auth/auth";
 import { withServerAuth } from "@/lib/api/client";
-import { toApiError } from "@/lib/api/errors";
+import { apiErrorDari, toApiError } from "@/lib/api/errors";
 import type { DcsRespondenRead, DcsSubSkalaWithItemsRead, DcsJawabanRead } from "@/lib/api/schema";
 import { DcsForm } from "./dcs-form";
 
@@ -30,10 +30,14 @@ async function fetchPageData(accessToken: string | undefined, respondenId: strin
   const responden = respondenRes.data as DcsRespondenRead;
   const subskala = subskalaRes.map((r) => r.data).filter(Boolean) as DcsSubSkalaWithItemsRead[];
 
+  // Jawaban tersimpan: 200 + array kosong bila belum mengisi (kondisi sah);
+  // kegagalan harus melempar, bukan tampil sebagai "belum diisi" (draft user
+  // seolah hilang, dan pengisian ulang menimpa data yang sebenarnya ada).
   const jRes = await client.GET("/api/v1/dcs/responden/{responden_id}/jawaban", {
     params: { path: { responden_id: respondenId } },
   });
-  const jawaban = (jRes.data ?? []) as DcsJawabanRead[];
+  if (!jRes.data) throw apiErrorDari(jRes);
+  const jawaban = jRes.data as DcsJawabanRead[];
 
   return { responden, subskala, jawaban };
 }

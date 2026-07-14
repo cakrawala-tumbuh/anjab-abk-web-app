@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { auth, isAdmin } from "@/lib/auth/auth";
 import { withServerAuth } from "@/lib/api/client";
-import { toApiError } from "@/lib/api/errors";
+import { apiErrorDari } from "@/lib/api/errors";
 import type { DetilTugasRead, JabatanRead, TugasPokokRead } from "@/lib/api/schema";
 import { TambahDetilTugasForm } from "../tambah/detil-tugas-form";
 import { HapusDetilTugasButton } from "./hapus-button";
@@ -17,12 +17,15 @@ async function fetchData(accessToken: string | undefined, id: string) {
     client.GET("/api/v1/task-inventory/tugas-pokok", { params: { query: { limit: 200 } } }),
     client.GET("/api/v1/jabatan", { params: { query: { limit: 200 } } }),
   ]);
-  if (!detilRes.data) throw toApiError(null, detilRes.response.headers.get("x-request-id"));
-  if (!pokokRes.data) throw toApiError(null, pokokRes.response.headers.get("x-request-id"));
+  if (!detilRes.data) throw apiErrorDari(detilRes);
+  if (!pokokRes.data) throw apiErrorDari(pokokRes);
+  // Sumber daftar checkbox jabatan pada formulir edit — bila ditelan jadi `[]`,
+  // menyimpan form akan MELEPAS semua jabatan yang sudah terkait.
+  if (!jabatanRes.data) throw apiErrorDari(jabatanRes);
   return {
     detilTugas: detilRes.data as DetilTugasRead,
     tugasPokok: (pokokRes.data.items ?? []) as TugasPokokRead[],
-    jabatanList: (jabatanRes.data?.items ?? []) as JabatanRead[],
+    jabatanList: (jabatanRes.data.items ?? []) as JabatanRead[],
   };
 }
 

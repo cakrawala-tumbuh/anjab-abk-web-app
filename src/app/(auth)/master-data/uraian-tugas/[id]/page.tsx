@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { auth, isAdmin } from "@/lib/auth/auth";
 import { withServerAuth } from "@/lib/api/client";
-import { toApiError } from "@/lib/api/errors";
+import { apiErrorDari } from "@/lib/api/errors";
 import type {
   DetilTugasRead,
   JabatanRead,
@@ -23,14 +23,17 @@ async function fetchData(accessToken: string | undefined, id: string) {
     client.GET("/api/v1/task-inventory/detil-tugas", { params: { query: { limit: 500 } } }),
     client.GET("/api/v1/jabatan", { params: { query: { limit: 200 } } }),
   ]);
-  if (!uraianRes.data) throw toApiError(null, uraianRes.response.headers.get("x-request-id"));
-  if (!pokokRes.data) throw toApiError(null, pokokRes.response.headers.get("x-request-id"));
-  if (!detilRes.data) throw toApiError(null, detilRes.response.headers.get("x-request-id"));
+  if (!uraianRes.data) throw apiErrorDari(uraianRes);
+  if (!pokokRes.data) throw apiErrorDari(pokokRes);
+  if (!detilRes.data) throw apiErrorDari(detilRes);
+  // `jabatanList` menyaring pilihan jabatan pada formulir edit — ditelan jadi
+  // `[]`, menyimpan form akan MELEPAS jabatan yang sudah terkait.
+  if (!jabatanRes.data) throw apiErrorDari(jabatanRes);
   return {
     uraianTugas: uraianRes.data as UraianTugasRead,
     tugasPokok: (pokokRes.data.items ?? []) as TugasPokokRead[],
     detilTugas: (detilRes.data.items ?? []) as DetilTugasRead[],
-    jabatanList: (jabatanRes.data?.items ?? []) as JabatanRead[],
+    jabatanList: (jabatanRes.data.items ?? []) as JabatanRead[],
   };
 }
 

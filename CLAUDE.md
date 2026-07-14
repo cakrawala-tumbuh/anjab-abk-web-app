@@ -42,6 +42,40 @@ src/
 
 - **Server Component by default** — tandai `"use client"` hanya saat butuh hook/interaktivitas.
 - Semua akses API backend lewat klien bertipe di `src/lib/api/` — dilarang `fetch` ad-hoc tanpa tipe.
+- **Jalur BACA DILARANG menelan kegagalan API menjadi kekosongan — dalam ejaan APA PUN.**
+  Yang dilarang bukan satu ejaan, melainkan **polanya**: `res.data ?? []`, `res.data ?? null`,
+  `res.data?.items ?? []`, `res.data?.items?.[0] ?? null`, `?? ([] as Foo[])`, dan variasi lain
+  yang mengubah respons gagal (401/403/5xx) menjadi array/objek kosong. Kekosongan hasil kegagalan
+  tidak terbedakan dari kekosongan yang sah, sehingga halaman merender daftar/dropdown/formulir
+  kosong yang tampak sah — itu _notifikasi bohong_, sama terlarangnya dengan toast sukses palsu
+  (backlog 017 → 026 → 029 → 031). Yang benar: `if (!res.data) throw apiErrorDari(res);`
+  - **Larangan ini mencakup data PENDUKUNG**, bukan hanya data inti. Daftar yang "cuma" mengisi
+    dropdown atau melabeli ID (jabatan, sekolah, partisipan, tugas pokok) **tetap tidak boleh
+    gagal secara senyap** — dropdown kosong karena 401 membuat admin menyimpulkan "master data
+    belum diisi" lalu membuat duplikat, dan menyimpan formulir edit dengan pilihan yang hilang
+    akan **menghapus relasi yang sudah ada**. Cakupan 026 yang berhenti di data inti adalah
+    persis celah yang harus ditambal backlog 031 (29 kemunculan).
+  - **Data pendukung boleh tidak menggagalkan halaman — tapi wajib TERLIHAT.** Bila data intinya
+    sukses dan yang gagal hanya pelabelan, pakai `pendukungList`/`bagianGagal`
+    (`src/lib/api/pendukung.ts`) + render `<GagalMuatSebagian>` (`src/components/gagal-muat.tsx`).
+    Bila daftar itu **satu-satunya sumber pilihan sebuah formulir**, perlakukan sebagai data inti
+    dan **lempar**.
+  - **Pengecualian** hanya untuk data yang ketiadaannya memang jawaban SAH dari backend (mis.
+    `GET /partisipan/saya` 404 untuk admin non-partisipan; `GET .../seleksi` 404 saat responden
+    belum pernah menyimpan pilihan) — dan hanya **404** yang boleh ditoleransi, sisanya tetap
+    melempar. Pengecualian baru wajib didaftarkan di `PENGECUALIAN`
+    (`src/test/jaring-pengaman-jalur-baca.test.ts`) agar terlihat di review.
+  - **Jaring pengaman**: `src/test/jaring-pengaman-jalur-baca.test.ts` menegakkan semua ejaan di
+    atas otomatis. **Jangan** mengandalkan grep sekali-pakai — pola ini kembali tiga kali justru
+    karena tiap pemberantasan hanya mengejar satu ejaan.
+- **Semua panggilan backend lewat `withServerAuth(accessToken)` — termasuk dari Client
+  Component.** Klien tanpa Bearer sengaja tidak tersedia (`src/lib/api/client.ts` tidak lagi
+  mengekspor `api`): seluruh endpoint backend, termasuk endpoint BACA, menuntut token.
+  Di Client Component, `accessToken` diteruskan sebagai prop dari Server Component induknya.
+- **Jalur BACA di Client Component (`useEffect`) tunduk pada invariant yang sama**: gagal harus
+  melempar (`if (!res.data) throw apiErrorDari(res);`), dilaporkan lewat **`notifyGagal`** (bukan
+  `GagalMuat` — komponen ini tidak dirender di server), dan state _gagal-muat_ **wajib terbedakan**
+  dari state _kosong yang sah_. Dilarang `.catch(() => setX([]))` (lihat backlog 029).
 - Token akses **tidak** disimpan di `localStorage`; pakai sesi Auth.js (cookie httpOnly).
 - Env klien wajib berprefiks `NEXT_PUBLIC_`; env server (tanpa prefiks) tidak boleh terekspos ke klien.
 - Setiap route wajib punya `loading.tsx` dan `error.tsx`.
@@ -49,6 +83,126 @@ src/
 - `src/lib/api/schema.ts` adalah artefak generate — regenerate dengan `npm run gen:api`, jangan edit tangan.
 
 ## Revisi Desain
+
+### [2026-07-14] Data PENDUKUNG (dropdown & label) ikut dilarang menelan kegagalan; jaring pengaman menggantikan grep
+
+Backlog 026 memberantas `?? []` di jalur baca **data inti**; 031 menutup sisanya: **29
+kemunculan** di jalur **data pendukung** — daftar yang mengisi dropdown & melabeli ID.
+Dampaknya lebih halus dari 026/029 (yang hilang adalah _pilihan_ dan _keterbacaan_,
+bukan data tersimpan), tapi konsekuensinya serius: dropdown jabatan kosong karena 401
+membuat admin menyimpulkan "master data belum diisi" lalu membuat duplikat.
+
+- **Klasifikasi, bukan pukul rata.** Tiap kemunculan dinilai per kasus:
+  1. **Pendukung → formulir/dropdown** (20 kemunculan, 12 berkas) → **melempar**
+     `apiErrorDari(res)`. Ini bukan sekadar kosmetik: menyimpan formulir edit dengan
+     pilihan yang hilang **menghapus relasi yang sudah ada** (mis. `jabatan_ids` tugas
+     pokok, jabatan tambahan partisipan).
+  2. **Pendukung → pelabelan saja** (halaman daftar `/time-study`, `/partisipan`,
+     `/master-data/sme-panel`) → **halaman tetap dirender**, kegagalannya ditampilkan
+     lewat `<GagalMuatSebagian>`. Panel itu menyatakan eksplisit bahwa daftar yang tampak
+     kosong **bukan** berarti datanya belum ada.
+  3. **`data.items ?? []` SETELAH guard `if (!res.data) throw`** → default field opsional
+     envelope, bukan penelanan. Dibiarkan.
+- Kode bersama baru: `src/lib/api/pendukung.ts` (`pendukungList`, `bagianGagal`,
+  tipe `BagianGagal`) + `GagalMuatSebagian` di `src/components/gagal-muat.tsx`.
+- **Grep sekali-pakai ditinggalkan, diganti jaring pengaman otomatis**
+  (`src/test/jaring-pengaman-jalur-baca.test.ts`). Pola ini kembali tiga kali (017 → 026 → 029) justru karena tiap pemberantasan hanya mengejar **satu ejaan**: grep 026
+  (`\.data \?\? \[\]`) tidak menangkap `\.data\?\.items \?\? \[\]`. Jaring baru memindai
+  seluruh `src/` untuk **semua** ejaan sekaligus — dan langsung membuktikan dirinya dengan
+  menangkap **ejaan keempat** yang lolos dari audit manual backlog 031 sendiri:
+  `?? ([] as SekolahRead[])` di `partisipan/tambah/page.tsx`. Pengecualian hanya lewat
+  daftar `PENGECUALIAN` yang eksplisit (kini berisi satu entri: `/partisipan/saya`).
+- Jalur baca yang disentuh dimigrasikan `toApiError(null, reqId)` → `apiErrorDari(res)`.
+  **Catatan utang**: ±20 berkas baca lain masih memakai `toApiError(null, …)` — mereka
+  **melempar** (tidak menelan), jadi di luar cakupan 031, tapi membuang pesan backend &
+  status HTTP. Layak diseragamkan menyusul.
+- Detail keputusan: `backlog/031-web-app-telan-senyap-data-pendukung.md` di repo induk.
+
+### [2026-07-14] Form "Mulai Analisis Jabatan" (TI & OPM) sadar jumlah anggota SME panel
+
+Backend menolak keras (422) pembuatan sesi bila jumlah anggota SME panel melebihi
+`max_responden` (OPM sejak lama; TI sejak backlog 028). Form tidak menampilkan jumlah
+anggota panel sama sekali → admin mengisi `max_responden` (default 10) secara buta lalu
+ditolak, tanpa pernah tahu panelnya berisi 11 orang.
+
+- **Jumlah anggota SME panel ditampilkan begitu jabatan dipilih**, dan `max_responden`
+  **di-prefill** sebesar jumlah itu (`setValue` di `useEffect` yang bergantung pada
+  `jabatan_id`). **Bukan** validasi klien yang menolak submit — prefill tidak menambah
+  gesekan, dan angkanya tetap milik admin.
+- **Default `max_responden` DILARANG dinaikkan sebagai "perbaikan"** — itu menyembunyikan
+  masalahnya (admin tetap tidak tahu ukuran panelnya), bukan menyelesaikannya.
+- Jabatan **tanpa** SME panel tetap sah (sesi dibuat kosong) — submit tidak diblokir,
+  hanya ditampilkan "Jabatan ini belum punya SME panel".
+- Pesan 422 backend (menyebut kedua angka) wajib tampil **utuh** lewat `notifyGagal` —
+  jangan diganti pesan generik.
+- Kode bersama: `src/lib/sme-panel.ts` (peta `jabatan_id` → jumlah anggota; panel unik per
+  jabatan di backend) + `src/components/sme-panel-info.tsx`, dipakai identik TI & OPM.
+- Detail keputusan: `backlog/030-web-app-form-max-responden-sadar-panel.md` di repo induk.
+
+### [2026-07-14] Klien `api` tanpa Bearer dihapus; jalur baca Client Component ikut dilarang menelan error
+
+Backlog 025 (backend) memasang guard auth di seluruh endpoint baca. Audit menemukan **satu**
+call site di web app yang memanggil `GET /api/v1/partisipan` dengan klien `api` **telanjang**
+(tanpa Bearer) — `AnggotaSection` di `master-data/sme-panel/[id]/anggota-form.tsx`, satu-satunya
+panggilan API dari **browser** (`useEffect`). Kegagalannya ditelan dua kali
+(`data?.items ?? []` **dan** `.catch(() => setPartisipanList([]))`), sehingga 401 akan tampil
+sebagai **"Belum ada anggota"** pada panel yang sebenarnya berisi.
+
+- **`api` (klien tanpa middleware Bearer) dihapus dari `src/lib/api/client.ts`.** Setelah call
+  site itu diperbaiki, pemakaiannya nol — dan tidak boleh ada lagi: seluruh endpoint backend,
+  termasuk endpoint baca, menuntut token. `withServerAuth(accessToken)` adalah satu-satunya pintu.
+- **Invariant jalur baca (026) berlaku juga di Client Component**, dengan satu beda: pelaporan
+  gagalnya lewat **`notifyGagal`** (toast + `X-Request-ID`), **bukan** `GagalMuat` — komponen ini
+  tidak dirender di server. State _gagal-muat_ disimpan terpisah (`gagalMuat`) dan merender panel
+  error; ia **tidak boleh** jatuh ke daftar kosong yang tak terbedakan dari "memang belum ada
+  anggota".
+- **Urutan rilis mengikat**: backend ber-guard 025 tidak boleh di-deploy tanpa perubahan ini.
+  Web app boleh lebih dulu — mengirim token ke endpoint yang belum menuntutnya tetap aman.
+- Jaring pengaman: `grep -rnE "(^|[^.a-zA-Z])api\.(GET|POST|PATCH|PUT|DELETE)" src` → nol hasil;
+  `grep -rn "catch(() => set" src` → nol hasil.
+- Detail keputusan & konteks: `backlog/029-web-app-sme-panel-anggota-form-tanpa-token.md`
+  di repo induk `anjab-abk`.
+
+### [2026-07-14] Jalur baca Server Component: `?? []` dilarang untuk data kritis — gagal harus melempar
+
+Perpanjangan backlog 017 (di bawah) ke jalur **baca**. Halaman Tahap 3 mengambil
+daftar task dengan `(ttRes.data ?? []) as TiTaskTerpilihRead[]` — respons gagal apa
+pun (401/403/422/500) menjadi array kosong, dan halaman merender "Ditandai
+dikerjakan: **0 dari 0 task**" dengan formulir kosong tanpa pesan error apa pun.
+Terreproduksi di produksi YPII: sesi TI dengan 19 task terpilih tampil sebagai
+"0 task" untuk **seluruh 7 responden**, tanpa satu pun petunjuk kesalahan.
+
+- **Invariant** (lihat juga Konvensi di atas): jalur baca Server Component memakai
+  `if (!res.data) throw apiErrorDari(res);`. **Dilarang `?? []` / `?? null` untuk
+  data kritis.** Jaring pengaman: `grep -rn "\.data ?? \[\]" src/app` → nol hasil.
+- `apiErrorDari(res)` (`src/lib/api/errors.ts`) adalah pintu wajibnya — membangun
+  `ApiError` lengkap dengan pesan backend, **status HTTP** (field baru
+  `ApiError.status`), dan `X-Request-ID`. Pola lama `toApiError(null, reqId)`
+  membuang pesan backend dan status; jangan dipakai lagi di jalur baca.
+- **Kegagalan yang dikenali (`ApiError`) dirender DI SERVER**, bukan dilempar ke
+  `error.tsx`: Next.js **menyensor `error.message`** dari error Server Component
+  sebelum sampai ke error boundary (produksi hanya menerima pesan generik +
+  `digest`), sehingga `X-Request-ID` **mustahil** ditampilkan dari sana. Komponen
+  `GagalMuat` & `TidakBerhak` (`src/components/gagal-muat.tsx`) dipakai halaman
+  Tahap 1 & Tahap 3; error **tak dikenal** tetap dilempar ke `error.tsx`.
+  403 non-pemilik kini jadi halaman "tidak berhak" yang rapi (dulu: digest React mentah).
+- **Bedakan tiga kondisi** — jangan gabungkan:
+  1. Prasyarat status belum terpenuhi → **jangan panggil endpoint-nya** (backend
+     menolak 422). Pola: `if (["TAHAP3","CLOSED","ANALYZED"].includes(sesi.status))`.
+  2. Panggilan sukses tapi hasilnya **benar-benar kosong** → kondisi SAH, tampilkan
+     pesan eksplisit. Mis. 0 task final di Tahap 3 (`detail-form.tsx`): pesan
+     "Tidak ada task final…" + tombol "Kirim Detail" nonaktif — **bukan** formulir kosong.
+  3. Panggilan **gagal** (4xx/5xx) → lempar.
+- **Pengecualian yang disengaja** (404 = jawaban sah, bukan kegagalan): `GET
+/partisipan/saya` untuk admin non-partisipan, dan `GET .../seleksi` pada kunjungan
+  pertama Tahap 1 (backend melempar `NotFound` bila responden belum pernah menyimpan
+  pilihan — melempar di sini akan mematikan seluruh alur normal Tahap 1). Hanya **404**
+  yang ditoleransi di dua tempat itu; 401/403/5xx tetap melempar.
+- `fetchPageData` Tahap 1 & Tahap 3 dipindah ke `data.ts` masing-masing supaya bisa
+  diuji langsung — berkas route Next.js (`page.tsx`) tidak boleh mengekspor fungsi
+  sembarang (`next build` menolaknya).
+- Detail keputusan & konteks temuan: `backlog/026-web-app-error-api-ditelan-senyap.md`
+  di repo induk `anjab-abk`.
 
 ### [2026-07-14] DCS & WCP: konfirmasi `confirm()` sebelum "Jalankan Analisis"
 

@@ -2,7 +2,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { auth, isAdmin } from "@/lib/auth/auth";
 import { withServerAuth } from "@/lib/api/client";
-import { toApiError } from "@/lib/api/errors";
+import { apiErrorDari } from "@/lib/api/errors";
+import { bagianGagal, pendukungList } from "@/lib/api/pendukung";
+import { GagalMuatSebagian } from "@/components/gagal-muat";
 import type { JabatanRead, PartisipanRead, SekolahRead } from "@/lib/api/schema";
 
 export const metadata = { title: "Partisipan" };
@@ -14,12 +16,19 @@ async function fetchAll(accessToken: string | undefined) {
     client.GET("/api/v1/sekolah", { params: { query: { limit: 100 } } }),
     client.GET("/api/v1/jabatan", { params: { query: { limit: 100 } } }),
   ]);
-  const reqId = pRes.response.headers.get("x-request-id");
-  if (!pRes.data) throw toApiError(null, reqId);
+  // Data INTI — kegagalan tidak boleh tampil sebagai "belum ada partisipan".
+  if (!pRes.data) throw apiErrorDari(pRes);
+
+  // Data PENDUKUNG (pelabelan kolom Sekolah & Jabatan) — halaman tetap dirender,
+  // kegagalannya ditampilkan lewat <GagalMuatSebagian>.
+  const sekolah = pendukungList<SekolahRead>("Daftar sekolah", sRes);
+  const jabatan = pendukungList<JabatanRead>("Daftar jabatan", jRes);
+
   return {
     partisipan: (pRes.data.items ?? []) as PartisipanRead[],
-    sekolah: (sRes.data?.items ?? []) as SekolahRead[],
-    jabatan: (jRes.data?.items ?? []) as JabatanRead[],
+    sekolah: sekolah.data,
+    jabatan: jabatan.data,
+    gagalPendukung: bagianGagal(sekolah, jabatan),
   };
 }
 
@@ -27,12 +36,13 @@ export default async function PartisipanPage() {
   const session = await auth();
   if (!isAdmin(session)) notFound();
 
-  const { partisipan, sekolah, jabatan } = await fetchAll(session?.accessToken);
+  const { partisipan, sekolah, jabatan, gagalPendukung } = await fetchAll(session?.accessToken);
   const sekolahMap = Object.fromEntries(sekolah.map((s) => [s.id, s.nama]));
   const jabatanMap = Object.fromEntries(jabatan.map((j) => [j.id, j.nama]));
 
   return (
     <div className="space-y-6">
+      <GagalMuatSebagian bagian={gagalPendukung} />
       <div className="flex items-center justify-between">
         <div>
           <h1 className="page-heading">Partisipan</h1>

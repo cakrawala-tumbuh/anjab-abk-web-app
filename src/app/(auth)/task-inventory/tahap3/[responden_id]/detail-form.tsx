@@ -221,6 +221,34 @@ export function DetailForm({ respondenId, tasks, detailAwal, accessToken }: Prop
     }
   }
 
+  // Kondisi SAH tapi buntu: sesi sudah TAHAP3 (halaman hanya merender form ini
+  // saat status TAHAP3) namun himpunan task final kosong — koordinator tidak
+  // menyetujui satu pun task partial. Jangan tampilkan formulir kosong dengan
+  // tombol Simpan/Kirim yang menyesatkan; katakan apa adanya.
+  if (tasks.length === 0) {
+    return (
+      <div className="space-y-4">
+        <div
+          role="alert"
+          className="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800"
+        >
+          <p className="font-medium">Tidak ada task final pada analisis ini.</p>
+          <p className="mt-1">
+            Koordinator tidak menyetujui satu pun task partial, sehingga tidak ada tugas yang bisa
+            dirinci. Hubungi administrator.
+          </p>
+        </div>
+        <button
+          type="button"
+          disabled
+          className="rounded-md bg-indigo-600 px-5 py-2 text-sm font-medium text-white disabled:opacity-60"
+        >
+          Kirim Detail
+        </button>
+      </div>
+    );
+  }
+
   const selectCls =
     "rounded-md border border-gray-300 px-2 py-1 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-500";
   const numCls =

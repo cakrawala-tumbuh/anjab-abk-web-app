@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { auth, isAdmin } from "@/lib/auth/auth";
 import { withServerAuth } from "@/lib/api/client";
+import { apiErrorDari } from "@/lib/api/errors";
 import type { components } from "@/lib/api/schema";
 import { TsPenugasanForm } from "./ts-penugasan-form";
 
@@ -16,9 +17,13 @@ async function fetchPageData(accessToken: string | undefined) {
     client.GET("/api/v1/partisipan", { params: { query: { limit: 100 } } }),
     client.GET("/api/v1/jabatan", { params: { query: { limit: 100 } } }),
   ]);
+  // Keduanya = satu-satunya sumber pilihan formulir penugasan. Ditelan jadi `[]`,
+  // admin melihat dropdown kosong dan menyimpulkan "belum ada partisipan/jabatan".
+  if (!partisipanRes.data) throw apiErrorDari(partisipanRes);
+  if (!jabatanRes.data) throw apiErrorDari(jabatanRes);
   return {
-    partisipan: (partisipanRes.data?.items ?? []) as PartisipanRead[],
-    jabatan: (jabatanRes.data?.items ?? []) as JabatanRead[],
+    partisipan: (partisipanRes.data.items ?? []) as PartisipanRead[],
+    jabatan: (jabatanRes.data.items ?? []) as JabatanRead[],
   };
 }
 

@@ -2,7 +2,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { auth, isAdmin } from "@/lib/auth/auth";
 import { withServerAuth } from "@/lib/api/client";
-import { toApiError } from "@/lib/api/errors";
+import { apiErrorDari } from "@/lib/api/errors";
+import { petaJumlahAnggotaPanel } from "@/lib/sme-panel";
 import type { JabatanRead, SMEPanelRead, TiSesiRead } from "@/lib/api/schema";
 import { OpmSesiForm } from "./opm-sesi-form";
 
@@ -15,27 +16,31 @@ async function fetchPageData(accessToken: string | undefined) {
     client.GET("/api/v1/sme-panel", { params: { query: { limit: 100 } } }),
     client.GET("/api/v1/task-inventory/sesi", { params: { query: { limit: 100 } } }),
   ]);
-  const reqId = jabatanRes.response.headers.get("x-request-id");
-  if (!jabatanRes.data) throw toApiError(null, reqId);
+  // Ketiganya kritis (invariant backlog 026): panel yang gagal dimuat akan
+  // mengosongkan daftar jabatan, dan sesi TI yang gagal dimuat akan tampil
+  // sebagai "belum ada Analisis Jabatan TI yang dibekukan" — dua-duanya
+  // notifikasi bohong.
+  if (!jabatanRes.data) throw apiErrorDari(jabatanRes);
+  if (!panelRes.data) throw apiErrorDari(panelRes);
+  if (!tiSesiRes.data) throw apiErrorDari(tiSesiRes);
 
-  const jabatan = (jabatanRes.data.items ?? []) as JabatanRead[];
-  const panel = (panelRes.data?.items ?? []) as SMEPanelRead[];
-  const tiSesi = (tiSesiRes.data?.items ?? []) as TiSesiRead[];
+  const jabatan = jabatanRes.data.items as JabatanRead[];
+  const panel = panelRes.data.items as SMEPanelRead[];
+  const tiSesi = tiSesiRes.data.items as TiSesiRead[];
+
+  const petaAnggota = petaJumlahAnggotaPanel(panel);
 
   // Hanya jabatan yang punya SME panel dengan >= 1 anggota.
-  const jabatanIdsBerPanel = new Set(
-    panel.filter((p) => (p.partisipan_ids ?? []).length > 0).map((p) => p.jabatan_id),
-  );
-  const jabatanBerPanel = jabatan.filter((j) => jabatanIdsBerPanel.has(j.id));
+  const jabatanBerPanel = jabatan.filter((j) => (petaAnggota[j.id] ?? 0) > 0);
 
-  return { jabatanBerPanel, tiSesi };
+  return { jabatanBerPanel, tiSesi, petaAnggota };
 }
 
 export default async function BuatOpmSesiPage() {
   const session = await auth();
   if (!isAdmin(session)) notFound();
 
-  const { jabatanBerPanel, tiSesi } = await fetchPageData(session?.accessToken);
+  const { jabatanBerPanel, tiSesi, petaAnggota } = await fetchPageData(session?.accessToken);
 
   return (
     <div className="space-y-6">
@@ -55,7 +60,12 @@ export default async function BuatOpmSesiPage() {
         </p>
       </div>
 
-      <OpmSesiForm jabatan={jabatanBerPanel} tiSesi={tiSesi} accessToken={session?.accessToken} />
+      <OpmSesiForm
+        jabatan={jabatanBerPanel}
+        tiSesi={tiSesi}
+        petaAnggota={petaAnggota}
+        accessToken={session?.accessToken}
+      />
     </div>
   );
 }

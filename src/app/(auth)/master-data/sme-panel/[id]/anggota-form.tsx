@@ -5,8 +5,8 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { api, withServerAuth } from "@/lib/api/client";
-import { toApiError } from "@/lib/api/errors";
+import { withServerAuth } from "@/lib/api/client";
+import { apiErrorDari, toApiError } from "@/lib/api/errors";
 import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
 import type { PartisipanRead } from "@/lib/api/schema";
 
@@ -226,13 +226,45 @@ export function AnggotaSection({
   accessToken,
 }: AnggotaSectionProps) {
   const [partisipanList, setPartisipanList] = useState<PartisipanRead[] | null>(null);
+  // State GAGAL MUAT — sengaja dipisah dari `partisipanList` kosong, supaya kegagalan
+  // pemuatan tidak menyaru sebagai "belum ada anggota" (notifikasi bohong).
+  const [gagalMuat, setGagalMuat] = useState<string | null>(null);
 
   useEffect(() => {
-    api
+    let dibatalkan = false;
+    const client = withServerAuth(accessToken);
+    client
       .GET("/api/v1/partisipan", { params: { query: { limit: 100 } } })
-      .then(({ data }) => setPartisipanList(data?.items ?? []))
-      .catch(() => setPartisipanList([]));
-  }, []);
+      .then((res) => {
+        if (dibatalkan) return;
+        if (!res.data) throw apiErrorDari(res);
+        setPartisipanList(res.data.items as PartisipanRead[]);
+      })
+      .catch((err) => {
+        if (dibatalkan) return;
+        setGagalMuat(pesanGagal(err));
+        notifyGagal(err);
+      });
+    return () => {
+      dibatalkan = true;
+    };
+  }, [accessToken]);
+
+  if (gagalMuat !== null) {
+    return (
+      <div
+        role="alert"
+        className="rounded-md border border-red-200 bg-red-50 p-4 text-sm text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-300"
+      >
+        <p className="font-medium">Gagal memuat data partisipan.</p>
+        <p className="mt-1">{gagalMuat}</p>
+        <p className="mt-2 text-xs">
+          Daftar anggota panel tidak dapat ditampilkan — ini BUKAN berarti panel kosong. Muat ulang
+          halaman untuk mencoba lagi.
+        </p>
+      </div>
+    );
+  }
 
   if (partisipanList === null) {
     return <p className="text-sm text-gray-400">Memuat data partisipan…</p>;

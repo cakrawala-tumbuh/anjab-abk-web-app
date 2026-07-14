@@ -2,7 +2,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { auth, isAdmin } from "@/lib/auth/auth";
 import { withServerAuth } from "@/lib/api/client";
-import { toApiError } from "@/lib/api/errors";
+import { apiErrorDari } from "@/lib/api/errors";
+import { bagianGagal, pendukungList } from "@/lib/api/pendukung";
+import { GagalMuatSebagian } from "@/components/gagal-muat";
 import type { JabatanRead, SMEPanelRead } from "@/lib/api/schema";
 
 export const metadata = { title: "SME Panel — Master Data" };
@@ -13,11 +15,16 @@ async function fetchAll(accessToken: string | undefined) {
     client.GET("/api/v1/sme-panel", { params: { query: { limit: 100 } } }),
     client.GET("/api/v1/jabatan", { params: { query: { limit: 100 } } }),
   ]);
-  const requestId = panelRes.response.headers.get("x-request-id");
-  if (!panelRes.data) throw toApiError(null, requestId);
+  // Data INTI — kegagalan tidak boleh tampil sebagai "belum ada SME panel".
+  if (!panelRes.data) throw apiErrorDari(panelRes);
+
+  // Data PENDUKUNG (pelabelan kolom Jabatan) — halaman tetap dirender.
+  const jabatan = pendukungList<JabatanRead>("Daftar jabatan", jabatanRes);
+
   return {
     panels: (panelRes.data.items ?? []) as SMEPanelRead[],
-    jabatan: (jabatanRes.data?.items ?? []) as JabatanRead[],
+    jabatan: jabatan.data,
+    gagalPendukung: bagianGagal(jabatan),
   };
 }
 
@@ -25,11 +32,12 @@ export default async function SMEPanelPage() {
   const session = await auth();
   if (!isAdmin(session)) notFound();
 
-  const { panels, jabatan } = await fetchAll(session?.accessToken);
+  const { panels, jabatan, gagalPendukung } = await fetchAll(session?.accessToken);
   const jabatanMap = Object.fromEntries(jabatan.map((j) => [j.id, j]));
 
   return (
     <div className="space-y-4">
+      <GagalMuatSebagian bagian={gagalPendukung} />
       <div className="flex items-center justify-between">
         <p className="text-sm text-gray-500 dark:text-gray-400">
           {panels.length} panel SME terdaftar

@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { auth, isPartisipan } from "@/lib/auth/auth";
 import { withServerAuth } from "@/lib/api/client";
-import { toApiError } from "@/lib/api/errors";
+import { apiErrorDari, toApiError } from "@/lib/api/errors";
 import type { WcpRespondenRead, WcpDimensiWithItemsRead, WcpJawabanRead } from "@/lib/api/schema";
 import { WcpForm } from "./wcp-form";
 
@@ -43,10 +43,14 @@ async function fetchPageData(accessToken: string | undefined, respondenId: strin
   const responden = respondenRes.data as WcpRespondenRead;
   const dimensi = dimensiRes.map((r) => r.data).filter(Boolean) as WcpDimensiWithItemsRead[];
 
+  // Jawaban tersimpan: 200 + array kosong bila belum mengisi (kondisi sah);
+  // kegagalan harus melempar, bukan tampil sebagai "belum diisi" (draft user
+  // seolah hilang, dan pengisian ulang menimpa data yang sebenarnya ada).
   const jRes = await client.GET("/api/v1/wcp/responden/{responden_id}/jawaban", {
     params: { path: { responden_id: respondenId } },
   });
-  const jawaban = (jRes.data ?? []) as WcpJawabanRead[];
+  if (!jRes.data) throw apiErrorDari(jRes);
+  const jawaban = jRes.data as WcpJawabanRead[];
 
   return { responden, dimensi, jawaban };
 }

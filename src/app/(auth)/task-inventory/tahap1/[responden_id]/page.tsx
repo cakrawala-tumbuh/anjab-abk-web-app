@@ -1,43 +1,17 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { auth, isAdmin } from "@/lib/auth/auth";
-import { withServerAuth } from "@/lib/api/client";
-import { toApiError } from "@/lib/api/errors";
-import type { TiCatalogRead, TiRespondenRead, TiSeleksiRead, TiSesiRead } from "@/lib/api/schema";
+import { ApiError, isTidakBerhak } from "@/lib/api/errors";
+import { GagalMuat, TidakBerhak } from "@/components/gagal-muat";
+import { fetchTahap1Data, type Tahap1PageData } from "./data";
 import { SeleksiForm } from "./seleksi-form";
 
 export const metadata = { title: "Tahap 1 — Seleksi Relevansi" };
 
+const JUDUL = "Tahap 1 — Seleksi Relevansi";
+
 interface Props {
   params: Promise<{ responden_id: string }>;
-}
-
-async function fetchPageData(accessToken: string | undefined, respondenId: string) {
-  const client = withServerAuth(accessToken);
-  const respRes = await client.GET("/api/v1/task-inventory/sesi/responden/{responden_id}", {
-    params: { path: { responden_id: respondenId } },
-  });
-  const reqId = respRes.response.headers.get("x-request-id");
-  if (!respRes.data) throw toApiError(null, reqId);
-  const responden = respRes.data as TiRespondenRead;
-
-  const sesiRes = await client.GET("/api/v1/task-inventory/sesi/{sesi_id}", {
-    params: { path: { sesi_id: responden.sesi_id } },
-  });
-  if (!sesiRes.data) throw toApiError(null, reqId);
-  const sesi = sesiRes.data as TiSesiRead;
-
-  const catalogRes = await client.GET("/api/v1/task-inventory/catalog", {
-    params: { query: { jabatan_id: sesi.jabatan_id } },
-  });
-  const catalog = (catalogRes.data ?? []) as TiCatalogRead[];
-
-  const selRes = await client.GET("/api/v1/task-inventory/sesi/responden/{responden_id}/seleksi", {
-    params: { path: { responden_id: respondenId } },
-  });
-  const terpilih = (selRes.data as TiSeleksiRead | undefined)?.task_kode ?? [];
-
-  return { responden, sesi, catalog, terpilih };
 }
 
 export default async function Tahap1Page({ params }: Props) {
@@ -45,10 +19,20 @@ export default async function Tahap1Page({ params }: Props) {
   if (!session) notFound();
 
   const { responden_id } = await params;
-  const { responden, sesi, catalog, terpilih } = await fetchPageData(
-    session?.accessToken,
-    responden_id,
-  );
+
+  // Kegagalan yang dikenali dirender di server (agar X-Request-ID terlihat —
+  // Next.js menyensor pesan error Server Component yang sampai ke error.tsx).
+  // Error tak dikenal tetap dilempar ke error boundary.
+  let data: Tahap1PageData;
+  try {
+    data = await fetchTahap1Data(session.accessToken, responden_id);
+  } catch (err) {
+    if (isTidakBerhak(err)) return <TidakBerhak judul={JUDUL} err={err} />;
+    if (err instanceof ApiError) return <GagalMuat judul={JUDUL} err={err} />;
+    throw err;
+  }
+
+  const { responden, sesi, catalog, terpilih } = data;
   const admin = isAdmin(session);
 
   return (
@@ -66,7 +50,7 @@ export default async function Tahap1Page({ params }: Props) {
       </div>
 
       <div>
-        <h1 className="page-heading">Tahap 1 — Seleksi Relevansi</h1>
+        <h1 className="page-heading">{JUDUL}</h1>
         <p className="page-subtext">
           {responden.nama ?? "Anonim"} · pilih task yang relevan untuk jabatan Anda.
         </p>

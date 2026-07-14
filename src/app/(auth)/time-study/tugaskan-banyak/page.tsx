@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { auth, isAdmin } from "@/lib/auth/auth";
 import { withServerAuth } from "@/lib/api/client";
+import { apiErrorDari } from "@/lib/api/errors";
 import type { components } from "@/lib/api/schema";
 import { TsPenugasanBulkForm } from "./ts-penugasan-bulk-form";
 
@@ -18,13 +19,20 @@ async function fetchPageData(accessToken: string | undefined) {
     client.GET("/api/v1/partisipan", { params: { query: { limit: 200 } } }),
     client.GET("/api/v1/jabatan", { params: { query: { limit: 100 } } }),
   ]);
-  const penugasan = (penugasanRes.data?.items ?? []) as TsPenugasanRead[];
-  const allPartisipan = (partisipanRes.data?.items ?? []) as PartisipanRead[];
+  // Ketiganya menentukan isi daftar checkbox. `penugasan` yang ditelan jadi `[]`
+  // bahkan lebih berbahaya: filter "belum ditugaskan" jadi meloloskan SEMUA
+  // partisipan, termasuk yang sudah punya penugasan aktif.
+  if (!penugasanRes.data) throw apiErrorDari(penugasanRes);
+  if (!partisipanRes.data) throw apiErrorDari(partisipanRes);
+  if (!jabatanRes.data) throw apiErrorDari(jabatanRes);
+
+  const penugasan = (penugasanRes.data.items ?? []) as TsPenugasanRead[];
+  const allPartisipan = (partisipanRes.data.items ?? []) as PartisipanRead[];
   const assignedIds = new Set(penugasan.map((p) => p.partisipan_id));
   const tersedia = allPartisipan.filter((p) => !assignedIds.has(p.id));
   return {
     partisipan: tersedia,
-    jabatan: (jabatanRes.data?.items ?? []) as JabatanRead[],
+    jabatan: (jabatanRes.data.items ?? []) as JabatanRead[],
   };
 }
 

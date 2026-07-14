@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { auth, isAdmin } from "@/lib/auth/auth";
 import { withServerAuth } from "@/lib/api/client";
-import { toApiError } from "@/lib/api/errors";
+import { apiErrorDari } from "@/lib/api/errors";
 import type { JabatanRead, MataPelajaranRead, PartisipanRead, SekolahRead } from "@/lib/api/schema";
 import { EditPartisipanForm } from "./edit-partisipan-form";
 
@@ -20,13 +20,19 @@ async function fetchPageData(accessToken: string | undefined, id: string) {
     client.GET("/api/v1/jabatan", { params: { query: { limit: 100 } } }),
     client.GET("/api/v1/mata-pelajaran", { params: { query: { limit: 100 } } }),
   ]);
-  const reqId = pRes.response.headers.get("x-request-id");
-  if (!pRes.data) throw toApiError(null, reqId);
+  if (!pRes.data) throw apiErrorDari(pRes);
+  // Ketiganya mengisi dropdown formulir edit partisipan (sekolah, jabatan utama
+  // & tambahan, mata pelajaran). Dropdown kosong karena 401 tidak terbedakan
+  // dari "master data belum diisi" — dan menyimpan form dengan pilihan yang
+  // hilang akan MENGHAPUS relasi partisipan yang sudah ada.
+  if (!sRes.data) throw apiErrorDari(sRes);
+  if (!jRes.data) throw apiErrorDari(jRes);
+  if (!mpRes.data) throw apiErrorDari(mpRes);
   return {
     partisipan: pRes.data as PartisipanRead,
-    sekolah: (sRes.data?.items ?? []) as SekolahRead[],
-    jabatan: (jRes.data?.items ?? []) as JabatanRead[],
-    mataPelajaran: (mpRes.data?.items ?? []) as MataPelajaranRead[],
+    sekolah: (sRes.data.items ?? []) as SekolahRead[],
+    jabatan: (jRes.data.items ?? []) as JabatanRead[],
+    mataPelajaran: (mpRes.data.items ?? []) as MataPelajaranRead[],
   };
 }
 

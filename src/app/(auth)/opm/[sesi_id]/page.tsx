@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { auth, isAdmin } from "@/lib/auth/auth";
 import { withServerAuth } from "@/lib/api/client";
-import { toApiError } from "@/lib/api/errors";
+import { apiErrorDari } from "@/lib/api/errors";
 import type {
   OpmRespondenRead,
   OpmSesiRead,
@@ -53,12 +53,20 @@ async function fetchPageData(accessToken: string | undefined, sesiId: string) {
     client.GET("/api/v1/sme-panel", { params: { query: { limit: 100 } } }),
     client.GET("/api/v1/partisipan", { params: { query: { limit: 100 } } }),
   ]);
-  const reqId = sesiRes.response.headers.get("x-request-id");
-  if (!sesiRes.data) throw toApiError(null, reqId);
+  if (!sesiRes.data) throw apiErrorDari(sesiRes);
+  // Task & responden = data inti sesi. Kegagalan yang ditelan jadi `[]` membuat
+  // admin melihat sesi kosong (dan bisa menugaskan ulang responden yang sudah ada).
+  if (!taskRes.data) throw apiErrorDari(taskRes);
+  if (!respondenRes.data) throw apiErrorDari(respondenRes);
+  // `panel` & `partisipan` menentukan siapa yang boleh ditugaskan. Ditelan jadi
+  // `[]`, form "Tugaskan Responden" tampil sebagai "panel SME jabatan ini belum
+  // punya anggota" — padahal daftarnya gagal diambil.
+  if (!panelRes.data) throw apiErrorDari(panelRes);
+  if (!partisipanRes.data) throw apiErrorDari(partisipanRes);
 
   const sesi = sesiRes.data as OpmSesiRead;
-  const panel = (panelRes.data?.items ?? []) as SMEPanelRead[];
-  const partisipan = (partisipanRes.data?.items ?? []) as PartisipanRead[];
+  const panel = (panelRes.data.items ?? []) as SMEPanelRead[];
+  const partisipan = (partisipanRes.data.items ?? []) as PartisipanRead[];
 
   const panelJabatan = panel.find((p) => p.jabatan_id === sesi.jabatan_id);
   const anggotaPanelIds = new Set(panelJabatan?.partisipan_ids ?? []);
@@ -66,8 +74,8 @@ async function fetchPageData(accessToken: string | undefined, sesiId: string) {
 
   return {
     sesi,
-    task: (taskRes.data ?? []) as OpmSesiTaskRead[],
-    responden: (respondenRes.data ?? []) as OpmRespondenRead[],
+    task: taskRes.data as OpmSesiTaskRead[],
+    responden: respondenRes.data as OpmRespondenRead[],
     partisipanAnggotaPanel: [...anggotaPanelIds]
       .map((id) => partisipanMap[id])
       .filter((p): p is PartisipanRead => Boolean(p)),

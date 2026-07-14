@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { auth, isAdmin } from "@/lib/auth/auth";
 import { withServerAuth } from "@/lib/api/client";
-import { toApiError } from "@/lib/api/errors";
+import { apiErrorDari } from "@/lib/api/errors";
 import type { JabatanRead, SMEPanelRead } from "@/lib/api/schema";
 import { AnggotaSection } from "./anggota-form";
 
@@ -18,13 +18,13 @@ async function fetchAll(accessToken: string | undefined, panelId: string) {
     }),
     client.GET("/api/v1/jabatan", { params: { query: { limit: 100 } }, cache: "no-store" }),
   ]);
-  if (!panelRes.data) {
-    const requestId = panelRes.response.headers.get("x-request-id");
-    throw toApiError(null, requestId);
-  }
+  if (!panelRes.data) throw apiErrorDari(panelRes);
+  // Melabeli jabatan panel ini. Ditelan jadi `[]`, judul halaman jatuh ke ID
+  // mentah tanpa satu pun petunjuk bahwa daftar jabatan gagal diambil.
+  if (!jabatanRes.data) throw apiErrorDari(jabatanRes);
   return {
     panel: panelRes.data as SMEPanelRead,
-    jabatan: (jabatanRes.data?.items ?? []) as JabatanRead[],
+    jabatan: (jabatanRes.data.items ?? []) as JabatanRead[],
   };
 }
 

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { auth, isPartisipan } from "@/lib/auth/auth";
 import { withServerAuth } from "@/lib/api/client";
-import { toApiError } from "@/lib/api/errors";
+import { apiErrorDari } from "@/lib/api/errors";
 import type { components } from "@/lib/api/schema";
 
 type TsLogRead = components["schemas"]["TsLogRead"];
@@ -38,12 +38,13 @@ async function fetchPageData(accessToken: string | undefined, penugasanId: strin
       params: { path: { penugasan_id: penugasanId } },
     }),
   ]);
-  const reqId = penugasanRes.response.headers.get("x-request-id");
-  if (!penugasanRes.data) throw toApiError(null, reqId);
-  if (logRes.error) throw toApiError(logRes.error, reqId);
+  if (!penugasanRes.data) throw apiErrorDari(penugasanRes);
+  // Log harian milik partisipan sendiri — kegagalan yang ditelan jadi `[]`
+  // membuat log yang sudah dicatat tampak hilang.
+  if (!logRes.data) throw apiErrorDari(logRes);
   return {
     penugasan: penugasanRes.data as TsPenugasanRead,
-    logs: (logRes.data ?? []) as TsLogRead[],
+    logs: logRes.data as TsLogRead[],
   };
 }
 

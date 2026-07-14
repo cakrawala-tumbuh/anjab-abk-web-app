@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { auth, isAdmin } from "@/lib/auth/auth";
 import { withServerAuth } from "@/lib/api/client";
-import { toApiError } from "@/lib/api/errors";
+import { apiErrorDari } from "@/lib/api/errors";
 import type { DetilTugasRead, JabatanRead, TugasPokokRead } from "@/lib/api/schema";
 import { TambahUraianTugasForm } from "./uraian-tugas-form";
 
@@ -14,12 +14,15 @@ async function fetchData(accessToken: string | undefined) {
     client.GET("/api/v1/task-inventory/detil-tugas", { params: { query: { limit: 500 } } }),
     client.GET("/api/v1/jabatan", { params: { query: { limit: 200 } } }),
   ]);
-  if (!pokokRes.data) throw toApiError(null, pokokRes.response.headers.get("x-request-id"));
-  if (!detilRes.data) throw toApiError(null, detilRes.response.headers.get("x-request-id"));
+  if (!pokokRes.data) throw apiErrorDari(pokokRes);
+  if (!detilRes.data) throw apiErrorDari(detilRes);
+  // `jabatanList` menyaring pilihan jabatan berdasarkan detil tugas terpilih —
+  // ditelan jadi `[]`, formulir tampil seolah detil tugas itu tak punya jabatan.
+  if (!jabatanRes.data) throw apiErrorDari(jabatanRes);
   return {
     tugasPokok: (pokokRes.data.items ?? []) as TugasPokokRead[],
     detilTugas: (detilRes.data.items ?? []) as DetilTugasRead[],
-    jabatanList: (jabatanRes.data?.items ?? []) as JabatanRead[],
+    jabatanList: (jabatanRes.data.items ?? []) as JabatanRead[],
   };
 }
 

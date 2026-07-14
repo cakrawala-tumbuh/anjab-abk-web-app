@@ -2,7 +2,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { auth, isAdmin } from "@/lib/auth/auth";
 import { withServerAuth } from "@/lib/api/client";
-import { toApiError } from "@/lib/api/errors";
+import { apiErrorDari } from "@/lib/api/errors";
+import { bagianGagal, pendukungList } from "@/lib/api/pendukung";
+import { GagalMuatSebagian } from "@/components/gagal-muat";
 import type { components } from "@/lib/api/schema";
 
 type TsPenugasanRead = components["schemas"]["TsPenugasanRead"];
@@ -18,12 +20,19 @@ async function fetchPageData(accessToken: string | undefined) {
     client.GET("/api/v1/partisipan", { params: { query: { limit: 100 } } }),
     client.GET("/api/v1/jabatan", { params: { query: { limit: 100 } } }),
   ]);
-  const reqId = penugasanRes.response.headers.get("x-request-id");
-  if (!penugasanRes.data) throw toApiError(null, reqId);
+  // Data INTI halaman ini — kegagalan tidak boleh tampil sebagai "belum ada penugasan".
+  if (!penugasanRes.data) throw apiErrorDari(penugasanRes);
+
+  // Data PENDUKUNG (pelabelan baris tabel saja) — kegagalannya tidak menggagalkan
+  // halaman, tapi WAJIB terlihat lewat <GagalMuatSebagian>.
+  const partisipan = pendukungList<PartisipanRead>("Daftar partisipan", partisipanRes);
+  const jabatan = pendukungList<JabatanRead>("Daftar jabatan", jabatanRes);
+
   return {
     penugasan: (penugasanRes.data.items ?? []) as TsPenugasanRead[],
-    partisipan: (partisipanRes.data?.items ?? []) as PartisipanRead[],
-    jabatan: (jabatanRes.data?.items ?? []) as JabatanRead[],
+    partisipan: partisipan.data,
+    jabatan: jabatan.data,
+    gagalPendukung: bagianGagal(partisipan, jabatan),
   };
 }
 
@@ -31,12 +40,15 @@ export default async function TimeStudyPenugasanPage() {
   const session = await auth();
   if (!isAdmin(session)) notFound();
 
-  const { penugasan, partisipan, jabatan } = await fetchPageData(session?.accessToken);
+  const { penugasan, partisipan, jabatan, gagalPendukung } = await fetchPageData(
+    session?.accessToken,
+  );
   const jabatanMap = Object.fromEntries(jabatan.map((j) => [j.id, j.nama]));
   const partisipanMap = Object.fromEntries(partisipan.map((p) => [p.id, p]));
 
   return (
     <div className="space-y-6">
+      <GagalMuatSebagian bagian={gagalPendukung} />
       <div className="flex items-center justify-between">
         <div>
           <h1 className="page-heading">Time Study</h1>

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { auth, isAdmin } from "@/lib/auth/auth";
 import { withServerAuth } from "@/lib/api/client";
-import { toApiError } from "@/lib/api/errors";
+import { apiErrorDari } from "@/lib/api/errors";
 import type {
   JabatanRead,
   PartisipanRead,
@@ -42,13 +42,20 @@ async function fetchPageData(accessToken: string | undefined) {
     client.GET("/api/v1/jabatan", { params: { query: { limit: 100 } } }),
     client.GET("/api/v1/partisipan", { params: { query: { limit: 100 } } }),
   ]);
-  const reqId = instrumenRes.response.headers.get("x-request-id");
-  if (!instrumenRes.data) throw toApiError(null, reqId);
+  if (!instrumenRes.data) throw apiErrorDari(instrumenRes);
+  // Daftar responden menentukan jumlah submit & kelayakan analisis — kegagalan
+  // yang ditelan jadi `[]` menampilkan "0 dari 0 responden" seolah-olah benar.
+  if (!respondenRes.data) throw apiErrorDari(respondenRes);
+  // `partisipan` = satu-satunya sumber pilihan form "Tugaskan Responden", dan
+  // `jabatan` melabeli tiap barisnya. Ditelan jadi `[]`, form itu tampil sebagai
+  // "semua partisipan sudah ditugaskan" — padahal daftarnya gagal diambil.
+  if (!jabatanRes.data) throw apiErrorDari(jabatanRes);
+  if (!partisipanRes.data) throw apiErrorDari(partisipanRes);
   return {
     instrumen: instrumenRes.data as WcpInstrumenRead,
-    responden: (respondenRes.data ?? []) as WcpRespondenRead[],
-    jabatan: (jabatanRes.data?.items ?? []) as JabatanRead[],
-    partisipan: (partisipanRes.data?.items ?? []) as PartisipanRead[],
+    responden: respondenRes.data as WcpRespondenRead[],
+    jabatan: (jabatanRes.data.items ?? []) as JabatanRead[],
+    partisipan: (partisipanRes.data.items ?? []) as PartisipanRead[],
   };
 }
 

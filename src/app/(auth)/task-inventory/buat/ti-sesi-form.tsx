@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -9,6 +9,8 @@ import { z } from "zod";
 import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
 import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
+import { jumlahAnggotaPanel, type PetaAnggotaPanel } from "@/lib/sme-panel";
+import { SmePanelInfo } from "@/components/sme-panel-info";
 import type { TiKombinasiRead } from "@/lib/api/schema";
 
 export const schema = z
@@ -40,10 +42,12 @@ type FormValues = z.infer<typeof schema>;
 
 interface Props {
   kombinasi: TiKombinasiRead[];
+  /** `jabatan_id` → jumlah anggota SME panel; menentukan `max_responden` yang sah. */
+  petaAnggota: PetaAnggotaPanel;
   accessToken: string | undefined;
 }
 
-export function TiSesiForm({ kombinasi, accessToken }: Props) {
+export function TiSesiForm({ kombinasi, petaAnggota, accessToken }: Props) {
   const router = useRouter();
   const [serverError, setServerError] = useState<string | null>(null);
 
@@ -61,11 +65,25 @@ export function TiSesiForm({ kombinasi, accessToken }: Props) {
   const {
     register,
     handleSubmit,
+    setValue,
+    watch,
     formState: { errors, isSubmitting },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
-    defaultValues: { min_responden: 3, max_responden: 10 },
+    defaultValues: { jabatan_id: "", min_responden: 3, max_responden: 10 },
   });
+
+  const jabatanId = watch("jabatan_id");
+  const jumlahAnggota = jumlahAnggotaPanel(petaAnggota, jabatanId);
+
+  // Seluruh anggota SME panel otomatis jadi responden; backend menolak keras
+  // (422) bila jumlahnya melebihi max_responden. Prefill supaya admin tidak
+  // menebak — angkanya tetap bisa diubah manual.
+  useEffect(() => {
+    if (jumlahAnggota && jumlahAnggota > 0) {
+      setValue("max_responden", jumlahAnggota, { shouldValidate: true });
+    }
+  }, [jumlahAnggota, setValue]);
 
   async function onSubmit(values: FormValues) {
     setServerError(null);
@@ -116,6 +134,7 @@ export function TiSesiForm({ kombinasi, accessToken }: Props) {
             </option>
           ))}
         </select>
+        <SmePanelInfo jumlah={jumlahAnggota} />
         {errors.jabatan_id && (
           <p className="form-error" role="alert">
             {errors.jabatan_id.message}

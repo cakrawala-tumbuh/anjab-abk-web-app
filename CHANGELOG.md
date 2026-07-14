@@ -7,6 +7,149 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [4.2.0] - 2026-07-14
+
+### Diperbaiki
+
+- **Kegagalan memuat data pendukung (dropdown & label) tidak lagi ditelan senyap** (backlog 031).
+  Backlog 026 memberantas pola `?? []` di jalur baca data _inti_, tapi **29 kemunculan** tersisa
+  di jalur data _pendukung_ — daftar jabatan, sekolah, partisipan, tugas pokok yang mengisi
+  **dropdown** dan **melabeli ID**. Bila fetch-nya gagal (401/403/5xx), halaman tetap dirender
+  dengan dropdown kosong yang **tidak terbedakan** dari "master data memang belum diisi" — admin
+  bisa menyimpulkan salah lalu membuat duplikat. Nilainya naik tajam setelah backend backlog 025
+  menuntut token di **seluruh** endpoint baca: setiap jalur bertoken kedaluwarsa mulai
+  mengembalikan 401, dan seluruh titik ini akan menelannya.
+  - **Data pendukung yang mengisi formulir/dropdown → melempar** (`apiErrorDari(res)`): 20
+    kemunculan di 12 berkas (`partisipan/[id]`, `partisipan/tambah`, `time-study/buat`,
+    `time-study/tugaskan-banyak`, `time-study/[penugasan_id]`, `dcs`, `wcp`, `opm/[sesi_id]`,
+    `task-inventory/[sesi_id]`, dan `master-data/{tugas-pokok,detil-tugas,uraian-tugas,sme-panel}/*`).
+    Dropdown kosong di formulir edit lebih dari sekadar kosmetik: menyimpan form dengan pilihan
+    yang hilang **menghapus relasi yang sudah ada**.
+  - **Data pendukung yang murni melabeli (halaman daftar) → halaman tetap dirender**, dengan
+    **penanda gagal yang terlihat**: komponen baru `GagalMuatSebagian`
+    (`src/components/gagal-muat.tsx`) + helper `pendukungList`/`bagianGagal`
+    (`src/lib/api/pendukung.ts`). Dipakai di `/time-study`, `/partisipan`,
+    `/master-data/sme-panel`. Panel itu menyatakan eksplisit bahwa daftar yang tampak kosong
+    **bukan** berarti datanya belum ada, dan menampilkan status + `X-Request-ID`.
+  - **Kekosongan yang sah tetap tenang**: respons 200 dengan 0 item → state kosong biasa, tanpa
+    error palsu. Dua pengecualian 404 yang dikunci backlog 026 (`GET /partisipan/saya` untuk admin
+    non-partisipan; `GET .../seleksi` pada kunjungan pertama Tahap 1) **tidak diregresikan**.
+  - **Jaring pengaman permanen**: `src/test/jaring-pengaman-jalur-baca.test.ts` memindai seluruh
+    `src/` untuk **semua ejaan** pola telan-senyap sekaligus — `.data ?? []`, `.data ?? null`,
+    `.data?.<apa pun> ?? …`, `.catch(() => set…)`, dan klien `api` telanjang. Pola ini terus
+    kembali justru karena tiap pemberantasan hanya mengejar satu ejaan: grep backlog 026
+    (`\.data \?\? \[\]`) tidak menangkap `\.data\?\.items \?\? \[\]`. Jaring ini langsung
+    membuktikan dirinya dengan menangkap **ejaan keempat** yang lolos dari grep audit manual
+    backlog 031 sendiri: `?? ([] as SekolahRead[])` di `partisipan/tambah/page.tsx`.
+    Pengecualian hanya lewat daftar `PENGECUALIAN` yang eksplisit dan terlihat di review.
+  - Jalur baca yang disentuh dimigrasikan dari `toApiError(null, reqId)` (membuang pesan backend
+    **dan** status HTTP) ke `apiErrorDari(res)`.
+
+### Ditambahkan
+
+- **Form "Mulai Analisis Jabatan" (Task Inventory & OPM) kini sadar jumlah anggota SME panel**
+  (backlog 030). Backend menolak keras (422) pembuatan sesi bila jumlah anggota SME panel
+  melebihi `max_responden` — TI sejak backlog 028, OPM sejak lama — tetapi form tidak
+  menampilkan jumlah anggota panel sama sekali: admin mengisi **Maks. Responden** (default 10)
+  secara buta lalu ditolak, tanpa pernah tahu panelnya berisi 11 orang (kondisi produksi YPII:
+  panel _Guru Kelas SD_ = 11 anggota).
+  - Begitu **Jabatan** dipilih, form menampilkan jumlah anggota SME panel jabatan itu
+    (`SmePanelInfo`, `src/components/sme-panel-info.tsx`) dan **mem-prefill Maks. Responden**
+    sebesar jumlah itu — bukan validasi klien yang menolak submit (prefill tidak menambah
+    gesekan; angkanya tetap bisa diubah admin).
+  - Jabatan **tanpa** SME panel tetap sah (sesi dibuat kosong, responden ditambahkan manual):
+    submit tidak diblokir, hanya ditampilkan "Jabatan ini belum punya SME panel".
+  - Bila 422 tetap terjadi, pesan backend tampil **utuh** (menyebut kedua angka) lewat
+    `notifyGagal` + `X-Request-ID` dan error inline — bukan pesan generik.
+  - **Default `max_responden` sengaja TIDAK dinaikkan** — itu hanya menyembunyikan masalah;
+    admin tetap tidak akan tahu berapa anggota panelnya.
+  - Helper baru `src/lib/sme-panel.ts` (`petaJumlahAnggotaPanel`, `jumlahAnggotaPanel`) dipakai
+    identik oleh kedua form. Test baru: `src/test/sme-panel.test.ts`,
+    `src/test/ti-sesi-form.test.tsx`, `src/test/opm-sesi-form.test.tsx`.
+
+### Diperbaiki
+
+- **Halaman "Mulai Analisis Jabatan" TI & OPM tidak lagi menelan kegagalan fetch**
+  (invariant backlog 026). `src/app/(auth)/opm/buat/page.tsx` memuat SME panel dan daftar sesi TI
+  dengan `?? []` — kegagalan API-nya akan tampil sebagai dropdown jabatan kosong dan
+  "Belum ada Analisis Jabatan TI yang dibekukan", dua-duanya informasi palsu. Ketiga fetch
+  (jabatan, panel, sesi TI) kini `throw apiErrorDari(res)`. `src/app/(auth)/task-inventory/buat/page.tsx`
+  ikut dipindahkan dari `toApiError(null, reqId)` ke `apiErrorDari(res)` (pesan backend + status
+  HTTP ikut terbawa) saat fetch panel ditambahkan.
+
+- **`AnggotaSection` SME panel: `GET /api/v1/partisipan` kini berautentikasi dan
+  kegagalannya tidak lagi ditelan** (backlog 029). Satu-satunya panggilan API dari
+  **browser** (`useEffect`) di seluruh app memakai klien `api` **telanjang** — tanpa
+  Bearer token. Begitu backend memasang guard auth di endpoint baca (backlog 025 di
+  `anjab-abk-backend`), panggilan itu dijawab **401**, dan komponen menelan kegagalannya
+  **dua kali** (`data?.items ?? []` **dan** `.catch(() => setPartisipanList([]))`) →
+  admin melihat **"Belum ada anggota"** pada SME panel yang sebenarnya berisi, tanpa
+  pesan error apa pun. Kelas bug yang sama dengan backlog 017 (mutasi) & 026 (jalur baca
+  Server Component); call site ini luput karena ia satu-satunya yang berjalan di klien.
+  - `src/app/(auth)/master-data/sme-panel/[id]/anggota-form.tsx`: pemanggilan memakai
+    `withServerAuth(accessToken)` — pola yang sudah dipakai tiga handler mutasi tetangganya
+    di berkas yang sama (token sudah tersedia sebagai prop). Kegagalan **melempar**
+    (`if (!res.data) throw apiErrorDari(res)`), lalu dilaporkan lewat **`notifyGagal`**
+    (toast + `X-Request-ID`) — bukan `GagalMuat`, karena ini komponen klien.
+  - **State _gagal-muat_ dipisah dari state _kosong_**: kegagalan merender panel merah
+    "Gagal memuat data partisipan" (bukan daftar kosong, bukan form tambah anggota), jadi
+    tidak bisa lagi disalahartikan sebagai panel yang memang belum punya anggota.
+  - `src/lib/api/client.ts`: ekspor `api` (klien **tanpa** middleware Bearer) **dihapus** —
+    setelah perbaikan di atas pemakaiannya nol, dan seluruh endpoint backend (termasuk
+    endpoint baca) menuntut token. `withServerAuth(accessToken)` kini satu-satunya pintu
+    ke backend, sehingga pola telanjang yang sama tidak bisa diperkenalkan lagi.
+  - **Urutan rilis mengikat**: backend dengan guard 025 tidak boleh di-deploy tanpa
+    perbaikan ini. Web app boleh lebih dulu (mengirim token ke endpoint yang belum
+    menuntutnya tetap aman).
+
+- **Jalur BACA Server Component tidak lagi menelan error API secara senyap**
+  (backlog 026). Halaman Tahap 3 mengambil daftar task dengan
+  `(ttRes.data ?? []) as TiTaskTerpilihRead[]` — respons gagal apa pun
+  (401/403/422/500) menjadi array kosong, dan halaman merender
+  **"Ditandai dikerjakan: 0 dari 0 task"** dengan formulir kosong, tanpa pesan
+  error apa pun. Partisipan melihat formulir yang tampak sah tapi kosong; admin
+  tidak punya petunjuk bahwa ada yang salah. Formulir kosong yang tampak sah
+  adalah bentuk _notifikasi bohong_ — hal yang sudah diberantas di jalur mutasi
+  pada backlog 017, tapi belum di jalur baca.
+  - `src/lib/api/errors.ts`: `ApiError` mendapat field `status` (status HTTP);
+    helper baru **`apiErrorDari(res)`** membangun `ApiError` lengkap (pesan
+    backend + status + `X-Request-ID`) dari respons `openapi-fetch` yang gagal,
+    dan **`isTidakBerhak(err)`** untuk 401/403/404. Call-site lama yang memakai
+    `toApiError(null, reqId)` kehilangan pesan backend — kini tidak lagi.
+  - **21 kemunculan `?? []` di jalur baca** (`src/app`) diaudit; seluruhnya
+    ternyata data kritis dan diubah menjadi **melempar** saat gagal: Tahap 1
+    (catalog), Tahap 3 (task terpilih + detail), Tahap 2 (catalog + daftar
+    responden), `/kuesioner` (5 panggilan), halaman isi DCS/WCP/OPM (item
+    kuesioner + jawaban tersimpan), log Time Study, serta daftar responden
+    DCS/WCP/OPM/TI. Dua `?? null` sekelas ikut diperbaiki: review Tahap 2 (dulu
+    403/422/500 tampil sebagai "tidak ada task partial") dan hasil sesi TI.
+  - **Pengecualian yang disengaja** (tetap `?? null`/tidak melempar):
+    `GET /partisipan/saya` 404 untuk admin yang bukan partisipan, dan
+    `GET .../seleksi` 404 pada kunjungan pertama Tahap 1 (backend memang
+    melempar `NotFound` bila responden belum pernah menyimpan pilihan) — dua
+    kondisi SAH, bukan kegagalan. Hanya 404 yang ditoleransi di sana; 401/403/5xx
+    tetap melempar.
+  - Komponen baru `src/components/gagal-muat.tsx` (`GagalMuat`, `TidakBerhak`)
+    dirender **di server**: Next.js menyensor `error.message` dari Server
+    Component sebelum sampai ke `error.tsx`, jadi `X-Request-ID` mustahil
+    ditampilkan lewat error boundary di produksi. Halaman Tahap 1 & Tahap 3
+    menangkap `ApiError` dan merender panel ini (403 non-pemilik → halaman
+    "tidak berhak" yang rapi, menggantikan digest React mentah); error tak
+    dikenal tetap dilempar ke `error.tsx`.
+  - `detail-form.tsx`: **0 task final** (sesi TAHAP3 tapi koordinator tidak
+    menyetujui satu pun task partial) kini menampilkan pesan eksplisit dengan
+    tombol "Kirim Detail" nonaktif — bukan formulir kosong dengan tombol yang
+    menyesatkan.
+  - `tahap3/[responden_id]/error.tsx`: label keliru "Gagal memuat Tahap 2."
+    (salin-tempel) diperbaiki menjadi "Tahap 3".
+  - `fetchPageData` Tahap 1 & Tahap 3 dipindah ke `data.ts` masing-masing agar
+    bisa diuji langsung (berkas route Next.js tidak boleh mengekspor fungsi
+    sembarang). Test baru: `src/test/tahap1-data.test.ts`,
+    `src/test/tahap3-data.test.ts`, `src/test/detail-form-tanpa-task.test.tsx`.
+  - **Catatan deploy**: halaman yang tadinya "berhasil dirender kosong" kini
+    **gagal terlihat**. Itu disengaja — sesi produksi yang diam-diam bermasalah
+    akan mulai menampilkan error setelah deploy. Itu perbaikan, bukan regresi.
+
 ## [4.1.1] - 2026-07-14
 
 ### Diperbaiki

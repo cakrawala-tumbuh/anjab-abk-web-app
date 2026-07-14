@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { auth, isPartisipan } from "@/lib/auth/auth";
 import { withServerAuth } from "@/lib/api/client";
+import { apiErrorDari } from "@/lib/api/errors";
 import type {
   DcsKuesionerItemRead,
   OpmKuesionerItemRead,
@@ -33,12 +34,20 @@ async function fetchKuesioner(accessToken: string | undefined) {
     client.GET("/api/v1/time-study/kuesioner/saya"),
     client.GET("/api/v1/opm/kuesioner/saya"),
   ]);
+  // Data kritis: kegagalan DILARANG menyamar jadi "tidak ada kuesioner untuk Anda".
+  // Partisipan yang sebenarnya punya tugas akan mengira dirinya tidak ditugaskan.
+  if (!dcsRes.data) throw apiErrorDari(dcsRes);
+  if (!wcpRes.data) throw apiErrorDari(wcpRes);
+  if (!tiRes.data) throw apiErrorDari(tiRes);
+  if (!tsRes.data) throw apiErrorDari(tsRes);
+  if (!opmRes.data) throw apiErrorDari(opmRes);
+
   return {
-    dcs: (dcsRes.data ?? []) as DcsKuesionerItemRead[],
-    wcp: (wcpRes.data ?? []) as WcpKuesionerItemRead[],
-    ti: (tiRes.data ?? []) as TiKuesionerItemRead[],
-    ts: (tsRes.data ?? []) as TsKuesionerItemRead[],
-    opm: (opmRes.data ?? []) as OpmKuesionerItemRead[],
+    dcs: dcsRes.data as DcsKuesionerItemRead[],
+    wcp: wcpRes.data as WcpKuesionerItemRead[],
+    ti: tiRes.data as TiKuesionerItemRead[],
+    ts: tsRes.data as TsKuesionerItemRead[],
+    opm: opmRes.data as OpmKuesionerItemRead[],
   };
 }
 

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { auth, isAdmin } from "@/lib/auth/auth";
 import { withServerAuth } from "@/lib/api/client";
-import { toApiError } from "@/lib/api/errors";
+import { apiErrorDari } from "@/lib/api/errors";
 import type {
   PartisipanRead,
   SMEPanelRead,
@@ -64,8 +64,7 @@ async function fetchPageData(accessToken: string | undefined, sesiId: string) {
   const sesiRes = await client.GET("/api/v1/task-inventory/sesi/{sesi_id}", {
     params: { path: { sesi_id: sesiId } },
   });
-  const reqId = sesiRes.response.headers.get("x-request-id");
-  if (!sesiRes.data) throw toApiError(null, reqId);
+  if (!sesiRes.data) throw apiErrorDari(sesiRes);
   const sesi = sesiRes.data as TiSesiRead;
 
   const [respondenRes, smeRes, partisipanRes] = await Promise.all([
@@ -82,39 +81,55 @@ async function fetchPageData(accessToken: string | undefined, sesiId: string) {
     client.GET("/api/v1/partisipan", { params: { query: { limit: 200 } } }),
   ]);
 
+  // Panggilan di bawah dijaga status (backend menolak 422 di luar status yang sah),
+  // sehingga di dalam guard-nya kegagalan = kegagalan sungguhan → lempar.
   let taskTerpilih: TiTaskTerpilihRead[] = [];
   let hasil: TiHasilSesiRead | null = null;
   if (["TAHAP3", "CLOSED", "ANALYZED"].includes(sesi.status)) {
     const ttRes = await client.GET("/api/v1/task-inventory/sesi/{sesi_id}/task-terpilih", {
       params: { path: { sesi_id: sesiId } },
     });
-    taskTerpilih = (ttRes.data ?? []) as TiTaskTerpilihRead[];
+    if (!ttRes.data) throw apiErrorDari(ttRes);
+    taskTerpilih = ttRes.data as TiTaskTerpilihRead[];
   }
   if (sesi.status === "ANALYZED") {
     const hRes = await client.GET("/api/v1/task-inventory/sesi/{sesi_id}/hasil", {
       params: { path: { sesi_id: sesiId } },
     });
-    hasil = (hRes.data ?? null) as TiHasilSesiRead | null;
+    if (!hRes.data) throw apiErrorDari(hRes);
+    hasil = hRes.data as TiHasilSesiRead;
   }
 
   // Jumlah task partial yang belum diputuskan koordinator — dipakai tombol "Mulai Tahap 3".
+  // Kegagalan yang ditelan jadi 0 membuat tombol itu mengira semua sudah diputuskan.
   let belumDiputuskanTahap2 = 0;
   if (sesi.status === "TAHAP2") {
     const reviewRes = await client.GET("/api/v1/task-inventory/sesi/{sesi_id}/tahap2", {
       params: { path: { sesi_id: sesiId } },
     });
-    const review = (reviewRes.data ?? null) as TiTahap2ReviewRead | null;
-    belumDiputuskanTahap2 = review?.jumlah_belum_diputuskan ?? 0;
+    if (!reviewRes.data) throw apiErrorDari(reviewRes);
+    belumDiputuskanTahap2 = (reviewRes.data as TiTahap2ReviewRead).jumlah_belum_diputuskan;
   }
 
-  const smePanel = (smeRes.data?.items?.[0] ?? null) as SMEPanelRead | null;
+  // SME panel & daftar partisipan menentukan siapa yang boleh ditugaskan, dan
+  // `smePanel` juga memasok daftar calon koordinator. Ditelan jadi `null`/`[]`,
+  // halaman tampil sebagai "panel SME jabatan ini belum punya anggota" — padahal
+  // daftarnya gagal diambil. (Panel yang memang belum ada = `items` kosong,
+  // respons 200 — tetap terbedakan.)
+  if (!smeRes.data) throw apiErrorDari(smeRes);
+  if (!partisipanRes.data) throw apiErrorDari(partisipanRes);
+
+  const smePanel = (smeRes.data.items?.[0] ?? null) as SMEPanelRead | null;
   const allowedIds = new Set<string>(smePanel?.partisipan_ids ?? []);
-  const allPartisipan = (partisipanRes.data?.items ?? []) as PartisipanRead[];
+  const allPartisipan = (partisipanRes.data.items ?? []) as PartisipanRead[];
   const partisipan = allowedIds.size > 0 ? allPartisipan.filter((p) => allowedIds.has(p.id)) : [];
+
+  // Daftar responden = data inti sesi; kegagalan tidak boleh tampil sebagai sesi kosong.
+  if (!respondenRes.data) throw apiErrorDari(respondenRes);
 
   return {
     sesi,
-    responden: (respondenRes.data ?? []) as TiRespondenRead[],
+    responden: respondenRes.data as TiRespondenRead[],
     smePanel,
     partisipan,
     taskTerpilih,

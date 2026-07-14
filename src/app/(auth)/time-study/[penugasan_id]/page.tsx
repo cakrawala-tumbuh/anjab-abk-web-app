@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { auth, isAdmin } from "@/lib/auth/auth";
 import { withServerAuth } from "@/lib/api/client";
-import { toApiError } from "@/lib/api/errors";
+import { apiErrorDari } from "@/lib/api/errors";
 import type { components } from "@/lib/api/schema";
 import { ToggleAktif } from "./toggle-aktif";
 import { HapusPenugasan } from "./hapus-penugasan";
@@ -28,8 +28,9 @@ async function fetchPageData(accessToken: string | undefined, penugasanId: strin
       params: { path: { penugasan_id: penugasanId } },
     }),
   ]);
-  const reqId = penugasanRes.response.headers.get("x-request-id");
-  if (!penugasanRes.data) throw toApiError(null, reqId);
+  if (!penugasanRes.data) throw apiErrorDari(penugasanRes);
+  // Log harian = data inti halaman ini; kegagalan tidak boleh tampil sebagai "belum ada log".
+  if (!logRes.data) throw apiErrorDari(logRes);
 
   const penugasan = penugasanRes.data as TsPenugasanRead;
   const [partisipanRes, jabatanListRes] = await Promise.all([
@@ -38,14 +39,17 @@ async function fetchPageData(accessToken: string | undefined, penugasanId: strin
     }),
     client.GET("/api/v1/jabatan", { params: { query: { limit: 100 } } }),
   ]);
-  const partisipan = (partisipanRes.data ?? null) as PartisipanRead | null;
-  const jabatan = (jabatanListRes.data?.items ?? []) as JabatanRead[];
+  // Identitas partisipan & daftar jabatan = isi kartu identitas halaman ini.
+  // Ditelan jadi `null`/`[]`, kartu itu menampilkan ID mentah tanpa satu pun
+  // petunjuk bahwa datanya gagal diambil.
+  if (!partisipanRes.data) throw apiErrorDari(partisipanRes);
+  if (!jabatanListRes.data) throw apiErrorDari(jabatanListRes);
 
   return {
     penugasan,
-    logs: (logRes.data ?? []) as TsLogRead[],
-    partisipan,
-    jabatan,
+    logs: logRes.data as TsLogRead[],
+    partisipan: partisipanRes.data as PartisipanRead,
+    jabatan: (jabatanListRes.data.items ?? []) as JabatanRead[],
   };
 }
 

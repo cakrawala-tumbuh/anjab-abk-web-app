@@ -10,14 +10,21 @@ vi.mock("next/navigation", () => ({
 
 const patch = vi.fn();
 const del = vi.fn();
+const get = vi.fn();
+const post = vi.fn();
+/** Token yang diterima `withServerAuth` tiap kali klien dibangun — bukti Bearer terkirim. */
+const tokenDipakai: (string | undefined)[] = [];
 vi.mock("@/lib/api/client", () => ({
-  api: { GET: vi.fn() },
-  withServerAuth: () => ({ PATCH: patch, DELETE: del }),
+  withServerAuth: (token: string | undefined) => {
+    tokenDipakai.push(token);
+    return { GET: get, POST: post, PATCH: patch, DELETE: del };
+  },
 }));
 
 import {
   SetKoordinatorButton,
   HapusAnggotaButton,
+  AnggotaSection,
 } from "@/app/(auth)/master-data/sme-panel/[id]/anggota-form";
 
 const toastSukses = vi.mocked(toast.success);
@@ -35,6 +42,9 @@ beforeEach(() => {
   refresh.mockReset();
   patch.mockReset();
   del.mockReset();
+  get.mockReset();
+  post.mockReset();
+  tokenDipakai.length = 0;
   toastSukses.mockReset();
   toastError.mockReset();
   alertSpy.mockReset();
@@ -151,6 +161,107 @@ describe("HapusAnggotaButton — regresi: notifikasi lewat toast, bukan alert()"
 
     expect(del).not.toHaveBeenCalled();
     expect(toastSukses).not.toHaveBeenCalled();
+    expect(toastError).not.toHaveBeenCalled();
+  });
+});
+
+// ── AnggotaSection — regresi backlog 029 ─────────────────────────────────────
+// Dulu: GET /partisipan dipanggil dengan klien `api` TELANJANG (tanpa Bearer) dan
+// kegagalannya ditelan dua kali (`data?.items ?? []` + `.catch(() => setPartisipanList([]))`),
+// sehingga 401 dari backend ber-guard tampil sebagai "Belum ada anggota" — panel yang
+// sebenarnya berisi terlihat kosong, tanpa pesan error apa pun.
+
+describe("AnggotaSection — regresi: GET /partisipan wajib berautentikasi & tidak boleh ditelan", () => {
+  function renderSection(partisipanIds: string[] = ["par_a"]) {
+    return render(
+      <AnggotaSection
+        panelId="pnl_1"
+        partisipanIds={partisipanIds}
+        koordinatorId={null}
+        jabatanMap={{ jbt_1: { nama: "Guru Kelas" } }}
+        accessToken="tok"
+      />,
+    );
+  }
+
+  const unauthorized = {
+    data: undefined,
+    error: { error: "unauthorized", message: "Token tidak valid." },
+    response: { status: 401, headers: { get: () => "req-401" } },
+  };
+
+  function sukses(items: unknown[]) {
+    return {
+      data: { items, total: items.length },
+      error: undefined,
+      response: { status: 200, headers: { get: () => "req-1" } },
+    };
+  }
+
+  it("memanggil GET lewat klien BERAUTENTIKASI (token diteruskan ke withServerAuth)", async () => {
+    get.mockResolvedValue(sukses([]));
+    await act(async () => {
+      renderSection([]);
+    });
+
+    expect(tokenDipakai).toContain("tok");
+    expect(get).toHaveBeenCalledWith(
+      "/api/v1/partisipan",
+      expect.objectContaining({ params: { query: { limit: 100 } } }),
+    );
+  });
+
+  it("GET gagal (401): toast.error muncul DAN 'Belum ada anggota' TIDAK dirender", async () => {
+    get.mockResolvedValue(unauthorized);
+    await act(async () => {
+      renderSection(["par_a"]);
+    });
+
+    await waitFor(() => expect(toastError).toHaveBeenCalledTimes(1));
+    expect(toastError).toHaveBeenCalledWith("Token tidak valid.", expect.anything());
+    // Inti regresi: kegagalan tidak boleh menyaru sebagai panel kosong.
+    expect(screen.queryByText(/Belum ada anggota/i)).not.toBeInTheDocument();
+    expect(screen.getByRole("alert")).toHaveTextContent(/Gagal memuat data partisipan/i);
+  });
+
+  it("GET gagal: state gagal-muat berbeda dari state kosong (tidak ada form tambah anggota)", async () => {
+    get.mockResolvedValue(unauthorized);
+    await act(async () => {
+      renderSection(["par_a"]);
+    });
+
+    await waitFor(() => expect(toastError).toHaveBeenCalled());
+    expect(screen.queryByRole("button", { name: "Tambah" })).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(/Semua partisipan sudah menjadi anggota panel ini/i),
+    ).not.toBeInTheDocument();
+  });
+
+  it("GET sukses tapi 0 partisipan: state kosong yang SAH, tanpa toast error", async () => {
+    get.mockResolvedValue(sukses([]));
+    await act(async () => {
+      renderSection([]);
+    });
+
+    await waitFor(() => expect(screen.getByText(/Belum ada anggota/i)).toBeInTheDocument());
+    expect(toastError).not.toHaveBeenCalled();
+    expect(screen.queryByText(/Gagal memuat data partisipan/i)).not.toBeInTheDocument();
+  });
+
+  it("GET sukses dengan anggota: tabel anggota dirender", async () => {
+    get.mockResolvedValue(
+      sukses([
+        { id: "par_a", nama: "Ani", email: "ani@ypii.id", jabatan_utama_id: "jbt_1" },
+        { id: "par_b", nama: "Budi", email: "budi@ypii.id", jabatan_utama_id: "jbt_1" },
+      ]),
+    );
+    await act(async () => {
+      renderSection(["par_a"]);
+    });
+
+    await waitFor(() => expect(screen.getByText("Ani")).toBeInTheDocument());
+    expect(screen.queryByText(/Belum ada anggota/i)).not.toBeInTheDocument();
+    expect(screen.getByText("Guru Kelas")).toBeInTheDocument();
     expect(toastError).not.toHaveBeenCalled();
   });
 });

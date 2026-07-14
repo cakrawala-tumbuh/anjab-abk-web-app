@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -9,6 +9,8 @@ import { z } from "zod";
 import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
 import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
+import { jumlahAnggotaPanel, type PetaAnggotaPanel } from "@/lib/sme-panel";
+import { SmePanelInfo } from "@/components/sme-panel-info";
 import type { JabatanRead, TiSesiRead } from "@/lib/api/schema";
 
 export const schema = z
@@ -42,16 +44,19 @@ type FormValues = z.infer<typeof schema>;
 interface Props {
   jabatan: JabatanRead[];
   tiSesi: TiSesiRead[];
+  /** `jabatan_id` → jumlah anggota SME panel; menentukan `max_responden` yang sah. */
+  petaAnggota: PetaAnggotaPanel;
   accessToken: string | undefined;
 }
 
-export function OpmSesiForm({ jabatan, tiSesi, accessToken }: Props) {
+export function OpmSesiForm({ jabatan, tiSesi, petaAnggota, accessToken }: Props) {
   const router = useRouter();
   const [serverError, setServerError] = useState<string | null>(null);
 
   const {
     register,
     handleSubmit,
+    setValue,
     watch,
     formState: { errors, isSubmitting },
   } = useForm<FormValues>({
@@ -60,6 +65,16 @@ export function OpmSesiForm({ jabatan, tiSesi, accessToken }: Props) {
   });
 
   const jabatanId = watch("jabatan_id");
+  const jumlahAnggota = jumlahAnggotaPanel(petaAnggota, jabatanId);
+
+  // Seluruh anggota SME panel otomatis jadi responden; backend menolak keras
+  // (422) bila jumlahnya melebihi max_responden. Prefill supaya admin tidak
+  // menebak — angkanya tetap bisa diubah manual.
+  useEffect(() => {
+    if (jumlahAnggota && jumlahAnggota > 0) {
+      setValue("max_responden", jumlahAnggota, { shouldValidate: true });
+    }
+  }, [jumlahAnggota, setValue]);
 
   const tiSesiTersedia = useMemo(
     () => tiSesi.filter((t) => t.jabatan_id === jabatanId && (t.jumlah_task_terpilih ?? 0) > 0),
@@ -119,6 +134,7 @@ export function OpmSesiForm({ jabatan, tiSesi, accessToken }: Props) {
         <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
           Hanya jabatan yang memiliki SME panel yang ditampilkan.
         </p>
+        <SmePanelInfo jumlah={jumlahAnggota} />
         {errors.jabatan_id && (
           <p className="form-error" role="alert">
             {errors.jabatan_id.message}

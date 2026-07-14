@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { auth, isAdmin } from "@/lib/auth/auth";
 import { withServerAuth } from "@/lib/api/client";
-import { toApiError } from "@/lib/api/errors";
+import { apiErrorDari } from "@/lib/api/errors";
 import type {
   TiSesiRead,
   TiTahap2ReviewRead,
@@ -22,14 +22,10 @@ async function fetchPageData(accessToken: string | undefined, sesiId: string) {
   const sesiRes = await client.GET("/api/v1/task-inventory/sesi/{sesi_id}", {
     params: { path: { sesi_id: sesiId } },
   });
-  const reqId = sesiRes.response.headers.get("x-request-id");
-  if (!sesiRes.data) throw toApiError(null, reqId);
+  if (!sesiRes.data) throw apiErrorDari(sesiRes);
   const sesi = sesiRes.data as TiSesiRead;
 
-  const [reviewRes, sayaRes, catalogRes, respondenRes] = await Promise.all([
-    client.GET("/api/v1/task-inventory/sesi/{sesi_id}/tahap2", {
-      params: { path: { sesi_id: sesiId } },
-    }),
+  const [sayaRes, catalogRes, respondenRes] = await Promise.all([
     client.GET("/api/v1/partisipan/saya"),
     client.GET("/api/v1/task-inventory/catalog", {
       params: { query: { jabatan_id: sesi.jabatan_id } },
@@ -38,14 +34,36 @@ async function fetchPageData(accessToken: string | undefined, sesiId: string) {
       params: { path: { sesi_id: sesiId } },
     }),
   ]);
-  const review = (reviewRes.data ?? null) as TiTahap2ReviewRead | null;
+
+  // OPSIONAL (sengaja ditelan): admin yang bukan partisipan tidak punya baris
+  // `/partisipan/saya` → 404 adalah jawaban yang SAH di sini, bukan kegagalan.
   const partisipanId = sayaRes.data?.id ?? null;
 
-  const catalog = (catalogRes.data ?? []) as TiCatalogRead[];
+  // Data kritis — kegagalan tidak boleh menyamar jadi daftar kosong.
+  // `respondenList` menentukan `isAnggota`; ditelan jadi `[]` membuat anggota
+  // panel yang sah justru dilempar ke notFound().
+  if (!catalogRes.data) throw apiErrorDari(catalogRes);
+  if (!respondenRes.data) throw apiErrorDari(respondenRes);
+
+  const catalog = catalogRes.data as TiCatalogRead[];
   const kodeToUraian: Record<string, string> = {};
   for (const c of catalog) kodeToUraian[c.kode] = c.uraian_tugas;
 
-  const respondenList = (respondenRes.data ?? []) as TiRespondenRead[];
+  const respondenList = respondenRes.data as TiRespondenRead[];
+
+  // Review Tahap 2 hanya tersedia setelah TAHAP2 (backend menolak 422 sebelum
+  // itu). Di dalam status yang sah, kegagalan = kegagalan sungguhan → lempar;
+  // sebelumnya `?? null` membuat 403/422/500 tampil sebagai "tidak ada task
+  // partial" — persis notifikasi bohong yang dilarang.
+  let review: TiTahap2ReviewRead | null = null;
+  if (["TAHAP2", "TAHAP3", "CLOSED", "ANALYZED"].includes(sesi.status)) {
+    const reviewRes = await client.GET("/api/v1/task-inventory/sesi/{sesi_id}/tahap2", {
+      params: { path: { sesi_id: sesiId } },
+    });
+    if (!reviewRes.data) throw apiErrorDari(reviewRes);
+    review = reviewRes.data as TiTahap2ReviewRead;
+  }
+
   return { sesi, review, partisipanId, kodeToUraian, respondenList };
 }
 

@@ -25,15 +25,23 @@ harus sudah dibekukan (status Tahap 3/Tertutup/Teranalisis dengan task terpilih)
 2. Klik **+ Mulai Analisis Jabatan**.
 3. Isi formulir:
    - **Jabatan** (wajib) — hanya menampilkan jabatan yang sudah memiliki SME panel.
+     Setelah dipilih, aplikasi menampilkan **jumlah anggota SME panel** jabatan itu.
    - **Analisis Jabatan Task Inventory (sumber task)** (wajib) — hanya menampilkan
      Analisis Jabatan TI milik jabatan terpilih yang sudah dibekukan (ditampilkan
      sebagai `periode — N task`).
    - **Periode** (wajib, format `YYYY-MM`, mis. `2026-06`)
-   - **Min. Responden** (default 3) dan **Maks. Responden** (default 10, harus ≥ min)
+   - **Min. Responden** (default 3) dan **Maks. Responden** (harus ≥ min). **Maks. Responden**
+     terisi otomatis sebesar jumlah anggota SME panel jabatan terpilih.
    - **Catatan (opsional)**
 4. Klik **Mulai Analisis Jabatan**. Task dari Analisis Jabatan TI sumber di-**snapshot**
    ke Analisis Jabatan OPM, dan **responden dibuat otomatis** dari seluruh anggota SME
    panel jabatan tersebut.
+
+!!! warning "Maks. Responden tidak boleh lebih kecil dari jumlah anggota panel"
+Karena seluruh anggota SME panel otomatis menjadi responden, aplikasi **menolak**
+pembuatan analisis bila **Maks. Responden** diturunkan di bawah jumlah anggota panel —
+mis. _"Jumlah anggota SME panel (11) melebihi max_responden (10)."_ Naikkan
+**Maks. Responden** (minimal sebesar jumlah anggota panel) atau kurangi anggota panelnya.
 
 !!! warning "Belum ada Analisis Jabatan TI yang dibekukan"
 Jika dropdown **Analisis Jabatan Task Inventory** kosong setelah memilih jabatan, berarti
