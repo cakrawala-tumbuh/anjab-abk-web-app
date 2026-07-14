@@ -68,6 +68,12 @@ export function AksiInstrumen({ instrumen, jumlahSubmit, accessToken }: Props) {
   }
 
   async function doAnalisis() {
+    if (
+      !confirm(
+        "Jalankan analisis DCS? Setelah analisis berhasil, instrumen TIDAK DAPAT dibuka ulang lagi.",
+      )
+    )
+      return;
     setLoading(true);
     setError(null);
     try {

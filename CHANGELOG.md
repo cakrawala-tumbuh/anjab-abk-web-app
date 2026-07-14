@@ -7,6 +7,22 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [4.1.1] - 2026-07-14
+
+### Diperbaiki
+
+- **Konfirmasi sebelum "Jalankan Analisis" DCS & WCP** (backlog 021). Tombol ini
+  mengeksekusi aksi paling ireversibel di seluruh alur (instrumen
+  `CLOSED → ANALYZED`, tidak bisa dibuka ulang lagi) tanpa dialog konfirmasi
+  apa pun — berbeda dari "Tutup Pengisian" di komponen yang sama yang sudah
+  memakai `confirm()`.
+  - `dcs/aksi-instrumen.tsx` dan `wcp/aksi-instrumen.tsx`: guard
+    `if (!confirm(...)) return;` ditambahkan sebagai baris pertama
+    `doAnalisis()`, pola identik `doTutup()`. Tidak ada perubahan lain ke
+    fungsi ini.
+  - Test baru: `src/test/dcs-aksi-instrumen.test.tsx`,
+    `src/test/wcp-aksi-instrumen.test.tsx`.
+
 ## [4.1.0] - 2026-07-14
 
 ### Ditambahkan

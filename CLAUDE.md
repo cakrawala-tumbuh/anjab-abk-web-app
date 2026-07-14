@@ -50,6 +50,32 @@ src/
 
 ## Revisi Desain
 
+### [2026-07-14] DCS & WCP: konfirmasi `confirm()` sebelum "Jalankan Analisis"
+
+Ditemukan saat simulasi SOP Persiapan+Pelaksanaan DCS & WCP end-to-end di instance
+produksi YPII: tombol **"Jalankan Analisis"** (`doAnalisis()` di
+`src/app/(auth)/dcs/aksi-instrumen.tsx` dan `src/app/(auth)/wcp/aksi-instrumen.tsx`)
+mengeksekusi aksi paling ireversibel di seluruh alur (instrumen `CLOSED → ANALYZED`,
+tidak bisa dibuka ulang lagi) tanpa dialog konfirmasi apa pun — berbeda dari `doTutup()`
+di komponen yang sama yang sudah memakai `confirm()`.
+
+- Guard `if (!confirm(...)) return;` ditambahkan sebagai baris pertama `doAnalisis()`
+  di kedua file, pola identik `doTutup()`. Teks pesan beda kalimat per alat ukur: DCS
+  `"Jalankan analisis DCS? Setelah analisis berhasil, instrumen TIDAK DAPAT dibuka ulang
+lagi."`, WCP versi serupa dengan kata "WCP".
+- **Tidak ada perubahan lain** ke `doAnalisis()` — struktur `try/catch` tanpa `finally`
+  yang sudah ada (sengaja beda dari `doTutup()`: `setLoading(false)` hanya dipanggil
+  manual di `catch`, jalur sukses langsung `router.push()` tanpa reset loading) tetap
+  dipertahankan.
+- Test baru dari nol (sebelumnya tidak ada test untuk `aksi-instrumen` DCS maupun WCP):
+  `src/test/dcs-aksi-instrumen.test.tsx`, `src/test/wcp-aksi-instrumen.test.tsx` — pola
+  mocking `useRouter`/`withServerAuth` mengikuti `transisi-sesi.test.tsx` &
+  `dcs-assign-responden.test.tsx`. Minimal 2 test per file: Cancel tidak memanggil
+  `POST`/`push` sama sekali; OK melanjutkan alur (`POST` endpoint benar → `push` ke
+  halaman hasil).
+- Detail keputusan & konteks temuan: `backlog/021-web-app-konfirmasi-jalankan-analisis-dcs-wcp.md`
+  di repo induk `anjab-abk`.
+
 ### [2026-07-14] Notifikasi toast terpusat (`sonner`) — satu-satunya pintu ke user untuk hasil simpan data
 
 Audit atas ~55 call site mutasi (POST/PATCH/PUT/DELETE) di 49 berkas menemukan bahwa
