@@ -3806,7 +3806,7 @@
         "tags": [
           "wcp.responden"
         ],
-        "summary": "Tugaskan (assign) responden WCP — bulk (admin)",
+        "summary": "Tugaskan (assign) responden WCP — bulk, idempoten (admin)",
         "operationId": "wcp_responden_create",
         "requestBody": {
           "content": {
@@ -3824,11 +3824,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/WcpRespondenRead"
-                  },
-                  "type": "array",
-                  "title": "Response Wcp Responden Create"
+                  "$ref": "#/components/schemas/BulkAssignResult_WcpRespondenRead_"
                 }
               }
             }
@@ -3864,7 +3860,7 @@
             }
           },
           "409": {
-            "description": "Instrumen WCP tidak OPEN, atau salah satu partisipan sudah terdaftar sebagai responden WCP.",
+            "description": "Instrumen WCP tidak OPEN.",
             "content": {
               "application/json": {
                 "schema": {
@@ -4504,8 +4500,13 @@
         "tags": [
           "opm.sesi"
         ],
-        "summary": "Daftar sesi OPM",
+        "summary": "Daftar sesi OPM (admin)",
         "operationId": "opm_sesi_list",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "limit",
@@ -4546,6 +4547,36 @@
               }
             }
           },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan admin.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "422": {
             "description": "Validation Error",
             "content": {
@@ -4562,7 +4593,7 @@
         "tags": [
           "opm.sesi"
         ],
-        "summary": "Buat sesi OPM (snapshot task dari sesi Task Inventory yang sudah frozen)",
+        "summary": "Buat sesi OPM (snapshot task dari sesi Task Inventory yang sudah frozen) (admin)",
         "operationId": "opm_sesi_create",
         "security": [
           {
@@ -4642,6 +4673,16 @@
               }
             }
           },
+          "403": {
+            "description": "Bukan admin.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "409": {
             "description": "Jabatan sudah punya sesi OPM.",
             "content": {
@@ -4670,7 +4711,7 @@
         "tags": [
           "opm.sesi"
         ],
-        "summary": "Cari sesi OPM (domain ala Odoo)",
+        "summary": "Cari sesi OPM (domain ala Odoo) (admin)",
         "operationId": "opm_sesi_search",
         "requestBody": {
           "content": {
@@ -4693,6 +4734,36 @@
               }
             }
           },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan admin.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "422": {
             "description": "Domain/field tidak valid.",
             "content": {
@@ -4703,7 +4774,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
       }
     },
     "/api/v1/opm/sesi/{sesi_id}": {
@@ -4711,8 +4787,13 @@
         "tags": [
           "opm.sesi"
         ],
-        "summary": "Ambil sesi OPM",
+        "summary": "Ambil sesi OPM (admin)",
         "operationId": "opm_sesi_get",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "sesi_id",
@@ -4733,6 +4814,36 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/OpmSesiRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan admin.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -4763,7 +4874,7 @@
         "tags": [
           "opm.sesi"
         ],
-        "summary": "Perbarui sesi OPM (hanya saat DRAFT)",
+        "summary": "Perbarui sesi OPM (hanya saat DRAFT) (admin)",
         "operationId": "opm_sesi_update",
         "security": [
           {
@@ -4816,6 +4927,16 @@
           },
           "429": {
             "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan admin.",
             "content": {
               "application/json": {
                 "schema": {
@@ -4944,7 +5065,7 @@
         "tags": [
           "opm.sesi"
         ],
-        "summary": "Buka sesi OPM (DRAFT → OPEN)",
+        "summary": "Buka sesi OPM (DRAFT → OPEN) (admin)",
         "operationId": "opm_sesi_buka",
         "security": [
           {
@@ -4995,6 +5116,16 @@
               }
             }
           },
+          "403": {
+            "description": "Bukan admin.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "404": {
             "description": "Sesi OPM tidak ditemukan.",
             "content": {
@@ -5023,7 +5154,7 @@
         "tags": [
           "opm.sesi"
         ],
-        "summary": "Tutup sesi OPM (OPEN → CLOSED)",
+        "summary": "Tutup sesi OPM (OPEN → CLOSED) (admin)",
         "operationId": "opm_sesi_tutup",
         "security": [
           {
@@ -5074,6 +5205,16 @@
               }
             }
           },
+          "403": {
+            "description": "Bukan admin.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "404": {
             "description": "Sesi OPM tidak ditemukan.",
             "content": {
@@ -5102,8 +5243,13 @@
         "tags": [
           "opm.sesi"
         ],
-        "summary": "Daftar snapshot task dalam sesi OPM",
+        "summary": "Daftar snapshot task dalam sesi OPM (admin atau responden sesi)",
         "operationId": "opm_sesi_task_list",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "sesi_id",
@@ -5128,6 +5274,26 @@
                     "$ref": "#/components/schemas/OpmSesiTaskRead"
                   },
                   "title": "Response Opm Sesi Task List"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan admin atau responden sesi OPM ini.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -5885,7 +6051,7 @@
         "tags": [
           "opm.hasil"
         ],
-        "summary": "Jalankan analisis OPM (CLOSED → ANALYZED)",
+        "summary": "Jalankan analisis OPM (CLOSED → ANALYZED) (admin)",
         "operationId": "opm_analisis_run",
         "security": [
           {
@@ -5936,6 +6102,16 @@
               }
             }
           },
+          "403": {
+            "description": "Bukan admin.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "404": {
             "description": "Sesi OPM tidak ditemukan.",
             "content": {
@@ -5964,8 +6140,13 @@
         "tags": [
           "opm.hasil"
         ],
-        "summary": "Lihat hasil analisis sesi OPM",
+        "summary": "Lihat hasil analisis sesi OPM (admin)",
         "operationId": "opm_hasil_sesi_get",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "sesi_id",
@@ -5986,6 +6167,36 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/OpmHasilSesiRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan admin.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -6489,7 +6700,7 @@
         "tags": [
           "dcs.responden"
         ],
-        "summary": "Tugaskan (assign) responden DCS — bulk (admin)",
+        "summary": "Tugaskan (assign) responden DCS — bulk, idempoten (admin)",
         "operationId": "dcs_responden_create",
         "requestBody": {
           "content": {
@@ -6507,11 +6718,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/DcsRespondenRead"
-                  },
-                  "type": "array",
-                  "title": "Response Dcs Responden Create"
+                  "$ref": "#/components/schemas/BulkAssignResult_DcsRespondenRead_"
                 }
               }
             }
@@ -6547,7 +6754,7 @@
             }
           },
           "409": {
-            "description": "Instrumen DCS tidak OPEN, atau salah satu partisipan sudah terdaftar sebagai responden DCS.",
+            "description": "Instrumen DCS tidak OPEN.",
             "content": {
               "application/json": {
                 "schema": {
@@ -7147,7 +7354,7 @@
           "taskinv.kuesioner"
         ],
         "summary": "Daftar kuesioner Task Inventory milik pengguna yang sedang login",
-        "description": "Enrollment otomatis: Task Inventory bersifat universal — tiap partisipan\nmengisi SEMUA sesi aktif (TAHAP1/TAHAP2/TAHAP3), sambil membuat record\nresponden bila belum ada.",
+        "description": "Kembalikan sesi Task Inventory yang partisipannya sudah terdaftar sebagai\nresponden, bila sesi aktif.\n\nPartisipan hanya melihat sesi tempat ia terdaftar sebagai responden —\npendaftaran terjadi saat sesi dibuat, dari anggota SME panel jabatan\ntersebut. Tidak ada enrollment otomatis di endpoint ini.",
         "operationId": "taskinv_kuesioner_saya",
         "responses": {
           "200": {
@@ -7400,8 +7607,13 @@
         "tags": [
           "taskinv.sesi"
         ],
-        "summary": "Daftar sesi Task Inventory",
+        "summary": "Daftar sesi Task Inventory (admin)",
         "operationId": "taskinv_sesi_list",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "limit",
@@ -7442,6 +7654,36 @@
               }
             }
           },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan admin.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "422": {
             "description": "Validation Error",
             "content": {
@@ -7458,7 +7700,7 @@
         "tags": [
           "taskinv.sesi"
         ],
-        "summary": "Buat sesi Task Inventory",
+        "summary": "Buat sesi Task Inventory (admin)",
         "operationId": "taskinv_sesi_create",
         "security": [
           {
@@ -7537,6 +7779,16 @@
               }
             }
           },
+          "403": {
+            "description": "Bukan admin.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "409": {
             "description": "Sesi untuk jabatan+periode sudah ada.",
             "content": {
@@ -7565,7 +7817,7 @@
         "tags": [
           "taskinv.sesi"
         ],
-        "summary": "Cari sesi Task Inventory (domain ala Odoo)",
+        "summary": "Cari sesi Task Inventory (domain ala Odoo) (admin)",
         "operationId": "taskinv_sesi_search",
         "requestBody": {
           "content": {
@@ -7588,6 +7840,36 @@
               }
             }
           },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan admin.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "422": {
             "description": "Domain/field tidak valid.",
             "content": {
@@ -7598,7 +7880,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
       }
     },
     "/api/v1/task-inventory/sesi/{sesi_id}": {
@@ -7606,8 +7893,13 @@
         "tags": [
           "taskinv.sesi"
         ],
-        "summary": "Ambil sesi Task Inventory",
+        "summary": "Ambil sesi Task Inventory (admin atau peserta sesi)",
         "operationId": "taskinv_sesi_get",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "sesi_id",
@@ -7628,6 +7920,26 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/TiSesiRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan admin atau peserta sesi.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -7658,7 +7970,7 @@
         "tags": [
           "taskinv.sesi"
         ],
-        "summary": "Perbarui sesi Task Inventory (hanya saat DRAFT)",
+        "summary": "Perbarui sesi Task Inventory (hanya saat DRAFT) (admin)",
         "operationId": "taskinv_sesi_update",
         "security": [
           {
@@ -7711,6 +8023,16 @@
           },
           "429": {
             "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan admin.",
             "content": {
               "application/json": {
                 "schema": {
@@ -7839,7 +8161,7 @@
         "tags": [
           "taskinv.sesi"
         ],
-        "summary": "Mulai Tahap 1 — Seleksi Relevansi (DRAFT → TAHAP1)",
+        "summary": "Mulai Tahap 1 — Seleksi Relevansi (DRAFT → TAHAP1) (admin)",
         "operationId": "taskinv_sesi_mulai_tahap1",
         "security": [
           {
@@ -7890,6 +8212,16 @@
               }
             }
           },
+          "403": {
+            "description": "Bukan admin.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "404": {
             "description": "Sesi Task Inventory tidak ditemukan.",
             "content": {
@@ -7918,7 +8250,7 @@
         "tags": [
           "taskinv.sesi"
         ],
-        "summary": "Mulai Tahap 2 — Review Koordinator (TAHAP1 → TAHAP2)",
+        "summary": "Mulai Tahap 2 — Review Koordinator (TAHAP1 → TAHAP2) (admin)",
         "operationId": "taskinv_sesi_mulai_tahap2",
         "security": [
           {
@@ -7981,6 +8313,16 @@
               }
             }
           },
+          "403": {
+            "description": "Bukan admin.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "404": {
             "description": "Sesi Task Inventory tidak ditemukan.",
             "content": {
@@ -8009,7 +8351,7 @@
         "tags": [
           "taskinv.sesi"
         ],
-        "summary": "Mulai Tahap 3 — Detailing (TAHAP2 → TAHAP3), bekukan task relevan",
+        "summary": "Mulai Tahap 3 — Detailing (TAHAP2 → TAHAP3), bekukan task relevan (admin)",
         "operationId": "taskinv_sesi_mulai_tahap3",
         "security": [
           {
@@ -8072,6 +8414,16 @@
               }
             }
           },
+          "403": {
+            "description": "Bukan admin.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "404": {
             "description": "Sesi Task Inventory tidak ditemukan.",
             "content": {
@@ -8100,7 +8452,7 @@
         "tags": [
           "taskinv.sesi"
         ],
-        "summary": "Tutup sesi (TAHAP3 → CLOSED)",
+        "summary": "Tutup sesi (TAHAP3 → CLOSED) (admin)",
         "operationId": "taskinv_sesi_tutup",
         "security": [
           {
@@ -8151,6 +8503,16 @@
               }
             }
           },
+          "403": {
+            "description": "Bukan admin.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "404": {
             "description": "Sesi Task Inventory tidak ditemukan.",
             "content": {
@@ -8179,7 +8541,7 @@
         "tags": [
           "taskinv.responden"
         ],
-        "summary": "Daftar responden dalam sesi (admin)",
+        "summary": "Daftar responden dalam sesi (admin atau peserta sesi)",
         "operationId": "taskinv_responden_list",
         "security": [
           {
@@ -8225,7 +8587,7 @@
             }
           },
           "403": {
-            "description": "Bukan admin atau bukan pemilik responden.",
+            "description": "Bukan admin atau peserta sesi.",
             "content": {
               "application/json": {
                 "schema": {
@@ -9159,8 +9521,13 @@
         "tags": [
           "taskinv.tahap2"
         ],
-        "summary": "Lihat task yang perlu diputuskan koordinator di Tahap 2",
+        "summary": "Lihat task yang perlu diputuskan koordinator di Tahap 2 (admin atau peserta sesi)",
         "operationId": "taskinv_tahap2_get",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "sesi_id",
@@ -9181,6 +9548,26 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/TiTahap2ReviewRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan admin atau peserta sesi.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -9310,8 +9697,13 @@
         "tags": [
           "taskinv.hasil"
         ],
-        "summary": "Himpunan task relevan yang dibekukan (tersedia setelah TAHAP2)",
+        "summary": "Himpunan task relevan yang dibekukan (tersedia setelah TAHAP2) (admin/peserta)",
         "operationId": "taskinv_task_terpilih",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "sesi_id",
@@ -9336,6 +9728,26 @@
                     "$ref": "#/components/schemas/TiTaskTerpilihRead"
                   },
                   "title": "Response Taskinv Task Terpilih"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan admin atau peserta sesi.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -9368,7 +9780,7 @@
         "tags": [
           "taskinv.hasil"
         ],
-        "summary": "Jalankan analisis Task Inventory (CLOSED → ANALYZED)",
+        "summary": "Jalankan analisis Task Inventory (CLOSED → ANALYZED) (admin)",
         "operationId": "taskinv_analisis_run",
         "security": [
           {
@@ -9419,6 +9831,16 @@
               }
             }
           },
+          "403": {
+            "description": "Bukan admin.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "404": {
             "description": "Sesi tidak ditemukan.",
             "content": {
@@ -9447,8 +9869,13 @@
         "tags": [
           "taskinv.hasil"
         ],
-        "summary": "Lihat hasil analisis sesi Task Inventory",
+        "summary": "Lihat hasil analisis sesi Task Inventory (admin)",
         "operationId": "taskinv_hasil_get",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "sesi_id",
@@ -9469,6 +9896,36 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/TiHasilSesiRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan admin.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -11882,6 +12339,32 @@
   },
   "components": {
     "schemas": {
+      "BulkAssignResult_DcsRespondenRead_": {
+        "properties": {
+          "created": {
+            "items": {
+              "$ref": "#/components/schemas/DcsRespondenRead"
+            },
+            "type": "array",
+            "title": "Created",
+            "description": "Baris yang berhasil dibuat."
+          },
+          "skipped": {
+            "items": {
+              "$ref": "#/components/schemas/BulkSkipped"
+            },
+            "type": "array",
+            "title": "Skipped",
+            "description": "Partisipan yang dilewati beserta alasannya."
+          }
+        },
+        "type": "object",
+        "required": [
+          "created",
+          "skipped"
+        ],
+        "title": "BulkAssignResult[DcsRespondenRead]"
+      },
       "BulkAssignResult_OpmRespondenRead_": {
         "properties": {
           "created": {
@@ -11959,6 +12442,32 @@
           "skipped"
         ],
         "title": "BulkAssignResult[TsPenugasanRead]"
+      },
+      "BulkAssignResult_WcpRespondenRead_": {
+        "properties": {
+          "created": {
+            "items": {
+              "$ref": "#/components/schemas/WcpRespondenRead"
+            },
+            "type": "array",
+            "title": "Created",
+            "description": "Baris yang berhasil dibuat."
+          },
+          "skipped": {
+            "items": {
+              "$ref": "#/components/schemas/BulkSkipped"
+            },
+            "type": "array",
+            "title": "Skipped",
+            "description": "Partisipan yang dilewati beserta alasannya."
+          }
+        },
+        "type": "object",
+        "required": [
+          "created",
+          "skipped"
+        ],
+        "title": "BulkAssignResult[WcpRespondenRead]"
       },
       "BulkSkipped": {
         "properties": {

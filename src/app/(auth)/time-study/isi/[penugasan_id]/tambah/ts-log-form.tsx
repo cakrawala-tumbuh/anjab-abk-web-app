@@ -8,6 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
+import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
 
 const KATEGORI = [
   { key: "core", label: "Pekerjaan Inti" },
@@ -104,10 +105,12 @@ export function TsLogForm({ penugasanId, accessToken }: Props) {
       );
       const reqId = response.headers.get("x-request-id");
       if (error) throw toApiError(error, reqId);
+      notifySukses("Log berhasil disimpan.");
       router.push(`/time-study/isi/${penugasanId}`);
       router.refresh();
     } catch (err) {
-      setServerError(err instanceof Error ? err.message : "Terjadi kesalahan.");
+      setServerError(pesanGagal(err));
+      notifyGagal(err);
     }
   }
 

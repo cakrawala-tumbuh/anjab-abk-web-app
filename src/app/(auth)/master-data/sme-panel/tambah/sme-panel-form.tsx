@@ -8,6 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
+import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
 import type { JabatanRead } from "@/lib/api/schema";
 
 const schema = z.object({
@@ -47,10 +48,12 @@ export function TambahSMEPanelForm({ jabatan, accessToken }: Props) {
       });
       const requestId = response.headers.get("x-request-id");
       if (error) throw toApiError(error, requestId);
+      notifySukses("SME panel berhasil ditambahkan.");
       router.push("/master-data/sme-panel");
       router.refresh();
     } catch (err) {
-      setServerError(err instanceof Error ? err.message : "Terjadi kesalahan.");
+      setServerError(pesanGagal(err));
+      notifyGagal(err);
     }
   }
 

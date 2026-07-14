@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
+import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
 import type { PartisipanRead } from "@/lib/api/schema";
 
 const schema = z.object({
@@ -52,10 +53,12 @@ export function TambahResponden({ sesiId, partisipan, jabatanLabel, accessToken 
       });
       const reqId = response.headers.get("x-request-id");
       if (error) throw toApiError(error, reqId);
+      notifySukses("Responden berhasil ditambahkan.");
       reset();
       router.refresh();
     } catch (err) {
-      setServerError(err instanceof Error ? err.message : "Terjadi kesalahan.");
+      setServerError(pesanGagal(err));
+      notifyGagal(err);
     }
   }
 

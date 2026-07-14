@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { api, withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
+import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
 import type { PartisipanRead } from "@/lib/api/schema";
 
 // ─── Tambah Anggota Form ──────────────────────────────────────────────────────
@@ -42,10 +43,12 @@ function TambahForm({ panelId, partisipanBelumAnggota, accessToken }: TambahProp
       });
       const requestId = response.headers.get("x-request-id");
       if (error) throw toApiError(error, requestId);
+      notifySukses("Anggota berhasil ditambahkan ke panel.");
       reset();
       router.refresh();
     } catch (err) {
-      setServerError(err instanceof Error ? err.message : "Terjadi kesalahan.");
+      setServerError(pesanGagal(err));
+      notifyGagal(err);
     }
   }
 
@@ -122,9 +125,10 @@ export function HapusAnggotaButton({ panelId, partisipanId, accessToken }: Hapus
         },
       );
       if (error) throw toApiError(error, response.headers.get("x-request-id"));
+      notifySukses("Anggota berhasil dikeluarkan dari panel.");
       router.refresh();
     } catch (err) {
-      alert(err instanceof Error ? err.message : "Terjadi kesalahan.");
+      notifyGagal(err);
     } finally {
       setLoading(false);
     }
@@ -164,11 +168,17 @@ export function SetKoordinatorButton({
     try {
       const client = withServerAuth(accessToken);
       const newKoordinatorId = isKoordinator ? null : partisipanId;
-      await client.PATCH("/api/v1/sme-panel/{panel_id}", {
+      const { error, response } = await client.PATCH("/api/v1/sme-panel/{panel_id}", {
         params: { path: { panel_id: panelId } },
         body: { koordinator_id: newKoordinatorId },
       });
+      if (error) throw toApiError(error, response.headers.get("x-request-id"));
+      notifySukses(
+        newKoordinatorId ? "Koordinator panel diperbarui." : "Koordinator panel dikosongkan.",
+      );
       router.refresh();
+    } catch (err) {
+      notifyGagal(err);
     } finally {
       setLoading(false);
     }

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
+import { notifyGagal, notifySukses } from "@/lib/notify";
 import type { DcsSubSkalaWithItemsRead, DcsJawabanRead } from "@/lib/api/schema";
 
 const SKOR_LABEL: Record<number, string> = {
@@ -56,9 +57,11 @@ export function DcsForm({ respondenId, subskala, jawabanAwal, sudahSubmit, acces
       );
       const reqId = response.headers.get("x-request-id");
       if (apiError) throw toApiError(apiError, reqId);
+      notifySukses("Draft tersimpan.");
       setSaveMessage("Draft tersimpan.");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Terjadi kesalahan saat menyimpan draft.");
+      notifyGagal(err);
     } finally {
       setSaving(false);
     }
@@ -91,10 +94,12 @@ export function DcsForm({ respondenId, subskala, jawabanAwal, sudahSubmit, acces
       );
       const reqId = response.headers.get("x-request-id");
       if (apiError) throw toApiError(apiError, reqId);
+      notifySukses("Jawaban berhasil dikirim.");
       setSukses(true);
       router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Terjadi kesalahan saat mengirim jawaban.");
+      notifyGagal(err);
     } finally {
       setSubmitting(false);
     }

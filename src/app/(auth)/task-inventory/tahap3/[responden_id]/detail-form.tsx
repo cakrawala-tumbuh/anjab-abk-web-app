@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { z } from "zod";
 import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
+import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
 import { AI_MODE, KONDISI, SUMBER_BUKTI, VA_TYPE } from "@/components/calhr";
 import type { TiDetailItem, TiDetailRead, TiTaskTerpilihRead } from "@/lib/api/schema";
 
@@ -176,8 +177,10 @@ export function DetailForm({ respondenId, tasks, detailAwal, accessToken }: Prop
       const reqId = response.headers.get("x-request-id");
       if (apiError) throw toApiError(apiError, reqId);
       setSaveMessage("Draft tersimpan.");
+      notifySukses("Draft tersimpan.");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Terjadi kesalahan saat menyimpan draft.");
+      notifyGagal(err);
     } finally {
       setSaving(false);
     }
@@ -208,10 +211,12 @@ export function DetailForm({ respondenId, tasks, detailAwal, accessToken }: Prop
       );
       const reqId = response.headers.get("x-request-id");
       if (apiError) throw toApiError(apiError, reqId);
+      notifySukses("Jawaban berhasil dikirim.");
       router.push("/kuesioner");
       router.refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Terjadi kesalahan.");
+      setError(pesanGagal(err));
+      notifyGagal(err);
       setSubmitting(false);
     }
   }

@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
+import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
 
 const schema = z.object({
   kode: z.string().min(1, "Kode wajib diisi").max(20, "Kode terlalu panjang"),
@@ -43,10 +44,12 @@ export function TambahJenjangForm({ accessToken }: Props) {
       });
       const requestId = response.headers.get("x-request-id");
       if (error) throw toApiError(error, requestId);
+      notifySukses("Jenjang pendidikan berhasil ditambahkan.");
       router.push("/master-data/jenjang-pendidikan");
       router.refresh();
     } catch (err) {
-      setServerError(err instanceof Error ? err.message : "Terjadi kesalahan.");
+      setServerError(pesanGagal(err));
+      notifyGagal(err);
     }
   }
 

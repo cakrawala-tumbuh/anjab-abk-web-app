@@ -1,5 +1,6 @@
 import { render, screen, fireEvent, act, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
+import { toast } from "sonner";
 import type { PartisipanRead } from "@/lib/api/schema";
 
 // ── Mock router & API client ────────────────────────────────────────────────
@@ -43,9 +44,14 @@ function renderCmp(over: Partial<Parameters<typeof AturKoordinator>[0]> = {}) {
   );
 }
 
+const toastSukses = vi.mocked(toast.success);
+const toastError = vi.mocked(toast.error);
+
 beforeEach(() => {
   refresh.mockReset();
   patch.mockReset();
+  toastSukses.mockReset();
+  toastError.mockReset();
   patch.mockResolvedValue({ error: null, response: { headers: { get: () => "req-1" } } });
 });
 
@@ -103,6 +109,55 @@ describe("AturKoordinator — submit PATCH koordinator_id", () => {
       "/api/v1/task-inventory/sesi/{sesi_id}",
       expect.objectContaining({ body: { koordinator_id: null } }),
     );
+  });
+});
+
+describe("AturKoordinator — regresi: notifikasi sukses tidak boleh bergantung prop basi", () => {
+  it("PATCH sukses walau prop koordinatorId belum ikut berubah: toast sukses TETAP muncul", async () => {
+    // koordinatorId sengaja TIDAK diubah setelah PATCH — mensimulasikan router.refresh()
+    // yang belum round-trip. Dulu banner digate `sukses && !berubah`, dan `berubah`
+    // dihitung dari prop yang masih basi → pesan sukses tidak pernah terlihat.
+    renderCmp({ koordinatorId: null });
+    fireEvent.change(screen.getByLabelText("Pilih koordinator"), { target: { value: "par_a" } });
+
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: "Simpan Koordinator" }));
+    });
+
+    await waitFor(() => expect(toastSukses).toHaveBeenCalledTimes(1));
+    expect(toastSukses).toHaveBeenCalledWith("Koordinator diperbarui.");
+    expect(toastError).not.toHaveBeenCalled();
+    expect(refresh).toHaveBeenCalled();
+  });
+
+  it("memilih opsi kosong: toast 'Koordinator dikosongkan.'", async () => {
+    renderCmp({ koordinatorId: "par_a" });
+    fireEvent.change(screen.getByLabelText("Pilih koordinator"), { target: { value: "" } });
+
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: "Simpan Koordinator" }));
+    });
+
+    await waitFor(() => expect(toastSukses).toHaveBeenCalledTimes(1));
+    expect(toastSukses).toHaveBeenCalledWith("Koordinator dikosongkan.");
+  });
+
+  it("PATCH gagal: toast.error DAN error inline role=alert dua-duanya tampil", async () => {
+    patch.mockResolvedValue({
+      error: { error: "forbidden", message: "Akses ditolak." },
+      response: { headers: { get: () => "req-1" } },
+    });
+    renderCmp({ koordinatorId: null });
+    fireEvent.change(screen.getByLabelText("Pilih koordinator"), { target: { value: "par_a" } });
+
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: "Simpan Koordinator" }));
+    });
+
+    await waitFor(() => expect(toastError).toHaveBeenCalledTimes(1));
+    expect(toastError).toHaveBeenCalledWith("Akses ditolak.", expect.anything());
+    expect(screen.getByRole("alert")).toHaveTextContent("Akses ditolak.");
+    expect(toastSukses).not.toHaveBeenCalled();
   });
 });
 

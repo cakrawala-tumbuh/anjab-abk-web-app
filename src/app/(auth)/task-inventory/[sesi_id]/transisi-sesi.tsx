@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
+import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
 import type { TiSesiRead } from "@/lib/api/schema";
 
 type SimplePath =
@@ -37,9 +38,13 @@ export function TransisiSesi({
   const [paksaTahap3, setPaksaTahap3] = useState(false);
 
   /** Helper bersama: kirim POST transisi, opsional query `paksa`, refresh pada sukses. */
-  async function post(path: SimplePath): Promise<void>;
-  async function post(path: PaksaPath, paksa: boolean): Promise<void>;
-  async function post(path: SimplePath | PaksaPath, paksa?: boolean): Promise<void> {
+  async function post(path: SimplePath, pesanSukses: string): Promise<void>;
+  async function post(path: PaksaPath, pesanSukses: string, paksa: boolean): Promise<void>;
+  async function post(
+    path: SimplePath | PaksaPath,
+    pesanSukses: string,
+    paksa?: boolean,
+  ): Promise<void> {
     setLoading(true);
     setError(null);
     try {
@@ -52,9 +57,11 @@ export function TransisiSesi({
             });
       const reqId = response.headers.get("x-request-id");
       if (apiError) throw toApiError(apiError, reqId);
+      notifySukses(pesanSukses);
       router.refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Terjadi kesalahan.");
+      setError(pesanGagal(err));
+      notifyGagal(err);
     } finally {
       setLoading(false);
     }
@@ -67,7 +74,11 @@ export function TransisiSesi({
           'Tahap 1 — mereka akan dilewati sesuai centang "lanjutkan walau belum semua submit".'
         : "Mulai Tahap 2 sekarang? Pastikan semua partisipan sudah submit Tahap 1.";
     if (!confirm(pesan)) return;
-    void post("/api/v1/task-inventory/sesi/{sesi_id}/mulai-tahap2", paksaTahap2);
+    void post(
+      "/api/v1/task-inventory/sesi/{sesi_id}/mulai-tahap2",
+      "Sesi dilanjutkan ke Tahap 2.",
+      paksaTahap2,
+    );
   }
 
   function mulaiTahap3() {
@@ -77,7 +88,11 @@ export function TransisiSesi({
           'diputuskan koordinator — sesuai centang "lanjutkan walau belum diputuskan", task tersebut akan diabaikan.'
         : "Mulai Tahap 3 sekarang? Pastikan koordinator sudah memutuskan semua task partial.";
     if (!confirm(pesan)) return;
-    void post("/api/v1/task-inventory/sesi/{sesi_id}/mulai-tahap3", paksaTahap3);
+    void post(
+      "/api/v1/task-inventory/sesi/{sesi_id}/mulai-tahap3",
+      "Sesi dilanjutkan ke Tahap 3.",
+      paksaTahap3,
+    );
   }
 
   async function doHapus(paksa: boolean) {
@@ -96,9 +111,12 @@ export function TransisiSesi({
       );
       const reqId = response.headers.get("x-request-id");
       if (apiError) throw toApiError(apiError, reqId);
+      notifySukses("Analisis jabatan berhasil dihapus.");
       router.push("/task-inventory");
+      router.refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Terjadi kesalahan.");
+      setError(pesanGagal(err));
+      notifyGagal(err);
       setLoading(false);
     }
   }
@@ -114,7 +132,12 @@ export function TransisiSesi({
       {sesi.status === "DRAFT" && (
         <>
           <button
-            onClick={() => post("/api/v1/task-inventory/sesi/{sesi_id}/mulai-tahap1")}
+            onClick={() =>
+              post(
+                "/api/v1/task-inventory/sesi/{sesi_id}/mulai-tahap1",
+                "Sesi dilanjutkan ke Tahap 1.",
+              )
+            }
             disabled={loading}
             className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-60"
           >
@@ -178,7 +201,7 @@ export function TransisiSesi({
 
       {sesi.status === "TAHAP3" && (
         <button
-          onClick={() => post("/api/v1/task-inventory/sesi/{sesi_id}/tutup")}
+          onClick={() => post("/api/v1/task-inventory/sesi/{sesi_id}/tutup", "Sesi ditutup.")}
           disabled={loading}
           className="rounded-md bg-yellow-500 px-4 py-2 text-sm font-medium text-white hover:bg-yellow-600 disabled:opacity-60"
         >
@@ -188,7 +211,9 @@ export function TransisiSesi({
 
       {sesi.status === "CLOSED" && (
         <button
-          onClick={() => post("/api/v1/task-inventory/sesi/{sesi_id}/analisis")}
+          onClick={() =>
+            post("/api/v1/task-inventory/sesi/{sesi_id}/analisis", "Analisis selesai.")
+          }
           disabled={loading}
           className="rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 disabled:opacity-60"
         >

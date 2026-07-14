@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
 import { formatAlasanSkip } from "@/lib/format/bulk-skip-alasan";
+import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
 import type { PartisipanRead, JabatanRead, TsPenugasanBulkResult } from "@/lib/api/schema";
 
 interface Props {
@@ -72,9 +73,11 @@ export function TsPenugasanBulkForm({ partisipan, jabatan, accessToken }: Props)
       if (apiError) throw toApiError(apiError, reqId);
       setResult(data ?? null);
       setSelected(new Set());
+      notifySukses(`${data!.created.length} partisipan berhasil ditugaskan.`);
       router.refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Terjadi kesalahan.");
+      setError(pesanGagal(err));
+      notifyGagal(err);
     } finally {
       setSubmitting(false);
     }

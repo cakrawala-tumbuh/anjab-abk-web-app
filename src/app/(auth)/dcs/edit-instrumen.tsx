@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
+import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
 import type { DcsInstrumenRead } from "@/lib/api/schema";
 
 export const schema = z.object({
@@ -51,10 +52,12 @@ export function EditInstrumen({ instrumen, accessToken }: Props) {
       });
       const reqId = response.headers.get("x-request-id");
       if (error) throw toApiError(error, reqId);
+      notifySukses("Instrumen berhasil disimpan.");
       setOpen(false);
       router.refresh();
     } catch (err) {
-      setServerError(err instanceof Error ? err.message : "Terjadi kesalahan.");
+      setServerError(pesanGagal(err));
+      notifyGagal(err);
     }
   }
 

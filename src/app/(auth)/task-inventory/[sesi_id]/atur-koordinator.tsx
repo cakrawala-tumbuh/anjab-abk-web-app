@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
+import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
 import type { PartisipanRead } from "@/lib/api/schema";
 
 interface Props {
@@ -35,7 +36,6 @@ export function AturKoordinator({
   const [pilihan, setPilihan] = useState<string>(koordinatorId ?? "");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [sukses, setSukses] = useState(false);
 
   const koordinatorSekarang = anggotaPanel.find((p) => p.id === koordinatorId) ?? null;
   const berubah = (pilihan || null) !== (koordinatorId ?? null);
@@ -43,7 +43,6 @@ export function AturKoordinator({
   async function simpan() {
     setLoading(true);
     setError(null);
-    setSukses(false);
     try {
       const client = withServerAuth(accessToken);
       const { error: apiError, response } = await client.PATCH(
@@ -55,10 +54,11 @@ export function AturKoordinator({
       );
       const reqId = response.headers.get("x-request-id");
       if (apiError) throw toApiError(apiError, reqId);
-      setSukses(true);
+      notifySukses(pilihan === "" ? "Koordinator dikosongkan." : "Koordinator diperbarui.");
       router.refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Terjadi kesalahan.");
+      setError(pesanGagal(err));
+      notifyGagal(err);
     } finally {
       setLoading(false);
     }
@@ -92,12 +92,6 @@ export function AturKoordinator({
           {error}
         </p>
       )}
-      {sukses && !berubah && (
-        <p className="mt-3 text-sm text-green-700" role="status">
-          ✓ Koordinator diperbarui.
-        </p>
-      )}
-
       {!hasPanel ? (
         <p className="mt-3 rounded-md border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800">
           SME panel untuk jabatan ini belum dibuat, sehingga koordinator belum dapat ditentukan.
@@ -115,10 +109,7 @@ export function AturKoordinator({
             <select
               id="koordinator"
               value={pilihan}
-              onChange={(e) => {
-                setPilihan(e.target.value);
-                setSukses(false);
-              }}
+              onChange={(e) => setPilihan(e.target.value)}
               disabled={loading}
               className="mt-1 block w-72 rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:opacity-60"
             >

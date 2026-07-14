@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
+import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
 
 interface Props {
   id: string;
@@ -28,10 +29,12 @@ export function HapusDetilTugasButton({ id, nama, accessToken }: Props) {
       );
       const requestId = response.headers.get("x-request-id");
       if (error) throw toApiError(error, requestId);
+      notifySukses("Detil tugas berhasil dihapus.");
       router.push("/master-data/detil-tugas");
       router.refresh();
     } catch (err) {
-      setServerError(err instanceof Error ? err.message : "Terjadi kesalahan.");
+      setServerError(pesanGagal(err));
+      notifyGagal(err);
       setIsDeleting(false);
     }
   }

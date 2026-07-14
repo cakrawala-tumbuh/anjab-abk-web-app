@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
+import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
 import type { components } from "@/lib/api/schema";
 
 type TsPenugasanRead = components["schemas"]["TsPenugasanRead"];
@@ -32,9 +33,11 @@ export function ToggleAktif({ penugasan, accessToken }: Props) {
       );
       const reqId = response.headers.get("x-request-id");
       if (apiError) throw toApiError(apiError, reqId);
+      notifySukses(penugasan.aktif ? "Penugasan dinonaktifkan." : "Penugasan diaktifkan.");
       router.refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Terjadi kesalahan.");
+      setError(pesanGagal(err));
+      notifyGagal(err);
     } finally {
       setLoading(false);
     }

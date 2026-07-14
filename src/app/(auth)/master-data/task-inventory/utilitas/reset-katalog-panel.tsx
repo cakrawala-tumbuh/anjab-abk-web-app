@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
+import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
 import type { TiCatalogPurgeResult, TiCatalogReseedResult } from "@/lib/api/schema";
 
 interface Props {
@@ -20,7 +21,6 @@ export function ResetKatalogPanel({ accessToken, initialTotal }: Props) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [emptied, setEmptied] = useState(false);
   const [ringkasan, setRingkasan] = useState<Ringkasan | null>(null);
 
   async function resetKatalog() {
@@ -36,15 +36,20 @@ export function ResetKatalogPanel({ accessToken, initialTotal }: Props) {
 
     setLoading(true);
     setError(null);
-    setEmptied(false);
     setRingkasan(null);
+
+    // Variabel LOKAL, bukan state: nilainya harus terbaca di `catch` pada invocation
+    // yang sama. State React tidak ter-update di tengah fungsi yang sedang berjalan,
+    // jadi memakai state di sini membuat cabang pemulihan tidak pernah terpicu.
+    let sudahDikosongkan = false;
+
     try {
       const client = withServerAuth(accessToken);
 
       const purgeRes = await client.POST("/api/v1/task-inventory/catalog/purge", {});
       const purgeReqId = purgeRes.response.headers.get("x-request-id");
       if (purgeRes.error) throw toApiError(purgeRes.error, purgeReqId);
-      setEmptied(true);
+      sudahDikosongkan = true;
 
       const reseedRes = await client.POST("/api/v1/task-inventory/catalog/reseed", {});
       const reseedReqId = reseedRes.response.headers.get("x-request-id");
@@ -54,16 +59,18 @@ export function ResetKatalogPanel({ accessToken, initialTotal }: Props) {
         deleted: purgeRes.data!.deleted,
         created: reseedRes.data!.created,
       });
-      setEmptied(false);
+      notifySukses("Katalog berhasil di-reset.");
       router.refresh();
     } catch (err) {
-      setError(
-        emptied
-          ? "Katalog sudah dikosongkan tapi reseed gagal — coba klik ulang untuk mengisi ulang."
-          : err instanceof Error
-            ? err.message
-            : "Terjadi kesalahan.",
-      );
+      if (sudahDikosongkan) {
+        const pesan =
+          "Katalog sudah dikosongkan tapi reseed gagal — klik ulang untuk mengisi ulang.";
+        setError(pesan);
+        notifyGagal(new Error(pesan));
+      } else {
+        setError(pesanGagal(err));
+        notifyGagal(err);
+      }
     } finally {
       setLoading(false);
     }

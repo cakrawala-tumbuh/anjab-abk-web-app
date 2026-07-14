@@ -625,7 +625,7 @@ export interface paths {
         /** Daftar seluruh responden WCP (admin) */
         get: operations["wcp_responden_list"];
         put?: never;
-        /** Tugaskan (assign) responden WCP — bulk (admin) */
+        /** Tugaskan (assign) responden WCP — bulk, idempoten (admin) */
         post: operations["wcp_responden_create"];
         delete?: never;
         options?: never;
@@ -768,10 +768,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Daftar sesi OPM */
+        /** Daftar sesi OPM (admin) */
         get: operations["opm_sesi_list"];
         put?: never;
-        /** Buat sesi OPM (snapshot task dari sesi Task Inventory yang sudah frozen) */
+        /** Buat sesi OPM (snapshot task dari sesi Task Inventory yang sudah frozen) (admin) */
         post: operations["opm_sesi_create"];
         delete?: never;
         options?: never;
@@ -788,7 +788,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Cari sesi OPM (domain ala Odoo) */
+        /** Cari sesi OPM (domain ala Odoo) (admin) */
         post: operations["opm_sesi_search"];
         delete?: never;
         options?: never;
@@ -803,7 +803,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Ambil sesi OPM */
+        /** Ambil sesi OPM (admin) */
         get: operations["opm_sesi_get"];
         put?: never;
         post?: never;
@@ -811,7 +811,7 @@ export interface paths {
         delete: operations["opm_sesi_delete"];
         options?: never;
         head?: never;
-        /** Perbarui sesi OPM (hanya saat DRAFT) */
+        /** Perbarui sesi OPM (hanya saat DRAFT) (admin) */
         patch: operations["opm_sesi_update"];
         trace?: never;
     };
@@ -824,7 +824,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Buka sesi OPM (DRAFT → OPEN) */
+        /** Buka sesi OPM (DRAFT → OPEN) (admin) */
         post: operations["opm_sesi_buka"];
         delete?: never;
         options?: never;
@@ -841,7 +841,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Tutup sesi OPM (OPEN → CLOSED) */
+        /** Tutup sesi OPM (OPEN → CLOSED) (admin) */
         post: operations["opm_sesi_tutup"];
         delete?: never;
         options?: never;
@@ -856,7 +856,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Daftar snapshot task dalam sesi OPM */
+        /** Daftar snapshot task dalam sesi OPM (admin atau responden sesi) */
         get: operations["opm_sesi_task_list"];
         put?: never;
         post?: never;
@@ -963,7 +963,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Jalankan analisis OPM (CLOSED → ANALYZED) */
+        /** Jalankan analisis OPM (CLOSED → ANALYZED) (admin) */
         post: operations["opm_analisis_run"];
         delete?: never;
         options?: never;
@@ -978,7 +978,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Lihat hasil analisis sesi OPM */
+        /** Lihat hasil analisis sesi OPM (admin) */
         get: operations["opm_hasil_sesi_get"];
         put?: never;
         post?: never;
@@ -1118,7 +1118,7 @@ export interface paths {
         /** Daftar seluruh responden DCS (admin) */
         get: operations["dcs_responden_list"];
         put?: never;
-        /** Tugaskan (assign) responden DCS — bulk (admin) */
+        /** Tugaskan (assign) responden DCS — bulk, idempoten (admin) */
         post: operations["dcs_responden_create"];
         delete?: never;
         options?: never;
@@ -1239,9 +1239,12 @@ export interface paths {
         };
         /**
          * Daftar kuesioner Task Inventory milik pengguna yang sedang login
-         * @description Enrollment otomatis: Task Inventory bersifat universal — tiap partisipan
-         *     mengisi SEMUA sesi aktif (TAHAP1/TAHAP2/TAHAP3), sambil membuat record
-         *     responden bila belum ada.
+         * @description Kembalikan sesi Task Inventory yang partisipannya sudah terdaftar sebagai
+         *     responden, bila sesi aktif.
+         *
+         *     Partisipan hanya melihat sesi tempat ia terdaftar sebagai responden —
+         *     pendaftaran terjadi saat sesi dibuat, dari anggota SME panel jabatan
+         *     tersebut. Tidak ada enrollment otomatis di endpoint ini.
          */
         get: operations["taskinv_kuesioner_saya"];
         put?: never;
@@ -1327,10 +1330,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Daftar sesi Task Inventory */
+        /** Daftar sesi Task Inventory (admin) */
         get: operations["taskinv_sesi_list"];
         put?: never;
-        /** Buat sesi Task Inventory */
+        /** Buat sesi Task Inventory (admin) */
         post: operations["taskinv_sesi_create"];
         delete?: never;
         options?: never;
@@ -1347,7 +1350,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Cari sesi Task Inventory (domain ala Odoo) */
+        /** Cari sesi Task Inventory (domain ala Odoo) (admin) */
         post: operations["taskinv_sesi_search"];
         delete?: never;
         options?: never;
@@ -1362,7 +1365,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Ambil sesi Task Inventory */
+        /** Ambil sesi Task Inventory (admin atau peserta sesi) */
         get: operations["taskinv_sesi_get"];
         put?: never;
         post?: never;
@@ -1370,7 +1373,7 @@ export interface paths {
         delete: operations["taskinv_sesi_delete"];
         options?: never;
         head?: never;
-        /** Perbarui sesi Task Inventory (hanya saat DRAFT) */
+        /** Perbarui sesi Task Inventory (hanya saat DRAFT) (admin) */
         patch: operations["taskinv_sesi_update"];
         trace?: never;
     };
@@ -1383,7 +1386,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Mulai Tahap 1 — Seleksi Relevansi (DRAFT → TAHAP1) */
+        /** Mulai Tahap 1 — Seleksi Relevansi (DRAFT → TAHAP1) (admin) */
         post: operations["taskinv_sesi_mulai_tahap1"];
         delete?: never;
         options?: never;
@@ -1400,7 +1403,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Mulai Tahap 2 — Review Koordinator (TAHAP1 → TAHAP2) */
+        /** Mulai Tahap 2 — Review Koordinator (TAHAP1 → TAHAP2) (admin) */
         post: operations["taskinv_sesi_mulai_tahap2"];
         delete?: never;
         options?: never;
@@ -1417,7 +1420,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Mulai Tahap 3 — Detailing (TAHAP2 → TAHAP3), bekukan task relevan */
+        /** Mulai Tahap 3 — Detailing (TAHAP2 → TAHAP3), bekukan task relevan (admin) */
         post: operations["taskinv_sesi_mulai_tahap3"];
         delete?: never;
         options?: never;
@@ -1434,7 +1437,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Tutup sesi (TAHAP3 → CLOSED) */
+        /** Tutup sesi (TAHAP3 → CLOSED) (admin) */
         post: operations["taskinv_sesi_tutup"];
         delete?: never;
         options?: never;
@@ -1449,7 +1452,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Daftar responden dalam sesi (admin) */
+        /** Daftar responden dalam sesi (admin atau peserta sesi) */
         get: operations["taskinv_responden_list"];
         put?: never;
         /** Daftarkan responden ke sesi (admin; saat DRAFT/TAHAP1) */
@@ -1572,7 +1575,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Lihat task yang perlu diputuskan koordinator di Tahap 2 */
+        /** Lihat task yang perlu diputuskan koordinator di Tahap 2 (admin atau peserta sesi) */
         get: operations["taskinv_tahap2_get"];
         put?: never;
         /** Submit keputusan koordinator untuk task-task Tahap 2 */
@@ -1590,7 +1593,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Himpunan task relevan yang dibekukan (tersedia setelah TAHAP2) */
+        /** Himpunan task relevan yang dibekukan (tersedia setelah TAHAP2) (admin/peserta) */
         get: operations["taskinv_task_terpilih"];
         put?: never;
         post?: never;
@@ -1609,7 +1612,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Jalankan analisis Task Inventory (CLOSED → ANALYZED) */
+        /** Jalankan analisis Task Inventory (CLOSED → ANALYZED) (admin) */
         post: operations["taskinv_analisis_run"];
         delete?: never;
         options?: never;
@@ -1624,7 +1627,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Lihat hasil analisis sesi Task Inventory */
+        /** Lihat hasil analisis sesi Task Inventory (admin) */
         get: operations["taskinv_hasil_get"];
         put?: never;
         post?: never;
@@ -1913,6 +1916,19 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** BulkAssignResult[DcsRespondenRead] */
+        BulkAssignResult_DcsRespondenRead_: {
+            /**
+             * Created
+             * @description Baris yang berhasil dibuat.
+             */
+            created: components["schemas"]["DcsRespondenRead"][];
+            /**
+             * Skipped
+             * @description Partisipan yang dilewati beserta alasannya.
+             */
+            skipped: components["schemas"]["BulkSkipped"][];
+        };
         /** BulkAssignResult[OpmRespondenRead] */
         BulkAssignResult_OpmRespondenRead_: {
             /**
@@ -1946,6 +1962,19 @@ export interface components {
              * @description Baris yang berhasil dibuat.
              */
             created: components["schemas"]["TsPenugasanRead"][];
+            /**
+             * Skipped
+             * @description Partisipan yang dilewati beserta alasannya.
+             */
+            skipped: components["schemas"]["BulkSkipped"][];
+        };
+        /** BulkAssignResult[WcpRespondenRead] */
+        BulkAssignResult_WcpRespondenRead_: {
+            /**
+             * Created
+             * @description Baris yang berhasil dibuat.
+             */
+            created: components["schemas"]["WcpRespondenRead"][];
             /**
              * Skipped
              * @description Partisipan yang dilewati beserta alasannya.
@@ -8992,7 +9021,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["WcpRespondenRead"][];
+                    "application/json": components["schemas"]["BulkAssignResult_WcpRespondenRead_"];
                 };
             };
             /** @description Token tidak ada/invalid. */
@@ -9013,7 +9042,7 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
-            /** @description Instrumen WCP tidak OPEN, atau salah satu partisipan sudah terdaftar sebagai responden WCP. */
+            /** @description Instrumen WCP tidak OPEN. */
             409: {
                 headers: {
                     [name: string]: unknown;
@@ -9526,6 +9555,24 @@ export interface operations {
                     "application/json": components["schemas"]["Page_OpmSesiRead_"];
                 };
             };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Validation Error */
             422: {
                 headers: {
@@ -9533,6 +9580,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
         };
@@ -9564,6 +9620,15 @@ export interface operations {
             };
             /** @description Token tidak ada/invalid. */
             401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin. */
+            403: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -9622,8 +9687,35 @@ export interface operations {
                     "application/json": components["schemas"]["Page_OpmSesiRead_"];
                 };
             };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Domain/field tidak valid. */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -9654,6 +9746,24 @@ export interface operations {
                     "application/json": components["schemas"]["OpmSesiRead"];
                 };
             };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Sesi OPM tidak ditemukan. */
             404: {
                 headers: {
@@ -9670,6 +9780,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
         };
@@ -9777,6 +9896,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Bukan admin. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Sesi OPM tidak ditemukan. */
             404: {
                 headers: {
@@ -9829,6 +9957,15 @@ export interface operations {
             };
             /** @description Token tidak ada/invalid. */
             401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin. */
+            403: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -9895,6 +10032,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Bukan admin. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Sesi OPM tidak ditemukan. */
             404: {
                 headers: {
@@ -9943,6 +10089,24 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["OpmSesiTaskRead"][];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin atau responden sesi OPM ini. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
             /** @description Sesi OPM tidak ditemukan. */
@@ -10531,6 +10695,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Bukan admin. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Sesi OPM tidak ditemukan. */
             404: {
                 headers: {
@@ -10581,6 +10754,24 @@ export interface operations {
                     "application/json": components["schemas"]["OpmHasilSesiRead"];
                 };
             };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Sesi OPM tidak ditemukan. */
             404: {
                 headers: {
@@ -10592,6 +10783,15 @@ export interface operations {
             };
             /** @description Sesi belum ANALYZED. */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -10988,7 +11188,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["DcsRespondenRead"][];
+                    "application/json": components["schemas"]["BulkAssignResult_DcsRespondenRead_"];
                 };
             };
             /** @description Token tidak ada/invalid. */
@@ -11009,7 +11209,7 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
-            /** @description Instrumen DCS tidak OPEN, atau salah satu partisipan sudah terdaftar sebagai responden DCS. */
+            /** @description Instrumen DCS tidak OPEN. */
             409: {
                 headers: {
                     [name: string]: unknown;
@@ -11679,6 +11879,24 @@ export interface operations {
                     "application/json": components["schemas"]["Page_TiSesiRead_"];
                 };
             };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Validation Error */
             422: {
                 headers: {
@@ -11686,6 +11904,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
         };
@@ -11717,6 +11944,15 @@ export interface operations {
             };
             /** @description Token tidak ada/invalid. */
             401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin. */
+            403: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -11775,8 +12011,35 @@ export interface operations {
                     "application/json": components["schemas"]["Page_TiSesiRead_"];
                 };
             };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Domain/field tidak valid. */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -11805,6 +12068,24 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["TiSesiRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin atau peserta sesi. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
             /** @description Sesi Task Inventory tidak ditemukan. */
@@ -11930,6 +12211,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Bukan admin. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Sesi Task Inventory tidak ditemukan. */
             404: {
                 headers: {
@@ -11982,6 +12272,15 @@ export interface operations {
             };
             /** @description Token tidak ada/invalid. */
             401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin. */
+            403: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -12051,6 +12350,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Bukan admin. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Sesi Task Inventory tidak ditemukan. */
             404: {
                 headers: {
@@ -12106,6 +12414,15 @@ export interface operations {
             };
             /** @description Token tidak ada/invalid. */
             401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin. */
+            403: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -12172,6 +12489,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Bukan admin. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Sesi Task Inventory tidak ditemukan. */
             404: {
                 headers: {
@@ -12231,7 +12557,7 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
-            /** @description Bukan admin atau bukan pemilik responden. */
+            /** @description Bukan admin atau peserta sesi. */
             403: {
                 headers: {
                     [name: string]: unknown;
@@ -12948,6 +13274,24 @@ export interface operations {
                     "application/json": components["schemas"]["TiTahap2ReviewRead"];
                 };
             };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin atau peserta sesi. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Sesi tidak ditemukan. */
             404: {
                 headers: {
@@ -13061,6 +13405,24 @@ export interface operations {
                     "application/json": components["schemas"]["TiTaskTerpilihRead"][];
                 };
             };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin atau peserta sesi. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Sesi tidak ditemukan. */
             404: {
                 headers: {
@@ -13104,6 +13466,15 @@ export interface operations {
             };
             /** @description Token tidak ada/invalid. */
             401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin. */
+            403: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -13161,6 +13532,24 @@ export interface operations {
                     "application/json": components["schemas"]["TiHasilSesiRead"];
                 };
             };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Sesi tidak ditemukan. */
             404: {
                 headers: {
@@ -13172,6 +13561,15 @@ export interface operations {
             };
             /** @description Unprocessable Entity */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -14915,3 +15313,5 @@ export type BulkSkipped = components["schemas"]["BulkSkipped"];
 export type TsPenugasanBulkResult = components["schemas"]["BulkAssignResult_TsPenugasanRead_"];
 export type TiRespondenBulkResult = components["schemas"]["BulkAssignResult_TiRespondenRead_"];
 export type OpmRespondenBulkResult = components["schemas"]["BulkAssignResult_OpmRespondenRead_"];
+export type DcsRespondenBulkResult = components["schemas"]["BulkAssignResult_DcsRespondenRead_"];
+export type WcpRespondenBulkResult = components["schemas"]["BulkAssignResult_WcpRespondenRead_"];

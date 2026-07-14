@@ -8,6 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
+import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
 import { AI_MODE, KONDISI, SUMBER_BUKTI, VA_TYPE } from "@/components/calhr";
 import type { DetilTugasRead, JabatanRead, TugasPokokRead } from "@/lib/api/schema";
 
@@ -134,10 +135,14 @@ export function TambahUraianTugasForm({
         const requestId = response.headers.get("x-request-id");
         if (error) throw toApiError(error, requestId);
       }
+      notifySukses(
+        editId ? "Uraian tugas berhasil diperbarui." : "Uraian tugas berhasil ditambahkan.",
+      );
       router.push("/master-data/uraian-tugas");
       router.refresh();
     } catch (err) {
-      setServerError(err instanceof Error ? err.message : "Terjadi kesalahan.");
+      setServerError(pesanGagal(err));
+      notifyGagal(err);
     }
   }
 

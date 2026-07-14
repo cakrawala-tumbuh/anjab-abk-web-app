@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
+import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
 import type { SekolahRead } from "@/lib/api/schema";
 
 const JENIS_OPTIONS = [
@@ -62,10 +63,12 @@ export function TambahJabatanForm({ sekolah, accessToken }: Props) {
       });
       const requestId = response.headers.get("x-request-id");
       if (error) throw toApiError(error, requestId);
+      notifySukses("Jabatan berhasil ditambahkan.");
       router.push("/master-data/jabatan");
       router.refresh();
     } catch (err) {
-      setServerError(err instanceof Error ? err.message : "Terjadi kesalahan.");
+      setServerError(pesanGagal(err));
+      notifyGagal(err);
     }
   }
 

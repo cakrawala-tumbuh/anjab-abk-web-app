@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
+import { notifyGagal, notifySukses } from "@/lib/notify";
 import type { DcsArahItem, DcsItemRead } from "@/lib/api/schema";
 
 interface Props {
@@ -111,9 +112,11 @@ function DcsItemEditRow({ item, accessToken, onCancel, onSaved }: RowProps) {
       });
       const requestId = response.headers.get("x-request-id");
       if (apiError || !data) throw toApiError(apiError, requestId);
+      notifySukses("Item berhasil disimpan.");
       onSaved();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Gagal menyimpan.");
+      notifyGagal(err);
       setSaving(false);
     }
   }

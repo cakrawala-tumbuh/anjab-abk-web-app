@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
+import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
 import type { TiCatalogRead } from "@/lib/api/schema";
 
 interface Props {
@@ -157,8 +158,10 @@ export function SeleksiForm({ respondenId, catalog, terpilihAwal, accessToken }:
       const reqId = response.headers.get("x-request-id");
       if (apiError) throw toApiError(apiError, reqId);
       setSaveMessage("Draft tersimpan.");
+      notifySukses("Draft tersimpan.");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Terjadi kesalahan saat menyimpan draft.");
+      notifyGagal(err);
     } finally {
       setSaving(false);
     }
@@ -190,12 +193,14 @@ export function SeleksiForm({ respondenId, catalog, terpilihAwal, accessToken }:
       );
       const reqId = response.headers.get("x-request-id");
       if (apiError) throw toApiError(apiError, reqId);
+      notifySukses("Jawaban berhasil dikirim.");
       // Partisipan kembali ke daftar kuesioner miliknya, bukan ke halaman
       // detail sesi yang khusus admin (akan memicu notFound bagi partisipan).
       router.push("/kuesioner");
       router.refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Terjadi kesalahan.");
+      setError(pesanGagal(err));
+      notifyGagal(err);
       setSubmitting(false);
     }
   }

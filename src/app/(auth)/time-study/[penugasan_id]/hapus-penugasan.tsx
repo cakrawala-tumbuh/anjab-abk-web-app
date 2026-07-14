@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
+import { notifyGagal, notifySukses } from "@/lib/notify";
 
 interface Props {
   penugasanId: string;
@@ -33,10 +34,11 @@ export function HapusPenugasan({ penugasanId, nama, accessToken }: Props) {
       );
       const reqId = response.headers.get("x-request-id");
       if (error) throw toApiError(error, reqId);
+      notifySukses("Penugasan berhasil dihapus.");
       router.push("/time-study");
       router.refresh();
     } catch (err) {
-      alert(err instanceof Error ? err.message : "Gagal menghapus penugasan.");
+      notifyGagal(err);
       setLoading(false);
     }
   }

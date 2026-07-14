@@ -1,5 +1,6 @@
 import { render, screen, fireEvent, act, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
+import { toast } from "sonner";
 import type { TiTahap2ReviewRead } from "@/lib/api/schema";
 
 // ── Mock router & API client ────────────────────────────────────────────────
@@ -40,9 +41,14 @@ function renderForm(readOnly: boolean) {
   );
 }
 
+const toastSukses = vi.mocked(toast.success);
+const toastError = vi.mocked(toast.error);
+
 beforeEach(() => {
   refresh.mockReset();
   post.mockReset();
+  toastSukses.mockReset();
+  toastError.mockReset();
   post.mockResolvedValue({ error: null, response: { headers: { get: () => "req-1" } } });
 });
 
@@ -145,6 +151,80 @@ describe("ReviewForm — Requirement (011): counter 'Belum diputuskan' di header
   it("readOnly=true: counter tidak pernah ditampilkan meski ada task belum diputuskan", () => {
     renderWithMultiPending(true);
     expect(screen.queryByText("Belum diputuskan:")).toBeNull();
+  });
+});
+
+describe("ReviewForm — regresi: sukses Tahap 2 tidak boleh senyap", () => {
+  beforeEach(() => {
+    vi.stubGlobal("confirm", () => true);
+  });
+
+  it("semua task diputuskan + POST sukses: toast sukses memuat jumlah keputusan", async () => {
+    renderForm(false);
+    // TIaaa masih null → putuskan agar tidak ada yang tersisa (TIbbb sudah true).
+    fireEvent.click(screen.getAllByRole("button", { name: "Ya" })[0]);
+
+    await act(async () => {
+      fireEvent.click(screen.getAllByRole("button", { name: "Simpan Keputusan" })[0]);
+    });
+
+    await waitFor(() => expect(toastSukses).toHaveBeenCalledTimes(1));
+    // Inti regresi: dulu POST sukses hanya router.refresh(), tanpa notifikasi apa pun.
+    expect(toastSukses).toHaveBeenCalledWith(expect.stringMatching(/\d+ keputusan tersimpan\./));
+    expect(toastSukses).toHaveBeenCalledWith(expect.stringContaining("2 keputusan tersimpan."));
+    expect(toastError).not.toHaveBeenCalled();
+    expect(refresh).toHaveBeenCalled();
+  });
+
+  it("ada task belum diputuskan + confirm OK: toast menyebut jumlah terkirim DAN dilewati", async () => {
+    renderForm(false);
+    // TIaaa dibiarkan null → dibuang dari payload.
+    await act(async () => {
+      fireEvent.click(screen.getAllByRole("button", { name: "Simpan Keputusan" })[0]);
+    });
+
+    await waitFor(() => expect(post).toHaveBeenCalledTimes(1));
+    // Payload hanya berisi task yang sudah diputuskan (TIbbb).
+    expect(post).toHaveBeenCalledWith(
+      "/api/v1/task-inventory/sesi/{sesi_id}/tahap2",
+      expect.objectContaining({
+        body: { keputusan: [{ task_kode: "TIbbb", disetujui: true }] },
+      }),
+    );
+    // User harus tahu sebagian task dibuang dari payload.
+    expect(toastSukses).toHaveBeenCalledWith(
+      expect.stringMatching(/keputusan tersimpan.*belum diputuskan/),
+    );
+  });
+
+  it("confirm dibatalkan saat ada task belum diputuskan: tidak ada POST", async () => {
+    vi.stubGlobal("confirm", () => false);
+    renderForm(false);
+
+    await act(async () => {
+      fireEvent.click(screen.getAllByRole("button", { name: "Simpan Keputusan" })[0]);
+    });
+
+    expect(post).not.toHaveBeenCalled();
+    expect(toastSukses).not.toHaveBeenCalled();
+  });
+
+  it("POST gagal: toast.error dipanggil dan error inline tampil", async () => {
+    post.mockResolvedValue({
+      error: { error: "conflict", message: "Sesi bukan TAHAP2." },
+      response: { headers: { get: () => "req-1" } },
+    });
+    renderForm(false);
+    fireEvent.click(screen.getAllByRole("button", { name: "Ya" })[0]);
+
+    await act(async () => {
+      fireEvent.click(screen.getAllByRole("button", { name: "Simpan Keputusan" })[0]);
+    });
+
+    await waitFor(() => expect(toastError).toHaveBeenCalledTimes(1));
+    expect(toastError).toHaveBeenCalledWith("Sesi bukan TAHAP2.", expect.anything());
+    expect(toastSukses).not.toHaveBeenCalled();
+    expect(screen.getByRole("alert")).toHaveTextContent("Sesi bukan TAHAP2.");
   });
 });
 

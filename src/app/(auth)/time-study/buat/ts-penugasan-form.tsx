@@ -8,6 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
+import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
 import type { components } from "@/lib/api/schema";
 
 type PartisipanRead = components["schemas"]["PartisipanRead"];
@@ -53,9 +54,11 @@ export function TsPenugasanForm({ partisipan, jabatan, accessToken }: Props) {
       });
       const requestId = response.headers.get("x-request-id");
       if (error) throw toApiError(error, requestId);
+      notifySukses("Penugasan berhasil dibuat.");
       router.push(`/time-study/${data!.id}`);
     } catch (err) {
-      setServerError(err instanceof Error ? err.message : "Terjadi kesalahan.");
+      setServerError(pesanGagal(err));
+      notifyGagal(err);
     }
   }
 

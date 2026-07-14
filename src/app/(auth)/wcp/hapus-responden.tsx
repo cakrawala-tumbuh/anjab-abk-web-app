@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
+import { notifyGagal, notifySukses } from "@/lib/notify";
 
 interface Props {
   respondenId: string;
@@ -25,9 +26,10 @@ export function HapusResponden({ respondenId, nama, accessToken }: Props) {
       });
       const reqId = response.headers.get("x-request-id");
       if (error) throw toApiError(error, reqId);
+      notifySukses("Responden berhasil dihapus.");
       router.refresh();
     } catch (err) {
-      alert(err instanceof Error ? err.message : "Gagal menghapus responden.");
+      notifyGagal(err);
       setLoading(false);
     }
   }

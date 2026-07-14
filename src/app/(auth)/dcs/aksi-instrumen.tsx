@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
+import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
 import type { DcsInstrumenRead } from "@/lib/api/schema";
 
 interface Props {
@@ -35,9 +36,11 @@ export function AksiInstrumen({ instrumen, jumlahSubmit, accessToken }: Props) {
       const { error: apiError, response } = await client.POST("/api/v1/dcs/instrumen/tutup", {});
       const reqId = response.headers.get("x-request-id");
       if (apiError) throw toApiError(apiError, reqId);
+      notifySukses("Instrumen ditutup.");
       router.refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Terjadi kesalahan.");
+      setError(pesanGagal(err));
+      notifyGagal(err);
     } finally {
       setLoading(false);
     }
@@ -54,9 +57,11 @@ export function AksiInstrumen({ instrumen, jumlahSubmit, accessToken }: Props) {
       );
       const reqId = response.headers.get("x-request-id");
       if (apiError) throw toApiError(apiError, reqId);
+      notifySukses("Instrumen dibuka ulang.");
       router.refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Terjadi kesalahan.");
+      setError(pesanGagal(err));
+      notifyGagal(err);
     } finally {
       setLoading(false);
     }
@@ -70,9 +75,11 @@ export function AksiInstrumen({ instrumen, jumlahSubmit, accessToken }: Props) {
       const { error: apiError, response } = await client.POST("/api/v1/dcs/analisis", {});
       const reqId = response.headers.get("x-request-id");
       if (apiError) throw toApiError(apiError, reqId);
+      notifySukses("Analisis selesai.");
       router.push("/dcs/hasil");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Terjadi kesalahan.");
+      setError(pesanGagal(err));
+      notifyGagal(err);
       setLoading(false);
     }
   }

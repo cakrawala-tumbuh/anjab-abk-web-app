@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
+import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
 import type { OpmJawabanRead, OpmSesiTaskRead } from "@/lib/api/schema";
 
 type Dimensi = "importance" | "frequency" | "criticality";
@@ -110,18 +111,31 @@ export function OpmForm({ respondenId, task, jawabanAwal, sudahSubmit, accessTok
     setSaving(true);
     try {
       const client = withServerAuth(accessToken);
+      const jawaban = buildJawabanPayload();
       const { error: apiError, response } = await client.PUT(
         "/api/v1/opm/sesi/responden/{responden_id}/jawaban",
         {
           params: { path: { responden_id: respondenId } },
-          body: { jawaban: buildJawabanPayload() },
+          body: { jawaban },
         },
       );
       const reqId = response.headers.get("x-request-id");
       if (apiError) throw toApiError(apiError, reqId);
-      setSaveMessage("Draft tersimpan.");
+
+      // `buildJawabanPayload` MEMBUANG task yang belum lengkap 3 dimensi, dan endpoint
+      // ini PUT (replace penuh) — jadi task parsial tidak tersimpan sama sekali. User
+      // harus tahu persis berapa yang benar-benar tersimpan, bukan sekadar "tersimpan".
+      const total = sortedTask.length;
+      const pesan =
+        jawaban.length === total
+          ? "Draft tersimpan."
+          : `Draft tersimpan — ${jawaban.length} dari ${total} task. ` +
+            "Task yang belum dinilai pada ketiga dimensi tidak ikut tersimpan.";
+      setSaveMessage(pesan);
+      notifySukses(pesan);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Terjadi kesalahan saat menyimpan draft.");
+      setError(pesanGagal(err));
+      notifyGagal(err);
     } finally {
       setSaving(false);
     }
@@ -155,9 +169,11 @@ export function OpmForm({ respondenId, task, jawabanAwal, sudahSubmit, accessTok
       const reqId = response.headers.get("x-request-id");
       if (apiError) throw toApiError(apiError, reqId);
       setSukses(true);
+      notifySukses("Jawaban berhasil dikirim.");
       router.refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Terjadi kesalahan saat mengirim jawaban.");
+      setError(pesanGagal(err));
+      notifyGagal(err);
     } finally {
       setSubmitting(false);
     }

@@ -50,6 +50,54 @@ src/
 
 ## Revisi Desain
 
+### [2026-07-14] Notifikasi toast terpusat (`sonner`) — satu-satunya pintu ke user untuk hasil simpan data
+
+Audit atas ~55 call site mutasi (POST/PATCH/PUT/DELETE) di 49 berkas menemukan bahwa
+keberhasilan hampir tidak pernah dikonfirmasi ke user (hanya 6 dari ~55 punya pesan
+sukses eksplisit — sisanya mengandalkan `router.push`/`router.refresh()` yang tidak
+terlihat bila layar tidak berubah), sementara kegagalan dilaporkan lewat 4 mekanisme
+berbeda yang tidak konsisten (`form-server-error`, `bg-red-50`, `<p className="text-red-600">`,
+`alert()` browser) — plus beberapa kasus notifikasi yang **salah** (error ditelan, pesan
+sukses bohong tentang data yang sebenarnya tidak lengkap tersimpan, banner yang tidak
+pernah muncul karena stale prop, stale closure di `catch`).
+
+- **`sonner`** dipasang sebagai **satu-satunya** mekanisme toast di seluruh app.
+  `<Toaster position="top-right" richColors closeButton />` dirender di
+  `src/app/providers.tsx`, di dalam `ThemeProvider` (toast ikut tema light/dark) tapi di
+  luar `{children}`.
+- **`src/lib/notify.ts`** adalah **satu-satunya pintu** ke `toast.*` — komponen **dilarang**
+  memanggil `toast.success`/`toast.error` dari `sonner` secara langsung.
+  - `notifySukses(pesan: string)` — toast sukses, durasi bawaan sonner (4 detik).
+  - `notifyGagal(err: unknown)` — toast error, **`duration: Infinity`** (tidak hilang
+    sendiri, user harus menutupnya manual lewat `closeButton`), menampilkan
+    `X-Request-ID` (`ApiError.requestId`) di deskripsi toast bila tersedia, supaya user
+    bisa menyebutkannya saat lapor masalah.
+  - `pesanGagal(err: unknown): string` — ekstrak pesan siap-tampil dari error apa pun;
+    dipakai bersama untuk mengisi error inline (`setServerError(pesanGagal(err))`) supaya
+    logika `err instanceof Error ? err.message : "…"` tidak terduplikasi di tiap komponen.
+- **Toast bersifat tambahan, bukan pengganti.** Form panjang (tahap1/2/3 Task Inventory,
+  isi DCS/WCP/OPM, semua form master-data) **tetap mempertahankan** error inline
+  (`form-server-error`, `role="alert"`, dll.) — pesan error di form panjang tidak boleh
+  hilang sendiri setelah 4 detik. Pola standar: `setServerError(pesanGagal(err))` **dan**
+  `notifyGagal(err)` berdampingan di `catch` yang sama.
+- **`alert()` browser dilarang total** — satu-satunya cara melaporkan kegagalan ke user
+  adalah `notifyGagal(err)`.
+- **Setiap call site mutasi WAJIB memanggil `notifySukses(...)` pada jalur sukses**
+  (sebelum `router.push`/`router.refresh()` — toast bertahan lintas navigasi App Router)
+  **dan** `notifyGagal(err)` pada jalur gagal, tanpa kecuali. Panel sukses yang sudah ada
+  dan memuat detail yang tidak muat di toast (mis. ringkasan `created`/`skipped` di
+  `assign-responden-banyak.tsx`/`ts-penugasan-bulk-form.tsx`, panel hijau submit
+  kuesioner) **tetap dipertahankan** — toast ditambahkan berdampingan.
+- Test: `sonner` di-mock global di `vitest.setup.ts`
+  (`vi.mock("sonner", () => ({ toast: {...}, Toaster: () => null }))`) — test
+  memverifikasi notifikasi lewat assertion pada `toast.success`/`toast.error` (via mock),
+  bukan lewat DOM toast yang dirender lewat portal. Lihat `src/test/notify.test.ts` untuk
+  test unit helper, dan `src/test/*.test.tsx` per komponen untuk test regresi per call site.
+- **Jaring pengaman permanen** (jalankan sebelum lapor selesai pada perubahan yang
+  menyentuh mutasi baru): `grep -rn "alert(" src/app` → nol hasil (kecuali
+  `role="alert"`/`confirm(`); `grep -rn "toast" src/app` → nol hasil (semua lewat helper
+  `notify*`, bukan `toast.*` langsung).
+
 ### [2026-07-13] Editor item DCS/WCP: cermin `useState` dibuang, data dipasok Server Component + `router.refresh()`
 
 Tombol "Simpan" di editor item `/master-data/dcs/{kode}` dan `/master-data/wcp/{kode}`

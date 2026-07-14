@@ -8,6 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
+import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
 import type { JabatanRead, TiSesiRead } from "@/lib/api/schema";
 
 export const schema = z
@@ -81,9 +82,11 @@ export function OpmSesiForm({ jabatan, tiSesi, accessToken }: Props) {
       });
       const requestId = response.headers.get("x-request-id");
       if (error) throw toApiError(error, requestId);
+      notifySukses("Analisis jabatan berhasil dibuat.");
       router.push(`/opm/${data!.id}`);
     } catch (err) {
-      setServerError(err instanceof Error ? err.message : "Terjadi kesalahan.");
+      setServerError(pesanGagal(err));
+      notifyGagal(err);
     }
   }
 

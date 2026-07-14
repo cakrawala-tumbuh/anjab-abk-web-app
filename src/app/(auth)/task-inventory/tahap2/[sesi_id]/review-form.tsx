@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
+import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
 import type { TiTahap2ReviewRead, TiTahap2TaskRead } from "@/lib/api/schema";
 
 interface Props {
@@ -59,9 +60,15 @@ export function ReviewForm({ sesiId, review, accessToken, readOnly, kodeToUraian
       );
       const reqId = response.headers.get("x-request-id");
       if (apiError) throw toApiError(apiError, reqId);
+      notifySukses(
+        pending.length > 0
+          ? `${payload.length} keputusan tersimpan. ${pending.length} task belum diputuskan dan tidak disertakan.`
+          : `${payload.length} keputusan tersimpan.`,
+      );
       router.refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Terjadi kesalahan.");
+      setError(pesanGagal(err));
+      notifyGagal(err);
     } finally {
       setSubmitting(false);
     }

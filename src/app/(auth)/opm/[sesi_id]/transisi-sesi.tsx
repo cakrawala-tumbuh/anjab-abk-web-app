@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
+import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
 import type { OpmSesiRead } from "@/lib/api/schema";
 
 interface Props {
@@ -28,9 +29,11 @@ export function TransisiSesi({ sesi, accessToken }: Props) {
       });
       const reqId = response.headers.get("x-request-id");
       if (apiError) throw toApiError(apiError, reqId);
+      notifySukses(aksi === "buka" ? "Sesi dibuka." : "Sesi ditutup.");
       router.refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Terjadi kesalahan.");
+      setError(pesanGagal(err));
+      notifyGagal(err);
     } finally {
       setLoading(false);
     }
@@ -47,9 +50,11 @@ export function TransisiSesi({ sesi, accessToken }: Props) {
       );
       const reqId = response.headers.get("x-request-id");
       if (apiError) throw toApiError(apiError, reqId);
+      notifySukses("Analisis selesai.");
       router.push(`/opm/${sesi.id}/hasil`);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Terjadi kesalahan.");
+      setError(pesanGagal(err));
+      notifyGagal(err);
       setLoading(false);
     }
   }
@@ -69,9 +74,11 @@ export function TransisiSesi({ sesi, accessToken }: Props) {
       });
       const reqId = response.headers.get("x-request-id");
       if (apiError) throw toApiError(apiError, reqId);
+      notifySukses("Analisis jabatan berhasil dihapus.");
       router.push("/opm");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Terjadi kesalahan.");
+      setError(pesanGagal(err));
+      notifyGagal(err);
       setLoading(false);
     }
   }

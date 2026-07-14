@@ -8,6 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
+import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
 import type { JabatanRead, TugasPokokRead } from "@/lib/api/schema";
 
 const schema = z.object({
@@ -101,10 +102,14 @@ export function TambahDetilTugasForm({
         const requestId = response.headers.get("x-request-id");
         if (error) throw toApiError(error, requestId);
       }
+      notifySukses(
+        editId ? "Detil tugas berhasil diperbarui." : "Detil tugas berhasil ditambahkan.",
+      );
       router.push("/master-data/detil-tugas");
       router.refresh();
     } catch (err) {
-      setServerError(err instanceof Error ? err.message : "Terjadi kesalahan.");
+      setServerError(pesanGagal(err));
+      notifyGagal(err);
     }
   }
 

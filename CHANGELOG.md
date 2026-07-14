@@ -7,6 +7,69 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [4.1.0] - 2026-07-14
+
+### Ditambahkan
+
+- **Notifikasi toast (`sonner`) di seluruh operasi simpan data** (backlog 017). Sebelumnya
+  web app tidak punya mekanisme toast sama sekali — dari ~55 call site mutasi
+  (POST/PATCH/PUT/DELETE), hanya 6 yang memberi konfirmasi sukses eksplisit; sisanya
+  mengandalkan efek samping (`router.push`/`router.refresh()`) yang tidak terlihat bila
+  tampilan tidak berubah.
+  - `sonner` dipasang sebagai satu-satunya mekanisme toast; `<Toaster position="top-right"
+richColors closeButton />` ditambahkan di `src/app/providers.tsx`.
+  - Helper terpusat baru `src/lib/notify.ts`: `notifySukses(pesan)`, `notifyGagal(err)`,
+    `pesanGagal(err)`. Komponen dilarang memanggil `toast.*` langsung — semua lewat helper
+    ini. Toast error memakai `duration: Infinity` (harus ditutup manual oleh user) dan
+    menampilkan `X-Request-ID` (lewat `ApiError.requestId`) di deskripsi bila tersedia.
+  - Seluruh ~55 call site mutasi di 49 berkas (master-data, task-inventory, dcs/wcp, opm,
+    time-study/partisipan) kini memanggil `notifySukses(...)` pada jalur sukses dan
+    `notifyGagal(err)` pada jalur gagal, berdampingan dengan error inline yang sudah ada di
+    form panjang (tidak diganti).
+
+### Diperbaiki
+
+- **5 bug notifikasi-bohong** ikut diperbaiki di item ini karena satu lingkup dengan
+  perbaikan notifikasi di atas:
+  1. `master-data/sme-panel/[id]/anggota-form.tsx` — set/unset koordinator menelan error
+     API bulat-bulat (`router.refresh()` tetap jalan walau 403/409/500); kini memeriksa
+     `error` dan melempar `toApiError`.
+  2. `task-inventory/tahap2/[sesi_id]/review-form.tsx` — submit Tahap 2 sukses tanpa
+     notifikasi apa pun (`router.refresh()` senyap); kini menampilkan jumlah keputusan
+     tersimpan dan jumlah task yang belum diputuskan (tidak disertakan).
+  3. `task-inventory/[sesi_id]/atur-koordinator.tsx` — banner sukses digate `!berubah`
+     yang dihitung dari prop server basi, sehingga tidak pernah muncul tepat saat PATCH
+     sukses; gate & state `sukses` dihapus, diganti toast.
+  4. `opm/isi/[responden_id]/opm-form.tsx` — draft yang memfilter task belum lengkap 3
+     dimensi tetap dilaporkan sebagai "Draft tersimpan." padahal task parsial itu tidak
+     ikut tersimpan (endpoint `PUT` = replace penuh); pesan kini menyebut
+     `{tersimpan} dari {total} task` saat ada yang dibuang.
+  5. `master-data/task-inventory/utilitas/reset-katalog-panel.tsx` — pesan pemulihan
+     "katalog sudah dikosongkan tapi reseed gagal" tidak pernah muncul karena membaca
+     state `emptied` di dalam `catch` (stale closure); diganti variabel lokal
+     `sudahDikosongkan`, state `emptied` (dead state) dihapus.
+- **`alert()` browser dihapus total** (6 berkas: `anggota-form.tsx`,
+  `task-inventory/[sesi_id]/hapus-responden.tsx`, `dcs/hapus-responden.tsx`,
+  `wcp/hapus-responden.tsx`, `opm/[sesi_id]/hapus-responden.tsx`,
+  `time-study/[penugasan_id]/hapus-penugasan.tsx`) — diganti `notifyGagal(err)` +
+  `notifySukses(...)` pada jalur sukses.
+- **Assign responden DCS & WCP tidak menampilkan responden yang di-skip** (backlog 019).
+  Mengikuti perubahan backend (`POST /api/v1/dcs/responden` & `.../wcp/responden` kini
+  mengembalikan `BulkAssignResult` `{created, skipped}`, bukan array datar — backlog 018),
+  `dcs/assign-responden.tsx` & `wcp/assign-responden.tsx` sebelumnya membersihkan seluruh
+  seleksi dan hanya menampilkan toast jumlah — memilih 10 partisipan lalu 7 di-skip
+  terlihat identik dengan sukses penuh.
+  - Panel ringkasan baru (meniru `opm/[sesi_id]/assign-responden-banyak.tsx`): jumlah
+    `created` + daftar `skipped` dengan alasan Bahasa Indonesia lewat
+    `formatAlasanSkip()` (helper yang sudah ada, tidak diduplikasi).
+  - Hanya partisipan yang berhasil dibuat (`data.created`) yang di-uncheck setelah
+    submit — partisipan yang di-skip **tetap tercentang** supaya bisa langsung
+    di-retry tanpa memilih ulang.
+  - `src/lib/api/schema.ts` diregenerasi dari `openapi.json` backend 018; convenience
+    re-exports akhir file (termasuk alias baru `DcsRespondenBulkResult` &
+    `WcpRespondenBulkResult` untuk `BulkAssignResult_DcsRespondenRead_` /
+    `BulkAssignResult_WcpRespondenRead_`) di-append ulang setelah `gen:api`.
+
 ## [4.0.3] - 2026-07-13
 
 ### Diperbaiki
