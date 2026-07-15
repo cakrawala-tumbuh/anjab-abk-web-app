@@ -6,7 +6,7 @@ import { z } from "zod";
 import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
 import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
-import { AI_MODE, KONDISI, SUMBER_BUKTI, VA_TYPE } from "@/components/calhr";
+import { FREKUENSI, KONDISI, SUMBER_BUKTI, VA_TYPE } from "@/components/calhr";
 import type { TiDetailItem, TiDetailRead, TiTaskTerpilihRead } from "@/lib/api/schema";
 
 /** Skema validasi satu entri detail CalHR (dipakai juga di unit test). */
@@ -18,7 +18,6 @@ export const detailItemSchema = z.object({
   durasi_per_kali: z.number().int().min(0, "Durasi ≥ 0"),
   jam_per_minggu: z.number().min(0, "Jam/minggu ≥ 0"),
   peak4w_hours: z.number().min(0).default(0),
-  ai_mode: z.enum(["Human-led", "Co-Pilot", "AI-assisted"]),
   va_type: z.enum([
     "VA-Core",
     "VA-Enable",
@@ -26,7 +25,6 @@ export const detailItemSchema = z.object({
     "Context-Dependent",
     "Needs Validation",
   ]),
-  dcs_flag: z.boolean().default(false),
   setuju_standar: z.boolean().default(true),
   catatan: z.string().max(500).optional(),
 });
@@ -40,9 +38,7 @@ interface RowState {
   durasi_per_kali: number;
   jam_per_minggu: number;
   peak4w_hours: number;
-  ai_mode: TiDetailItem["ai_mode"];
   va_type: TiDetailItem["va_type"];
-  dcs_flag: boolean;
 }
 
 /** Task punya nilai standar bila minimal satu field `std_*` non-null. */
@@ -54,9 +50,7 @@ function punyaStandar(t: TiTaskTerpilihRead): boolean {
     t.std_durasi_per_kali != null ||
     t.std_jam_per_minggu != null ||
     t.std_peak4w_hours != null ||
-    t.std_ai_mode != null ||
-    t.std_va_type != null ||
-    t.std_dcs_flag != null
+    t.std_va_type != null
   );
 }
 
@@ -76,9 +70,7 @@ function rowDariStandar(t: TiTaskTerpilihRead): RowState {
     durasi_per_kali: 60,
     jam_per_minggu: t.std_jam_per_minggu ?? 1,
     peak4w_hours: t.std_peak4w_hours ?? 0,
-    ai_mode: t.std_ai_mode ?? "Human-led",
     va_type: t.std_va_type ?? "VA-Core",
-    dcs_flag: t.std_dcs_flag ?? false,
   };
 }
 
@@ -105,9 +97,7 @@ export function DetailForm({ respondenId, tasks, detailAwal, accessToken }: Prop
           durasi_per_kali: existing.durasi_per_kali,
           jam_per_minggu: existing.jam_per_minggu,
           peak4w_hours: existing.peak4w_hours,
-          ai_mode: existing.ai_mode,
           va_type: existing.va_type,
-          dcs_flag: existing.dcs_flag,
         };
         return [t.kode, row];
       }),
@@ -148,9 +138,7 @@ export function DetailForm({ respondenId, tasks, detailAwal, accessToken }: Prop
         durasi_per_kali: r.durasi_per_kali,
         jam_per_minggu: r.jam_per_minggu,
         peak4w_hours: r.peak4w_hours,
-        ai_mode: r.ai_mode,
         va_type: r.va_type,
-        dcs_flag: r.dcs_flag,
         setuju_standar: r.setuju_standar,
       });
       if (!parsed.success) {
@@ -363,13 +351,19 @@ export function DetailForm({ respondenId, tasks, detailAwal, accessToken }: Prop
                     </label>
                     <label className="text-xs text-gray-600">
                       Frekuensi
-                      <input
-                        type="text"
+                      <select
                         value={r.frekuensi_teks}
                         disabled={terkunci}
                         onChange={(e) => update(t.kode, { frekuensi_teks: e.target.value })}
                         className={`mt-1 block w-full ${selectCls}`}
-                      />
+                      >
+                        {(FREKUENSI.includes(r.frekuensi_teks as (typeof FREKUENSI)[number])
+                          ? FREKUENSI
+                          : [r.frekuensi_teks, ...FREKUENSI]
+                        ).map((v) => (
+                          <option key={v}>{v}</option>
+                        ))}
+                      </select>
                     </label>
                     <label className="text-xs text-gray-600">
                       Durasi/kali (menit)
@@ -413,21 +407,6 @@ export function DetailForm({ respondenId, tasks, detailAwal, accessToken }: Prop
                       />
                     </label>
                     <label className="text-xs text-gray-600">
-                      AI Mode
-                      <select
-                        value={r.ai_mode}
-                        disabled={terkunci}
-                        onChange={(e) =>
-                          update(t.kode, { ai_mode: e.target.value as RowState["ai_mode"] })
-                        }
-                        className={`mt-1 block w-full ${selectCls}`}
-                      >
-                        {AI_MODE.map((v) => (
-                          <option key={v}>{v}</option>
-                        ))}
-                      </select>
-                    </label>
-                    <label className="text-xs text-gray-600">
                       VA Type
                       <select
                         value={r.va_type}
@@ -441,16 +420,6 @@ export function DetailForm({ respondenId, tasks, detailAwal, accessToken }: Prop
                           <option key={v}>{v}</option>
                         ))}
                       </select>
-                    </label>
-                    <label className="flex items-center gap-2 self-end text-xs text-gray-600">
-                      <input
-                        type="checkbox"
-                        checked={r.dcs_flag}
-                        disabled={terkunci}
-                        onChange={(e) => update(t.kode, { dcs_flag: e.target.checked })}
-                        className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 disabled:opacity-60"
-                      />
-                      Ada risiko DCS
                     </label>
                   </div>
                 </div>

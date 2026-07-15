@@ -66,13 +66,11 @@ secara terpisah untuk tiap panel.
 
 Mulai analisis dengan parameter berikut (detail langkah: [IK-04 Task Inventory](../ik/task-inventory.md#a-memulai-analisis-jabatan)):
 
-| Parameter           | Pedoman pengisian                                                             |
-| ------------------- | ----------------------------------------------------------------------------- |
-| **Jabatan**         | Wajib. Pilih jabatan target (daftar berisi jabatan yang tersedia di catalog). |
-| **Periode**         | Format `YYYY-MM` (mis. `2026-06`).                                            |
-| **Min. Responden**  | Default 3. Jumlah minimum responden agar hasil layak diagregasi.              |
-| **Maks. Responden** | Default 10. Harus ≥ Min. Responden.                                           |
-| **Catatan**         | Opsional — keterangan analisis.                                               |
+| Parameter   | Pedoman pengisian                                                             |
+| ----------- | ----------------------------------------------------------------------------- |
+| **Jabatan** | Wajib. Pilih jabatan target (daftar berisi jabatan yang tersedia di catalog). |
+| **Cabang**  | Wajib. Pilih lokasi kajian: **Bandung** atau **Semarang**.                    |
+| **Catatan** | Opsional — keterangan analisis.                                               |
 
 ### 4. Daftarkan responden
 
@@ -94,5 +92,5 @@ responden terdaftar — analisis siap dibuka. Lanjut ke
 - [ ] SME Panel dibuat & anggota diisi
 - [ ] Koordinator panel ditetapkan
 - [ ] Partisipan/anggota panel terdaftar
-- [ ] Analisis Jabatan TI dibuat dengan periode & batas responden yang benar
+- [ ] Analisis Jabatan TI dibuat dengan cabang yang benar
 - [ ] Responden terdaftar di analisis

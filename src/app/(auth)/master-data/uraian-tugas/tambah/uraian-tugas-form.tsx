@@ -9,7 +9,7 @@ import { z } from "zod";
 import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
 import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
-import { AI_MODE, KONDISI, SUMBER_BUKTI, VA_TYPE } from "@/components/calhr";
+import { FREKUENSI, KONDISI, SUMBER_BUKTI, VA_TYPE } from "@/components/calhr";
 import type { DetilTugasRead, JabatanRead, TugasPokokRead } from "@/lib/api/schema";
 
 const schema = z.object({
@@ -29,9 +29,7 @@ const schema = z.object({
   std_durasi_per_kali: z.string().max(100).optional(),
   std_jam_per_minggu: z.number().min(0).optional(),
   std_peak4w_hours: z.number().min(0).optional(),
-  std_ai_mode: z.enum(AI_MODE).optional(),
   std_va_type: z.enum(VA_TYPE).optional(),
-  std_dcs_flag: z.boolean().optional(),
 });
 
 type FormValues = z.infer<typeof schema>;
@@ -79,6 +77,7 @@ export function TambahUraianTugasForm({
 
   const watchedPokokId = watch("tugas_pokok_id");
   const watchedDetilId = watch("detil_tugas_id");
+  const watchedFrekuensi = watch("std_frekuensi_teks");
 
   const filteredDetil = detilTugas.filter((dt) => dt.tugas_pokok_id === watchedPokokId);
   const selectedDT = detilTugas.find((dt) => dt.id === watchedDetilId);
@@ -113,9 +112,7 @@ export function TambahUraianTugasForm({
         std_durasi_per_kali: values.std_durasi_per_kali || null,
         std_jam_per_minggu: values.std_jam_per_minggu ?? null,
         std_peak4w_hours: values.std_peak4w_hours ?? null,
-        std_ai_mode: values.std_ai_mode || null,
         std_va_type: values.std_va_type || null,
-        std_dcs_flag: values.std_dcs_flag ?? null,
       };
 
       if (editId) {
@@ -368,13 +365,22 @@ export function TambahUraianTugasForm({
             <label htmlFor="std_frekuensi_teks" className="form-label">
               Frekuensi
             </label>
-            <input
+            <select
               id="std_frekuensi_teks"
-              type="text"
               {...register("std_frekuensi_teks")}
-              placeholder="cth. Mingguan"
               className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-            />
+            >
+              <option value="">— tidak ada standar —</option>
+              {watchedFrekuensi &&
+                !FREKUENSI.includes(watchedFrekuensi as (typeof FREKUENSI)[number]) && (
+                  <option value={watchedFrekuensi}>{watchedFrekuensi}</option>
+                )}
+              {FREKUENSI.map((v) => (
+                <option key={v} value={v}>
+                  {v}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div>
@@ -423,24 +429,6 @@ export function TambahUraianTugasForm({
           </div>
 
           <div>
-            <label htmlFor="std_ai_mode" className="form-label">
-              AI Mode
-            </label>
-            <select
-              id="std_ai_mode"
-              {...register("std_ai_mode")}
-              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-            >
-              <option value="">— tidak ada standar —</option>
-              {AI_MODE.map((v) => (
-                <option key={v} value={v}>
-                  {v}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div>
             <label htmlFor="std_va_type" className="form-label">
               VA Type
             </label>
@@ -456,18 +444,6 @@ export function TambahUraianTugasForm({
                 </option>
               ))}
             </select>
-          </div>
-
-          <div className="flex items-end pb-2">
-            <label htmlFor="std_dcs_flag" className="flex items-center gap-2 text-sm text-gray-600">
-              <input
-                id="std_dcs_flag"
-                type="checkbox"
-                {...register("std_dcs_flag")}
-                className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-              />
-              Ada risiko DCS
-            </label>
           </div>
         </div>
       </div>

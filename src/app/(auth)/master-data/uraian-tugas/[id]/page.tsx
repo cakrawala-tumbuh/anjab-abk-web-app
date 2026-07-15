@@ -78,9 +78,7 @@ export default async function EditUraianTugasPage({ params }: { params: Promise<
             std_durasi_per_kali: uraianTugas.std_durasi_per_kali ?? undefined,
             std_jam_per_minggu: uraianTugas.std_jam_per_minggu ?? undefined,
             std_peak4w_hours: uraianTugas.std_peak4w_hours ?? undefined,
-            std_ai_mode: uraianTugas.std_ai_mode ?? undefined,
             std_va_type: uraianTugas.std_va_type ?? undefined,
-            std_dcs_flag: uraianTugas.std_dcs_flag ?? undefined,
           }}
           editId={id}
         />

@@ -84,6 +84,68 @@ src/
 
 ## Revisi Desain
 
+### [2026-07-15] Task Inventory Tahap 3: AI Mode & Risiko DCS dicabut tuntas; Frekuensi jadi dropdown terkontrol
+
+Feedback user (backlog 040) atas layar Tahap 3 (`detail-form.tsx`) — dua komponen CalHR
+("AI Mode", "Ada risiko DCS") dinilai tidak relevan untuk konteks yayasan pendidikan, dan
+field "Frekuensi" (input teks bebas) diminta jadi dropdown terkontrol. Dikerjakan dua
+langkah: Langkah 1 (Frekuensi) independen dari backend; Langkah 2 (AI/DCS) menunggu backend
+mencabut `ai_mode`/`dcs_flag` dari kontrak (backlog 039) lalu `gen:api`.
+
+- **AI Mode & Risiko DCS dihapus tuntas, bukan disembunyikan** — import, zod, `RowState`,
+  `punyaStandar()`, seed dari standar/`existing`, `buildDetailPayload()`, dan render
+  (`<select>` AI Mode + checkbox "Ada risiko DCS") dicabut dari `detail-form.tsx` (Tahap 3
+  partisipan). Pola sama untuk `std_ai_mode`/`std_dcs_flag` di `uraian-tugas-form.tsx` &
+  `[id]/page.tsx` (Master Data → Uraian Tugas, nilai standar). Kolom "DCS" (`dcs_flag_count`)
+  dicabut dari tabel Hasil Agregasi TI (`[sesi_id]/page.tsx`). `export const AI_MODE` dicabut
+  dari `src/components/calhr.ts` setelah pemakaiannya nol.
+- **Frekuensi jadi `<select>` 4 opsi**: Harian, Mingguan, Semesteran, Insidental — konstanta
+  `FREKUENSI` di `src/components/calhr.ts`, dipakai identik di `detail-form.tsx` &
+  `uraian-tugas-form.tsx`. **`frekuensi_teks`/`std_frekuensi_teks` tetap `string` di backend**
+  (bukan `z.enum`) — data lama di luar 4 opsi (mis. "Bulanan") tetap tervalidasi; `<select>`
+  menyisipkan nilai lama itu sebagai opsi tambahan alih-alih diam-diam meloncat ke opsi
+  pertama. Default seed tetap "Mingguan" (ada di daftar 4 opsi).
+- `src/lib/api/schema.ts` diregenerasi (`npm run gen:api`) atas `openapi.json` ber-039
+  (tanpa `ai_mode`/`dcs_flag`/`std_ai_mode`/`std_dcs_flag`/`ai_mode_dist`/`dcs_flag_count`) —
+  blok re-export manual di akhir file ditambal ulang setelahnya (konvensi baku, lihat entri
+  [2026-06-21] di bawah).
+- Detail keputusan: `backlog/040-web-app-tahap3-hapus-ai-dcs-frekuensi-dropdown.md` di repo
+  induk `anjab-abk`.
+
+### [2026-07-15] Task Inventory: "Periode" → "Cabang"; pencabutan prefill panel-aware & SmePanelInfo dari form TI
+
+Menyusul perubahan kontrak backend (backlog 037): studi ANJAB/ABK YPII dijalankan per
+**cabang** (Bandung/Semarang), bukan per periode bulanan `YYYY-MM`. `TiSesiCreate.cabang`
+**wajib** (enum `"Bandung" | "Semarang"`, tanpa default) untuk sesi baru; `TiSesiRead.cabang`
+dan `TiSesiUpdate.cabang` **opsional** (`string | null`) karena 2 baris `ti_sesi` produksi lama
+punya `cabang = NULL` (sengaja dibiarkan, tidak di-backfill).
+
+- Form "Mulai Analisis Jabatan" (`task-inventory/buat/ti-sesi-form.tsx`): field **"Periode"**
+  (input teks `YYYY-MM`) diganti dropdown **"Cabang"** (`<select>` wajib, tepat dua opsi statis
+  `Bandung`/`Semarang`, placeholder `-- Pilih cabang --`). Field **"Min. Responden"** dan
+  **"Maks. Responden"** **dihapus tuntas** — bukan disembunyikan: zod, `defaultValues`, payload
+  POST, semuanya tidak lagi menyebut kedua field itu.
+- **Prefill panel-aware `max_responden` (backlog 030) dan `<SmePanelInfo>` dicabut dari form TI.**
+  Alasan: satu-satunya fungsi `SmePanelInfo` di form TI adalah memandu pengisian
+  `max_responden` — tanpa field itu, keterangannya menyesatkan. Prop `petaAnggota`, `useEffect`
+  prefill, dan fetch `GET /api/v1/sme-panel` di `buat/page.tsx` ikut dihapus.
+  - `SmePanelInfo` (`src/components/sme-panel-info.tsx`) dan `src/lib/sme-panel.ts`
+    (`petaJumlahAnggotaPanel`, `jumlahAnggotaPanel`, `PetaAnggotaPanel`) **TIDAK dihapus** —
+    masih dipakai identik oleh form OPM (`opm/buat/opm-sesi-form.tsx`), di luar cakupan
+    perubahan ini. TI **tidak lagi** punya batas min/maks responden sama sekali; OPM tetap
+    memilikinya (kontraknya tidak berubah).
+- Listing `/task-inventory`: kolom **"Periode"** → **"Cabang"**, nilai sel
+  `{s.cabang ?? "—"}` — fallback tampilan untuk 2 sesi lama `cabang = NULL`, **bukan** pola
+  `?? []`/`?? null` di jalur data inti (invariant jalur baca tetap `if (!res.data) throw
+apiErrorDari(res)`).
+- **Titik konsumsi lain `TiSesiRead`/`TiKuesionerItemRead` yang ikut terdampak kompilasi**
+  (field `periode`/`sesi_periode` dihapus dari kontrak, bukan perubahan perilaku): detail sesi TI
+  (`task-inventory/[sesi_id]/page.tsx`), kartu Task Inventory di `/kuesioner`
+  (`TiKuesionerCard`), dan label opsi dropdown "Analisis Jabatan Task Inventory (sumber task)"
+  di form OPM (`opm/buat/opm-sesi-form.tsx`, `{t.periode}` → `{t.cabang ?? "—"}` — **hanya**
+  label tampilan, kontrak & perilaku OPM sendiri tidak berubah).
+- Detail keputusan: `backlog/038-web-app-tisesi-form-cabang.md` di repo induk `anjab-abk`.
+
 ### [2026-07-14] Data PENDUKUNG (dropdown & label) ikut dilarang menelan kegagalan; jaring pengaman menggantikan grep
 
 Backlog 026 memberantas `?? []` di jalur baca **data inti**; 031 menutup sisanya: **29

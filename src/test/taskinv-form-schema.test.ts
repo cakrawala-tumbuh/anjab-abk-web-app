@@ -4,9 +4,7 @@ import { detailItemSchema } from "@/app/(auth)/task-inventory/tahap3/[responden_
 
 const VALID_SESI = {
   jabatan_id: "jbt_test",
-  periode: "2026-06",
-  min_responden: 3,
-  max_responden: 10,
+  cabang: "Bandung",
 };
 
 const VALID_DETAIL = {
@@ -17,9 +15,7 @@ const VALID_DETAIL = {
   durasi_per_kali: 60,
   jam_per_minggu: 2,
   peak4w_hours: 0,
-  ai_mode: "Human-led",
   va_type: "VA-Core",
-  dcs_flag: false,
 };
 
 describe("TiSesiSchema", () => {
@@ -32,22 +28,17 @@ describe("TiSesiSchema", () => {
     expect(result.success).toBe(false);
   });
 
-  it("menolak format periode yang salah", () => {
-    for (const periode of ["2026-6", "26-06", "2026/06", "202606"]) {
-      expect(tiSesiSchema.safeParse({ ...VALID_SESI, periode }).success).toBe(false);
-    }
+  it("menerima cabang Bandung maupun Semarang", () => {
+    expect(tiSesiSchema.safeParse({ ...VALID_SESI, cabang: "Bandung" }).success).toBe(true);
+    expect(tiSesiSchema.safeParse({ ...VALID_SESI, cabang: "Semarang" }).success).toBe(true);
   });
 
-  it("menolak max < min", () => {
-    const result = tiSesiSchema.safeParse({
-      ...VALID_SESI,
-      min_responden: 8,
-      max_responden: 3,
-    });
-    expect(result.success).toBe(false);
-    if (!result.success) {
-      expect(result.error.issues.map((i) => i.path[0])).toContain("max_responden");
-    }
+  it("menolak cabang kosong atau tidak dikenal", () => {
+    expect(tiSesiSchema.safeParse({ ...VALID_SESI, cabang: "" }).success).toBe(false);
+    expect(tiSesiSchema.safeParse({ ...VALID_SESI, cabang: "Jakarta" }).success).toBe(false);
+    const { cabang, ...tanpaCabang } = VALID_SESI;
+    void cabang;
+    expect(tiSesiSchema.safeParse(tanpaCabang).success).toBe(false);
   });
 });
 
@@ -62,8 +53,7 @@ describe("TiDetailItemSchema", () => {
     );
   });
 
-  it("menolak enum ai_mode/va_type yang salah", () => {
-    expect(detailItemSchema.safeParse({ ...VALID_DETAIL, ai_mode: "X" }).success).toBe(false);
+  it("menolak enum va_type yang salah", () => {
     expect(detailItemSchema.safeParse({ ...VALID_DETAIL, va_type: "Y" }).success).toBe(false);
   });
 
@@ -75,14 +65,21 @@ describe("TiDetailItemSchema", () => {
     expect(detailItemSchema.safeParse({ ...VALID_DETAIL, frekuensi_teks: "" }).success).toBe(false);
   });
 
-  it("menerapkan default peak4w_hours & dcs_flag", () => {
+  it("menerima frekuensi string bebas di luar 4 opsi dropdown (data lama)", () => {
+    // frekuensi_teks tetap z.string(), bukan z.enum — record lama ("Bulanan", dst.)
+    // harus tetap tervalidasi meski UI kini menampilkannya lewat <select>.
+    expect(detailItemSchema.safeParse({ ...VALID_DETAIL, frekuensi_teks: "Bulanan" }).success).toBe(
+      true,
+    );
+  });
+
+  it("menerapkan default peak4w_hours", () => {
     const { peak4w_hours, ...rest } = VALID_DETAIL;
     void peak4w_hours;
     const result = detailItemSchema.safeParse(rest);
     expect(result.success).toBe(true);
     if (result.success) {
       expect(result.data.peak4w_hours).toBe(0);
-      expect(result.data.dcs_flag).toBe(false);
     }
   });
 

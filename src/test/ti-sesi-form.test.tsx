@@ -25,9 +25,6 @@ function kmb(jabatanId: string, nama: string): TiKombinasiRead {
 }
 
 const kombinasi = [kmb("jbt_gr_sd", "Guru Kelas SD"), kmb("jbt_satpam", "Satpam")];
-// Guru Kelas SD punya panel 11 anggota (kondisi produksi YPII 2026-07-14);
-// Satpam belum punya SME panel sama sekali.
-const petaAnggota = { jbt_gr_sd: 11 };
 
 const OK = {
   data: { id: "tises_1" },
@@ -35,16 +32,12 @@ const OK = {
   response: { headers: { get: () => "req-1" } },
 };
 
-function isiPeriode() {
-  fireEvent.change(screen.getByLabelText(/^Periode/), { target: { value: "2026-07" } });
-}
-
 function pilihJabatan(id: string) {
   fireEvent.change(screen.getByLabelText(/^Jabatan/), { target: { value: id } });
 }
 
-function maxInput(): HTMLInputElement {
-  return screen.getByLabelText(/^Maks\. Responden/) as HTMLInputElement;
+function pilihCabang(nilai: string) {
+  fireEvent.change(screen.getByLabelText(/^Cabang/), { target: { value: nilai } });
 }
 
 beforeEach(() => {
@@ -55,78 +48,77 @@ beforeEach(() => {
   vi.mocked(toast.success).mockReset();
 });
 
-describe("TiSesiForm — jumlah anggota SME panel", () => {
-  it("tidak menampilkan info panel sebelum jabatan dipilih", () => {
-    render(<TiSesiForm kombinasi={kombinasi} petaAnggota={petaAnggota} accessToken="tok" />);
+describe("TiSesiForm — dropdown Cabang", () => {
+  it("merender dua opsi (Bandung, Semarang) plus placeholder", () => {
+    render(<TiSesiForm kombinasi={kombinasi} accessToken="tok" />);
+    const select = screen.getByLabelText(/^Cabang/) as HTMLSelectElement;
+    const opsi = Array.from(select.options).map((o) => o.value);
+    expect(opsi).toEqual(["", "Bandung", "Semarang"]);
+  });
+
+  it("tidak lagi menampilkan field Periode, Min. Responden, Maks. Responden", () => {
+    render(<TiSesiForm kombinasi={kombinasi} accessToken="tok" />);
+    expect(screen.queryByLabelText(/^Periode/)).not.toBeInTheDocument();
+    expect(screen.queryByLabelText(/Min\. Responden/)).not.toBeInTheDocument();
+    expect(screen.queryByLabelText(/Maks\. Responden/)).not.toBeInTheDocument();
+  });
+
+  it("tidak merender SmePanelInfo", () => {
+    render(<TiSesiForm kombinasi={kombinasi} accessToken="tok" />);
     expect(screen.queryByTestId("sme-panel-info")).not.toBeInTheDocument();
   });
 
-  it("menampilkan jumlah anggota panel dan mem-prefill Maks. Responden = 11", async () => {
-    render(<TiSesiForm kombinasi={kombinasi} petaAnggota={petaAnggota} accessToken="tok" />);
-
-    expect(maxInput().value).toBe("10");
+  it("menolak submit bila Cabang belum dipilih", async () => {
+    render(<TiSesiForm kombinasi={kombinasi} accessToken="tok" />);
 
     await act(async () => {
       pilihJabatan("jbt_gr_sd");
     });
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: /Mulai Analisis Jabatan/ }));
+    });
 
-    expect(screen.getByTestId("sme-panel-info")).toHaveTextContent("11 anggota");
-    expect(maxInput().value).toBe("11");
+    expect(post).not.toHaveBeenCalled();
+    expect(await screen.findByText("Cabang wajib dipilih")).toBeInTheDocument();
   });
 
-  it("mengirim max_responden = jumlah anggota panel", async () => {
-    render(<TiSesiForm kombinasi={kombinasi} petaAnggota={petaAnggota} accessToken="tok" />);
+  it("submit sukses mengirim payload { jabatan_id, cabang } tanpa periode/min/max_responden", async () => {
+    render(<TiSesiForm kombinasi={kombinasi} accessToken="tok" />);
 
     await act(async () => {
       pilihJabatan("jbt_gr_sd");
-      isiPeriode();
+      pilihCabang("Bandung");
     });
     await act(async () => {
       fireEvent.click(screen.getByRole("button", { name: /Mulai Analisis Jabatan/ }));
     });
 
     await waitFor(() => expect(post).toHaveBeenCalledTimes(1));
-    expect(post.mock.calls[0][1].body).toMatchObject({
+    const body = post.mock.calls[0][1].body;
+    expect(body).toEqual({
       jabatan_id: "jbt_gr_sd",
-      max_responden: 11,
+      cabang: "Bandung",
+      catatan: null,
     });
-  });
-
-  it("jabatan tanpa SME panel: pesan eksplisit, submit tetap jalan", async () => {
-    render(<TiSesiForm kombinasi={kombinasi} petaAnggota={petaAnggota} accessToken="tok" />);
-
-    await act(async () => {
-      pilihJabatan("jbt_satpam");
-      isiPeriode();
-    });
-
-    expect(screen.getByTestId("sme-panel-info")).toHaveTextContent("belum punya SME panel");
-    expect(maxInput().value).toBe("10");
-
-    await act(async () => {
-      fireEvent.click(screen.getByRole("button", { name: /Mulai Analisis Jabatan/ }));
-    });
-
-    await waitFor(() => expect(post).toHaveBeenCalledTimes(1));
-    expect(vi.mocked(toast.error)).not.toHaveBeenCalled();
+    expect(vi.mocked(toast.success)).toHaveBeenCalled();
     expect(push).toHaveBeenCalledWith("/task-inventory/tises_1");
   });
 });
 
-describe("TiSesiForm — 422 backend tampil utuh", () => {
-  it("pesan backend (menyebut kedua angka) muncul di toast dan error inline", async () => {
-    const pesan = "Jumlah anggota SME panel (11) melebihi max_responden (10).";
+describe("TiSesiForm — notifikasi kegagalan (regresi 026/017)", () => {
+  it("pesan backend 422 tampil di toast dan error inline", async () => {
+    const pesan = "Cabang wajib diisi untuk sesi baru.";
     post.mockResolvedValue({
       data: undefined,
       error: { error: "validation_error", message: pesan },
       response: { headers: { get: () => "req-422" } },
     });
 
-    render(<TiSesiForm kombinasi={kombinasi} petaAnggota={{}} accessToken="tok" />);
+    render(<TiSesiForm kombinasi={kombinasi} accessToken="tok" />);
 
     await act(async () => {
       pilihJabatan("jbt_gr_sd");
-      isiPeriode();
+      pilihCabang("Semarang");
     });
     await act(async () => {
       fireEvent.click(screen.getByRole("button", { name: /Mulai Analisis Jabatan/ }));
@@ -137,6 +129,30 @@ describe("TiSesiForm — 422 backend tampil utuh", () => {
     expect(vi.mocked(toast.error).mock.calls[0][1]).toMatchObject({
       description: "ID permintaan: req-422",
     });
+    expect(await screen.findByText(pesan)).toBeInTheDocument();
+    expect(push).not.toHaveBeenCalled();
+  });
+
+  it("kegagalan 5xx tampil di toast dan error inline", async () => {
+    const pesan = "Terjadi kesalahan pada server.";
+    post.mockResolvedValue({
+      data: undefined,
+      error: { error: "internal_error", message: pesan },
+      response: { headers: { get: () => "req-500" } },
+    });
+
+    render(<TiSesiForm kombinasi={kombinasi} accessToken="tok" />);
+
+    await act(async () => {
+      pilihJabatan("jbt_satpam");
+      pilihCabang("Bandung");
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: /Mulai Analisis Jabatan/ }));
+    });
+
+    await waitFor(() => expect(vi.mocked(toast.error)).toHaveBeenCalledTimes(1));
+    expect(vi.mocked(toast.error).mock.calls[0][0]).toBe(pesan);
     expect(await screen.findByText(pesan)).toBeInTheDocument();
     expect(push).not.toHaveBeenCalled();
   });

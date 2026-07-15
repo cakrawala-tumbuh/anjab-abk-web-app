@@ -170,7 +170,7 @@ export default async function TiSesiDetailPage({ params }: Props) {
         <div>
           <h1 className="page-heading">{sesi.jabatan_nama ?? sesi.jabatan_id}</h1>
           <p className="page-subtext">
-            <span className="font-mono">{sesi.periode}</span>
+            <span>{sesi.cabang ?? "—"}</span>
           </p>
           {sesi.catatan && <p className="mt-2 text-sm text-gray-600 italic">{sesi.catatan}</p>}
         </div>
@@ -422,7 +422,6 @@ export default async function TiSesiDetailPage({ params }: Props) {
                   <th className="px-4 py-3 text-right font-medium text-gray-600">Relevan</th>
                   <th className="px-4 py-3 text-right font-medium text-gray-600">Jam/Minggu</th>
                   <th className="px-4 py-3 text-right font-medium text-gray-600">Jam/Tahun</th>
-                  <th className="px-4 py-3 text-right font-medium text-gray-600">DCS</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
@@ -436,9 +435,6 @@ export default async function TiSesiDetailPage({ params }: Props) {
                       {t.jam_per_minggu_mean}
                     </td>
                     <td className="px-4 py-3 text-right text-gray-700">{t.jam_per_tahun_mean}</td>
-                    <td className="px-4 py-3 text-right text-gray-500">
-                      {t.dcs_flag_count > 0 ? `⚠ ${t.dcs_flag_count}` : "—"}
-                    </td>
                   </tr>
                 ))}
               </tbody>

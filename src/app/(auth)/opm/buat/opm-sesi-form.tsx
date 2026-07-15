@@ -157,7 +157,7 @@ export function OpmSesiForm({ jabatan, tiSesi, petaAnggota, accessToken }: Props
           <option value="">-- Pilih Analisis Jabatan Task Inventory --</option>
           {tiSesiTersedia.map((t) => (
             <option key={t.id} value={t.id}>
-              {t.periode} — {t.jumlah_task_terpilih} task
+              {t.cabang ?? "—"} — {t.jumlah_task_terpilih} task
             </option>
           ))}
         </select>

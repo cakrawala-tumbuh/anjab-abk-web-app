@@ -727,7 +727,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Lihat hasil analisis per responden */
+        /** Lihat hasil analisis per responden (admin atau pemilik) */
         get: operations["wcp_hasil_responden_get"];
         put?: never;
         post?: never;
@@ -1220,7 +1220,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Lihat hasil analisis per responden DCS */
+        /** Lihat hasil analisis per responden DCS (admin atau pemilik) */
         get: operations["dcs_hasil_responden_get"];
         put?: never;
         post?: never;
@@ -4360,12 +4360,8 @@ export interface components {
             std_jam_per_minggu?: number | null;
             /** Std Peak4W Hours */
             std_peak4w_hours?: number | null;
-            /** Std Ai Mode */
-            std_ai_mode?: ("Human-led" | "Co-Pilot" | "AI-assisted") | null;
             /** Std Va Type */
             std_va_type?: ("VA-Core" | "VA-Enable" | "NVA-Residual" | "Context-Dependent" | "Needs Validation") | null;
-            /** Std Dcs Flag */
-            std_dcs_flag?: boolean | null;
         };
         /**
          * TiCatalogReseedCounts
@@ -4432,23 +4428,11 @@ export interface components {
              */
             peak4w_hours: number;
             /**
-             * Ai Mode
-             * @description Human-led/Co-Pilot/AI-assisted.
-             * @enum {string}
-             */
-            ai_mode: "Human-led" | "Co-Pilot" | "AI-assisted";
-            /**
              * Va Type
              * @description VA-Core/VA-Enable/NVA-Residual.
              * @enum {string}
              */
             va_type: "VA-Core" | "VA-Enable" | "NVA-Residual" | "Context-Dependent" | "Needs Validation";
-            /**
-             * Dcs Flag
-             * @description True bila ada risiko DCS.
-             * @default false
-             */
-            dcs_flag: boolean;
             /**
              * Setuju Standar
              * @description True bila partisipan menerima nilai standar master apa adanya.
@@ -4506,17 +4490,10 @@ export interface components {
             /** Peak4W Hours */
             peak4w_hours: number;
             /**
-             * Ai Mode
-             * @enum {string}
-             */
-            ai_mode: "Human-led" | "Co-Pilot" | "AI-assisted";
-            /**
              * Va Type
              * @enum {string}
              */
             va_type: "VA-Core" | "VA-Enable" | "NVA-Residual" | "Context-Dependent" | "Needs Validation";
-            /** Dcs Flag */
-            dcs_flag: boolean;
             /** Setuju Standar */
             setuju_standar: boolean;
             /** Catatan */
@@ -4553,10 +4530,10 @@ export interface components {
              */
             jabatan_id: string;
             /**
-             * Periode
-             * @description Periode.
+             * Cabang
+             * @description Cabang lokasi kajian (bisa null untuk sesi lama).
              */
-            periode: string;
+            cabang?: ("Bandung" | "Semarang") | null;
             /**
              * N Responden Tahap1
              * @description Jumlah responden yang submit Tahap 1.
@@ -4649,24 +4626,12 @@ export interface components {
              */
             peak4w_hours_mean: number;
             /**
-             * Ai Mode Dist
-             * @description Distribusi AI_Mode.
-             */
-            ai_mode_dist: {
-                [key: string]: number;
-            };
-            /**
              * Va Type Dist
              * @description Distribusi VA_Type.
              */
             va_type_dist: {
                 [key: string]: number;
             };
-            /**
-             * Dcs Flag Count
-             * @description Jumlah responden yang menandai risiko DCS.
-             */
-            dcs_flag_count: number;
             /**
              * N Setuju Standar
              * @description Jumlah responden yang menerima nilai standar.
@@ -4770,11 +4735,10 @@ export interface components {
              */
             sesi_jabatan_nama?: string | null;
             /**
-             * Sesi Periode
-             * @description Periode sesi (YYYY-MM).
-             * @example 2026-06
+             * Sesi Cabang
+             * @description Cabang lokasi kajian sesi (bisa null untuk sesi lama).
              */
-            sesi_periode: string;
+            sesi_cabang?: ("Bandung" | "Semarang") | null;
             /**
              * Is Koordinator
              * @description True jika pengguna ini adalah koordinator SME panel untuk sesi ini.
@@ -4928,25 +4892,12 @@ export interface components {
              */
             jabatan_id: string;
             /**
-             * Periode
-             * @description Periode kajian format YYYY-MM.
-             * @example 2026-06
+             * Cabang
+             * @description Cabang lokasi kajian.
+             * @example Bandung
+             * @enum {string}
              */
-            periode: string;
-            /**
-             * Min Responden
-             * @description Jumlah minimum responden.
-             * @default 3
-             * @example 3
-             */
-            min_responden: number;
-            /**
-             * Max Responden
-             * @description Jumlah maksimum responden.
-             * @default 10
-             * @example 10
-             */
-            max_responden: number;
+            cabang: "Bandung" | "Semarang";
             /**
              * Koordinator Id
              * @description ID partisipan yang menjadi koordinator SME panel (Tahap 2).
@@ -4982,11 +4933,11 @@ export interface components {
              */
             jabatan_nama?: string | null;
             /**
-             * Periode
-             * @description Periode kajian (YYYY-MM).
-             * @example 2026-06
+             * Cabang
+             * @description Cabang lokasi kajian (bisa null untuk sesi lama sebelum field ini ada).
+             * @example Bandung
              */
-            periode: string;
+            cabang?: ("Bandung" | "Semarang") | null;
             /**
              * Status
              * @description Status sesi.
@@ -4994,16 +4945,6 @@ export interface components {
              * @enum {string}
              */
             status: "DRAFT" | "TAHAP1" | "TAHAP2" | "TAHAP3" | "CLOSED" | "ANALYZED";
-            /**
-             * Min Responden
-             * @description Minimum responden.
-             */
-            min_responden: number;
-            /**
-             * Max Responden
-             * @description Maksimum responden.
-             */
-            max_responden: number;
             /**
              * Koordinator Id
              * @description ID koordinator SME panel yang bertanggung jawab Tahap 2.
@@ -5031,17 +4972,17 @@ export interface components {
          * @description Payload pembaruan sesi Task Inventory (hanya saat DRAFT).
          */
         TiSesiUpdate: {
-            /** Periode */
-            periode?: string | null;
+            /**
+             * Cabang
+             * @description Cabang lokasi kajian.
+             * @example Bandung
+             */
+            cabang?: ("Bandung" | "Semarang") | null;
             /**
              * Koordinator Id
              * @description ID koordinator SME panel.
              */
             koordinator_id?: string | null;
-            /** Min Responden */
-            min_responden?: number | null;
-            /** Max Responden */
-            max_responden?: number | null;
             /** Catatan */
             catatan?: string | null;
         };
@@ -5175,12 +5116,8 @@ export interface components {
             std_jam_per_minggu?: number | null;
             /** Std Peak4W Hours */
             std_peak4w_hours?: number | null;
-            /** Std Ai Mode */
-            std_ai_mode?: ("Human-led" | "Co-Pilot" | "AI-assisted") | null;
             /** Std Va Type */
             std_va_type?: ("VA-Core" | "VA-Enable" | "NVA-Residual" | "Context-Dependent" | "Needs Validation") | null;
-            /** Std Dcs Flag */
-            std_dcs_flag?: boolean | null;
         };
         /**
          * TsKuesionerItemRead
@@ -5670,20 +5607,10 @@ export interface components {
              */
             std_peak4w_hours?: number | null;
             /**
-             * Std Ai Mode
-             * @description Nilai standar AI mode.
-             */
-            std_ai_mode?: ("Human-led" | "Co-Pilot" | "AI-assisted") | null;
-            /**
              * Std Va Type
              * @description Nilai standar VA type.
              */
             std_va_type?: ("VA-Core" | "VA-Enable" | "NVA-Residual" | "Context-Dependent" | "Needs Validation") | null;
-            /**
-             * Std Dcs Flag
-             * @description Nilai standar flag risiko DCS.
-             */
-            std_dcs_flag?: boolean | null;
         };
         /**
          * UraianTugasRead
@@ -5769,20 +5696,10 @@ export interface components {
              */
             std_peak4w_hours?: number | null;
             /**
-             * Std Ai Mode
-             * @description Nilai standar AI mode.
-             */
-            std_ai_mode?: ("Human-led" | "Co-Pilot" | "AI-assisted") | null;
-            /**
              * Std Va Type
              * @description Nilai standar VA type.
              */
             std_va_type?: ("VA-Core" | "VA-Enable" | "NVA-Residual" | "Context-Dependent" | "Needs Validation") | null;
-            /**
-             * Std Dcs Flag
-             * @description Nilai standar flag risiko DCS.
-             */
-            std_dcs_flag?: boolean | null;
             /**
              * Created At
              * Format: date-time
@@ -5861,20 +5778,10 @@ export interface components {
              */
             std_peak4w_hours?: number | null;
             /**
-             * Std Ai Mode
-             * @description Nilai standar AI mode.
-             */
-            std_ai_mode?: ("Human-led" | "Co-Pilot" | "AI-assisted") | null;
-            /**
              * Std Va Type
              * @description Nilai standar VA type.
              */
             std_va_type?: ("VA-Core" | "VA-Enable" | "NVA-Residual" | "Context-Dependent" | "Needs Validation") | null;
-            /**
-             * Std Dcs Flag
-             * @description Nilai standar flag risiko DCS.
-             */
-            std_dcs_flag?: boolean | null;
         };
         /** ValidationError */
         ValidationError: {
@@ -6505,6 +6412,15 @@ export interface operations {
                     "application/json": components["schemas"]["Page_JenjangPendidikanRead_"];
                 };
             };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Validation Error */
             422: {
                 headers: {
@@ -6512,6 +6428,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
         };
@@ -6601,8 +6526,26 @@ export interface operations {
                     "application/json": components["schemas"]["Page_JenjangPendidikanRead_"];
                 };
             };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Domain/field tidak valid. */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -6643,6 +6586,15 @@ export interface operations {
                 };
                 content?: never;
             };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Jenjang pendidikan tidak ditemukan. */
             404: {
                 headers: {
@@ -6659,6 +6611,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
         };
@@ -6827,6 +6788,15 @@ export interface operations {
                     "application/json": components["schemas"]["Page_SekolahRead_"];
                 };
             };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Validation Error */
             422: {
                 headers: {
@@ -6834,6 +6804,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
         };
@@ -6923,8 +6902,26 @@ export interface operations {
                     "application/json": components["schemas"]["Page_SekolahRead_"];
                 };
             };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Domain/field tidak valid. */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -6965,6 +6962,15 @@ export interface operations {
                 };
                 content?: never;
             };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Sekolah tidak ditemukan. */
             404: {
                 headers: {
@@ -6981,6 +6987,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
         };
@@ -7149,6 +7164,15 @@ export interface operations {
                     "application/json": components["schemas"]["Page_MataPelajaranRead_"];
                 };
             };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Validation Error */
             422: {
                 headers: {
@@ -7156,6 +7180,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
         };
@@ -7245,8 +7278,26 @@ export interface operations {
                     "application/json": components["schemas"]["Page_MataPelajaranRead_"];
                 };
             };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Domain/field tidak valid. */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -7287,6 +7338,15 @@ export interface operations {
                 };
                 content?: never;
             };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Mata pelajaran tidak ditemukan. */
             404: {
                 headers: {
@@ -7303,6 +7363,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
         };
@@ -7471,6 +7540,15 @@ export interface operations {
                     "application/json": components["schemas"]["Page_PartisipanRead_"];
                 };
             };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Validation Error */
             422: {
                 headers: {
@@ -7478,6 +7556,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
         };
@@ -7558,8 +7645,26 @@ export interface operations {
                     "application/json": components["schemas"]["Page_PartisipanRead_"];
                 };
             };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Domain/field tidak valid. */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -7605,6 +7710,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     partisipan_get: {
@@ -7638,6 +7752,15 @@ export interface operations {
                 };
                 content?: never;
             };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Partisipan tidak ditemukan. */
             404: {
                 headers: {
@@ -7654,6 +7777,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
         };
@@ -7822,6 +7954,15 @@ export interface operations {
                     "application/json": components["schemas"]["Page_JabatanRead_"];
                 };
             };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Validation Error */
             422: {
                 headers: {
@@ -7829,6 +7970,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
         };
@@ -7918,8 +8068,26 @@ export interface operations {
                     "application/json": components["schemas"]["Page_JabatanRead_"];
                 };
             };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Domain/field tidak valid. */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -7960,6 +8128,15 @@ export interface operations {
                 };
                 content?: never;
             };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Jabatan tidak ditemukan. */
             404: {
                 headers: {
@@ -7976,6 +8153,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
         };
@@ -8144,6 +8330,15 @@ export interface operations {
                     "application/json": components["schemas"]["Page_SMEPanelRead_"];
                 };
             };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Validation Error */
             422: {
                 headers: {
@@ -8151,6 +8346,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
         };
@@ -8240,8 +8444,26 @@ export interface operations {
                     "application/json": components["schemas"]["Page_SMEPanelRead_"];
                 };
             };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Domain/field tidak valid. */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -8282,6 +8504,15 @@ export interface operations {
                 };
                 content?: never;
             };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description SME panel tidak ditemukan. */
             404: {
                 headers: {
@@ -8298,6 +8529,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
         };
@@ -8603,6 +8843,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     wcp_kuesioner_saya: {
@@ -8632,6 +8881,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     wcp_dimensi_list: {
@@ -8650,6 +8908,33 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["WcpDimensiRead"][];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Hanya admin yang diizinkan. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
         };
@@ -8675,6 +8960,24 @@ export interface operations {
                     "application/json": components["schemas"]["WcpDimensiWithItemsRead"];
                 };
             };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Hanya admin yang diizinkan. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Dimensi tidak ditemukan. */
             404: {
                 headers: {
@@ -8691,6 +8994,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
         };
@@ -8716,6 +9028,24 @@ export interface operations {
                     "application/json": components["schemas"]["WcpItemRead"][];
                 };
             };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Hanya admin yang diizinkan. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Dimensi tidak ditemukan. */
             404: {
                 headers: {
@@ -8732,6 +9062,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
         };
@@ -8815,6 +9154,24 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["WcpInstrumenRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
         };
@@ -9128,6 +9485,15 @@ export interface operations {
                     "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     wcp_responden_delete: {
@@ -9251,6 +9617,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
         };
@@ -9460,6 +9835,24 @@ export interface operations {
                     "application/json": components["schemas"]["WcpHasilRead"];
                 };
             };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     wcp_hasil_responden_get: {
@@ -9483,6 +9876,24 @@ export interface operations {
                     "application/json": components["schemas"]["WcpHasilRespondenRead"];
                 };
             };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin atau bukan pemilik responden. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Responden tidak ditemukan. */
             404: {
                 headers: {
@@ -9499,6 +9910,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
         };
@@ -9523,6 +9943,15 @@ export interface operations {
             };
             /** @description Token tidak ada/invalid. */
             401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -10127,6 +10556,15 @@ export interface operations {
                     "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     opm_responden_list: {
@@ -10398,6 +10836,15 @@ export interface operations {
                     "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     opm_responden_delete: {
@@ -10521,6 +10968,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
         };
@@ -10819,6 +11275,33 @@ export interface operations {
                     "application/json": components["schemas"]["DcsSubSkalaRead"][];
                 };
             };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Hanya admin yang diizinkan. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     dcs_subskala_get: {
@@ -10842,6 +11325,24 @@ export interface operations {
                     "application/json": components["schemas"]["DcsSubSkalaWithItemsRead"];
                 };
             };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Hanya admin yang diizinkan. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Sub-skala tidak ditemukan. */
             404: {
                 headers: {
@@ -10858,6 +11359,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
         };
@@ -10883,6 +11393,24 @@ export interface operations {
                     "application/json": components["schemas"]["DcsItemRead"][];
                 };
             };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Hanya admin yang diizinkan. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Sub-skala tidak ditemukan. */
             404: {
                 headers: {
@@ -10899,6 +11427,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
         };
@@ -10982,6 +11519,24 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["DcsInstrumenRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
         };
@@ -11295,6 +11850,15 @@ export interface operations {
                     "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     dcs_responden_delete: {
@@ -11418,6 +11982,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
         };
@@ -11627,6 +12200,24 @@ export interface operations {
                     "application/json": components["schemas"]["DcsHasilRead"];
                 };
             };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     dcs_hasil_responden_get: {
@@ -11650,6 +12241,24 @@ export interface operations {
                     "application/json": components["schemas"]["DcsHasilRespondenRead"];
                 };
             };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin atau bukan pemilik responden. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Responden tidak ditemukan. */
             404: {
                 headers: {
@@ -11666,6 +12275,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
         };
@@ -11697,6 +12315,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     taskinv_catalog_kombinasi: {
@@ -11715,6 +12342,24 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["TiKombinasiRead"][];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
         };
@@ -11742,6 +12387,15 @@ export interface operations {
                     "application/json": components["schemas"]["TiCatalogRead"][];
                 };
             };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Validation Error */
             422: {
                 headers: {
@@ -11749,6 +12403,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
         };
@@ -11960,7 +12623,7 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
-            /** @description Sesi untuk jabatan+periode sudah ada. */
+            /** @description Sesi untuk jabatan+cabang sudah ada. */
             409: {
                 headers: {
                     [name: string]: unknown;
@@ -12104,6 +12767,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
         };
@@ -12584,6 +13256,15 @@ export interface operations {
                     "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     taskinv_responden_create: {
@@ -12787,6 +13468,15 @@ export interface operations {
                     "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     taskinv_responden_delete: {
@@ -12910,6 +13600,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
         };
@@ -13111,6 +13810,15 @@ export interface operations {
                     "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     taskinv_detail_save_draft: {
@@ -13310,6 +14018,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     taskinv_tahap2_submit: {
@@ -13434,6 +14151,15 @@ export interface operations {
             };
             /** @description Unprocessable Entity */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -13599,6 +14325,15 @@ export interface operations {
             };
             /** @description Token tidak ada/invalid. */
             401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -13844,6 +14579,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
         };
@@ -14302,6 +15046,15 @@ export interface operations {
                     "application/json": components["schemas"]["Page_TugasPokokRead_"];
                 };
             };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Validation Error */
             422: {
                 headers: {
@@ -14309,6 +15062,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
         };
@@ -14398,8 +15160,26 @@ export interface operations {
                     "application/json": components["schemas"]["Page_TugasPokokRead_"];
                 };
             };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Domain/field tidak valid. */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -14440,6 +15220,15 @@ export interface operations {
                 };
                 content?: never;
             };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description TugasPokok tidak ditemukan. */
             404: {
                 headers: {
@@ -14456,6 +15245,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
         };
@@ -14624,6 +15422,15 @@ export interface operations {
                     "application/json": components["schemas"]["Page_DetilTugasRead_"];
                 };
             };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Validation Error */
             422: {
                 headers: {
@@ -14631,6 +15438,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
         };
@@ -14720,8 +15536,26 @@ export interface operations {
                     "application/json": components["schemas"]["Page_DetilTugasRead_"];
                 };
             };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Domain/field tidak valid. */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -14762,6 +15596,15 @@ export interface operations {
                 };
                 content?: never;
             };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description DetilTugas tidak ditemukan. */
             404: {
                 headers: {
@@ -14778,6 +15621,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
         };
@@ -14946,6 +15798,15 @@ export interface operations {
                     "application/json": components["schemas"]["Page_UraianTugasRead_"];
                 };
             };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Validation Error */
             422: {
                 headers: {
@@ -14953,6 +15814,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
         };
@@ -15042,8 +15912,26 @@ export interface operations {
                     "application/json": components["schemas"]["Page_UraianTugasRead_"];
                 };
             };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Domain/field tidak valid. */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -15084,6 +15972,15 @@ export interface operations {
                 };
                 content?: never;
             };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description UraianTugas tidak ditemukan. */
             404: {
                 headers: {
@@ -15100,6 +15997,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
         };

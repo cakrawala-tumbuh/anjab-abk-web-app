@@ -28,7 +28,7 @@ harus sudah dibekukan (status Tahap 3/Tertutup/Teranalisis dengan task terpilih)
      Setelah dipilih, aplikasi menampilkan **jumlah anggota SME panel** jabatan itu.
    - **Analisis Jabatan Task Inventory (sumber task)** (wajib) — hanya menampilkan
      Analisis Jabatan TI milik jabatan terpilih yang sudah dibekukan (ditampilkan
-     sebagai `periode — N task`).
+     sebagai `cabang — N task`).
    - **Periode** (wajib, format `YYYY-MM`, mis. `2026-06`)
    - **Min. Responden** (default 3) dan **Maks. Responden** (harus ≥ min). **Maks. Responden**
      terisi otomatis sebesar jumlah anggota SME panel jabatan terpilih.

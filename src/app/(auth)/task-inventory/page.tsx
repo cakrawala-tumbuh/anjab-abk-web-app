@@ -63,7 +63,7 @@ export default async function TaskInventoryPage() {
                   Jabatan
                 </th>
                 <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
-                  Periode
+                  Cabang
                 </th>
                 <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
                   Status
@@ -89,7 +89,7 @@ export default async function TaskInventoryPage() {
                         {s.jabatan_nama ?? s.jabatan_id}
                       </Link>
                     </td>
-                    <td className="px-4 py-3 font-mono text-gray-700">{s.periode}</td>
+                    <td className="px-4 py-3 text-gray-700">{s.cabang ?? "—"}</td>
                     <td className="px-4 py-3">
                       <span
                         className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${st.cls}`}

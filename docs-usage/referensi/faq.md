@@ -56,8 +56,10 @@ bersifat **searah** (tidak dapat dibatalkan). Pastikan data lengkap sebelum menu
 berpindah tahap/status.
 
 ??? question "Berapa responden minimum agar hasil sahih?"
-Ikuti nilai **Min. Responden** (default TI = 3; DCS/WCP = 6; OPM = 3). Jangan menutup
-pengisian/sesi sebelum jumlah pengisi memenuhi minimum.
+Ikuti nilai **Min. Responden** (default DCS/WCP = 6; OPM = 3). Jangan menutup
+pengisian/sesi sebelum jumlah pengisi memenuhi minimum. **Task Inventory** tidak
+punya batas minimum/maksimum terpisah — respondennya selalu seluruh anggota SME
+panel jabatan terkait, otomatis terdaftar saat analisis dibuat.
 
 ---
 

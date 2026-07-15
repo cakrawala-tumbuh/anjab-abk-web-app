@@ -30,9 +30,7 @@ const taskBerstandar: TiTaskTerpilihRead = {
   std_durasi_per_kali: "60",
   std_jam_per_minggu: 4,
   std_peak4w_hours: 1,
-  std_ai_mode: "Human-led",
   std_va_type: "VA-Core",
-  std_dcs_flag: false,
 };
 
 beforeEach(() => {

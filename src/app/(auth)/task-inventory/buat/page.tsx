@@ -3,29 +3,20 @@ import { notFound } from "next/navigation";
 import { auth, isAdmin } from "@/lib/auth/auth";
 import { withServerAuth } from "@/lib/api/client";
 import { apiErrorDari } from "@/lib/api/errors";
-import { petaJumlahAnggotaPanel, type PetaAnggotaPanel } from "@/lib/sme-panel";
-import type { SMEPanelRead, TiKombinasiRead } from "@/lib/api/schema";
+import type { TiKombinasiRead } from "@/lib/api/schema";
 import { TiSesiForm } from "./ti-sesi-form";
 
 export const metadata = { title: "Mulai Analisis Jabatan — Task Inventory" };
 
 async function fetchPageData(
   accessToken: string | undefined,
-): Promise<{ kombinasi: TiKombinasiRead[]; petaAnggota: PetaAnggotaPanel }> {
+): Promise<{ kombinasi: TiKombinasiRead[] }> {
   const client = withServerAuth(accessToken);
-  const [kombinasiRes, panelRes] = await Promise.all([
-    client.GET("/api/v1/task-inventory/catalog/kombinasi", {}),
-    client.GET("/api/v1/sme-panel", { params: { query: { limit: 100 } } }),
-  ]);
-  // Keduanya kritis. Kegagalan panel yang ditelan akan tampil sebagai "jabatan
-  // belum punya SME panel" — informasi PALSU yang justru menyesatkan pengisian
-  // max_responden (invariant backlog 026).
+  const kombinasiRes = await client.GET("/api/v1/task-inventory/catalog/kombinasi", {});
   if (!kombinasiRes.data) throw apiErrorDari(kombinasiRes);
-  if (!panelRes.data) throw apiErrorDari(panelRes);
 
   return {
     kombinasi: kombinasiRes.data as TiKombinasiRead[],
-    petaAnggota: petaJumlahAnggotaPanel(panelRes.data.items as SMEPanelRead[]),
   };
 }
 
@@ -33,7 +24,7 @@ export default async function BuatTiSesiPage() {
   const session = await auth();
   if (!isAdmin(session)) notFound();
 
-  const { kombinasi, petaAnggota } = await fetchPageData(session?.accessToken);
+  const { kombinasi } = await fetchPageData(session?.accessToken);
 
   return (
     <div className="space-y-6">
@@ -48,16 +39,12 @@ export default async function BuatTiSesiPage() {
       <div>
         <h1 className="page-heading">Mulai Analisis Jabatan — Task Inventory</h1>
         <p className="page-subtext">
-          Pilih kombinasi unit & kategori jabatan beserta periode. Setelah dibuat, mulai Tahap 1
+          Pilih kombinasi unit & kategori jabatan beserta cabang. Setelah dibuat, mulai Tahap 1
           untuk membuka seleksi relevansi task.
         </p>
       </div>
 
-      <TiSesiForm
-        kombinasi={kombinasi}
-        petaAnggota={petaAnggota}
-        accessToken={session?.accessToken}
-      />
+      <TiSesiForm kombinasi={kombinasi} accessToken={session?.accessToken} />
     </div>
   );
 }

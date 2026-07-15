@@ -7,6 +7,45 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [4.3.0] - 2026-07-15
+
+### Dihapus
+
+- **Task Inventory Tahap 3: dropdown "AI Mode" & checkbox "Ada risiko DCS" dihapus tuntas**
+  (backlog 040, langkah 2 — menyusul backend 039 mencabut `ai_mode`/`dcs_flag` dari kontrak).
+  Dua komponen CalHR ini dinilai tidak relevan untuk konteks yayasan pendidikan.
+  - `detail-form.tsx` (Tahap 3 partisipan): field, zod, `RowState`, seed dari nilai standar/detail
+    tersimpan, dan render `<select>` AI Mode + checkbox "Ada risiko DCS" dicabut seluruhnya.
+  - `uraian-tugas-form.tsx` & `[id]/page.tsx` (Master Data → Uraian Tugas, nilai standar
+    `std_ai_mode`/`std_dcs_flag`): field, zod, payload submit, dan render dicabut seluruhnya.
+  - Tabel **Hasil Agregasi** TI (`[sesi_id]/page.tsx`): kolom "DCS" (`dcs_flag_count`) dihapus.
+  - `export const AI_MODE` dicabut dari `src/components/calhr.ts` setelah pemakaiannya nol.
+
+### Diubah
+
+- **Task Inventory Tahap 3: field "Frekuensi" dari input teks bebas menjadi dropdown terkontrol**
+  (backlog 040, langkah 1) — 4 opsi: Harian, Mingguan, Semesteran, Insidental. Berlaku identik di
+  form partisipan Tahap 3 (`detail-form.tsx`) dan form standar Master Data → Uraian Tugas
+  (`uraian-tugas-form.tsx`). `frekuensi_teks`/`std_frekuensi_teks` **tetap `string`** di backend
+  (tidak jadi enum) — nilai lama di luar 4 opsi (mis. "Bulanan") tetap tervalidasi dan ditampilkan
+  sebagai opsi tambahan di `<select>`, tidak diam-diam berubah. Konstanta `FREKUENSI` didefinisikan
+  sekali di `src/components/calhr.ts`.
+- **Form "Mulai Analisis Jabatan" Task Inventory: field "Periode" diganti dropdown "Cabang"
+  (Bandung/Semarang); "Min. Responden" & "Maks. Responden" dihapus** (backlog 038, menyusul
+  perubahan kontrak backend 037). Studi ANJAB/ABK di YPII dijalankan per **cabang**, bukan per
+  periode bulanan, dan jumlah responden TI sudah selalu = seluruh anggota SME panel (auto-populate,
+  backlog 028) sehingga batas min/maks tidak lagi punya makna operasional.
+  - Dropdown **Cabang** wajib dipilih, tepat dua opsi statis (`Bandung`, `Semarang`).
+  - Prefill panel-aware `max_responden` (backlog 030) dan komponen `SmePanelInfo` **dicabut dari
+    form TI** — tanpa field `max_responden`, teks panduannya jadi menyesatkan. `SmePanelInfo` dan
+    `src/lib/sme-panel.ts` **tetap dipakai OPM**, tidak dihapus.
+  - Listing `/task-inventory`: kolom "Periode" → "Cabang", nilai sel fallback `s.cabang ?? "—"`
+    (dua sesi produksi lama punya `cabang = NULL`, belum di-backfill secara sengaja).
+  - Konsekuensi kompilasi di titik lain yang mengonsumsi `TiSesiRead`/`TiKuesionerItemRead`:
+    detail sesi TI (`[sesi_id]/page.tsx`), kartu Task Inventory di `/kuesioner`, dan label dropdown
+    "Analisis Jabatan Task Inventory (sumber task)" di form OPM — seluruhnya beralih dari
+    `periode` ke `cabang ?? "—"` tanpa mengubah perilaku OPM.
+
 ## [4.2.0] - 2026-07-14
 
 ### Diperbaiki

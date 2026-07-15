@@ -12,7 +12,7 @@
       "name": "MIT",
       "identifier": "MIT"
     },
-    "version": "0.26.0"
+    "version": "0.35.0"
   },
   "paths": {
     "/api/v1/health": {
@@ -135,6 +135,11 @@
         ],
         "summary": "Daftar jenjang pendidikan",
         "operationId": "jenjang_pendidikan_list",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "limit",
@@ -171,6 +176,26 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Page_JenjangPendidikanRead_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -328,6 +353,26 @@
               }
             }
           },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "422": {
             "description": "Domain/field tidak valid.",
             "content": {
@@ -338,7 +383,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
       }
     },
     "/api/v1/jenjang-pendidikan/{jp_id}": {
@@ -348,6 +398,11 @@
         ],
         "summary": "Ambil jenjang pendidikan",
         "operationId": "jenjang_pendidikan_get",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "jp_id",
@@ -386,6 +441,26 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/JenjangPendidikanRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -618,6 +693,11 @@
         ],
         "summary": "Daftar sekolah",
         "operationId": "sekolah_list",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "limit",
@@ -654,6 +734,26 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Page_SekolahRead_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -805,6 +905,26 @@
               }
             }
           },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "422": {
             "description": "Domain/field tidak valid.",
             "content": {
@@ -815,7 +935,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
       }
     },
     "/api/v1/sekolah/{sekolah_id}": {
@@ -825,6 +950,11 @@
         ],
         "summary": "Ambil sekolah",
         "operationId": "sekolah_get",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "sekolah_id",
@@ -863,6 +993,26 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/SekolahRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -1095,6 +1245,11 @@
         ],
         "summary": "Daftar mata pelajaran",
         "operationId": "mata_pelajaran_list",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "limit",
@@ -1131,6 +1286,26 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Page_MataPelajaranRead_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -1288,6 +1463,26 @@
               }
             }
           },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "422": {
             "description": "Domain/field tidak valid.",
             "content": {
@@ -1298,7 +1493,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
       }
     },
     "/api/v1/mata-pelajaran/{mp_id}": {
@@ -1308,6 +1508,11 @@
         ],
         "summary": "Ambil mata pelajaran",
         "operationId": "mata_pelajaran_get",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "mp_id",
@@ -1346,6 +1551,26 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/MataPelajaranRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -1578,6 +1803,11 @@
         ],
         "summary": "Daftar partisipan",
         "operationId": "partisipan_list",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "limit",
@@ -1614,6 +1844,26 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Page_PartisipanRead_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -1772,6 +2022,26 @@
               }
             }
           },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "422": {
             "description": "Domain/field tidak valid.",
             "content": {
@@ -1782,7 +2052,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
       }
     },
     "/api/v1/partisipan/saya": {
@@ -1799,6 +2074,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/PartisipanRead"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -1838,6 +2123,11 @@
         ],
         "summary": "Ambil partisipan",
         "operationId": "partisipan_get",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "partisipan_id",
@@ -1876,6 +2166,26 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/PartisipanRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -2108,6 +2418,11 @@
         ],
         "summary": "Daftar jabatan",
         "operationId": "jabatan_list",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "limit",
@@ -2144,6 +2459,26 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Page_JabatanRead_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -2302,6 +2637,26 @@
               }
             }
           },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "422": {
             "description": "Domain/field tidak valid.",
             "content": {
@@ -2312,7 +2667,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
       }
     },
     "/api/v1/jabatan/{jabatan_id}": {
@@ -2322,6 +2682,11 @@
         ],
         "summary": "Ambil jabatan",
         "operationId": "jabatan_get",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "jabatan_id",
@@ -2360,6 +2725,26 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/JabatanRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -2592,6 +2977,11 @@
         ],
         "summary": "Daftar SME panel",
         "operationId": "sme_panel_list",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "limit",
@@ -2628,6 +3018,26 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Page_SMEPanelRead_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -2776,6 +3186,26 @@
               }
             }
           },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "422": {
             "description": "Domain/field tidak valid.",
             "content": {
@@ -2786,7 +3216,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
       }
     },
     "/api/v1/sme-panel/{panel_id}": {
@@ -2796,6 +3231,11 @@
         ],
         "summary": "Ambil SME panel",
         "operationId": "sme_panel_get",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "panel_id",
@@ -2834,6 +3274,26 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/SMEPanelRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -3271,6 +3731,16 @@
               }
             }
           },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "401": {
             "description": "Token tidak ada/invalid.",
             "content": {
@@ -3308,6 +3778,16 @@
                   },
                   "type": "array",
                   "title": "Response Wcp Kuesioner Saya"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -3351,8 +3831,43 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Hanya admin yang diizinkan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
           }
-        }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
       }
     },
     "/api/v1/wcp/dimensi/{kode}": {
@@ -3362,6 +3877,11 @@
         ],
         "summary": "Ambil dimensi WCP beserta 6 item-nya",
         "operationId": "wcp_dimensi_get",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "kode",
@@ -3382,6 +3902,36 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/WcpDimensiWithItemsRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Hanya admin yang diizinkan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -3416,6 +3966,11 @@
         ],
         "summary": "Daftar item untuk satu dimensi WCP",
         "operationId": "wcp_dimensi_items",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "kode",
@@ -3440,6 +3995,36 @@
                     "$ref": "#/components/schemas/WcpItemRead"
                   },
                   "title": "Response Wcp Dimensi Items"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Hanya admin yang diizinkan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -3573,8 +4158,33 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
           }
-        }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
       },
       "patch": {
         "tags": [
@@ -3923,6 +4533,16 @@
               }
             }
           },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "401": {
             "description": "Token tidak ada/invalid.",
             "content": {
@@ -4197,6 +4817,16 @@
               }
             }
           },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "401": {
             "description": "Token tidak ada/invalid.",
             "content": {
@@ -4396,8 +5026,33 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
           }
-        }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
       }
     },
     "/api/v1/wcp/hasil-responden/{responden_id}": {
@@ -4405,8 +5060,13 @@
         "tags": [
           "wcp.hasil"
         ],
-        "summary": "Lihat hasil analisis per responden",
+        "summary": "Lihat hasil analisis per responden (admin atau pemilik)",
         "operationId": "wcp_hasil_responden_get",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "responden_id",
@@ -4427,6 +5087,36 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/WcpHasilRespondenRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan admin atau bukan pemilik responden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -4473,6 +5163,16 @@
                   },
                   "type": "array",
                   "title": "Response Opm Kuesioner Saya"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -5278,6 +5978,16 @@
               }
             }
           },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "401": {
             "description": "Token tidak ada/invalid.",
             "content": {
@@ -5646,6 +6356,16 @@
               }
             }
           },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "401": {
             "description": "Token tidak ada/invalid.",
             "content": {
@@ -5906,6 +6626,16 @@
                     "$ref": "#/components/schemas/OpmJawabanRead"
                   },
                   "title": "Response Opm Jawaban List"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -6245,8 +6975,43 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Hanya admin yang diizinkan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
           }
-        }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
       }
     },
     "/api/v1/dcs/sub-skala/{kode}": {
@@ -6256,6 +7021,11 @@
         ],
         "summary": "Ambil sub-skala DCS beserta 14 item-nya",
         "operationId": "dcs_subskala_get",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "kode",
@@ -6276,6 +7046,36 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/DcsSubSkalaWithItemsRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Hanya admin yang diizinkan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -6310,6 +7110,11 @@
         ],
         "summary": "Daftar item untuk satu sub-skala DCS",
         "operationId": "dcs_subskala_items",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "kode",
@@ -6334,6 +7139,36 @@
                     "$ref": "#/components/schemas/DcsItemRead"
                   },
                   "title": "Response Dcs Subskala Items"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Hanya admin yang diizinkan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -6467,8 +7302,33 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
           }
-        }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
       },
       "patch": {
         "tags": [
@@ -6817,6 +7677,16 @@
               }
             }
           },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "401": {
             "description": "Token tidak ada/invalid.",
             "content": {
@@ -7091,6 +7961,16 @@
               }
             }
           },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "401": {
             "description": "Token tidak ada/invalid.",
             "content": {
@@ -7290,8 +8170,33 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
           }
-        }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
       }
     },
     "/api/v1/dcs/hasil-responden/{responden_id}": {
@@ -7299,8 +8204,13 @@
         "tags": [
           "dcs.hasil"
         ],
-        "summary": "Lihat hasil analisis per responden DCS",
+        "summary": "Lihat hasil analisis per responden DCS (admin atau pemilik)",
         "operationId": "dcs_hasil_responden_get",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "responden_id",
@@ -7321,6 +8231,36 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/DcsHasilRespondenRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan admin atau bukan pemilik responden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -7371,6 +8311,16 @@
               }
             }
           },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "401": {
             "description": "Token tidak ada/invalid.",
             "content": {
@@ -7410,8 +8360,33 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
           }
-        }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
       }
     },
     "/api/v1/task-inventory/catalog": {
@@ -7421,6 +8396,11 @@
         ],
         "summary": "Daftar task catalog untuk kombinasi unit × jabatan",
         "operationId": "taskinv_catalog_list",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "jabatan_id",
@@ -7463,6 +8443,26 @@
                     "$ref": "#/components/schemas/TiCatalogRead"
                   },
                   "title": "Response Taskinv Catalog List"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -7739,9 +8739,7 @@
                   "summary": "Sesi TI Kepala Sekolah",
                   "value": {
                     "jabatan_id": "jbt_a1b2c3d4",
-                    "periode": "2026-06",
-                    "min_responden": 3,
-                    "max_responden": 10
+                    "cabang": "Bandung"
                   }
                 }
               }
@@ -7790,7 +8788,7 @@
             }
           },
           "409": {
-            "description": "Sesi untuk jabatan+periode sudah ada.",
+            "description": "Sesi untuk jabatan+cabang sudah ada.",
             "content": {
               "application/json": {
                 "schema": {
@@ -7920,6 +8918,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/TiSesiRead"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -8576,6 +9584,16 @@
               }
             }
           },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "401": {
             "description": "Token tidak ada/invalid.",
             "content": {
@@ -8851,6 +9869,16 @@
               }
             }
           },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "401": {
             "description": "Token tidak ada/invalid.",
             "content": {
@@ -9103,6 +10131,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/TiSeleksiRead"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -9380,6 +10418,16 @@
               }
             }
           },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "401": {
             "description": "Token tidak ada/invalid.",
             "content": {
@@ -9548,6 +10596,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/TiTahap2ReviewRead"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -9728,6 +10786,16 @@
                     "$ref": "#/components/schemas/TiTaskTerpilihRead"
                   },
                   "title": "Response Taskinv Task Terpilih"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -9972,6 +11040,16 @@
                   },
                   "type": "array",
                   "title": "Response Ts Kuesioner Saya"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -10271,6 +11349,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/TsPenugasanRead"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -10910,6 +11998,11 @@
         ],
         "summary": "Daftar tugas pokok",
         "operationId": "tugas_pokok_list",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "limit",
@@ -10946,6 +12039,26 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Page_TugasPokokRead_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -11097,6 +12210,26 @@
               }
             }
           },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "422": {
             "description": "Domain/field tidak valid.",
             "content": {
@@ -11107,7 +12240,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
       }
     },
     "/api/v1/task-inventory/tugas-pokok/{tp_id}": {
@@ -11117,6 +12255,11 @@
         ],
         "summary": "Ambil tugas pokok",
         "operationId": "tugas_pokok_get",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "tp_id",
@@ -11155,6 +12298,26 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/TugasPokokRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -11387,6 +12550,11 @@
         ],
         "summary": "Daftar detil tugas",
         "operationId": "detil_tugas_list",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "limit",
@@ -11423,6 +12591,26 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Page_DetilTugasRead_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -11574,6 +12762,26 @@
               }
             }
           },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "422": {
             "description": "Domain/field tidak valid.",
             "content": {
@@ -11584,7 +12792,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
       }
     },
     "/api/v1/task-inventory/detil-tugas/{dt_id}": {
@@ -11594,6 +12807,11 @@
         ],
         "summary": "Ambil detil tugas",
         "operationId": "detil_tugas_get",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "dt_id",
@@ -11632,6 +12850,26 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/DetilTugasRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -11864,6 +13102,11 @@
         ],
         "summary": "Daftar uraian tugas",
         "operationId": "uraian_tugas_list",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "limit",
@@ -11900,6 +13143,26 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Page_UraianTugasRead_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -12053,6 +13316,26 @@
               }
             }
           },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "422": {
             "description": "Domain/field tidak valid.",
             "content": {
@@ -12063,7 +13346,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
       }
     },
     "/api/v1/task-inventory/uraian-tugas/{ut_id}": {
@@ -12073,6 +13361,11 @@
         ],
         "summary": "Ambil uraian tugas",
         "operationId": "uraian_tugas_get",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "ut_id",
@@ -12111,6 +13404,26 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/UraianTugasRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -16696,22 +18009,6 @@
             ],
             "title": "Std Peak4W Hours"
           },
-          "std_ai_mode": {
-            "anyOf": [
-              {
-                "type": "string",
-                "enum": [
-                  "Human-led",
-                  "Co-Pilot",
-                  "AI-assisted"
-                ]
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Std Ai Mode"
-          },
           "std_va_type": {
             "anyOf": [
               {
@@ -16729,17 +18026,6 @@
               }
             ],
             "title": "Std Va Type"
-          },
-          "std_dcs_flag": {
-            "anyOf": [
-              {
-                "type": "boolean"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Std Dcs Flag"
           }
         },
         "type": "object",
@@ -16850,16 +18136,6 @@
             "description": "Jam pada 4 minggu peak.",
             "default": 0.0
           },
-          "ai_mode": {
-            "type": "string",
-            "enum": [
-              "Human-led",
-              "Co-Pilot",
-              "AI-assisted"
-            ],
-            "title": "Ai Mode",
-            "description": "Human-led/Co-Pilot/AI-assisted."
-          },
           "va_type": {
             "type": "string",
             "enum": [
@@ -16871,12 +18147,6 @@
             ],
             "title": "Va Type",
             "description": "VA-Core/VA-Enable/NVA-Residual."
-          },
-          "dcs_flag": {
-            "type": "boolean",
-            "title": "Dcs Flag",
-            "description": "True bila ada risiko DCS.",
-            "default": false
           },
           "setuju_standar": {
             "type": "boolean",
@@ -16907,7 +18177,6 @@
           "frekuensi_teks",
           "durasi_per_kali",
           "jam_per_minggu",
-          "ai_mode",
           "va_type"
         ],
         "title": "TiDetailItem",
@@ -16972,15 +18241,6 @@
             "type": "number",
             "title": "Peak4W Hours"
           },
-          "ai_mode": {
-            "type": "string",
-            "enum": [
-              "Human-led",
-              "Co-Pilot",
-              "AI-assisted"
-            ],
-            "title": "Ai Mode"
-          },
           "va_type": {
             "type": "string",
             "enum": [
@@ -16991,10 +18251,6 @@
               "Needs Validation"
             ],
             "title": "Va Type"
-          },
-          "dcs_flag": {
-            "type": "boolean",
-            "title": "Dcs Flag"
           },
           "setuju_standar": {
             "type": "boolean",
@@ -17024,9 +18280,7 @@
           "durasi_per_kali",
           "jam_per_minggu",
           "peak4w_hours",
-          "ai_mode",
           "va_type",
-          "dcs_flag",
           "setuju_standar"
         ],
         "title": "TiDetailRead",
@@ -17060,10 +18314,21 @@
             "title": "Jabatan Id",
             "description": "ID jabatan yang dikaji."
           },
-          "periode": {
-            "type": "string",
-            "title": "Periode",
-            "description": "Periode."
+          "cabang": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "Bandung",
+                  "Semarang"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cabang",
+            "description": "Cabang lokasi kajian (bisa null untuk sesi lama)."
           },
           "n_responden_tahap1": {
             "type": "integer",
@@ -17103,7 +18368,6 @@
         "required": [
           "sesi_id",
           "jabatan_id",
-          "periode",
           "n_responden_tahap1",
           "n_responden_tahap3",
           "jumlah_task_terpilih",
@@ -17171,14 +18435,6 @@
             "title": "Peak4W Hours Mean",
             "description": "Rata-rata jam pada 4 minggu peak."
           },
-          "ai_mode_dist": {
-            "additionalProperties": {
-              "type": "integer"
-            },
-            "type": "object",
-            "title": "Ai Mode Dist",
-            "description": "Distribusi AI_Mode."
-          },
           "va_type_dist": {
             "additionalProperties": {
               "type": "integer"
@@ -17186,11 +18442,6 @@
             "type": "object",
             "title": "Va Type Dist",
             "description": "Distribusi VA_Type."
-          },
-          "dcs_flag_count": {
-            "type": "integer",
-            "title": "Dcs Flag Count",
-            "description": "Jumlah responden yang menandai risiko DCS."
           },
           "n_setuju_standar": {
             "type": "integer",
@@ -17216,9 +18467,7 @@
           "jam_per_tahun_mean",
           "durasi_per_kali_mean",
           "peak4w_hours_mean",
-          "ai_mode_dist",
           "va_type_dist",
-          "dcs_flag_count",
           "n_setuju_standar",
           "n_ubah_standar"
         ],
@@ -17361,13 +18610,21 @@
               "Kepala Sekolah"
             ]
           },
-          "sesi_periode": {
-            "type": "string",
-            "title": "Sesi Periode",
-            "description": "Periode sesi (YYYY-MM).",
-            "examples": [
-              "2026-06"
-            ]
+          "sesi_cabang": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "Bandung",
+                  "Semarang"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sesi Cabang",
+            "description": "Cabang lokasi kajian sesi (bisa null untuk sesi lama)."
           },
           "is_koordinator": {
             "type": "boolean",
@@ -17384,8 +18641,7 @@
           "tahap3_submit",
           "created_at",
           "sesi_status",
-          "sesi_jabatan_id",
-          "sesi_periode"
+          "sesi_jabatan_id"
         ],
         "title": "TiKuesionerItemRead",
         "description": "Responden Task Inventory diperkaya info sesi — dipakai /kuesioner/saya."
@@ -17633,35 +18889,16 @@
               "jbt_a1b2c3d4"
             ]
           },
-          "periode": {
+          "cabang": {
             "type": "string",
-            "maxLength": 7,
-            "minLength": 7,
-            "pattern": "^\\d{4}-\\d{2}$",
-            "title": "Periode",
-            "description": "Periode kajian format YYYY-MM.",
+            "enum": [
+              "Bandung",
+              "Semarang"
+            ],
+            "title": "Cabang",
+            "description": "Cabang lokasi kajian.",
             "examples": [
-              "2026-06"
-            ]
-          },
-          "min_responden": {
-            "type": "integer",
-            "minimum": 1.0,
-            "title": "Min Responden",
-            "description": "Jumlah minimum responden.",
-            "default": 3,
-            "examples": [
-              3
-            ]
-          },
-          "max_responden": {
-            "type": "integer",
-            "minimum": 1.0,
-            "title": "Max Responden",
-            "description": "Jumlah maksimum responden.",
-            "default": 10,
-            "examples": [
-              10
+              "Bandung"
             ]
           },
           "koordinator_id": {
@@ -17697,7 +18934,7 @@
         "type": "object",
         "required": [
           "jabatan_id",
-          "periode"
+          "cabang"
         ],
         "title": "TiSesiCreate",
         "description": "Payload pembuatan sesi Task Inventory."
@@ -17732,12 +18969,23 @@
             "title": "Jabatan Nama",
             "description": "Nama jabatan yang dikaji."
           },
-          "periode": {
-            "type": "string",
-            "title": "Periode",
-            "description": "Periode kajian (YYYY-MM).",
+          "cabang": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "Bandung",
+                  "Semarang"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cabang",
+            "description": "Cabang lokasi kajian (bisa null untuk sesi lama sebelum field ini ada).",
             "examples": [
-              "2026-06"
+              "Bandung"
             ]
           },
           "status": {
@@ -17755,16 +19003,6 @@
             "examples": [
               "DRAFT"
             ]
-          },
-          "min_responden": {
-            "type": "integer",
-            "title": "Min Responden",
-            "description": "Minimum responden."
-          },
-          "max_responden": {
-            "type": "integer",
-            "title": "Max Responden",
-            "description": "Maksimum responden."
           },
           "koordinator_id": {
             "anyOf": [
@@ -17813,10 +19051,7 @@
         "required": [
           "id",
           "jabatan_id",
-          "periode",
           "status",
-          "min_responden",
-          "max_responden",
           "created_at"
         ],
         "title": "TiSesiRead",
@@ -17824,19 +19059,24 @@
       },
       "TiSesiUpdate": {
         "properties": {
-          "periode": {
+          "cabang": {
             "anyOf": [
               {
                 "type": "string",
-                "maxLength": 7,
-                "minLength": 7,
-                "pattern": "^\\d{4}-\\d{2}$"
+                "enum": [
+                  "Bandung",
+                  "Semarang"
+                ]
               },
               {
                 "type": "null"
               }
             ],
-            "title": "Periode"
+            "title": "Cabang",
+            "description": "Cabang lokasi kajian.",
+            "examples": [
+              "Bandung"
+            ]
           },
           "koordinator_id": {
             "anyOf": [
@@ -17849,30 +19089,6 @@
             ],
             "title": "Koordinator Id",
             "description": "ID koordinator SME panel."
-          },
-          "min_responden": {
-            "anyOf": [
-              {
-                "type": "integer",
-                "minimum": 1.0
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Min Responden"
-          },
-          "max_responden": {
-            "anyOf": [
-              {
-                "type": "integer",
-                "minimum": 1.0
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Max Responden"
           },
           "catatan": {
             "anyOf": [
@@ -18136,22 +19352,6 @@
             ],
             "title": "Std Peak4W Hours"
           },
-          "std_ai_mode": {
-            "anyOf": [
-              {
-                "type": "string",
-                "enum": [
-                  "Human-led",
-                  "Co-Pilot",
-                  "AI-assisted"
-                ]
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Std Ai Mode"
-          },
           "std_va_type": {
             "anyOf": [
               {
@@ -18169,17 +19369,6 @@
               }
             ],
             "title": "Std Va Type"
-          },
-          "std_dcs_flag": {
-            "anyOf": [
-              {
-                "type": "boolean"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Std Dcs Flag"
           }
         },
         "type": "object",
@@ -19061,23 +20250,6 @@
             "title": "Std Peak4W Hours",
             "description": "Nilai standar jam pada 4 minggu peak."
           },
-          "std_ai_mode": {
-            "anyOf": [
-              {
-                "type": "string",
-                "enum": [
-                  "Human-led",
-                  "Co-Pilot",
-                  "AI-assisted"
-                ]
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Std Ai Mode",
-            "description": "Nilai standar AI mode."
-          },
           "std_va_type": {
             "anyOf": [
               {
@@ -19096,18 +20268,6 @@
             ],
             "title": "Std Va Type",
             "description": "Nilai standar VA type."
-          },
-          "std_dcs_flag": {
-            "anyOf": [
-              {
-                "type": "boolean"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Std Dcs Flag",
-            "description": "Nilai standar flag risiko DCS."
           }
         },
         "additionalProperties": false,
@@ -19282,23 +20442,6 @@
             "title": "Std Peak4W Hours",
             "description": "Nilai standar jam pada 4 minggu peak."
           },
-          "std_ai_mode": {
-            "anyOf": [
-              {
-                "type": "string",
-                "enum": [
-                  "Human-led",
-                  "Co-Pilot",
-                  "AI-assisted"
-                ]
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Std Ai Mode",
-            "description": "Nilai standar AI mode."
-          },
           "std_va_type": {
             "anyOf": [
               {
@@ -19317,18 +20460,6 @@
             ],
             "title": "Std Va Type",
             "description": "Nilai standar VA type."
-          },
-          "std_dcs_flag": {
-            "anyOf": [
-              {
-                "type": "boolean"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Std Dcs Flag",
-            "description": "Nilai standar flag risiko DCS."
           },
           "created_at": {
             "type": "string",
@@ -19531,23 +20662,6 @@
             "title": "Std Peak4W Hours",
             "description": "Nilai standar jam pada 4 minggu peak."
           },
-          "std_ai_mode": {
-            "anyOf": [
-              {
-                "type": "string",
-                "enum": [
-                  "Human-led",
-                  "Co-Pilot",
-                  "AI-assisted"
-                ]
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Std Ai Mode",
-            "description": "Nilai standar AI mode."
-          },
           "std_va_type": {
             "anyOf": [
               {
@@ -19566,18 +20680,6 @@
             ],
             "title": "Std Va Type",
             "description": "Nilai standar VA type."
-          },
-          "std_dcs_flag": {
-            "anyOf": [
-              {
-                "type": "boolean"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Std Dcs Flag",
-            "description": "Nilai standar flag risiko DCS."
           }
         },
         "additionalProperties": false,

@@ -80,14 +80,14 @@ Tahap 3.
 
 1. Klik **Tutup Analisis** (dari TAHAP3) → status **CLOSED**.
 2. Klik **Jalankan Analisis** → status **ANALYZED**.
-3. Tinjau **Task Terpilih** (relevansi) dan **Hasil Agregasi** (jam/minggu, jam/tahun,
-   penanda risiko DCS) sebagai masukan ABK.
+3. Tinjau **Task Terpilih** (relevansi) dan **Hasil Agregasi** (jam/minggu, jam/tahun)
+   sebagai masukan ABK.
 
 > Langkah teknis: [IK-04 bagian G](../ik/task-inventory.md#g-melihat-hasil-setelah-analisis).
 
 !!! danger "Tidak dapat dibatalkan"
-Penutupan analisis dan transisi tahap bersifat searah. Pastikan data lengkap & jumlah
-pengisi memenuhi **Min. Responden** sebelum menutup/berpindah tahap.
+Penutupan analisis dan transisi tahap bersifat searah. Pastikan data lengkap dan
+seluruh anggota SME panel sudah mengisi sebelum menutup/berpindah tahap.
 
 ---
 
@@ -97,6 +97,6 @@ pengisi memenuhi **Min. Responden** sebelum menutup/berpindah tahap.
 - [ ] Anggota panel menyelesaikan seleksi Tahap 1
 - [ ] Koordinator menyelesaikan review Tahap 2
 - [ ] Tahap 3 dibekukan & rincian CalHR diisi
-- [ ] Jumlah pengisi memenuhi Min. Responden
+- [ ] Seluruh anggota SME panel sudah mengisi
 - [ ] Analisis ditutup & proses analisis dijalankan
 - [ ] Hasil agregasi ditinjau

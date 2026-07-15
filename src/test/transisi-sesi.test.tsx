@@ -19,10 +19,8 @@ const sesiTahap1: TiSesiRead = {
   id: "tises_1",
   jabatan_id: "jbt_1",
   jabatan_nama: "Guru Kelas",
-  periode: "2026-06",
+  cabang: "Bandung",
   status: "TAHAP1",
-  min_responden: 3,
-  max_responden: 10,
   jumlah_task_terpilih: null,
   created_at: "2026-06-01T00:00:00Z",
 };
