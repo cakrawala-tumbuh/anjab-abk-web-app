@@ -71,15 +71,21 @@ kesalahan, hanya menunggu data WCP tersedia.
 
 1. Buka **Kuesioner Saya** → pada kartu **DCS** yang berstatus terbuka & belum diisi, klik
    **Isi Sekarang**.
-2. Kuesioner tersusun per **sub-skala**. Untuk tiap pernyataan, pilih satu nilai:
+2. Selama kuesioner belum dikirim, pop-up **Petunjuk Pengisian** muncul otomatis saat halaman
+   dibuka — berisi penjelasan tiga aspek DCS, aturan menjawab, arti skala 1–5, dan dua contoh
+   pengisian (ilustrasi statis, bukan bagian jawaban Anda). Tutup dengan tombol **Saya
+   Mengerti, Mulai Mengisi**, ikon **X**, klik area luar pop-up, atau tombol **Esc**. Pop-up
+   ini dapat dibuka lagi kapan saja lewat tombol **Petunjuk Pengisian** di pojok kanan atas
+   halaman.
+3. Kuesioner tersusun per **sub-skala**. Untuk tiap pernyataan, pilih satu nilai:
    - **1 — Sangat Tidak Setuju**
    - **2 — Tidak Setuju**
    - **3 — Ragu-ragu**
    - **4 — Setuju**
    - **5 — Sangat Setuju**
-3. Pantau penghitung _"{terjawab} / {total} pernyataan dijawab"_ di bagian bawah. Klik
+4. Pantau penghitung _"{terjawab} / {total} pernyataan dijawab"_ di bagian bawah. Klik
    **Simpan** kapan saja untuk menyimpan progres tanpa finalisasi.
-4. Setelah **semua** item dijawab, klik **Kirim Jawaban**.
+5. Setelah **semua** item dijawab, klik **Kirim Jawaban**.
 
 !!! warning "Semua wajib dijawab saat kirim final"
 Tombol **Kirim Jawaban** aktif hanya bila seluruh pernyataan terjawab. Jika belum,

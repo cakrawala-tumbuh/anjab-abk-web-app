@@ -5,6 +5,7 @@ import { withServerAuth } from "@/lib/api/client";
 import { apiErrorDari, toApiError } from "@/lib/api/errors";
 import type { DcsRespondenRead, DcsSubSkalaWithItemsRead, DcsJawabanRead } from "@/lib/api/schema";
 import { DcsForm } from "./dcs-form";
+import { PetunjukDcs } from "./petunjuk-dcs";
 
 export const metadata = { title: "Isi Kuesioner DCS" };
 
@@ -61,9 +62,12 @@ export default async function DcsIsiPage({ params }: Props) {
       </div>
 
       {/* Header */}
-      <div>
-        <h1 className="page-heading">Kuesioner DCS</h1>
-        <p className="page-subtext">{responden.nama ?? "Anonim"}</p>
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h1 className="page-heading">Kuesioner DCS</h1>
+          <p className="page-subtext">{responden.nama ?? "Anonim"}</p>
+        </div>
+        <PetunjukDcs defaultOpen={!responden.sudah_submit} />
       </div>
 
       {responden.sudah_submit ? (

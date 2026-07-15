@@ -84,6 +84,30 @@ src/
 
 ## Revisi Desain
 
+### [2026-07-15] DCS: pop-up "Petunjuk Pengisian" muncul otomatis saat mengisi
+
+Halaman pengisian DCS (`/dcs/isi/{responden_id}`) langsung menampilkan 42 pernyataan Likert
+tanpa penjelasan apa pun — partisipan (mayoritas guru/staf, bukan psikolog) tidak punya
+panduan cara menjawab (backlog 046).
+
+- Komponen baru `src/app/(auth)/dcs/isi/[responden_id]/petunjuk-dcs.tsx` (`"use client"`,
+  props `{ defaultOpen: boolean }`): tombol pemicu "Petunjuk Pengisian" (selalu terlihat) +
+  modal **hand-rolled** (meniru pola overlay `app-shell.tsx` — `fixed inset-0 z-50`, tanpa
+  portal, tanpa dependency dialog baru). Escape/klik backdrop/tombol X/"Saya Mengerti, Mulai
+  Mengisi" menutup modal.
+- **Auto-buka setiap kunjungan** selama `!responden.sudah_submit` — **bukan** sekali per user
+  (tidak pakai `localStorage`, tidak ada "jangan tampilkan lagi"). Dikonfirmasi eksplisit oleh
+  user; halaman `sudah_submit` (mode lihat jawaban) tidak auto-buka, tombol pemicu tetap ada.
+- Konten: pengantar tiga aspek DCS (Demand/Control/Support), petunjuk umum ("tidak ada jawaban
+  benar/salah", jawab spontan sesuai pengalaman nyata), arti skala 1–5, cara menjawab, dan
+  **2 contoh pengisian non-interaktif** (ilustrasi statis meniru gaya pil jawaban
+  `dcs-form.tsx`, bukan radio yang bisa diklik).
+- Disisipkan ke `page.tsx` (Server Component) di blok header; `dcs-form.tsx` **tidak disentuh**
+  sama sekali.
+- **Lingkup sengaja hanya DCS.** WCP (struktur mirip) tidak diubah — komponen dibuat rapi
+  supaya mudah ditiru untuk WCP kelak lewat item backlog terpisah.
+- Detail keputusan: `backlog/046-web-app-dcs-petunjuk-pengisian-popup.md` di repo induk `anjab-abk`.
+
 ### [2026-07-15] Task Inventory Tahap 3: AI Mode & Risiko DCS dicabut tuntas; Frekuensi jadi dropdown terkontrol
 
 Feedback user (backlog 040) atas layar Tahap 3 (`detail-form.tsx`) — dua komponen CalHR

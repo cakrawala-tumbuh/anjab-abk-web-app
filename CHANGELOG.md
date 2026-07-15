@@ -7,6 +7,18 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [4.4.0] - 2026-07-15
+
+### Ditambahkan
+
+- **DCS: pop-up "Petunjuk Pengisian"** di halaman pengisian (`/dcs/isi/{responden_id}`)
+  (backlog 046) — komponen baru `petunjuk-dcs.tsx` (hand-rolled, tanpa dependency dialog
+  baru), berisi pengantar tiga aspek DCS, aturan umum menjawab, arti skala 1–5, cara
+  menjawab, dan dua contoh pengisian non-interaktif. Muncul otomatis setiap kali halaman
+  dibuka selama belum submit; dapat dibuka lagi kapan saja lewat tombol "Petunjuk
+  Pengisian" yang selalu terlihat. `dcs-form.tsx` tidak disentuh. Lingkup sengaja hanya
+  DCS — WCP tidak diubah.
+
 ## [4.3.0] - 2026-07-15
 
 ### Dihapus
