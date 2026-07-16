@@ -11,18 +11,19 @@ interface ContohIsi {
 
 const CONTOH: ContohIsi[] = [
   {
-    pernyataan: "Saya harus menyelesaikan banyak pekerjaan dalam waktu yang terbatas.",
+    pernyataan: "Rekan kerja saya saling mendukung dan bekerja sama dengan baik.",
     nilaiTersorot: 5,
-    keterangan:
-      "Bila hal ini sering terjadi dan sangat sesuai dengan keadaan Anda, pilih 5 (Sangat Setuju).",
+    keterangan: "Bila hal ini sangat sesuai dengan suasana kerja Anda, pilih 5 (Sangat Setuju).",
   },
   {
-    pernyataan: "Saya memiliki keleluasaan untuk memutuskan cara menyelesaikan pekerjaan saya.",
+    pernyataan: "Beban pekerjaan yang saya tanggung terasa berlebihan.",
     nilaiTersorot: 2,
-    keterangan: "Bila hal ini kurang sesuai dengan keadaan Anda, pilih 2 (Tidak Setuju).",
+    keterangan:
+      "Bila hal ini kurang menggambarkan keadaan Anda, pilih 2 (Tidak Setuju). Pernyataan bernuansa Dimensi Risiko dijawab dengan cara yang sama.",
   },
 ];
 
+// Selaras SKOR_LABEL di wcp-form.tsx.
 const SKALA = [
   {
     nilai: 1,
@@ -39,14 +40,14 @@ interface Props {
   defaultOpen: boolean;
 }
 
-export function PetunjukDcs({ defaultOpen }: Props) {
+export function PetunjukWcp({ defaultOpen }: Props) {
   return (
-    <PetunjukModal title="Petunjuk Pengisian Kuesioner DCS" defaultOpen={defaultOpen}>
+    <PetunjukModal title="Petunjuk Pengisian Kuesioner WCP" defaultOpen={defaultOpen}>
       <p>
-        Kuesioner <strong>DCS (Demand–Control–Support)</strong> memotret pengalaman kerja Anda pada
-        tiga aspek — <strong>Tuntutan Kerja (Demand)</strong>,{" "}
-        <strong>Kendali Kerja (Control)</strong>, dan <strong>Dukungan Sosial (Support)</strong>.
-        Ini bukan tes; tidak ada jawaban benar atau salah.
+        Kuesioner <strong>WCP (Workplace Climate Profile)</strong> memotret persepsi Anda terhadap{" "}
+        <strong>iklim atau suasana tempat kerja</strong> pada beberapa dimensi. Sebagian dimensi
+        ditandai <strong>&ldquo;Dimensi Risiko&rdquo;</strong> — itu hanya penanda kelompok; cara
+        menjawabnya sama. Ini bukan tes; tidak ada jawaban benar atau salah.
       </p>
 
       <div className="rounded-md bg-blue-50 p-4 dark:bg-blue-950/40">
@@ -54,19 +55,16 @@ export function PetunjukDcs({ defaultOpen }: Props) {
         <ul className="list-disc space-y-1.5 pl-5 text-blue-900/90 dark:text-blue-200/90">
           <li>Baca tiap pernyataan dengan saksama.</li>
           <li>
-            Jawab berdasarkan <strong>apa yang benar-benar Anda alami dan rasakan</strong> dalam
-            pekerjaan selama ini — bukan yang ideal/seharusnya.
+            Jawab berdasarkan <strong>apa yang benar-benar Anda alami dan rasakan</strong> di tempat
+            kerja selama ini — bukan yang ideal/seharusnya.
           </li>
-          <li>
-            Tidak ada jawaban benar atau salah; semua sama baiknya selama menggambarkan Anda dengan
-            jujur.
-          </li>
+          <li>Tidak ada jawaban benar atau salah; jawablah dengan jujur.</li>
           <li>
             Jawab <strong>spontan</strong> — kesan pertama biasanya paling menggambarkan keadaan
-            Anda; jangan terlalu lama pada satu pernyataan.
+            Anda.
           </li>
           <li>
-            Isi <strong>semua 42 pernyataan</strong>; tombol &ldquo;Kirim Jawaban&rdquo; baru aktif
+            Isi <strong>semua pernyataan</strong>; tombol &ldquo;Kirim Jawaban&rdquo; baru aktif
             bila seluruhnya terjawab. Anda bisa menekan &ldquo;Simpan&rdquo; untuk melanjutkan
             nanti.
           </li>

@@ -68,9 +68,14 @@ Halaman ini juga menampilkan statistik **Log Harian Terisi** (jumlah log) dan ta
 1. Buka **Time Study** dari **Kuesioner Saya**. Halaman **Log Harian — Time Study**
    menampilkan tabel log: **Tanggal**, **Masuk–Keluar**, **Inti**, **Karakter**,
    **Pengembangan**, **Strategis**, **Administrasi**, **Istirahat**, **Warna Hari**, **Aksi**.
-2. Klik **+ Tambah Log** (atau **Tambah Log Hari Ini** bila belum ada log). Tombol ini
+2. Saat penugasan aktif dan belum ada log, pop-up **Petunjuk Pengisian** muncul otomatis —
+   berisi cara mencatat log harian, enam kategori aktivitas, dan arti Kategori Hari
+   (Hijau/Kuning/Merah). Tutup dengan tombol **Saya Mengerti**, ikon **X**, klik area luar
+   pop-up, atau tombol **Esc**. Pop-up ini dapat dibuka lagi kapan saja lewat tombol
+   **Petunjuk Pengisian** di pojok kanan atas halaman.
+3. Klik **+ Tambah Log** (atau **Tambah Log Hari Ini** bila belum ada log). Tombol ini
    hanya muncul selama penugasan **Aktif**.
-3. Isi formulir:
+4. Isi formulir:
    - **Tanggal** (default hari ini)
    - **Waktu Masuk** dan **Waktu Keluar** (format jam:menit)
    - **Kategori Hari**: **Hijau (Hari Biasa)** / **Kuning (Hari Sibuk)** / **Merah (Hari Puncak)**
@@ -78,7 +83,7 @@ Halaman ini juga menampilkan statistik **Log Harian Terisi** (jumlah log) dan ta
      **Pekerjaan Inti**, **Asesmen Karakter**, **Pengembangan Diri**, **Pekerjaan
      Strategis**, **Administrasi**, **Istirahat Terstruktur**
    - **Catatan** (opsional)
-4. Klik **Simpan Log**. Log muncul di tabel.
+5. Klik **Simpan Log**. Log muncul di tabel.
 
 ---
 

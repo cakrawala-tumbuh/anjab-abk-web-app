@@ -88,12 +88,17 @@ Saat status **TAHAP2**, muncul kotak _Tahap 2 — Review Koordinator_ dengan tom
 ## D. Review Koordinator (Tahap 2)
 
 1. Dari detail analisis (status TAHAP2), klik **Buka Review Koordinator**.
-2. Halaman menampilkan tabel task **partial** (kolom **Task**, **Pilih** = jumlah pemilih,
+2. Bagi koordinator (atau admin) saat status masih `TAHAP2`, pop-up **Petunjuk** muncul
+   otomatis — menjelaskan bahwa yang direview adalah task **partial** (tidak unanimous), arti
+   rasio pemilih, serta cara menetapkan Ya/Tidak. Tutup dengan tombol **Saya Mengerti**, ikon
+   **X**, klik area luar pop-up, atau tombol **Esc**; dapat dibuka lagi lewat tombol
+   **Petunjuk Pengisian** di pojok kanan atas halaman.
+3. Halaman menampilkan tabel task **partial** (kolom **Task**, **Pilih** = jumlah pemilih,
    **Setujui?**). Kolom **Task** menampilkan **nama uraian tugas** (mis. _"Menyusun evaluasi
    karyawan"_) dengan kode task kecil di sampingnya sebagai keterangan.
-3. Untuk tiap task, klik **Ya** (setujui) atau **Tidak** (tolak). Tersedia pintasan
+4. Untuk tiap task, klik **Ya** (setujui) atau **Tidak** (tolak). Tersedia pintasan
    **Setujui Semua** dan **Tolak Semua**.
-4. Klik **Simpan Keputusan**.
+5. Klik **Simpan Keputusan**.
 
 !!! note
 Jika masih ada task belum diputuskan saat menyimpan, muncul konfirmasi — task yang
@@ -116,13 +121,18 @@ Partisipan yang bukan anggota panel akan mendapat halaman 404.
 ## E. Mengisi Tahap 1 — Seleksi (Partisipan)
 
 1. Buka **Isi Tahap 1** dari tabel responden (atau dari **Kuesioner Saya**).
-2. Seleksi dilakukan dalam **3 langkah kaskade**:
+2. Selama seleksi belum dikirim (dan status masih `TAHAP1`), pop-up **Petunjuk** muncul
+   otomatis — menjelaskan seleksi bertingkat 3 level (Tugas Pokok → Detil Tugas → Uraian
+   Tugas) dan bahwa **Kirim Seleksi** mengunci pilihan. Tutup dengan tombol **Saya Mengerti,
+   Mulai Mengisi**, ikon **X**, klik area luar pop-up, atau tombol **Esc**; dapat dibuka lagi
+   lewat tombol **Petunjuk Pengisian** di pojok kanan atas halaman.
+3. Seleksi dilakukan dalam **3 langkah kaskade**:
    - **Langkah 1 — Tugas Pokok**: centang tugas pokok yang relevan, klik
      **Lanjut ke Detil Tugas**.
    - **Langkah 2 — Detil Tugas**: centang detil tugas (hanya dari tugas pokok terpilih),
      klik **Lanjut ke Uraian Tugas**. (Tombol **Kembali** untuk mundur.)
    - **Langkah 3 — Uraian Tugas**: centang uraian tugas yang relevan.
-3. Klik **Kirim Seleksi**.
+4. Klik **Kirim Seleksi**.
 
 !!! danger "Tidak dapat diubah"
 Setelah dikirim, seleksi Tahap 1 terkunci. Status responden menjadi **✓ Selesai**.
@@ -134,7 +144,12 @@ Setelah dikirim, seleksi Tahap 1 terkunci. Status responden menjadi **✓ Selesa
 > Tersedia setelah status analisis **TAHAP3**.
 
 1. Buka **Isi Tahap 3** dari tabel responden (atau dari **Kuesioner Saya**).
-2. Untuk tiap task yang Anda kerjakan, **centang** kotaknya. Formulir rincian muncul:
+2. Selama detail belum dikirim (dan status masih `TAHAP3`), pop-up **Petunjuk** muncul
+   otomatis — menjelaskan arti kolom CalHR, isian standar yang otomatis terpakai saat task
+   dicentang, dan bahwa **Kirim Detail** mengunci isian. Tutup dengan tombol **Saya Mengerti,
+   Mulai Mengisi**, ikon **X**, klik area luar pop-up, atau tombol **Esc**; dapat dibuka lagi
+   lewat tombol **Petunjuk Pengisian** di pojok kanan atas halaman.
+3. Untuk tiap task yang Anda kerjakan, **centang** kotaknya. Formulir rincian muncul:
    - **Sumber Bukti**: Formal / Aktual / Keduanya
    - **Kondisi**: Baseline / Peak / Both
    - **Frekuensi** (default `Mingguan`)
@@ -142,7 +157,7 @@ Setelah dikirim, seleksi Tahap 1 terkunci. Status responden menjadi **✓ Selesa
    - **Jam/minggu** (default 1)
    - **Jam peak (4 minggu)** (default 0)
    - **VA Type**: VA-Core / VA-Enable / NVA-Residual
-3. Klik **Kirim Detail**.
+4. Klik **Kirim Detail**.
 
 !!! danger "Tidak dapat diubah"
 Setelah dikirim, detail Tahap 3 terkunci. Tandai minimal satu tugas sebelum mengirim.

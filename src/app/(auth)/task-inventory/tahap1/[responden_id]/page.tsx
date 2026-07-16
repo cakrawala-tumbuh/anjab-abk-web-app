@@ -5,6 +5,7 @@ import { ApiError, isTidakBerhak } from "@/lib/api/errors";
 import { GagalMuat, TidakBerhak } from "@/components/gagal-muat";
 import { fetchTahap1Data, type Tahap1PageData } from "./data";
 import { SeleksiForm } from "./seleksi-form";
+import { PetunjukTahap1 } from "./petunjuk-tahap1";
 
 export const metadata = { title: "Tahap 1 — Seleksi Relevansi" };
 
@@ -49,11 +50,14 @@ export default async function Tahap1Page({ params }: Props) {
         <span className="text-gray-900">Tahap 1 — Seleksi</span>
       </div>
 
-      <div>
-        <h1 className="page-heading">{JUDUL}</h1>
-        <p className="page-subtext">
-          {responden.nama ?? "Anonim"} · pilih task yang relevan untuk jabatan Anda.
-        </p>
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h1 className="page-heading">{JUDUL}</h1>
+          <p className="page-subtext">
+            {responden.nama ?? "Anonim"} · pilih task yang relevan untuk jabatan Anda.
+          </p>
+        </div>
+        <PetunjukTahap1 defaultOpen={!responden.tahap1_submit && sesi.status === "TAHAP1"} />
       </div>
 
       {responden.tahap1_submit ? (

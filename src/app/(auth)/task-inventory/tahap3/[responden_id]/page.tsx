@@ -5,6 +5,7 @@ import { ApiError, isTidakBerhak } from "@/lib/api/errors";
 import { GagalMuat, TidakBerhak } from "@/components/gagal-muat";
 import { fetchTahap3Data, type Tahap3PageData } from "./data";
 import { DetailForm } from "./detail-form";
+import { PetunjukTahap3 } from "./petunjuk-tahap3";
 
 export const metadata = { title: "Tahap 3 — Detailing" };
 
@@ -49,12 +50,15 @@ export default async function Tahap3Page({ params }: Props) {
         <span className="text-gray-900">Tahap 3 — Detailing</span>
       </div>
 
-      <div>
-        <h1 className="page-heading">{JUDUL}</h1>
-        <p className="page-subtext">
-          {responden.nama ?? "Anonim"} · isi rincian beban kerja (CalHR) untuk tugas yang Anda
-          kerjakan.
-        </p>
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h1 className="page-heading">{JUDUL}</h1>
+          <p className="page-subtext">
+            {responden.nama ?? "Anonim"} · isi rincian beban kerja (CalHR) untuk tugas yang Anda
+            kerjakan.
+          </p>
+        </div>
+        <PetunjukTahap3 defaultOpen={!responden.tahap3_submit && sesi.status === "TAHAP3"} />
       </div>
 
       {responden.tahap3_submit ? (

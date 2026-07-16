@@ -84,6 +84,37 @@ src/
 
 ## Revisi Desain
 
+### [2026-07-16] Petunjuk pengisian gaya-DCS di semua alat ukur (komponen bersama)
+
+Halaman pengisian DCS sudah punya pop-up "Petunjuk Pengisian" (backlog 046); alat ukur lain
+(WCP, OPM, Time Study, Task Inventory Tahap 1/2/3) belum punya panduan apa pun — partisipan
+(mayoritas guru/staf) langsung dihadapkan ke form. Backlog 049 menerapkan pola yang sama ke
+**tujuh alat ukur** lewat satu komponen modal bersama.
+
+- **Komponen bersama baru `src/components/petunjuk-modal.tsx`** (`"use client"`) — mekanik modal
+  diekstrak dari `petunjuk-dcs.tsx` **apa adanya**: hand-rolled overlay (`fixed inset-0 z-50`,
+  tanpa portal, tanpa dependency dialog), tombol pemicu selalu terlihat, `defaultOpen`
+  membuka sekali per mount, tutup via backdrop/X/CTA/Escape. Props:
+  `{ title, defaultOpen, children, ctaLabel?, triggerLabel? }`; judul dipakai `aria-labelledby`
+  lewat `useId()`.
+- **DCS ikut di-refactor** — `petunjuk-dcs.tsx` kini merender `<PetunjukModal>` dengan konten
+  DCS sebagai `children`, **tanpa mengubah teks**. `src/test/petunjuk-dcs.test.tsx` tetap hijau
+  tanpa diubah (jaring pengaman regresi refactor).
+- **Enam komponen konten baru co-located**: `petunjuk-wcp/opm/ts/tahap1/tahap2/tahap3.tsx`.
+  Konten statis Bahasa Indonesia dengan skala/dimensi/kategori/kolom CalHR **diambil dari kode
+  aktual** (mis. WCP = "Workplace Climate Profile", anchor OPM dari `opm-form.tsx`, kategori TS
+  dari `ts-log-form.tsx`, kolom CalHR dari `@/components/calhr`) — bukan diinvent.
+- **`defaultOpen` per alat ukur** (interpretasi "selama masih bisa diisi"): WCP/OPM
+  `!sudah_submit`; TS `aktif && logs.length === 0`; TI-1 `!tahap1_submit && status==="TAHAP1"`;
+  TI-2 `canEdit && status==="TAHAP2"` (anggota non-koordinator read-only → tidak auto-muncul,
+  tombol tetap ada); TI-3 `!tahap3_submit && status==="TAHAP3"`.
+- Blok header WCP/OPM/TI-1/TI-2/TI-3 diubah ke `flex justify-between` (judul kiri, tombol
+  petunjuk kanan); Time Study menyisipkan tombol di samping "+ Tambah Log". **Form
+  (`*-form.tsx`) tidak disentuh** — murni presentasi, tak memanggil backend.
+- Test: `petunjuk-modal.test.tsx` (shell) + satu test per komponen konten baru; `docs-usage/`
+  (IK WCP/OPM/Time Study/Task Inventory) diperbarui menyebut pop-up petunjuk.
+- Detail keputusan: `backlog/049-web-app-petunjuk-pengisian-semua-alat-ukur.md` di repo induk.
+
 ### [2026-07-15] DCS: pop-up "Petunjuk Pengisian" muncul otomatis saat mengisi
 
 Halaman pengisian DCS (`/dcs/isi/{responden_id}`) langsung menampilkan 42 pernyataan Likert

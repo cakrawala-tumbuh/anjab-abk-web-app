@@ -4,6 +4,7 @@ import { auth, isPartisipan } from "@/lib/auth/auth";
 import { withServerAuth } from "@/lib/api/client";
 import { apiErrorDari } from "@/lib/api/errors";
 import type { components } from "@/lib/api/schema";
+import { PetunjukTs } from "./petunjuk-ts";
 
 type TsLogRead = components["schemas"]["TsLogRead"];
 type TsPenugasanRead = components["schemas"]["TsPenugasanRead"];
@@ -72,14 +73,17 @@ export default async function TimeStudyIsiPage({ params }: Props) {
           <h1 className="page-heading">Log Harian — Time Study</h1>
           <p className="page-subtext">Catat aktivitas harian Anda untuk keperluan Studi Waktu.</p>
         </div>
-        {penugasan.aktif && (
-          <Link
-            href={`/time-study/isi/${penugasan_id}/tambah`}
-            className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
-          >
-            + Tambah Log
-          </Link>
-        )}
+        <div className="flex items-center gap-2">
+          <PetunjukTs defaultOpen={penugasan.aktif && logs.length === 0} />
+          {penugasan.aktif && (
+            <Link
+              href={`/time-study/isi/${penugasan_id}/tambah`}
+              className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+            >
+              + Tambah Log
+            </Link>
+          )}
+        </div>
       </div>
 
       {!penugasan.aktif && (

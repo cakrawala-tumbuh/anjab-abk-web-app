@@ -7,6 +7,26 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [4.5.0] - 2026-07-16
+
+### Ditambahkan
+
+- **Pop-up "Petunjuk Pengisian" di semua alat ukur** (backlog 049) — pola gaya-DCS diterapkan
+  ke **WCP, OPM, Time Study, dan Task Inventory Tahap 1/2/3**. Mekanik modal diekstrak ke
+  komponen bersama `src/components/petunjuk-modal.tsx` (hand-rolled, tanpa dependency dialog
+  baru); **DCS ikut di-refactor** memakainya tanpa mengubah teks/perilaku. Tiap alat ukur
+  punya komponen konten co-located (`petunjuk-wcp/opm/ts/tahap1/tahap2/tahap3.tsx`) dengan
+  konten sesuai form-nya (skala/dimensi/kategori/kolom CalHR diambil dari kode aktual). Pop-up
+  auto-muncul tiap kunjungan **selama alat ukur masih bisa diisi** (tanpa `localStorage`,
+  tanpa "jangan tampilkan lagi"); tombol pemicu selalu terlihat. Form (`*-form.tsx`) tidak
+  disentuh.
+
+### Diubah
+
+- Blok header halaman pengisian WCP/OPM/TI-1/TI-2/TI-3 menjadi `flex justify-between` agar
+  tombol "Petunjuk Pengisian" berdampingan dengan judul; header Time Study menampung tombol
+  petunjuk di samping "+ Tambah Log".
+
 ## [4.4.0] - 2026-07-15
 
 ### Ditambahkan

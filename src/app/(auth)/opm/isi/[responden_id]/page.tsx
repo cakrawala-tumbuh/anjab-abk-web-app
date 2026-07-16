@@ -5,6 +5,7 @@ import { withServerAuth } from "@/lib/api/client";
 import { apiErrorDari, toApiError } from "@/lib/api/errors";
 import type { OpmJawabanRead, OpmRespondenRead, OpmSesiTaskRead } from "@/lib/api/schema";
 import { OpmForm } from "./opm-form";
+import { PetunjukOpm } from "./petunjuk-opm";
 
 export const metadata = { title: "Isi Kuesioner OPM" };
 
@@ -60,9 +61,12 @@ export default async function OpmIsiPage({ params }: Props) {
       </div>
 
       {/* Header */}
-      <div>
-        <h1 className="page-heading">Kuesioner OPM — Rating Tugas</h1>
-        <p className="page-subtext">{responden.nama ?? "Anonim"}</p>
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h1 className="page-heading">Kuesioner OPM — Rating Tugas</h1>
+          <p className="page-subtext">{responden.nama ?? "Anonim"}</p>
+        </div>
+        <PetunjukOpm defaultOpen={!responden.sudah_submit} />
       </div>
 
       {responden.sudah_submit ? (

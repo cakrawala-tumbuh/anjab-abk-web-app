@@ -10,6 +10,7 @@ import type {
   TiRespondenRead,
 } from "@/lib/api/schema";
 import { ReviewForm } from "./review-form";
+import { PetunjukTahap2 } from "./petunjuk-tahap2";
 
 export const metadata = { title: "Tahap 2 — Review Koordinator" };
 
@@ -104,12 +105,15 @@ export default async function Tahap2KoordinatorPage({ params }: Props) {
         <span className="text-gray-900">Review Koordinator Tahap 2</span>
       </div>
 
-      <div>
-        <h1 className="page-heading">Tahap 2 — Review Koordinator</h1>
-        <p className="page-subtext">
-          Tentukan relevansi task yang tidak dipilih unanimously oleh semua anggota panel. Task yang
-          disetujui akan digabung dengan task unanimous saat masuk Tahap 3.
-        </p>
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h1 className="page-heading">Tahap 2 — Review Koordinator</h1>
+          <p className="page-subtext">
+            Tentukan relevansi task yang tidak dipilih unanimously oleh semua anggota panel. Task
+            yang disetujui akan digabung dengan task unanimous saat masuk Tahap 3.
+          </p>
+        </div>
+        <PetunjukTahap2 defaultOpen={canEdit && sesi.status === "TAHAP2"} />
       </div>
 
       {!canEdit && (
