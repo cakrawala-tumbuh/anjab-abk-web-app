@@ -113,7 +113,7 @@ Halaman pengisian DCS sudah punya pop-up "Petunjuk Pengisian" (backlog 046); ala
   (`*-form.tsx`) tidak disentuh** — murni presentasi, tak memanggil backend.
 - Test: `petunjuk-modal.test.tsx` (shell) + satu test per komponen konten baru; `docs-usage/`
   (IK WCP/OPM/Time Study/Task Inventory) diperbarui menyebut pop-up petunjuk.
-- Detail keputusan: `backlog/049-web-app-petunjuk-pengisian-semua-alat-ukur.md` di repo induk.
+- Detail keputusan: issue `cakrawala-tumbuh/anjab-abk-web-app#20` (ID lama 049).
 
 ### [2026-07-15] DCS: pop-up "Petunjuk Pengisian" muncul otomatis saat mengisi
 
@@ -137,7 +137,7 @@ panduan cara menjawab (backlog 046).
   sama sekali.
 - **Lingkup sengaja hanya DCS.** WCP (struktur mirip) tidak diubah — komponen dibuat rapi
   supaya mudah ditiru untuk WCP kelak lewat item backlog terpisah.
-- Detail keputusan: `backlog/046-web-app-dcs-petunjuk-pengisian-popup.md` di repo induk `anjab-abk`.
+- Detail keputusan: issue `cakrawala-tumbuh/anjab-abk-web-app#19` (ID lama 046).
 
 ### [2026-07-15] Task Inventory Tahap 3: AI Mode & Risiko DCS dicabut tuntas; Frekuensi jadi dropdown terkontrol
 
@@ -164,8 +164,7 @@ mencabut `ai_mode`/`dcs_flag` dari kontrak (backlog 039) lalu `gen:api`.
   (tanpa `ai_mode`/`dcs_flag`/`std_ai_mode`/`std_dcs_flag`/`ai_mode_dist`/`dcs_flag_count`) —
   blok re-export manual di akhir file ditambal ulang setelahnya (konvensi baku, lihat entri
   [2026-06-21] di bawah).
-- Detail keputusan: `backlog/040-web-app-tahap3-hapus-ai-dcs-frekuensi-dropdown.md` di repo
-  induk `anjab-abk`.
+- Detail keputusan: issue `cakrawala-tumbuh/anjab-abk-web-app#18` (ID lama 040).
 
 ### [2026-07-15] Task Inventory: "Periode" → "Cabang"; pencabutan prefill panel-aware & SmePanelInfo dari form TI
 
@@ -199,7 +198,7 @@ apiErrorDari(res)`).
   (`TiKuesionerCard`), dan label opsi dropdown "Analisis Jabatan Task Inventory (sumber task)"
   di form OPM (`opm/buat/opm-sesi-form.tsx`, `{t.periode}` → `{t.cabang ?? "—"}` — **hanya**
   label tampilan, kontrak & perilaku OPM sendiri tidak berubah).
-- Detail keputusan: `backlog/038-web-app-tisesi-form-cabang.md` di repo induk `anjab-abk`.
+- Detail keputusan: issue `cakrawala-tumbuh/anjab-abk-web-app#17` (ID lama 038).
 
 ### [2026-07-14] Data PENDUKUNG (dropdown & label) ikut dilarang menelan kegagalan; jaring pengaman menggantikan grep
 
@@ -233,7 +232,7 @@ membuat admin menyimpulkan "master data belum diisi" lalu membuat duplikat.
   **Catatan utang**: ±20 berkas baca lain masih memakai `toApiError(null, …)` — mereka
   **melempar** (tidak menelan), jadi di luar cakupan 031, tapi membuang pesan backend &
   status HTTP. Layak diseragamkan menyusul.
-- Detail keputusan: `backlog/031-web-app-telan-senyap-data-pendukung.md` di repo induk.
+- Detail keputusan: issue `cakrawala-tumbuh/anjab-abk-web-app#16` (ID lama 031).
 
 ### [2026-07-14] Form "Mulai Analisis Jabatan" (TI & OPM) sadar jumlah anggota SME panel
 
@@ -254,7 +253,7 @@ ditolak, tanpa pernah tahu panelnya berisi 11 orang.
   jangan diganti pesan generik.
 - Kode bersama: `src/lib/sme-panel.ts` (peta `jabatan_id` → jumlah anggota; panel unik per
   jabatan di backend) + `src/components/sme-panel-info.tsx`, dipakai identik TI & OPM.
-- Detail keputusan: `backlog/030-web-app-form-max-responden-sadar-panel.md` di repo induk.
+- Detail keputusan: issue `cakrawala-tumbuh/anjab-abk-web-app#15` (ID lama 030).
 
 ### [2026-07-14] Klien `api` tanpa Bearer dihapus; jalur baca Client Component ikut dilarang menelan error
 
@@ -277,8 +276,7 @@ sebagai **"Belum ada anggota"** pada panel yang sebenarnya berisi.
   Web app boleh lebih dulu — mengirim token ke endpoint yang belum menuntutnya tetap aman.
 - Jaring pengaman: `grep -rnE "(^|[^.a-zA-Z])api\.(GET|POST|PATCH|PUT|DELETE)" src` → nol hasil;
   `grep -rn "catch(() => set" src` → nol hasil.
-- Detail keputusan & konteks: `backlog/029-web-app-sme-panel-anggota-form-tanpa-token.md`
-  di repo induk `anjab-abk`.
+- Detail keputusan & konteks: issue `cakrawala-tumbuh/anjab-abk-web-app#14` (ID lama 029).
 
 ### [2026-07-14] Jalur baca Server Component: `?? []` dilarang untuk data kritis — gagal harus melempar
 
@@ -318,8 +316,7 @@ Terreproduksi di produksi YPII: sesi TI dengan 19 task terpilih tampil sebagai
 - `fetchPageData` Tahap 1 & Tahap 3 dipindah ke `data.ts` masing-masing supaya bisa
   diuji langsung — berkas route Next.js (`page.tsx`) tidak boleh mengekspor fungsi
   sembarang (`next build` menolaknya).
-- Detail keputusan & konteks temuan: `backlog/026-web-app-error-api-ditelan-senyap.md`
-  di repo induk `anjab-abk`.
+- Detail keputusan & konteks temuan: issue `cakrawala-tumbuh/anjab-abk-web-app#12` (ID lama 026).
 
 ### [2026-07-14] DCS & WCP: konfirmasi `confirm()` sebelum "Jalankan Analisis"
 
@@ -344,8 +341,7 @@ lagi."`, WCP versi serupa dengan kata "WCP".
   `dcs-assign-responden.test.tsx`. Minimal 2 test per file: Cancel tidak memanggil
   `POST`/`push` sama sekali; OK melanjutkan alur (`POST` endpoint benar → `push` ke
   halaman hasil).
-- Detail keputusan & konteks temuan: `backlog/021-web-app-konfirmasi-jalankan-analisis-dcs-wcp.md`
-  di repo induk `anjab-abk`.
+- Detail keputusan & konteks temuan: issue `cakrawala-tumbuh/anjab-abk-web-app#11` (ID lama 021).
 
 ### [2026-07-14] Notifikasi toast terpusat (`sonner`) — satu-satunya pintu ke user untuk hasil simpan data
 
