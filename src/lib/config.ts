@@ -25,4 +25,10 @@ export const config = {
   },
   /** URL publik aplikasi ini — dipakai sebagai post_logout_redirect_uri saat logout OIDC. */
   appUrl: process.env.AUTH_URL ?? process.env.NEXTAUTH_URL,
+  chatwoot: {
+    /** Base URL instance Chatwoot yayasan. Kosong → widget tidak dipasang (fitur opsional). */
+    baseUrl: process.env.NEXT_PUBLIC_CHATWOOT_BASE_URL,
+    /** Website inbox token (publik by design — ter-inline ke HTML, bukan kebocoran). */
+    websiteToken: process.env.NEXT_PUBLIC_CHATWOOT_WEBSITE_TOKEN,
+  },
 } as const;

@@ -84,6 +84,47 @@ src/
 
 ## Revisi Desain
 
+### [2026-07-18] Widget helpdesk Chatwoot "Butuh Bantuan?" global di halaman terautentikasi
+
+Feedback user (backlog 025, ID lama 041): tidak ada jalur bantuan in-app selain teks statis
+di `docs-usage/`. Ditambahkan launcher live-chat Chatwoot di semua halaman terautentikasi.
+
+- **Komponen baru `src/components/chatwoot-widget.tsx`** (`"use client"`, meniru pola
+  `pwa-register.tsx` — `return null`, `useEffect` sekali). Guard env-kosong: bila
+  `config.chatwoot.baseUrl` **atau** `websiteToken` kosong, tidak memasang script sama
+  sekali (fitur mati diam, bukan error) — penting agar E2E stack tanpa Chatwoot tetap
+  hijau. Guard idempoten via `document.getElementById("chatwoot-sdk")` /
+  `window.chatwootSDK` (StrictMode double-invoke effect di dev).
+- **Env publik baru** `NEXT_PUBLIC_CHATWOOT_BASE_URL` / `NEXT_PUBLIC_CHATWOOT_WEBSITE_TOKEN`
+  di `src/lib/config.ts` (blok `config.chatwoot`) — nilai **tidak di-hardcode**, wajib diisi
+  di `.env.local`; `.env.example` memuat placeholder saja.
+- **Mekanisme runtime-injection Docker (`Dockerfile` + `docker-entrypoint.sh`) diperluas**
+  dari satu var (`NEXT_PUBLIC_API_BASE_URL`) menjadi tiga — Next.js membakukan
+  (inline) `NEXT_PUBLIC_*` ke bundle JS **saat build image**, jadi tanpa perluasan ini
+  mengedit `.env` di deployment tidak akan berpengaruh tanpa rebuild. Beda dari
+  `API_BASE_URL` (wajib, placeholder dibiarkan bila env kosong): kedua var Chatwoot
+  **opsional**, jadi placeholder-nya **selalu** diganti — string kosong bila env runtime
+  tidak di-set — supaya token literal `__NEXT_PUBLIC_CHATWOOT_..._` tidak pernah lolos ke
+  bundle sebagai nilai truthy palsu (`config.chatwoot.baseUrl` harus falsy agar guard mati-
+  diam di `ChatwootWidget` bekerja). Diverifikasi lewat `docker build` + `docker run` manual
+  (bukan test otomatis — shell script, di luar cakupan `vitest`): tanpa env →
+  `chatwoot:{baseUrl:"",websiteToken:""}` di bundle; dengan env → nilai tersubstitusi benar.
+  Repo deploy `anjab-abk-ypii-docker-compose` (`docker-compose.yml` service `web` +
+  `.env.example`) diperbarui sepasang untuk meneruskan kedua var ke container.
+- **Dirender di `src/app/(auth)/layout.tsx`** sebagai sibling `<AppShell>` (bukan di dalam
+  `children`-nya, supaya tidak ikut ter-nest di `<main>`) — hanya muncul di halaman
+  terautentikasi, **tidak** di `/login`.
+- **Identify user aktif** (`window.$chatwoot.setUser(email, {name, email})`, dipanggil saat
+  event `chatwoot:ready`): `name`/`email` diteruskan sebagai **prop** dari `session.user`
+  (Server Component `(auth)/layout.tsx`) ke Client Component — bukan memanggil `auth()` di
+  klien. Ini mengalirkan PII (nama/email) ke Chatwoot; dikonfirmasi eksplisit oleh user.
+- **Risiko dicatat, tidak ditangani di item ini**: belum ada CSP di app hari ini
+  (`next.config.ts`/`middleware.ts` terverifikasi tanpa `headers()`) — bila kelak CSP
+  dipasang (app atau reverse proxy), host Chatwoot wajib di-allowlist di `script-src`,
+  `connect-src` (termasuk `wss:`), `frame-src`, `img-src`, `style-src`, kalau tidak widget
+  akan terblokir tanpa disadari.
+- Detail keputusan: issue `cakrawala-tumbuh/anjab-abk-web-app#25` (ID lama 041).
+
 ### [2026-07-16] Petunjuk pengisian gaya-DCS di semua alat ukur (komponen bersama)
 
 Halaman pengisian DCS sudah punya pop-up "Petunjuk Pengisian" (backlog 046); alat ukur lain

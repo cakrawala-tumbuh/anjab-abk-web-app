@@ -7,6 +7,20 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [4.6.0] - 2026-07-18
+
+### Ditambahkan
+
+- **Widget helpdesk Chatwoot "Butuh Bantuan?"** (backlog 025 di `anjab-abk-web-app`) — launcher
+  live-chat di semua halaman terautentikasi, menyuntik SDK resmi Chatwoot lewat komponen Client
+  baru `src/components/chatwoot-widget.tsx` (pola `pwa-register.tsx`). Dikonfigurasi lewat env
+  publik `NEXT_PUBLIC_CHATWOOT_BASE_URL`/`NEXT_PUBLIC_CHATWOOT_WEBSITE_TOKEN` — kosong berarti
+  fitur mati diam tanpa error. Identify user (`setUser`) aktif: nama & email dari sesi Auth.js
+  diteruskan sebagai prop dari `(auth)/layout.tsx`, dipanggil saat event `chatwoot:ready`. Tidak
+  tampil di halaman `/login`. `Dockerfile`/`docker-entrypoint.sh` diperluas agar kedua env bisa
+  diganti di **runtime deployment** (tanpa rebuild image), konsisten dengan pola
+  `NEXT_PUBLIC_API_BASE_URL` yang sudah ada.
+
 ## [4.5.0] - 2026-07-16
 
 ### Ditambahkan

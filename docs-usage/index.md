@@ -51,3 +51,8 @@ Baru pertama kali? Mulai dari sini:
 
 Jika menemui kendala, lihat [FAQ](referensi/faq.md) atau hubungi administrator studi
 ANJAB-ABK di yayasan/satuan pendidikan Anda.
+
+Di halaman aplikasi (setelah login), tersedia juga tombol chat **"Butuh Bantuan?"** di
+pojok layar — klik untuk mengobrol langsung dengan administrator studi. Balasan biasanya
+datang dalam beberapa menit pada jam kerja. Tombol ini tidak tampil di halaman login, dan
+di sebagian instansi belum diaktifkan — bila tidak ada, gunakan cara di atas.

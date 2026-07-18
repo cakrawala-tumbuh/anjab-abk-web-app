@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import type { ReactNode } from "react";
 import { AppShell } from "@/components/shell/app-shell";
+import { ChatwootWidget } from "@/components/chatwoot-widget";
 import { auth } from "@/lib/auth/auth";
 
 /** Layout semua route yang butuh autentikasi. Middleware sudah menangani redirect
@@ -12,8 +13,11 @@ export default async function AuthLayout({ children }: { children: ReactNode }) 
   }
 
   return (
-    <AppShell groups={session.user.groups} username={session.user?.name}>
-      {children}
-    </AppShell>
+    <>
+      <AppShell groups={session.user.groups} username={session.user?.name}>
+        {children}
+      </AppShell>
+      <ChatwootWidget name={session.user?.name} email={session.user?.email} />
+    </>
   );
 }
