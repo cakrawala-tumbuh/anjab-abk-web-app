@@ -84,6 +84,44 @@ src/
 
 ## Revisi Desain
 
+### [2026-07-19] 403/500 dari backend tidak lagi tampil sebagai crash Server Components
+
+Setelah backlog 026/031 menghentikan penelanan-senyap error API (`?? []`), error yang
+tidak tertangkap oleh panel ramah (`TidakBerhak`/`GagalMuat`) melempar mentah ke
+`error.tsx` — Next.js menyensor `error.message` di sana, jadi `X-Request-ID` mustahil
+ditampilkan. Dua kasus berbeda sebab, sama gejala, diamati langsung di produksi
+2026-07-14 (issue `cakrawala-tumbuh/anjab-abk-web-app#23`, ID lama 035).
+
+- **Kasus 1 — 403 tanpa panel ramah.** `task-inventory/tahap2/[sesi_id]/page.tsx`
+  memanggil `GET /sesi/{id}` yang ditegakkan `authorize_sesi_access` di backend (admin
+  ATAU koordinator ATAU anggota panel) — partisipan lain menerima 403 yang tidak pernah
+  ditangkap. Diperbaiki: `try/catch` menangkap `ApiError` ber-`status === 403` →
+  `<TidakBerhak>`; **status lain (401/404/5xx) tetap dilempar**, tidak ikut ditelan
+  cabang baru. `opm/isi/[responden_id]/page.tsx` punya lubang yang sama (`GET
+  /opm/sesi/responden/{id}` ditegakkan `authorize_responden_access`, admin ATAU pemilik)
+  **dan sebelumnya tidak punya penanganan error sama sekali** — diperbaiki pola identik;
+  fetch responden-nya sekalian dipindah dari `toApiError(res.error, reqId)` (membuang
+  status HTTP) ke `apiErrorDari(res)` supaya `status` tersedia untuk cabang 403 di atas.
+  **Verifikasi per halaman, tidak dipukul rata**: Tahap 1 & Tahap 3 sudah benar sejak
+  backlog 026 (`isTidakBerhak` + `TidakBerhak`/`GagalMuat`) — tidak disentuh.
+- **Kasus 2 — satu bug backend mematikan seluruh halaman admin.** Halaman detail sesi
+  TI (`task-inventory/[sesi_id]/page.tsx`) adalah satu-satunya tempat tombol "Hapus
+  paksa analisis" berada (di `<TransisiSesi>`). Kegagalan `task-terpilih`/`hasil` (mis.
+  bug backend backlog 024, 500) sebelumnya `throw` tanpa syarat — mematikan header DAN
+  panel aksi admin, sehingga admin kehilangan satu-satunya jalan keluarnya sendiri dari
+  UI. Diperbaiki: kedua fetch itu **dikecualikan** dari invariant "data inti harus
+  melempar" — kegagalannya dikumpulkan sebagai `BagianGagal[]` dan ditampilkan lewat
+  `<GagalMuatSebagian>` di atas header, sementara `taskTerpilih`/`hasil` jatuh ke default
+  kosong. Pengecualian ini **sengaja sempit**: hanya dua fetch ini, alasannya spesifik
+  (satu-satunya jalur pemulihan admin), bukan pelonggaran umum jalur baca — fetch lain di
+  halaman yang sama (`sesi`, `responden`, SME panel, partisipan) tetap melempar.
+- Test baru: `src/test/tahap2-page.test.tsx`, `src/test/opm-isi-page.test.tsx`,
+  `src/test/ti-sesi-detail-page.test.tsx` — merender komponen halaman (async Server
+  Component) langsung lewat pemanggilan fungsi + `render()`, dengan `@/lib/auth/auth`
+  dan `@/lib/api/client` di-mock penuh (pola baru; Tahap 1/3 sebelumnya hanya menguji
+  `fetchTahap*Data` yang diekstrak ke `data.ts`, `fetchPageData` tiga halaman ini tetap
+  lokal — tidak diekstrak, di luar cakupan revisi ini).
+
 ### [2026-07-18] Widget helpdesk Chatwoot "Butuh Bantuan?" global di halaman terautentikasi
 
 Feedback user (backlog 025, ID lama 041): tidak ada jalur bantuan in-app selain teks statis

@@ -2,12 +2,15 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { auth, isPartisipan } from "@/lib/auth/auth";
 import { withServerAuth } from "@/lib/api/client";
-import { apiErrorDari, toApiError } from "@/lib/api/errors";
+import { ApiError, apiErrorDari } from "@/lib/api/errors";
+import { TidakBerhak } from "@/components/gagal-muat";
 import type { OpmJawabanRead, OpmRespondenRead, OpmSesiTaskRead } from "@/lib/api/schema";
 import { OpmForm } from "./opm-form";
 import { PetunjukOpm } from "./petunjuk-opm";
 
 export const metadata = { title: "Isi Kuesioner OPM" };
+
+const JUDUL = "Kuesioner OPM — Rating Tugas";
 
 interface Props {
   params: Promise<{ responden_id: string }>;
@@ -15,11 +18,12 @@ interface Props {
 
 async function fetchPageData(accessToken: string | undefined, respondenId: string) {
   const client = withServerAuth(accessToken);
+  // `authorize_responden_access` backend: admin ATAU pemilik → 403 untuk
+  // partisipan lain yang menebak/membuka responden_id bukan miliknya.
   const respondenRes = await client.GET("/api/v1/opm/sesi/responden/{responden_id}", {
     params: { path: { responden_id: respondenId } },
   });
-  const reqId = respondenRes.response.headers.get("x-request-id");
-  if (respondenRes.error) throw toApiError(respondenRes.error, reqId);
+  if (!respondenRes.data) throw apiErrorDari(respondenRes);
 
   const responden = respondenRes.data as OpmRespondenRead;
 
@@ -47,7 +51,20 @@ export default async function OpmIsiPage({ params }: Props) {
   if (!isPartisipan(session)) notFound();
 
   const { responden_id } = await params;
-  const { responden, task, jawaban } = await fetchPageData(session?.accessToken, responden_id);
+
+  // Partisipan yang menebak/membuka responden_id milik orang lain ditolak
+  // backend (403) — ditampilkan sebagai panel "tidak berwenang", bukan crash
+  // Server Components. Status lain (401/404/5xx) tetap dilempar apa adanya.
+  let data: Awaited<ReturnType<typeof fetchPageData>>;
+  try {
+    data = await fetchPageData(session?.accessToken, responden_id);
+  } catch (err) {
+    if (err instanceof ApiError && err.status === 403) {
+      return <TidakBerhak judul={JUDUL} err={err} />;
+    }
+    throw err;
+  }
+  const { responden, task, jawaban } = data;
 
   return (
     <div className="space-y-6">
@@ -63,7 +80,7 @@ export default async function OpmIsiPage({ params }: Props) {
       {/* Header */}
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h1 className="page-heading">Kuesioner OPM — Rating Tugas</h1>
+          <h1 className="page-heading">{JUDUL}</h1>
           <p className="page-subtext">{responden.nama ?? "Anonim"}</p>
         </div>
         <PetunjukOpm defaultOpen={!responden.sudah_submit} />

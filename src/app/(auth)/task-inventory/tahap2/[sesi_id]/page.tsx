@@ -2,7 +2,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { auth, isAdmin } from "@/lib/auth/auth";
 import { withServerAuth } from "@/lib/api/client";
-import { apiErrorDari } from "@/lib/api/errors";
+import { ApiError, apiErrorDari } from "@/lib/api/errors";
+import { TidakBerhak } from "@/components/gagal-muat";
 import type {
   TiSesiRead,
   TiTahap2ReviewRead,
@@ -13,6 +14,8 @@ import { ReviewForm } from "./review-form";
 import { PetunjukTahap2 } from "./petunjuk-tahap2";
 
 export const metadata = { title: "Tahap 2 — Review Koordinator" };
+
+const JUDUL = "Tahap 2 — Review Koordinator";
 
 interface Props {
   params: Promise<{ sesi_id: string }>;
@@ -71,10 +74,20 @@ async function fetchPageData(accessToken: string | undefined, sesiId: string) {
 export default async function Tahap2KoordinatorPage({ params }: Props) {
   const session = await auth();
   const { sesi_id } = await params;
-  const { sesi, review, partisipanId, kodeToUraian, respondenList } = await fetchPageData(
-    session?.accessToken,
-    sesi_id,
-  );
+
+  // Partisipan bukan admin/koordinator/anggota panel ditolak backend (403) —
+  // ditampilkan sebagai panel "tidak berwenang", bukan crash Server Components.
+  // Status lain (401/404/5xx) tetap dilempar apa adanya (tidak tertelan di sini).
+  let data: Awaited<ReturnType<typeof fetchPageData>>;
+  try {
+    data = await fetchPageData(session?.accessToken, sesi_id);
+  } catch (err) {
+    if (err instanceof ApiError && err.status === 403) {
+      return <TidakBerhak judul={JUDUL} err={err} />;
+    }
+    throw err;
+  }
+  const { sesi, review, partisipanId, kodeToUraian, respondenList } = data;
 
   const admin = isAdmin(session);
   const isKoordinator = !!partisipanId && partisipanId === sesi.koordinator_id;

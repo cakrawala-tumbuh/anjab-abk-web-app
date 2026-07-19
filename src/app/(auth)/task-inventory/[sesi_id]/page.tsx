@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import { auth, isAdmin } from "@/lib/auth/auth";
 import { withServerAuth } from "@/lib/api/client";
 import { apiErrorDari } from "@/lib/api/errors";
+import { GagalMuatSebagian } from "@/components/gagal-muat";
+import type { BagianGagal } from "@/lib/api/pendukung";
 import type {
   PartisipanRead,
   SMEPanelRead,
@@ -81,23 +83,34 @@ async function fetchPageData(accessToken: string | undefined, sesiId: string) {
     client.GET("/api/v1/partisipan", { params: { query: { limit: 200 } } }),
   ]);
 
-  // Panggilan di bawah dijaga status (backend menolak 422 di luar status yang sah),
-  // sehingga di dalam guard-nya kegagalan = kegagalan sungguhan → lempar.
+  // `task-terpilih`/`hasil` DIKECUALIKAN dari invariant "data inti harus
+  // melempar": ini SATU-SATUNYA halaman dengan tombol "Hapus paksa analisis"
+  // (di <TransisiSesi>, dirender di bawah tanpa bergantung pada data ini). Bila
+  // salah satu 500 (mis. bug backend backlog 024), admin tidak boleh kehilangan
+  // jalan keluarnya sendiri dari UI karena satu bagian data rusak — kegagalannya
+  // WAJIB tetap terlihat lewat GagalMuatSebagian, bukan ditelan senyap.
   let taskTerpilih: TiTaskTerpilihRead[] = [];
   let hasil: TiHasilSesiRead | null = null;
+  const gagalHasil: BagianGagal[] = [];
   if (["TAHAP3", "CLOSED", "ANALYZED"].includes(sesi.status)) {
     const ttRes = await client.GET("/api/v1/task-inventory/sesi/{sesi_id}/task-terpilih", {
       params: { path: { sesi_id: sesiId } },
     });
-    if (!ttRes.data) throw apiErrorDari(ttRes);
-    taskTerpilih = ttRes.data as TiTaskTerpilihRead[];
+    if (!ttRes.data) {
+      gagalHasil.push({ nama: "Task relevan terpilih", err: apiErrorDari(ttRes) });
+    } else {
+      taskTerpilih = ttRes.data as TiTaskTerpilihRead[];
+    }
   }
   if (sesi.status === "ANALYZED") {
     const hRes = await client.GET("/api/v1/task-inventory/sesi/{sesi_id}/hasil", {
       params: { path: { sesi_id: sesiId } },
     });
-    if (!hRes.data) throw apiErrorDari(hRes);
-    hasil = hRes.data as TiHasilSesiRead;
+    if (!hRes.data) {
+      gagalHasil.push({ nama: "Hasil agregasi (masukan ABK)", err: apiErrorDari(hRes) });
+    } else {
+      hasil = hRes.data as TiHasilSesiRead;
+    }
   }
 
   // Jumlah task partial yang belum diputuskan koordinator — dipakai tombol "Mulai Tahap 3".
@@ -135,6 +148,7 @@ async function fetchPageData(accessToken: string | undefined, sesiId: string) {
     taskTerpilih,
     hasil,
     belumDiputuskanTahap2,
+    gagalHasil,
   };
 }
 
@@ -143,8 +157,16 @@ export default async function TiSesiDetailPage({ params }: Props) {
   if (!isAdmin(session)) notFound();
 
   const { sesi_id } = await params;
-  const { sesi, responden, smePanel, partisipan, taskTerpilih, hasil, belumDiputuskanTahap2 } =
-    await fetchPageData(session?.accessToken, sesi_id);
+  const {
+    sesi,
+    responden,
+    smePanel,
+    partisipan,
+    taskTerpilih,
+    hasil,
+    belumDiputuskanTahap2,
+    gagalHasil,
+  } = await fetchPageData(session?.accessToken, sesi_id);
 
   const st = STATUS_LABEL[sesi.status] ?? {
     label: sesi.status,
@@ -181,6 +203,8 @@ export default async function TiSesiDetailPage({ params }: Props) {
           <p className="max-w-xs text-right text-xs text-gray-400">{st.desc}</p>
         </div>
       </div>
+
+      <GagalMuatSebagian bagian={gagalHasil} />
 
       {/* Statistik */}
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">

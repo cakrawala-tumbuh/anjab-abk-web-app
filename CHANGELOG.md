@@ -7,6 +7,25 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [4.6.1] - 2026-07-19
+
+### Diperbaiki
+
+- **403/500 dari backend tidak lagi tampil sebagai crash "Server Components render"** (backlog
+  035 / issue #23). Setelah backlog 026/031 menghentikan penelanan-senyap error API, lemparan
+  yang tidak tertangkap oleh panel ramah muncul sebagai pesan mentah Next.js yang menyensor
+  `X-Request-ID`. Dua perbaikan:
+  - **Tahap 2 Task Inventory** (`task-inventory/tahap2/[sesi_id]/page.tsx`) dan **isi kuesioner
+    OPM** (`opm/isi/[responden_id]/page.tsx`): `ApiError` ber-`status === 403` (partisipan bukan
+    anggota panel / bukan pemilik responden) kini ditangkap dan dirender sebagai panel "Tidak
+    berwenang" — status lain tetap dilempar apa adanya. Halaman Tahap 1/Tahap 3 sudah benar
+    sejak backlog 026, tidak disentuh.
+  - **Detail sesi Task Inventory** (`task-inventory/[sesi_id]/page.tsx`): kegagalan
+    `task-terpilih`/`hasil` (mis. bug backend backlog 024) tidak lagi mematikan seluruh halaman —
+    header dan panel aksi admin (termasuk tombol "Hapus paksa analisis", satu-satunya jalan
+    keluar admin dari sesi rusak) tetap terender; kegagalannya ditampilkan lewat
+    `GagalMuatSebagian`, bukan ditelan.
+
 ## [4.6.0] - 2026-07-18
 
 ### Ditambahkan
