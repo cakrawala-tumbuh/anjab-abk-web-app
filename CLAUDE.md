@@ -98,7 +98,7 @@ ditampilkan. Dua kasus berbeda sebab, sama gejala, diamati langsung di produksi
   ditangkap. Diperbaiki: `try/catch` menangkap `ApiError` ber-`status === 403` →
   `<TidakBerhak>`; **status lain (401/404/5xx) tetap dilempar**, tidak ikut ditelan
   cabang baru. `opm/isi/[responden_id]/page.tsx` punya lubang yang sama (`GET
-  /opm/sesi/responden/{id}` ditegakkan `authorize_responden_access`, admin ATAU pemilik)
+/opm/sesi/responden/{id}` ditegakkan `authorize_responden_access`, admin ATAU pemilik)
   **dan sebelumnya tidak punya penanganan error sama sekali** — diperbaiki pola identik;
   fetch responden-nya sekalian dipindah dari `toApiError(res.error, reqId)` (membuang
   status HTTP) ke `apiErrorDari(res)` supaya `status` tersedia untuk cabang 403 di atas.
