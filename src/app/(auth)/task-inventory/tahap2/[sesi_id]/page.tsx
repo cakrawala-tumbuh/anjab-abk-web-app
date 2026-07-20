@@ -39,8 +39,12 @@ async function fetchPageData(accessToken: string | undefined, sesiId: string) {
     }),
   ]);
 
-  // OPSIONAL (sengaja ditelan): admin yang bukan partisipan tidak punya baris
-  // `/partisipan/saya` → 404 adalah jawaban yang SAH di sini, bukan kegagalan.
+  // OPSIONAL (sengaja ditelan) HANYA untuk 404: admin yang bukan partisipan
+  // tidak punya baris `/partisipan/saya` → 404 adalah jawaban yang SAH di sini.
+  // Status lain (401/403/5xx) BUKAN kondisi sah — melempar seperti data kritis
+  // lain di halaman ini (issue #21, utang 2: pengecualian ini sebelumnya
+  // menelan SEMUA status, bukan hanya 404).
+  if (!sayaRes.data && sayaRes.response.status !== 404) throw apiErrorDari(sayaRes);
   const partisipanId = sayaRes.data?.id ?? null;
 
   // Data kritis — kegagalan tidak boleh menyamar jadi daftar kosong.

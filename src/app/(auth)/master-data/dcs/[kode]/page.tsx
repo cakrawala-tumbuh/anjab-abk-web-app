@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { auth, isAdmin } from "@/lib/auth/auth";
 import { withServerAuth } from "@/lib/api/client";
-import { toApiError } from "@/lib/api/errors";
+import { apiErrorDari } from "@/lib/api/errors";
 import type { DcsSubSkalaWithItemsRead } from "@/lib/api/schema";
 import { DcsItemEditor } from "./dcs-item-editor";
 
@@ -17,12 +17,11 @@ async function fetchSubSkala(
   accessToken: string | undefined,
 ): Promise<DcsSubSkalaWithItemsRead> {
   const client = withServerAuth(accessToken);
-  const { data, response } = await client.GET("/api/v1/dcs/sub-skala/{kode}", {
+  const res = await client.GET("/api/v1/dcs/sub-skala/{kode}", {
     params: { path: { kode } },
   });
-  const requestId = response.headers.get("x-request-id");
-  if (!data) throw toApiError(null, requestId);
-  return data;
+  if (!res.data) throw apiErrorDari(res);
+  return res.data;
 }
 
 export default async function DcsSubSkalaDetailPage({ params }: PageProps) {

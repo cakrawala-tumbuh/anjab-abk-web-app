@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { auth, isAdmin } from "@/lib/auth/auth";
 import { withServerAuth } from "@/lib/api/client";
-import { toApiError } from "@/lib/api/errors";
+import { apiErrorDari } from "@/lib/api/errors";
 import type { SekolahRead } from "@/lib/api/schema";
 import { TambahJabatanForm } from "./jabatan-form";
 
@@ -9,12 +9,11 @@ export const metadata = { title: "Tambah Jabatan — Master Data" };
 
 async function fetchSekolah(accessToken: string | undefined): Promise<SekolahRead[]> {
   const client = withServerAuth(accessToken);
-  const { data, response } = await client.GET("/api/v1/sekolah", {
+  const res = await client.GET("/api/v1/sekolah", {
     params: { query: { limit: 100 } },
   });
-  const requestId = response.headers.get("x-request-id");
-  if (!data) throw toApiError(null, requestId);
-  return data.items ?? [];
+  if (!res.data) throw apiErrorDari(res);
+  return res.data.items ?? [];
 }
 
 export default async function TambahJabatanPage() {

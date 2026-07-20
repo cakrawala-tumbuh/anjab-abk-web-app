@@ -2,17 +2,16 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { auth, isAdmin } from "@/lib/auth/auth";
 import { withServerAuth } from "@/lib/api/client";
-import { toApiError } from "@/lib/api/errors";
+import { apiErrorDari } from "@/lib/api/errors";
 import type { DcsSubSkalaRead } from "@/lib/api/schema";
 
 export const metadata = { title: "Instrumen DCS — Master Data" };
 
 async function fetchSubSkala(accessToken: string | undefined): Promise<DcsSubSkalaRead[]> {
   const client = withServerAuth(accessToken);
-  const { data, response } = await client.GET("/api/v1/dcs/sub-skala");
-  const requestId = response.headers.get("x-request-id");
-  if (!data) throw toApiError(null, requestId);
-  return data;
+  const res = await client.GET("/api/v1/dcs/sub-skala");
+  if (!res.data) throw apiErrorDari(res);
+  return res.data;
 }
 
 export default async function DcsMasterDataPage() {

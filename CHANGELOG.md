@@ -17,6 +17,19 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
   dapat diedit** meski field sibling lain (`Sumber Bukti`, `Kondisi`, `Frekuensi`, `Jam/minggu`,
   `Jam peak`, `VA Type`) terkunci — ditandai penjelas "wajib diisi manual" di UI. Draft/kirim
   ditolak bila durasi belum diisi.
+- **Jalur baca mempertahankan pesan & status backend, bukan lagi dibuang** (issue #21). 24
+  berkas jalur baca Server Component (32 kemunculan) masih memakai pola lama `toApiError(null,
+reqId)` — membuang pesan error backend **dan** status HTTP-nya sekaligus, sehingga pengguna
+  melihat pesan generik dan kode pemanggil tidak bisa membedakan 401/403/500. Seluruhnya
+  dimigrasikan ke `apiErrorDari(res)` (sudah dipakai di jalur yang tersentuh backlog
+  026/029/031) yang mempertahankan pesan backend, `status`, dan `X-Request-ID` secara utuh.
+  - **Pengecualian Tahap 2** (`task-inventory/tahap2/[sesi_id]/page.tsx`): `GET
+/partisipan/saya` sebelumnya menelan **semua** status jadi `null` (didaftarkan sebagai
+    pengecualian sah untuk 404, tapi implementasinya tidak sesempit itu — 401 pun ikut jadi
+    `null`). Kini eksplisit: hanya 404 yang jatuh ke `null`; 401/403/5xx tetap melempar seperti
+    data kritis lain di halaman.
+  - `toApiError` **dipertahankan** (masih dipakai sah di jalur mutasi/tulis di seluruh app) —
+    hanya pemakaian jalur baca yang dicabut.
 
 ## [4.6.1] - 2026-07-19
 

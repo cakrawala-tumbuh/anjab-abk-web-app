@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { auth, isAdmin } from "@/lib/auth/auth";
 import { withServerAuth } from "@/lib/api/client";
-import { toApiError } from "@/lib/api/errors";
+import { apiErrorDari } from "@/lib/api/errors";
 import type { MataPelajaranRead } from "@/lib/api/schema";
 
 export const metadata = { title: "Mata Pelajaran — Master Data" };
@@ -23,12 +23,11 @@ const WARNA_KELOMPOK: Record<string, string> = {
 
 async function fetchMataPelajaran(accessToken: string | undefined): Promise<MataPelajaranRead[]> {
   const client = withServerAuth(accessToken);
-  const { data, response } = await client.GET("/api/v1/mata-pelajaran", {
+  const res = await client.GET("/api/v1/mata-pelajaran", {
     params: { query: { limit: 100 } },
   });
-  const requestId = response.headers.get("x-request-id");
-  if (!data) throw toApiError(null, requestId);
-  return data.items ?? [];
+  if (!res.data) throw apiErrorDari(res);
+  return res.data.items ?? [];
 }
 
 export default async function MataPelajaranPage() {

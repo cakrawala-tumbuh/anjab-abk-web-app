@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { auth, isAdmin } from "@/lib/auth/auth";
 import { withServerAuth } from "@/lib/api/client";
-import { toApiError } from "@/lib/api/errors";
+import { apiErrorDari } from "@/lib/api/errors";
 import type { JabatanRead } from "@/lib/api/schema";
 
 export const metadata = { title: "Jabatan — Master Data" };
@@ -15,12 +15,11 @@ const LABEL_JENIS: Record<string, string> = {
 
 async function fetchJabatan(accessToken: string | undefined): Promise<JabatanRead[]> {
   const client = withServerAuth(accessToken);
-  const { data, response } = await client.GET("/api/v1/jabatan", {
+  const res = await client.GET("/api/v1/jabatan", {
     params: { query: { limit: 100 } },
   });
-  const requestId = response.headers.get("x-request-id");
-  if (!data) throw toApiError(null, requestId);
-  return data.items ?? [];
+  if (!res.data) throw apiErrorDari(res);
+  return res.data.items ?? [];
 }
 
 export default async function JabatanPage() {

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { auth, isAdmin } from "@/lib/auth/auth";
 import { withServerAuth } from "@/lib/api/client";
-import { toApiError } from "@/lib/api/errors";
+import { apiErrorDari } from "@/lib/api/errors";
 import type { DcsHasilRead, DcsHasilSubSkalaRead, DcsInstrumenRead } from "@/lib/api/schema";
 
 export const metadata = { title: "Hasil DCS" };
@@ -16,8 +16,7 @@ const RISK_LABEL: Record<string, { label: string; cls: string }> = {
 async function fetchPageData(accessToken: string | undefined) {
   const client = withServerAuth(accessToken);
   const instrumenRes = await client.GET("/api/v1/dcs/instrumen");
-  const reqId = instrumenRes.response.headers.get("x-request-id");
-  if (!instrumenRes.data) throw toApiError(null, reqId);
+  if (!instrumenRes.data) throw apiErrorDari(instrumenRes);
   const instrumen = instrumenRes.data as DcsInstrumenRead;
 
   if (instrumen.status !== "ANALYZED") {
@@ -25,7 +24,7 @@ async function fetchPageData(accessToken: string | undefined) {
   }
 
   const hasilRes = await client.GET("/api/v1/dcs/hasil");
-  if (!hasilRes.data) throw toApiError(null, hasilRes.response.headers.get("x-request-id"));
+  if (!hasilRes.data) throw apiErrorDari(hasilRes);
 
   return { instrumen, hasil: hasilRes.data as DcsHasilRead };
 }

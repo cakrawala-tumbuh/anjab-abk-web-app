@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { auth, isAdmin } from "@/lib/auth/auth";
 import { withServerAuth } from "@/lib/api/client";
-import { toApiError } from "@/lib/api/errors";
+import { apiErrorDari } from "@/lib/api/errors";
 import type { TiCatalogRead } from "@/lib/api/schema";
 
 interface PageProps {
@@ -17,12 +17,11 @@ async function fetchCatalog(
   accessToken: string | undefined,
 ): Promise<TiCatalogRead[]> {
   const client = withServerAuth(accessToken);
-  const { data, response } = await client.GET("/api/v1/task-inventory/catalog", {
+  const res = await client.GET("/api/v1/task-inventory/catalog", {
     params: { query: { unit, jabatan_id } },
   });
-  const requestId = response.headers.get("x-request-id");
-  if (!data) throw toApiError(null, requestId);
-  return data;
+  if (!res.data) throw apiErrorDari(res);
+  return res.data;
 }
 
 export default async function TiKombinasiDetailPage({ params }: PageProps) {
