@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { auth, isAdmin } from "@/lib/auth/auth";
 import { withServerAuth } from "@/lib/api/client";
-import { toApiError } from "@/lib/api/errors";
+import { apiErrorDari } from "@/lib/api/errors";
 import type { WcpHasilDimensiRead, WcpHasilRead, WcpInstrumenRead } from "@/lib/api/schema";
 
 export const metadata = { title: "Hasil WCP" };
@@ -19,8 +19,7 @@ const INTERPRETASI_LABEL: Record<string, string> = {
 async function fetchPageData(accessToken: string | undefined) {
   const client = withServerAuth(accessToken);
   const instrumenRes = await client.GET("/api/v1/wcp/instrumen");
-  const reqId = instrumenRes.response.headers.get("x-request-id");
-  if (!instrumenRes.data) throw toApiError(null, reqId);
+  if (!instrumenRes.data) throw apiErrorDari(instrumenRes);
   const instrumen = instrumenRes.data as WcpInstrumenRead;
 
   if (instrumen.status !== "ANALYZED") {
@@ -28,7 +27,7 @@ async function fetchPageData(accessToken: string | undefined) {
   }
 
   const hasilRes = await client.GET("/api/v1/wcp/hasil");
-  if (!hasilRes.data) throw toApiError(null, hasilRes.response.headers.get("x-request-id"));
+  if (!hasilRes.data) throw apiErrorDari(hasilRes);
 
   return { instrumen, hasil: hasilRes.data as WcpHasilRead };
 }

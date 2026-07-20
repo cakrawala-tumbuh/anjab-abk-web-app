@@ -34,6 +34,10 @@ const LEWATI = [join("src", "test") + sep, join("src", "lib", "api", "schema.ts"
  * bukan kegagalan. Menambah entri baru = keputusan sadar, bukan kelalaian.
  *
  * - `GET /partisipan/saya` → 404 untuk admin yang bukan partisipan (backlog 026).
+ *   Sejak issue #21, baris `sayaRes.data?.id ?? null` didahului guard eksplisit
+ *   `if (!sayaRes.data && sayaRes.response.status !== 404) throw apiErrorDari(sayaRes);`
+ *   — hanya 404 yang jatuh ke `?? null`; 401/403/5xx melempar seperti data
+ *   kritis lain. Sebelumnya guard ini tidak ada dan SEMUA status ditelan.
  * - `GET .../seleksi` → 404 pada kunjungan pertama Tahap 1 sudah ditangani
  *   secara eksplisit lewat pengecekan `err.status !== 404` (bukan `?? []`),
  *   jadi ia tidak perlu terdaftar di sini.

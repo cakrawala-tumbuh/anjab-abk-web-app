@@ -1,19 +1,18 @@
 import { notFound } from "next/navigation";
 import { auth, isAdmin } from "@/lib/auth/auth";
 import { withServerAuth } from "@/lib/api/client";
-import { toApiError } from "@/lib/api/errors";
+import { apiErrorDari } from "@/lib/api/errors";
 import { ResetKatalogPanel } from "./reset-katalog-panel";
 
 export const metadata = { title: "Utilitas Katalog TI — Master Data" };
 
 async function fetchTotalKatalog(accessToken: string | undefined): Promise<number> {
   const client = withServerAuth(accessToken);
-  const { data, response } = await client.GET("/api/v1/task-inventory/uraian-tugas", {
+  const res = await client.GET("/api/v1/task-inventory/uraian-tugas", {
     params: { query: { limit: 1 } },
   });
-  const requestId = response.headers.get("x-request-id");
-  if (!data) throw toApiError(null, requestId);
-  return data.total;
+  if (!res.data) throw apiErrorDari(res);
+  return res.data.total;
 }
 
 export default async function UtilitasKatalogTiPage() {

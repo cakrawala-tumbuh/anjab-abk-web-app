@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { auth, isAdmin } from "@/lib/auth/auth";
 import { withServerAuth } from "@/lib/api/client";
-import { toApiError } from "@/lib/api/errors";
+import { apiErrorDari } from "@/lib/api/errors";
 import type { OpmHasilSesiRead, OpmHasilTaskRead, OpmSesiRead } from "@/lib/api/schema";
 
 export const metadata = { title: "Hasil OPM" };
@@ -17,9 +17,8 @@ async function fetchPageData(accessToken: string | undefined, sesiId: string) {
     client.GET("/api/v1/opm/sesi/{sesi_id}", { params: { path: { sesi_id: sesiId } } }),
     client.GET("/api/v1/opm/sesi/{sesi_id}/hasil", { params: { path: { sesi_id: sesiId } } }),
   ]);
-  const reqId = sesiRes.response.headers.get("x-request-id");
-  if (!sesiRes.data) throw toApiError(null, reqId);
-  if (!hasilRes.data) throw toApiError(null, hasilRes.response.headers.get("x-request-id"));
+  if (!sesiRes.data) throw apiErrorDari(sesiRes);
+  if (!hasilRes.data) throw apiErrorDari(hasilRes);
 
   return {
     sesi: sesiRes.data as OpmSesiRead,

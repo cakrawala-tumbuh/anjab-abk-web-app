@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { auth, isAdmin } from "@/lib/auth/auth";
 import { withServerAuth } from "@/lib/api/client";
-import { toApiError } from "@/lib/api/errors";
+import { apiErrorDari } from "@/lib/api/errors";
 import type { OpmSesiRead } from "@/lib/api/schema";
 
 export const metadata = { title: "Analisis Jabatan — OPM" };
@@ -16,12 +16,11 @@ const STATUS_LABEL: Record<string, { label: string; cls: string }> = {
 
 async function fetchSesi(accessToken: string | undefined): Promise<OpmSesiRead[]> {
   const client = withServerAuth(accessToken);
-  const { data, response } = await client.GET("/api/v1/opm/sesi", {
+  const res = await client.GET("/api/v1/opm/sesi", {
     params: { query: { limit: 100 } },
   });
-  const reqId = response.headers.get("x-request-id");
-  if (!data) throw toApiError(null, reqId);
-  return (data.items ?? []) as OpmSesiRead[];
+  if (!res.data) throw apiErrorDari(res);
+  return (res.data.items ?? []) as OpmSesiRead[];
 }
 
 export default async function OpmSesiPage() {

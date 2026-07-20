@@ -2,19 +2,18 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { auth, isAdmin } from "@/lib/auth/auth";
 import { withServerAuth } from "@/lib/api/client";
-import { toApiError } from "@/lib/api/errors";
+import { apiErrorDari } from "@/lib/api/errors";
 import type { TugasPokokRead } from "@/lib/api/schema";
 
 export const metadata = { title: "Tugas Pokok — Master Data" };
 
 async function fetchTugasPokok(accessToken: string | undefined): Promise<TugasPokokRead[]> {
   const client = withServerAuth(accessToken);
-  const { data, response } = await client.GET("/api/v1/task-inventory/tugas-pokok", {
+  const res = await client.GET("/api/v1/task-inventory/tugas-pokok", {
     params: { query: { limit: 200 } },
   });
-  const requestId = response.headers.get("x-request-id");
-  if (!data) throw toApiError(null, requestId);
-  return data.items ?? [];
+  if (!res.data) throw apiErrorDari(res);
+  return res.data.items ?? [];
 }
 
 export default async function TugasPokokPage() {

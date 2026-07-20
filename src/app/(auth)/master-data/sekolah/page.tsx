@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { auth, isAdmin } from "@/lib/auth/auth";
 import { withServerAuth } from "@/lib/api/client";
-import { toApiError } from "@/lib/api/errors";
+import { apiErrorDari } from "@/lib/api/errors";
 import type { SekolahRead, JenjangPendidikanRead } from "@/lib/api/schema";
 
 export const metadata = { title: "Sekolah — Master Data" };
@@ -13,8 +13,8 @@ async function fetchData(accessToken: string | undefined) {
     client.GET("/api/v1/sekolah", { params: { query: { limit: 100 } } }),
     client.GET("/api/v1/jenjang-pendidikan", { params: { query: { limit: 100 } } }),
   ]);
-  if (!sekolahRes.data) throw toApiError(null, sekolahRes.response.headers.get("x-request-id"));
-  if (!jenjangRes.data) throw toApiError(null, jenjangRes.response.headers.get("x-request-id"));
+  if (!sekolahRes.data) throw apiErrorDari(sekolahRes);
+  if (!jenjangRes.data) throw apiErrorDari(jenjangRes);
   return {
     sekolah: sekolahRes.data.items ?? ([] as SekolahRead[]),
     jenjang: jenjangRes.data.items ?? ([] as JenjangPendidikanRead[]),

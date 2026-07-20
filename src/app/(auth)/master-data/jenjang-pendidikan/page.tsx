@@ -2,19 +2,18 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { auth, isAdmin } from "@/lib/auth/auth";
 import { withServerAuth } from "@/lib/api/client";
-import { toApiError } from "@/lib/api/errors";
+import { apiErrorDari } from "@/lib/api/errors";
 import type { JenjangPendidikanRead } from "@/lib/api/schema";
 
 export const metadata = { title: "Jenjang Pendidikan — Master Data" };
 
 async function fetchJenjang(accessToken: string | undefined): Promise<JenjangPendidikanRead[]> {
   const client = withServerAuth(accessToken);
-  const { data, response } = await client.GET("/api/v1/jenjang-pendidikan", {
+  const res = await client.GET("/api/v1/jenjang-pendidikan", {
     params: { query: { limit: 100 } },
   });
-  const requestId = response.headers.get("x-request-id");
-  if (!data) throw toApiError(null, requestId);
-  return data.items ?? [];
+  if (!res.data) throw apiErrorDari(res);
+  return res.data.items ?? [];
 }
 
 export default async function JenjangPendidikanPage() {

@@ -94,6 +94,40 @@ describe("Tahap2KoordinatorPage — Kasus 1 (backlog 035): 403 tampil sebagai Ti
   });
 });
 
+describe("Tahap2KoordinatorPage — issue #21: pengecualian /partisipan/saya dipersempit ke 404 saja", () => {
+  function sesiAdmin() {
+    return { user: { id: "u_admin", groups: ["admin"] }, accessToken: "tok" };
+  }
+
+  it("GET /partisipan/saya → 404 (admin bukan partisipan): halaman tetap render, bukan dilempar", async () => {
+    vi.mocked(auth).mockResolvedValue(sesiAdmin() as never);
+    get
+      .mockResolvedValueOnce(ok(sesi)) // sesiRes
+      .mockResolvedValueOnce(gagal(404, "not_found", "Partisipan tidak ditemukan.")) // sayaRes
+      .mockResolvedValueOnce(ok(catalog)) // catalogRes
+      .mockResolvedValueOnce(ok(respondenList)) // respondenRes
+      .mockResolvedValueOnce(ok(review)); // reviewRes
+
+    const el = (await Tahap2KoordinatorPage(props)) as ReactElement;
+    render(el);
+
+    expect(screen.getByText("Tahap 2 — Review Koordinator")).toBeInTheDocument();
+  });
+
+  it("GET /partisipan/saya → 401 (bukan 404): halaman MELEMPAR, tidak diam-diam jadi null", async () => {
+    vi.mocked(auth).mockResolvedValue(sesiAdmin() as never);
+    get
+      .mockResolvedValueOnce(ok(sesi)) // sesiRes
+      .mockResolvedValueOnce(gagal(401, "unauthorized", "Sesi kedaluwarsa.")) // sayaRes
+      .mockResolvedValueOnce(ok(catalog)) // catalogRes
+      .mockResolvedValueOnce(ok(respondenList)); // respondenRes
+
+    const err = await Tahap2KoordinatorPage(props).catch((e: unknown) => e);
+    expect(err).toBeInstanceOf(ApiError);
+    expect((err as ApiError).status).toBe(401);
+  });
+});
+
 describe("Tahap2KoordinatorPage — regresi: mode hanya-baca anggota & hak koordinator tidak berubah", () => {
   function mockFetchSukses(partisipanId: string) {
     get

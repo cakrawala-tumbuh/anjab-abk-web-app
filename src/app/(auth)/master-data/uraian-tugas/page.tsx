@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { auth, isAdmin } from "@/lib/auth/auth";
 import { withServerAuth } from "@/lib/api/client";
-import { toApiError } from "@/lib/api/errors";
+import { apiErrorDari } from "@/lib/api/errors";
 import type { UraianTugasRead, TugasPokokRead } from "@/lib/api/schema";
 
 export const metadata = { title: "Uraian Tugas — Master Data" };
@@ -13,8 +13,8 @@ async function fetchData(accessToken: string | undefined) {
     client.GET("/api/v1/task-inventory/uraian-tugas", { params: { query: { limit: 500 } } }),
     client.GET("/api/v1/task-inventory/tugas-pokok", { params: { query: { limit: 200 } } }),
   ]);
-  if (!uraianRes.data) throw toApiError(null, uraianRes.response.headers.get("x-request-id"));
-  if (!pokokRes.data) throw toApiError(null, pokokRes.response.headers.get("x-request-id"));
+  if (!uraianRes.data) throw apiErrorDari(uraianRes);
+  if (!pokokRes.data) throw apiErrorDari(pokokRes);
   return {
     uraianTugas: uraianRes.data.items ?? ([] as UraianTugasRead[]),
     tugasPokok: pokokRes.data.items ?? ([] as TugasPokokRead[]),

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { auth, isAdmin } from "@/lib/auth/auth";
 import { withServerAuth } from "@/lib/api/client";
-import { toApiError } from "@/lib/api/errors";
+import { apiErrorDari } from "@/lib/api/errors";
 import type {
   DcsHasilRespondenRead,
   DcsHasilSubSkalaRespondenRead,
@@ -31,9 +31,8 @@ async function fetchPageData(accessToken: string | undefined, respondenId: strin
       params: { path: { responden_id: respondenId } },
     }),
   ]);
-  const reqId = respondenRes.response.headers.get("x-request-id");
-  if (!respondenRes.data) throw toApiError(null, reqId);
-  if (!hasilRes.data) throw toApiError(null, hasilRes.response.headers.get("x-request-id"));
+  if (!respondenRes.data) throw apiErrorDari(respondenRes);
+  if (!hasilRes.data) throw apiErrorDari(hasilRes);
 
   return {
     responden: respondenRes.data as DcsRespondenRead,

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { auth, isAdmin } from "@/lib/auth/auth";
 import { withServerAuth } from "@/lib/api/client";
-import { toApiError } from "@/lib/api/errors";
+import { apiErrorDari } from "@/lib/api/errors";
 import type { WcpDimensiWithItemsRead } from "@/lib/api/schema";
 import { WcpItemEditor } from "./wcp-item-editor";
 
@@ -17,12 +17,11 @@ async function fetchDimensi(
   accessToken: string | undefined,
 ): Promise<WcpDimensiWithItemsRead> {
   const client = withServerAuth(accessToken);
-  const { data, response } = await client.GET("/api/v1/wcp/dimensi/{kode}", {
+  const res = await client.GET("/api/v1/wcp/dimensi/{kode}", {
     params: { path: { kode } },
   });
-  const requestId = response.headers.get("x-request-id");
-  if (!data) throw toApiError(null, requestId);
-  return data;
+  if (!res.data) throw apiErrorDari(res);
+  return res.data;
 }
 
 export default async function WcpDimensiDetailPage({ params }: PageProps) {
