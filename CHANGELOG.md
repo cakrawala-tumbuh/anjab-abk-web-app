@@ -7,6 +7,8 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [4.6.2] - 2026-07-20
+
 ### Diperbaiki
 
 - **Task Inventory Tahap 3: durasi standar tidak lagi diprefill 60 menit palsu** (issue #22).
