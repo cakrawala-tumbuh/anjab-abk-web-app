@@ -15,7 +15,7 @@ export const detailItemSchema = z.object({
   sumber_bukti: z.enum(["Formal", "Aktual", "Keduanya"]),
   kondisi: z.enum(["Baseline", "Peak", "Both"]),
   frekuensi_teks: z.string().min(1, "Frekuensi wajib diisi").max(100),
-  durasi_per_kali: z.number().int().min(0, "Durasi ≥ 0"),
+  durasi_per_kali: z.number().int().min(0, "Durasi wajib diisi, ≥ 0"),
   jam_per_minggu: z.number().min(0, "Jam/minggu ≥ 0"),
   peak4w_hours: z.number().min(0).default(0),
   va_type: z.enum([
@@ -35,7 +35,8 @@ interface RowState {
   sumber_bukti: TiDetailItem["sumber_bukti"];
   kondisi: TiDetailItem["kondisi"];
   frekuensi_teks: string;
-  durasi_per_kali: number;
+  /** `null` = belum diisi responden — lihat catatan di `rowDariStandar()`. */
+  durasi_per_kali: number | null;
   jam_per_minggu: number;
   peak4w_hours: number;
   va_type: TiDetailItem["va_type"];
@@ -56,9 +57,12 @@ function punyaStandar(t: TiTaskTerpilihRead): boolean {
 
 /** Seed isian dari nilai standar master; jatuh ke default lama per-field bila std_* null.
  *
- * `durasi_per_kali` SENGAJA tidak di-prefill dari `std_durasi_per_kali` — kolom standar
- * itu teks bebas (mis. "Bervariasi", "<2 jam"), bukan angka menit. Nilainya ditampilkan
- * sebagai petunjuk di samping input; responden tetap mengisi angkanya sendiri.
+ * `durasi_per_kali` SENGAJA tidak di-prefill (`null`, bukan angka default) — kolom standar
+ * `std_durasi_per_kali` adalah teks bebas (mis. "Bervariasi", "1-2 jam"), bukan angka menit,
+ * sehingga tidak ada nilai yang bisa dianggap "standar" secara numerik. Nilai teksnya tetap
+ * ditampilkan sebagai petunjuk di samping input. Field ini karena itu TIDAK ikut terkunci
+ * saat "Setuju dengan isian standar" dicentang (beda dari field sibling lain) — responden
+ * tetap wajib mengisi angkanya sendiri. Keputusan produk: issue #22 (Opsi A).
  */
 function rowDariStandar(t: TiTaskTerpilihRead): RowState {
   return {
@@ -67,7 +71,7 @@ function rowDariStandar(t: TiTaskTerpilihRead): RowState {
     sumber_bukti: t.std_sumber_bukti ?? "Aktual",
     kondisi: t.std_kondisi ?? "Baseline",
     frekuensi_teks: t.std_frekuensi_teks ?? "Mingguan",
-    durasi_per_kali: 60,
+    durasi_per_kali: null,
     jam_per_minggu: t.std_jam_per_minggu ?? 1,
     peak4w_hours: t.std_peak4w_hours ?? 0,
     va_type: t.std_va_type ?? "VA-Core",
@@ -372,13 +376,19 @@ export function DetailForm({ respondenId, tasks, detailAwal, accessToken }: Prop
                           (petunjuk standar: {t.std_durasi_per_kali})
                         </span>
                       )}
+                      {terkunci && (
+                        <span className="ml-1 font-normal text-amber-600">
+                          — wajib diisi manual
+                        </span>
+                      )}
                       <input
                         type="number"
                         min={0}
-                        value={r.durasi_per_kali}
-                        onChange={(e) =>
-                          update(t.kode, { durasi_per_kali: Number(e.target.value) })
-                        }
+                        value={r.durasi_per_kali ?? ""}
+                        onChange={(e) => {
+                          const v = e.target.value;
+                          update(t.kode, { durasi_per_kali: v === "" ? null : Number(v) });
+                        }}
                         className={`mt-1 block ${numCls}`}
                       />
                     </label>

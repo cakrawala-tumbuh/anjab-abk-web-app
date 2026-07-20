@@ -153,7 +153,10 @@ Setelah dikirim, seleksi Tahap 1 terkunci. Status responden menjadi **✓ Selesa
    - **Sumber Bukti**: Formal / Aktual / Keduanya
    - **Kondisi**: Baseline / Peak / Both
    - **Frekuensi** (default `Mingguan`)
-   - **Durasi/kali (menit)** (default 60)
+   - **Durasi/kali (menit)** — **wajib diisi manual**, tidak diprefill dari standar (petunjuk
+     standar tampil sebagai teks pembanding di samping input, mis. _"petunjuk standar: 1-2
+     jam"_); field ini tetap dapat diedit meski field lain terkunci saat "Setuju dengan isian
+     standar" dicentang
    - **Jam/minggu** (default 1)
    - **Jam peak (4 minggu)** (default 0)
    - **VA Type**: VA-Core / VA-Enable / NVA-Residual

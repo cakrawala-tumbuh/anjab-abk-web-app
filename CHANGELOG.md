@@ -7,6 +7,17 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+### Diperbaiki
+
+- **Task Inventory Tahap 3: durasi standar tidak lagi diprefill 60 menit palsu** (issue #22).
+  Saat "Setuju dengan isian standar" dicentang, field `Durasi/kali (menit)` sebelumnya selalu
+  terisi angka 60 hard-code, padahal petunjuk standarnya berbeda-beda per task ("<15 menit",
+  "1-2 jam", dst. — teks bebas, bukan angka). Keputusan produk (Opsi A, dicatat di komentar
+  issue): durasi **tidak lagi diprefill** (kosong, wajib diisi responden) dan karena itu **tetap
+  dapat diedit** meski field sibling lain (`Sumber Bukti`, `Kondisi`, `Frekuensi`, `Jam/minggu`,
+  `Jam peak`, `VA Type`) terkunci — ditandai penjelas "wajib diisi manual" di UI. Draft/kirim
+  ditolak bila durasi belum diisi.
+
 ## [4.6.1] - 2026-07-19
 
 ### Diperbaiki
