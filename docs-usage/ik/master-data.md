@@ -96,7 +96,19 @@ Panel ahli (Subject Matter Expert) untuk sebuah jabatan, dipakai pada Task Inven
    - **Aktif** (centang)
 4. Klik **Tambah SME Panel**.
 5. Untuk mengisi anggota, pada baris panel klik **Kelola anggota →**, lalu tambahkan
-   partisipan sebagai anggota. Tetapkan koordinator panel sesuai kebutuhan Task Inventory.
+   partisipan sebagai anggota.
+6. **Menetapkan koordinator panel**: pada baris anggota yang akan dijadikan koordinator,
+   klik **Jadikan Koordinator**. Anggota tersebut langsung diberi label **Koordinator** di
+   kolom yang sama.
+7. **Mengganti atau mengosongkan koordinator**: klik **Batalkan Koordinator** pada
+   koordinator aktif, lalu tetapkan anggota lain bila perlu. Satu panel hanya boleh punya
+   satu koordinator.
+
+!!! note "Diwarisi ke sesi Task Inventory"
+Koordinator panel inilah yang otomatis menjadi koordinator sesi Task Inventory untuk
+jabatan tersebut. Admin dapat mengubahnya khusus per sesi lewat kartu **Koordinator SME
+Panel** di halaman detail sesi — lihat
+[IK-04 Task Inventory bagian A.1](task-inventory.md#a1-menetapkan-koordinator-administrator).
 
 ---
 

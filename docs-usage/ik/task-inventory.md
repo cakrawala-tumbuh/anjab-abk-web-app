@@ -27,6 +27,23 @@ anggota panel otomatis muncul sebagai responden begitu analisis dibuat — tanpa
 langkah tambahan. Bagian B di bawah tetap dipakai untuk menambah anggota yang
 bergabung belakangan, atau bila jabatan belum punya panel saat analisis dibuat.
 
+### A.1 Menetapkan Koordinator (Administrator)
+
+1. Di detail analisis, temukan kartu **Koordinator SME Panel**.
+2. Pada dropdown **Pilih koordinator**, pilih salah satu **anggota SME panel** jabatan ini
+   (hanya anggota panel yang muncul di daftar). Klik **Simpan Koordinator**.
+3. Untuk mengosongkan: pilih **— Tidak ada koordinator —**, lalu klik **Simpan Koordinator**.
+
+!!! note "Hubungan dengan koordinator SME Panel"
+Koordinator sesi **secara default mengikuti** koordinator SME panel jabatan (lihat
+[IK-02 Master Data → SME Panel](master-data.md#sme-panel)). Kartu ini memungkinkan admin
+**mengubahnya khusus untuk sesi ini**, kapan saja — termasuk setelah sesi berjalan. Bila
+SME panel jabatan ini belum dibuat, atau belum punya anggota, kartu menampilkan pesan dan
+koordinator belum dapat ditentukan.
+
+Koordinator yang ditetapkan di sini bertugas menjalankan review Tahap 2 setelah analisis
+mencapai status **TAHAP2** — lihat [bagian D. Review Koordinator (Tahap 2)](#d-review-koordinator-tahap-2).
+
 ---
 
 ## B. Mendaftarkan Responden

@@ -56,7 +56,11 @@ sudah memiliki task di catalog sebelum memulai analisis.
 ### 2. Tentukan anggota panel & koordinator
 
 1. Pastikan **SME Panel** jabatan terkait berisi anggota yang tepat (para ahli/pelaku jabatan).
-2. Tetapkan **satu koordinator** panel. Koordinator yang akan menjalankan **Tahap 2**.
+2. Tetapkan **satu koordinator** panel — koordinator inilah yang akan menjalankan **Tahap 2**.
+   (Langkah teknis: [IK-02 Master Data → SME Panel](../ik/master-data.md#sme-panel).) Koordinator
+   panel otomatis diwarisi sebagai koordinator sesi Task Inventory saat analisis dibuat, dan
+   dapat diubah per-sesi bila perlu
+   (Langkah: [IK-04 Task Inventory bagian A.1](../ik/task-inventory.md#a1-menetapkan-koordinator-administrator)).
 
 !!! tip "Partisipan di lebih dari satu panel"
 Partisipan yang menjadi anggota di lebih dari satu panel harus mengisi Tahap 1
