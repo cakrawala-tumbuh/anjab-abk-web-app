@@ -21,9 +21,23 @@ interface Props {
   jawabanAwal: WcpJawabanRead[];
   sudahSubmit: boolean;
   accessToken: string | undefined;
+  /**
+   * Mode demo (peragaan admin). Bila true, "Simpan" dan "Kirim Jawaban" TIDAK
+   * memanggil backend sama sekali — tidak ada draft, tidak ada submit, tidak
+   * ada responden yang tersentuh. Dipakai halaman `/wcp/demo` agar admin bisa
+   * mencontohkan cara pengisian tanpa mengotori data studi.
+   */
+  demo?: boolean;
 }
 
-export function WcpForm({ respondenId, dimensi, jawabanAwal, sudahSubmit, accessToken }: Props) {
+export function WcpForm({
+  respondenId,
+  dimensi,
+  jawabanAwal,
+  sudahSubmit,
+  accessToken,
+  demo = false,
+}: Props) {
   const router = useRouter();
 
   const initialValues = Object.fromEntries(jawabanAwal.map((j) => [j.item_id, j.skor_raw]));
@@ -45,6 +59,12 @@ export function WcpForm({ respondenId, dimensi, jawabanAwal, sudahSubmit, access
   async function handleSave() {
     setError(null);
     setSaveMessage(null);
+    if (demo) {
+      // Mode demo: tidak menyentuh backend sama sekali.
+      setSaveMessage("Mode demo — draft tidak disimpan.");
+      notifySukses("Mode demo — draft tidak disimpan.");
+      return;
+    }
     setSaving(true);
     try {
       const client = withServerAuth(accessToken);
@@ -75,6 +95,12 @@ export function WcpForm({ respondenId, dimensi, jawabanAwal, sudahSubmit, access
     }
     setError(null);
     setSaveMessage(null);
+    if (demo) {
+      // Mode demo: tidak menyentuh backend sama sekali — cukup tampilkan
+      // panel "peragaan selesai" tanpa PUT/POST dan tanpa router.refresh().
+      setSukses(true);
+      return;
+    }
     setSubmitting(true);
     try {
       const client = withServerAuth(accessToken);
@@ -106,6 +132,38 @@ export function WcpForm({ respondenId, dimensi, jawabanAwal, sudahSubmit, access
   }
 
   if (sukses) {
+    if (demo) {
+      return (
+        <div className="rounded-lg border border-amber-200 bg-amber-50 p-6 text-center dark:border-amber-800 dark:bg-amber-950/40">
+          <p className="text-lg font-medium text-amber-800 dark:text-amber-200">
+            Peragaan selesai.
+          </p>
+          <p className="mt-1 text-sm text-amber-700 dark:text-amber-300">
+            Ini mode demo — tidak ada jawaban yang disimpan.
+          </p>
+          <div className="mt-4 flex flex-wrap justify-center gap-3">
+            <button
+              type="button"
+              onClick={() => {
+                setSukses(false);
+                setSkor({});
+                setError(null);
+                setSaveMessage(null);
+              }}
+              className="rounded-md border border-amber-300 px-4 py-2 text-sm font-medium text-amber-800 hover:bg-amber-100 dark:border-amber-700 dark:text-amber-200 dark:hover:bg-amber-900/40"
+            >
+              Ulangi Demo
+            </button>
+            <a
+              href="/wcp"
+              className="rounded-md bg-amber-600 px-4 py-2 text-sm font-medium text-white hover:bg-amber-700"
+            >
+              Kembali ke WCP
+            </a>
+          </div>
+        </div>
+      );
+    }
     return (
       <div className="rounded-lg border border-green-200 bg-green-50 p-6 text-center">
         <p className="text-lg font-medium text-green-800">Jawaban berhasil dikirim!</p>
@@ -122,6 +180,15 @@ export function WcpForm({ respondenId, dimensi, jawabanAwal, sudahSubmit, access
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
+      {demo && (
+        <div
+          role="note"
+          className="rounded-md border border-amber-300 bg-amber-50 p-4 text-sm text-amber-800 dark:border-amber-700 dark:bg-amber-950/40 dark:text-amber-200"
+        >
+          <strong>Mode Demo.</strong> Halaman ini hanya memperagakan cara pengisian kuesioner WCP.
+          Jawaban yang dipilih <strong>tidak disimpan</strong> dan tidak memengaruhi hasil analisis.
+        </div>
+      )}
       {error && (
         <div role="alert" className="rounded-md bg-red-50 p-4 text-sm text-red-700">
           {error}

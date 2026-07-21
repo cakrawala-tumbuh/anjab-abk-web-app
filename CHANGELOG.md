@@ -7,6 +7,26 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [4.7.0] - 2026-07-21
+
+### Ditambahkan
+
+- **Mode demo pengisian DCS & WCP untuk administrator** — halaman baru `/dcs/demo` dan
+  `/wcp/demo` (khusus admin) agar admin bisa **mencontohkan** cara mengisi kuesioner, mis. saat
+  sosialisasi, **tanpa menyimpan apa pun**: tidak ada responden dibuat, tidak ada draft, tidak
+  ada submit ke server. Titik masuk lewat tombol **Demo Pengisian** di header halaman `/dcs` dan
+  `/wcp`.
+  - `DcsForm`/`WcpForm` menerima prop `demo`; saat aktif, `handleSave`/`handleSubmit` melakukan
+    _early return_ **sebelum** menyentuh `withServerAuth` — tidak ada satu pun jalur `PUT`/`POST`
+    yang bisa terpanggil (dibuktikan test: `withServerAuth`/`PUT`/`POST`/`router.refresh` nol
+    panggilan). Form dirender identik dengan pengalaman partisipan asli (satu sumber kebenaran),
+    ditambah banner "Mode Demo", panel "Peragaan selesai.", dan tombol "Ulangi Demo".
+  - Halaman demo hanya **membaca** instrumen (sub-skala/dimensi) dan mematuhi invariant jalur
+    baca (gagal → `throw apiErrorDari`, bukan ditelan jadi kosong); guard `isAdmin` (non-admin →
+    404).
+  - Dokumentasi penggunaan diperbarui: bagian "Demo Pengisian (Administrator)" di IK-06 (DCS) &
+    IK-07 (WCP).
+
 ## [4.6.2] - 2026-07-20
 
 ### Diperbaiki

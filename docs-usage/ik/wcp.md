@@ -2,7 +2,7 @@
 
 Langkah teknis menjalankan kuesioner **WCP** di aplikasi.
 
-Bagian **A–D** untuk **Administrator**, **E** untuk **Partisipan**. Untuk alur, lihat
+Bagian **A–E** untuk **Administrator**, **F** untuk **Partisipan**. Untuk alur, lihat
 [SOP Persiapan WCP](../sop/persiapan-wcp.md) dan
 [SOP Pelaksanaan WCP](../sop/pelaksanaan-wcp.md).
 
@@ -66,7 +66,29 @@ data WCP sebagai salah satu komponennya) — bukan di halaman hasil WCP.
 
 ---
 
-## E. Mengisi Kuesioner (Partisipan)
+## E. Demo Pengisian (Administrator)
+
+> Untuk **mencontohkan** cara mengisi kuesioner kepada partisipan — mis. saat sosialisasi —
+> tanpa membuat responden atau menyimpan jawaban apa pun.
+
+1. Dari halaman **WCP**, klik tombol **Demo Pengisian** di pojok kanan atas (atau buka
+   `/wcp/demo` langsung). Hanya administrator yang dapat membukanya.
+2. Halaman menampilkan kuesioner **persis** seperti yang dilihat partisipan (pop-up petunjuk,
+   seluruh pernyataan termasuk dimensi risiko, pilihan skala 1–5) dengan **banner "Mode Demo"**
+   di atas form.
+3. Pilih jawaban dan tekan **Simpan** atau **Kirim Jawaban** untuk memperagakan alurnya —
+   **tidak ada data yang tersimpan**: tidak ada responden dibuat, tidak ada draft, tidak ada
+   submit ke server.
+4. Setelah menekan **Kirim Jawaban**, muncul panel **"Peragaan selesai."**. Klik **Ulangi Demo**
+   untuk mengosongkan pilihan dan memperagakan lagi, atau **Kembali ke WCP**.
+
+!!! note "Demo tidak memengaruhi hasil"
+Mode demo sepenuhnya terpisah dari data studi — aman diperagakan berkali-kali kapan saja,
+termasuk saat instrumen sudah berisi responden asli.
+
+---
+
+## F. Mengisi Kuesioner (Partisipan)
 
 1. Buka **Kuesioner Saya** → pada kartu **WCP** yang berstatus terbuka & belum diisi, klik
    **Isi Sekarang**.
