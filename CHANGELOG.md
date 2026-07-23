@@ -7,6 +7,8 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [4.8.0] - 2026-07-23
+
 ### Ditambahkan
 
 - **Paginasi URL-driven di semua daftar (list) web app** — tiap tabel kini menampilkan satu
