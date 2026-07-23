@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { auth, isAdmin } from "@/lib/auth/auth";
 import { withServerAuth } from "@/lib/api/client";
 import { apiErrorDari } from "@/lib/api/errors";
+import { Pagination, UKURAN_HALAMAN, offsetHalaman } from "@/components/pagination";
 import type {
   DcsInstrumenRead,
   DcsRespondenRead,
@@ -34,18 +35,26 @@ const STATUS_LABEL: Record<string, { label: string; cls: string; desc: string }>
   },
 };
 
-async function fetchPageData(accessToken: string | undefined) {
+async function fetchPageData(accessToken: string | undefined, offsetResponden: number) {
   const client = withServerAuth(accessToken);
-  const [instrumenRes, respondenRes, jabatanRes, partisipanRes] = await Promise.all([
-    client.GET("/api/v1/dcs/instrumen"),
-    client.GET("/api/v1/dcs/responden"),
-    client.GET("/api/v1/jabatan", { params: { query: { limit: 100 } } }),
-    client.GET("/api/v1/partisipan", { params: { query: { limit: 100 } } }),
-  ]);
+  // `respondenPage` = satu halaman untuk tabel; `respondenAll` = himpunan penuh
+  // untuk hitung submit & dedup partisipan yang sudah ditugaskan (agregat yang
+  // tidak bisa dihitung dari satu halaman). Keduanya endpoint yang sama, beda limit.
+  const [instrumenRes, respondenRes, respondenAllRes, jabatanRes, partisipanRes] =
+    await Promise.all([
+      client.GET("/api/v1/dcs/instrumen"),
+      client.GET("/api/v1/dcs/responden", {
+        params: { query: { limit: UKURAN_HALAMAN, offset: offsetResponden } },
+      }),
+      client.GET("/api/v1/dcs/responden", { params: { query: { limit: 500 } } }),
+      client.GET("/api/v1/jabatan", { params: { query: { limit: 500 } } }),
+      client.GET("/api/v1/partisipan", { params: { query: { limit: 500 } } }),
+    ]);
   if (!instrumenRes.data) throw apiErrorDari(instrumenRes);
   // Daftar responden menentukan jumlah submit & kelayakan analisis — kegagalan
   // yang ditelan jadi `[]` menampilkan "0 dari 0 responden" seolah-olah benar.
   if (!respondenRes.data) throw apiErrorDari(respondenRes);
+  if (!respondenAllRes.data) throw apiErrorDari(respondenAllRes);
   // `partisipan` = satu-satunya sumber pilihan form "Tugaskan Responden", dan
   // `jabatan` melabeli tiap barisnya. Ditelan jadi `[]`, form itu tampil sebagai
   // "semua partisipan sudah ditugaskan" — padahal daftarnya gagal diambil.
@@ -53,26 +62,35 @@ async function fetchPageData(accessToken: string | undefined) {
   if (!partisipanRes.data) throw apiErrorDari(partisipanRes);
   return {
     instrumen: instrumenRes.data as DcsInstrumenRead,
-    responden: respondenRes.data as DcsRespondenRead[],
+    responden: (respondenRes.data.items ?? []) as DcsRespondenRead[],
+    totalResponden: respondenRes.data.total,
+    respondenAll: (respondenAllRes.data.items ?? []) as DcsRespondenRead[],
     jabatan: (jabatanRes.data.items ?? []) as JabatanRead[],
     partisipan: (partisipanRes.data.items ?? []) as PartisipanRead[],
   };
 }
 
-export default async function DcsInstrumenPage() {
+interface Props {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}
+
+export default async function DcsInstrumenPage({ searchParams }: Props) {
   const session = await auth();
   if (!isAdmin(session)) notFound();
 
-  const { instrumen, responden, jabatan, partisipan } = await fetchPageData(session?.accessToken);
+  const sp = await searchParams;
+  const offsetResponden = offsetHalaman(sp, "hlm_responden");
+  const { instrumen, responden, totalResponden, respondenAll, jabatan, partisipan } =
+    await fetchPageData(session?.accessToken, offsetResponden);
 
   const st = STATUS_LABEL[instrumen.status] ?? {
     label: instrumen.status,
     cls: "bg-gray-100 text-gray-500",
     desc: "",
   };
-  const sudahSubmit = responden.filter((r) => r.sudah_submit).length;
+  const sudahSubmit = respondenAll.filter((r) => r.sudah_submit).length;
   const assignedPartisipanIds = new Set(
-    responden.map((r) => r.partisipan_id).filter((id): id is string => !!id),
+    respondenAll.map((r) => r.partisipan_id).filter((id): id is string => !!id),
   );
   const partisipanTersedia = partisipan.filter((p) => !assignedPartisipanIds.has(p.id));
 
@@ -112,7 +130,7 @@ export default async function DcsInstrumenPage() {
             <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">{st.desc}</p>
             <p className="mt-2 text-sm text-gray-700 dark:text-gray-300">
               <span className="font-semibold">{sudahSubmit}</span> dari{" "}
-              <span className="font-semibold">{responden.length}</span> responden sudah mengisi —
+              <span className="font-semibold">{totalResponden}</span> responden sudah mengisi —
               minimal <span className="font-semibold">{instrumen.min_responden}</span> untuk
               analisis.
             </p>
@@ -148,9 +166,9 @@ export default async function DcsInstrumenPage() {
       {/* Daftar responden */}
       <div>
         <h2 className="mb-4 text-lg font-medium text-gray-900 dark:text-gray-50">
-          Daftar Responden ({responden.length})
+          Daftar Responden ({totalResponden})
         </h2>
-        {responden.length === 0 ? (
+        {totalResponden === 0 ? (
           <div className="rounded-lg border border-dashed border-gray-300 bg-white p-8 text-center">
             <p className="text-sm text-gray-500 dark:text-gray-400">
               {instrumen.status === "OPEN"
@@ -183,7 +201,7 @@ export default async function DcsInstrumenPage() {
               <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
                 {responden.map((r, idx) => (
                   <tr key={r.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50">
-                    <td className="px-4 py-3 text-gray-400">{idx + 1}</td>
+                    <td className="px-4 py-3 text-gray-400">{offsetResponden + idx + 1}</td>
                     <td className="px-4 py-3 text-gray-900 dark:text-gray-100">
                       {r.nama ?? <span className="italic text-gray-400">Anonim</span>}
                     </td>
@@ -224,6 +242,14 @@ export default async function DcsInstrumenPage() {
                 ))}
               </tbody>
             </table>
+            <Pagination
+              total={totalResponden}
+              offset={offsetResponden}
+              pageSize={UKURAN_HALAMAN}
+              paramKey="hlm_responden"
+              basePath="/dcs"
+              searchParams={sp}
+            />
           </div>
         )}
       </div>

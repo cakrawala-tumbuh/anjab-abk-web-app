@@ -42,7 +42,7 @@ describe("Jalur baca yang dimigrasikan (issue #21): pesan & status backend utuh 
       response: { status: 422, headers: { get: () => "req-422" } },
     });
 
-    const err = await JabatanPage().catch((e: unknown) => e);
+    const err = await JabatanPage({ searchParams: Promise.resolve({}) }).catch((e: unknown) => e);
     expect(err).toBeInstanceOf(ApiError);
     expect((err as ApiError).message).toBe(
       "Jumlah anggota SME panel (11) melebihi max_responden (10).",
@@ -58,7 +58,7 @@ describe("Jalur baca yang dimigrasikan (issue #21): pesan & status backend utuh 
       response: { status: 401, headers: { get: () => "req-401" } },
     });
 
-    const err = await JabatanPage().catch((e: unknown) => e);
+    const err = await JabatanPage({ searchParams: Promise.resolve({}) }).catch((e: unknown) => e);
     expect(err).toBeInstanceOf(ApiError);
     expect((err as ApiError).status).toBe(401);
   });

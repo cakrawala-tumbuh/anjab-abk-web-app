@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { auth, isAdmin } from "@/lib/auth/auth";
 import { withServerAuth } from "@/lib/api/client";
 import { apiErrorDari } from "@/lib/api/errors";
+import { Pagination, UKURAN_HALAMAN, offsetHalaman } from "@/components/pagination";
 import type {
   OpmRespondenRead,
   OpmSesiRead,
@@ -42,22 +43,43 @@ const STATUS_LABEL: Record<string, { label: string; cls: string; desc: string }>
 
 interface Props {
   params: Promise<{ sesi_id: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 
-async function fetchPageData(accessToken: string | undefined, sesiId: string) {
+async function fetchPageData(
+  accessToken: string | undefined,
+  sesiId: string,
+  offsetTask: number,
+  offsetResponden: number,
+) {
   const client = withServerAuth(accessToken);
-  const [sesiRes, taskRes, respondenRes, panelRes, partisipanRes] = await Promise.all([
-    client.GET("/api/v1/opm/sesi/{sesi_id}", { params: { path: { sesi_id: sesiId } } }),
-    client.GET("/api/v1/opm/sesi/{sesi_id}/task", { params: { path: { sesi_id: sesiId } } }),
-    client.GET("/api/v1/opm/sesi/{sesi_id}/responden", { params: { path: { sesi_id: sesiId } } }),
-    client.GET("/api/v1/sme-panel", { params: { query: { limit: 100 } } }),
-    client.GET("/api/v1/partisipan", { params: { query: { limit: 100 } } }),
-  ]);
+  // `respondenAll` (himpunan penuh) memasok hitung submit & dedup partisipan yang
+  // sudah ditugaskan — agregat yang tak bisa dihitung dari satu halaman; `respondenRes`
+  // hanya satu halaman untuk tabel. Task juga dipaginasi (backend mengurutkan `urutan`).
+  const [sesiRes, taskRes, respondenRes, respondenAllRes, panelRes, partisipanRes] =
+    await Promise.all([
+      client.GET("/api/v1/opm/sesi/{sesi_id}", { params: { path: { sesi_id: sesiId } } }),
+      client.GET("/api/v1/opm/sesi/{sesi_id}/task", {
+        params: { path: { sesi_id: sesiId }, query: { limit: UKURAN_HALAMAN, offset: offsetTask } },
+      }),
+      client.GET("/api/v1/opm/sesi/{sesi_id}/responden", {
+        params: {
+          path: { sesi_id: sesiId },
+          query: { limit: UKURAN_HALAMAN, offset: offsetResponden },
+        },
+      }),
+      client.GET("/api/v1/opm/sesi/{sesi_id}/responden", {
+        params: { path: { sesi_id: sesiId }, query: { limit: 500 } },
+      }),
+      client.GET("/api/v1/sme-panel", { params: { query: { limit: 500 } } }),
+      client.GET("/api/v1/partisipan", { params: { query: { limit: 500 } } }),
+    ]);
   if (!sesiRes.data) throw apiErrorDari(sesiRes);
   // Task & responden = data inti sesi. Kegagalan yang ditelan jadi `[]` membuat
   // admin melihat sesi kosong (dan bisa menugaskan ulang responden yang sudah ada).
   if (!taskRes.data) throw apiErrorDari(taskRes);
   if (!respondenRes.data) throw apiErrorDari(respondenRes);
+  if (!respondenAllRes.data) throw apiErrorDari(respondenAllRes);
   // `panel` & `partisipan` menentukan siapa yang boleh ditugaskan. Ditelan jadi
   // `[]`, form "Tugaskan Responden" tampil sebagai "panel SME jabatan ini belum
   // punya anggota" — padahal daftarnya gagal diambil.
@@ -74,23 +96,27 @@ async function fetchPageData(accessToken: string | undefined, sesiId: string) {
 
   return {
     sesi,
-    task: taskRes.data as OpmSesiTaskRead[],
-    responden: respondenRes.data as OpmRespondenRead[],
+    task: (taskRes.data.items ?? []) as OpmSesiTaskRead[],
+    totalTask: taskRes.data.total,
+    responden: (respondenRes.data.items ?? []) as OpmRespondenRead[],
+    totalResponden: respondenRes.data.total,
+    respondenAll: (respondenAllRes.data.items ?? []) as OpmRespondenRead[],
     partisipanAnggotaPanel: [...anggotaPanelIds]
       .map((id) => partisipanMap[id])
       .filter((p): p is PartisipanRead => Boolean(p)),
   };
 }
 
-export default async function OpmSesiDetailPage({ params }: Props) {
+export default async function OpmSesiDetailPage({ params, searchParams }: Props) {
   const session = await auth();
   if (!isAdmin(session)) notFound();
 
   const { sesi_id } = await params;
-  const { sesi, task, responden, partisipanAnggotaPanel } = await fetchPageData(
-    session?.accessToken,
-    sesi_id,
-  );
+  const sp = await searchParams;
+  const offsetTask = offsetHalaman(sp, "hlm_task");
+  const offsetResponden = offsetHalaman(sp, "hlm_responden");
+  const { sesi, task, totalTask, responden, totalResponden, respondenAll, partisipanAnggotaPanel } =
+    await fetchPageData(session?.accessToken, sesi_id, offsetTask, offsetResponden);
 
   const sesiLabel = sesi.catatan ?? sesi.periode;
   const st = STATUS_LABEL[sesi.status] ?? {
@@ -99,9 +125,9 @@ export default async function OpmSesiDetailPage({ params }: Props) {
     desc: "",
   };
 
-  const sudahSubmit = responden.filter((r) => r.sudah_submit).length;
+  const sudahSubmit = respondenAll.filter((r) => r.sudah_submit).length;
   const respondenPartisipanIds = new Set(
-    responden.map((r) => r.partisipan_id).filter(Boolean) as string[],
+    respondenAll.map((r) => r.partisipan_id).filter(Boolean) as string[],
   );
   const partisipanTersedia = partisipanAnggotaPanel.filter(
     (p) => !respondenPartisipanIds.has(p.id),
@@ -139,11 +165,11 @@ export default async function OpmSesiDetailPage({ params }: Props) {
       {/* Statistik */}
       <div className="grid grid-cols-4 gap-4">
         <div className="rounded-lg border border-gray-200 bg-white p-4 text-center">
-          <p className="text-2xl font-bold text-gray-900">{task.length}</p>
+          <p className="text-2xl font-bold text-gray-900">{totalTask}</p>
           <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">Task</p>
         </div>
         <div className="rounded-lg border border-gray-200 bg-white p-4 text-center">
-          <p className="text-2xl font-bold text-gray-900">{responden.length}</p>
+          <p className="text-2xl font-bold text-gray-900">{totalResponden}</p>
           <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">Terdaftar</p>
         </div>
         <div className="rounded-lg border border-gray-200 bg-white p-4 text-center">
@@ -197,10 +223,8 @@ export default async function OpmSesiDetailPage({ params }: Props) {
 
       {/* Snapshot task */}
       <div>
-        <h2 className="mb-4 text-lg font-medium text-gray-900">
-          Task yang Dinilai ({task.length})
-        </h2>
-        {task.length === 0 ? (
+        <h2 className="mb-4 text-lg font-medium text-gray-900">Task yang Dinilai ({totalTask})</h2>
+        {totalTask === 0 ? (
           <div className="rounded-lg border border-dashed border-gray-300 bg-white p-8 text-center">
             <p className="text-sm text-gray-500 dark:text-gray-400">Belum ada task snapshot.</p>
           </div>
@@ -236,6 +260,14 @@ export default async function OpmSesiDetailPage({ params }: Props) {
                   ))}
               </tbody>
             </table>
+            <Pagination
+              total={totalTask}
+              offset={offsetTask}
+              pageSize={UKURAN_HALAMAN}
+              paramKey="hlm_task"
+              basePath={`/opm/${sesi.id}`}
+              searchParams={sp}
+            />
           </div>
         )}
       </div>
@@ -243,9 +275,9 @@ export default async function OpmSesiDetailPage({ params }: Props) {
       {/* Daftar responden */}
       <div>
         <h2 className="mb-4 text-lg font-medium text-gray-900">
-          Daftar Responden ({responden.length})
+          Daftar Responden ({totalResponden})
         </h2>
-        {responden.length === 0 ? (
+        {totalResponden === 0 ? (
           <div className="rounded-lg border border-dashed border-gray-300 bg-white p-8 text-center">
             <p className="text-sm text-gray-500 dark:text-gray-400">
               Belum ada responden yang terdaftar di analisis ini.
@@ -276,7 +308,7 @@ export default async function OpmSesiDetailPage({ params }: Props) {
               <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
                 {responden.map((r, idx) => (
                   <tr key={r.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50">
-                    <td className="px-4 py-3 text-gray-400">{idx + 1}</td>
+                    <td className="px-4 py-3 text-gray-400">{offsetResponden + idx + 1}</td>
                     <td className="px-4 py-3 text-gray-900">
                       {r.nama ?? <span className="italic text-gray-400">Anonim</span>}
                     </td>
@@ -307,6 +339,14 @@ export default async function OpmSesiDetailPage({ params }: Props) {
                 ))}
               </tbody>
             </table>
+            <Pagination
+              total={totalResponden}
+              offset={offsetResponden}
+              pageSize={UKURAN_HALAMAN}
+              paramKey="hlm_responden"
+              basePath={`/opm/${sesi.id}`}
+              searchParams={sp}
+            />
           </div>
         )}
       </div>

@@ -4,6 +4,7 @@ import { auth, isAdmin } from "@/lib/auth/auth";
 import { withServerAuth } from "@/lib/api/client";
 import { apiErrorDari } from "@/lib/api/errors";
 import { GagalMuatSebagian } from "@/components/gagal-muat";
+import { Pagination, UKURAN_HALAMAN, offsetHalaman } from "@/components/pagination";
 import type { BagianGagal } from "@/lib/api/pendukung";
 import type {
   PartisipanRead,
@@ -58,9 +59,15 @@ const STATUS_LABEL: Record<string, { label: string; cls: string; desc: string }>
 
 interface Props {
   params: Promise<{ sesi_id: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 
-async function fetchPageData(accessToken: string | undefined, sesiId: string) {
+async function fetchPageData(
+  accessToken: string | undefined,
+  sesiId: string,
+  offsetResponden: number,
+  offsetTaskTerpilih: number,
+) {
   const client = withServerAuth(accessToken);
 
   const sesiRes = await client.GET("/api/v1/task-inventory/sesi/{sesi_id}", {
@@ -69,9 +76,18 @@ async function fetchPageData(accessToken: string | undefined, sesiId: string) {
   if (!sesiRes.data) throw apiErrorDari(sesiRes);
   const sesi = sesiRes.data as TiSesiRead;
 
-  const [respondenRes, smeRes, partisipanRes] = await Promise.all([
+  // `respondenAll` (himpunan penuh) memasok hitung Tahap 1/3 & angka "belum submit"
+  // untuk <TransisiSesi> — agregat yang tak bisa dihitung dari satu halaman;
+  // `respondenRes` hanya satu halaman untuk tabel.
+  const [respondenRes, respondenAllRes, smeRes, partisipanRes] = await Promise.all([
     client.GET("/api/v1/task-inventory/sesi/{sesi_id}/responden", {
-      params: { path: { sesi_id: sesiId } },
+      params: {
+        path: { sesi_id: sesiId },
+        query: { limit: UKURAN_HALAMAN, offset: offsetResponden },
+      },
+    }),
+    client.GET("/api/v1/task-inventory/sesi/{sesi_id}/responden", {
+      params: { path: { sesi_id: sesiId }, query: { limit: 500 } },
     }),
     client.POST("/api/v1/sme-panel/search", {
       body: {
@@ -80,7 +96,7 @@ async function fetchPageData(accessToken: string | undefined, sesiId: string) {
         offset: 0,
       },
     }),
-    client.GET("/api/v1/partisipan", { params: { query: { limit: 200 } } }),
+    client.GET("/api/v1/partisipan", { params: { query: { limit: 500 } } }),
   ]);
 
   // `task-terpilih`/`hasil` DIKECUALIKAN dari invariant "data inti harus
@@ -90,16 +106,21 @@ async function fetchPageData(accessToken: string | undefined, sesiId: string) {
   // jalan keluarnya sendiri dari UI karena satu bagian data rusak — kegagalannya
   // WAJIB tetap terlihat lewat GagalMuatSebagian, bukan ditelan senyap.
   let taskTerpilih: TiTaskTerpilihRead[] = [];
+  let totalTaskTerpilih = 0;
   let hasil: TiHasilSesiRead | null = null;
   const gagalHasil: BagianGagal[] = [];
   if (["TAHAP3", "CLOSED", "ANALYZED"].includes(sesi.status)) {
     const ttRes = await client.GET("/api/v1/task-inventory/sesi/{sesi_id}/task-terpilih", {
-      params: { path: { sesi_id: sesiId } },
+      params: {
+        path: { sesi_id: sesiId },
+        query: { limit: UKURAN_HALAMAN, offset: offsetTaskTerpilih },
+      },
     });
     if (!ttRes.data) {
       gagalHasil.push({ nama: "Task relevan terpilih", err: apiErrorDari(ttRes) });
     } else {
-      taskTerpilih = ttRes.data as TiTaskTerpilihRead[];
+      taskTerpilih = (ttRes.data.items ?? []) as TiTaskTerpilihRead[];
+      totalTaskTerpilih = ttRes.data.total;
     }
   }
   if (sesi.status === "ANALYZED") {
@@ -139,42 +160,52 @@ async function fetchPageData(accessToken: string | undefined, sesiId: string) {
 
   // Daftar responden = data inti sesi; kegagalan tidak boleh tampil sebagai sesi kosong.
   if (!respondenRes.data) throw apiErrorDari(respondenRes);
+  if (!respondenAllRes.data) throw apiErrorDari(respondenAllRes);
 
   return {
     sesi,
-    responden: respondenRes.data as TiRespondenRead[],
+    responden: (respondenRes.data.items ?? []) as TiRespondenRead[],
+    totalResponden: respondenRes.data.total,
+    respondenAll: (respondenAllRes.data.items ?? []) as TiRespondenRead[],
     smePanel,
     partisipan,
     taskTerpilih,
+    totalTaskTerpilih,
     hasil,
     belumDiputuskanTahap2,
     gagalHasil,
   };
 }
 
-export default async function TiSesiDetailPage({ params }: Props) {
+export default async function TiSesiDetailPage({ params, searchParams }: Props) {
   const session = await auth();
   if (!isAdmin(session)) notFound();
 
   const { sesi_id } = await params;
+  const sp = await searchParams;
+  const offsetResponden = offsetHalaman(sp, "hlm_responden");
+  const offsetTaskTerpilih = offsetHalaman(sp, "hlm_task_terpilih");
   const {
     sesi,
     responden,
+    totalResponden,
+    respondenAll,
     smePanel,
     partisipan,
     taskTerpilih,
+    totalTaskTerpilih,
     hasil,
     belumDiputuskanTahap2,
     gagalHasil,
-  } = await fetchPageData(session?.accessToken, sesi_id);
+  } = await fetchPageData(session?.accessToken, sesi_id, offsetResponden, offsetTaskTerpilih);
 
   const st = STATUS_LABEL[sesi.status] ?? {
     label: sesi.status,
     cls: "bg-gray-100 text-gray-500",
     desc: "",
   };
-  const tahap1Submit = responden.filter((r) => r.tahap1_submit).length;
-  const tahap3Submit = responden.filter((r) => r.tahap3_submit).length;
+  const tahap1Submit = respondenAll.filter((r) => r.tahap1_submit).length;
+  const tahap3Submit = respondenAll.filter((r) => r.tahap3_submit).length;
 
   return (
     <div className="space-y-6">
@@ -209,7 +240,7 @@ export default async function TiSesiDetailPage({ params }: Props) {
       {/* Statistik */}
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
         <div className="rounded-lg border border-gray-200 bg-white p-4 text-center">
-          <p className="text-2xl font-bold text-gray-900">{responden.length}</p>
+          <p className="text-2xl font-bold text-gray-900">{totalResponden}</p>
           <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">Terdaftar</p>
         </div>
         <div className="rounded-lg border border-gray-200 bg-white p-4 text-center">
@@ -230,7 +261,7 @@ export default async function TiSesiDetailPage({ params }: Props) {
       <TransisiSesi
         sesi={sesi}
         accessToken={session?.accessToken}
-        belumSubmitTahap1={responden.length - tahap1Submit}
+        belumSubmitTahap1={respondenAll.length - tahap1Submit}
         belumDiputuskanTahap2={belumDiputuskanTahap2}
       />
 
@@ -296,9 +327,9 @@ export default async function TiSesiDetailPage({ params }: Props) {
       {/* Daftar responden */}
       <div>
         <h2 className="mb-4 text-lg font-medium text-gray-900">
-          Daftar Responden ({responden.length})
+          Daftar Responden ({totalResponden})
         </h2>
-        {responden.length === 0 ? (
+        {totalResponden === 0 ? (
           <div className="rounded-lg border border-dashed border-gray-300 bg-white p-8 text-center">
             <p className="text-sm text-gray-500 dark:text-gray-400">
               Belum ada responden terdaftar.
@@ -329,7 +360,7 @@ export default async function TiSesiDetailPage({ params }: Props) {
               <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
                 {responden.map((r, idx) => (
                   <tr key={r.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50">
-                    <td className="px-4 py-3 text-gray-400">{idx + 1}</td>
+                    <td className="px-4 py-3 text-gray-400">{offsetResponden + idx + 1}</td>
                     <td className="px-4 py-3 text-gray-900">
                       {r.nama ?? <span className="italic text-gray-400">Anonim</span>}
                     </td>
@@ -387,15 +418,23 @@ export default async function TiSesiDetailPage({ params }: Props) {
                 ))}
               </tbody>
             </table>
+            <Pagination
+              total={totalResponden}
+              offset={offsetResponden}
+              pageSize={UKURAN_HALAMAN}
+              paramKey="hlm_responden"
+              basePath={`/task-inventory/${sesi.id}`}
+              searchParams={sp}
+            />
           </div>
         )}
       </div>
 
       {/* Task terpilih (setelah TAHAP3) */}
-      {taskTerpilih.length > 0 && (
+      {totalTaskTerpilih > 0 && (
         <div>
           <h2 className="mb-4 text-lg font-medium text-gray-900">
-            Task Relevan Terpilih ({taskTerpilih.length})
+            Task Relevan Terpilih ({totalTaskTerpilih})
           </h2>
           <div className="table-container">
             <table className="w-full text-sm">
@@ -424,6 +463,14 @@ export default async function TiSesiDetailPage({ params }: Props) {
                 ))}
               </tbody>
             </table>
+            <Pagination
+              total={totalTaskTerpilih}
+              offset={offsetTaskTerpilih}
+              pageSize={UKURAN_HALAMAN}
+              paramKey="hlm_task_terpilih"
+              basePath={`/task-inventory/${sesi.id}`}
+              searchParams={sp}
+            />
           </div>
         </div>
       )}

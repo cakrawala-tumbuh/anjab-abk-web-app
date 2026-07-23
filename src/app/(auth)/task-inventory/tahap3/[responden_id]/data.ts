@@ -44,23 +44,25 @@ export async function fetchTahap3Data(
 
   // Task terpilih baru ada setelah dibekukan di transisi TAHAP2 → TAHAP3.
   // Backend menolak (422) bila status belum sampai situ, jadi jangan dipanggil.
+  // Kuesioner Tahap 3 butuh SELURUH task terpilih & detail tersimpan; kedua
+  // endpoint kini `Page[T]` (default limit 20), jadi limit tinggi eksplisit wajib.
   let terpilih: TiTaskTerpilihRead[] = [];
   if (["TAHAP3", "CLOSED", "ANALYZED"].includes(sesi.status)) {
     const ttRes = await client.GET("/api/v1/task-inventory/sesi/{sesi_id}/task-terpilih", {
-      params: { path: { sesi_id: sesi.id } },
+      params: { path: { sesi_id: sesi.id }, query: { limit: 500 } },
     });
     if (!ttRes.data) throw apiErrorDari(ttRes);
-    terpilih = ttRes.data as TiTaskTerpilihRead[];
+    terpilih = (ttRes.data.items ?? []) as TiTaskTerpilihRead[];
   }
 
-  // Responden yang belum mengisi tetap dapat 200 + array kosong — array kosong
-  // yang SAH tetap terbedakan dari kegagalan, jadi gagal harus melempar.
+  // Responden yang belum mengisi tetap dapat 200 + halaman kosong — kosong yang
+  // SAH tetap terbedakan dari kegagalan, jadi gagal harus melempar.
   const detailRes = await client.GET(
     "/api/v1/task-inventory/sesi/responden/{responden_id}/detail",
-    { params: { path: { responden_id: respondenId } } },
+    { params: { path: { responden_id: respondenId }, query: { limit: 500 } } },
   );
   if (!detailRes.data) throw apiErrorDari(detailRes);
-  const detail = detailRes.data as TiDetailRead[];
+  const detail = (detailRes.data.items ?? []) as TiDetailRead[];
 
   return { responden, sesi, terpilih, detail };
 }

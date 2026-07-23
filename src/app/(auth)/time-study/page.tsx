@@ -5,6 +5,7 @@ import { withServerAuth } from "@/lib/api/client";
 import { apiErrorDari } from "@/lib/api/errors";
 import { bagianGagal, pendukungList } from "@/lib/api/pendukung";
 import { GagalMuatSebagian } from "@/components/gagal-muat";
+import { Pagination, UKURAN_HALAMAN, offsetHalaman } from "@/components/pagination";
 import type { components } from "@/lib/api/schema";
 
 type TsPenugasanRead = components["schemas"]["TsPenugasanRead"];
@@ -13,12 +14,14 @@ type JabatanRead = components["schemas"]["JabatanRead"];
 
 export const metadata = { title: "Time Study" };
 
-async function fetchPageData(accessToken: string | undefined) {
+async function fetchPageData(accessToken: string | undefined, offset: number) {
   const client = withServerAuth(accessToken);
   const [penugasanRes, partisipanRes, jabatanRes] = await Promise.all([
-    client.GET("/api/v1/time-study/penugasan", { params: { query: { limit: 100 } } }),
-    client.GET("/api/v1/partisipan", { params: { query: { limit: 100 } } }),
-    client.GET("/api/v1/jabatan", { params: { query: { limit: 100 } } }),
+    client.GET("/api/v1/time-study/penugasan", {
+      params: { query: { limit: UKURAN_HALAMAN, offset } },
+    }),
+    client.GET("/api/v1/partisipan", { params: { query: { limit: 500 } } }),
+    client.GET("/api/v1/jabatan", { params: { query: { limit: 500 } } }),
   ]);
   // Data INTI halaman ini — kegagalan tidak boleh tampil sebagai "belum ada penugasan".
   if (!penugasanRes.data) throw apiErrorDari(penugasanRes);
@@ -30,18 +33,26 @@ async function fetchPageData(accessToken: string | undefined) {
 
   return {
     penugasan: (penugasanRes.data.items ?? []) as TsPenugasanRead[],
+    total: penugasanRes.data.total,
     partisipan: partisipan.data,
     jabatan: jabatan.data,
     gagalPendukung: bagianGagal(partisipan, jabatan),
   };
 }
 
-export default async function TimeStudyPenugasanPage() {
+interface Props {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}
+
+export default async function TimeStudyPenugasanPage({ searchParams }: Props) {
   const session = await auth();
   if (!isAdmin(session)) notFound();
 
-  const { penugasan, partisipan, jabatan, gagalPendukung } = await fetchPageData(
+  const sp = await searchParams;
+  const offset = offsetHalaman(sp, "hlm");
+  const { penugasan, total, partisipan, jabatan, gagalPendukung } = await fetchPageData(
     session?.accessToken,
+    offset,
   );
   const jabatanMap = Object.fromEntries(jabatan.map((j) => [j.id, j.nama]));
   const partisipanMap = Object.fromEntries(partisipan.map((p) => [p.id, p]));
@@ -72,7 +83,7 @@ export default async function TimeStudyPenugasanPage() {
         </div>
       </div>
 
-      {penugasan.length === 0 ? (
+      {total === 0 ? (
         <div className="empty-state">
           <p className="text-sm text-gray-500 dark:text-gray-400">
             Belum ada penugasan Time Study. Tugaskan partisipan pertama untuk mulai.
@@ -85,58 +96,68 @@ export default async function TimeStudyPenugasanPage() {
           </Link>
         </div>
       ) : (
-        <div className="table-container">
-          <table className="w-full text-sm">
-            <thead className="bg-gray-50 dark:bg-gray-800">
-              <tr>
-                <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
-                  Partisipan
-                </th>
-                <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
-                  Jabatan
-                </th>
-                <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
-                  Status
-                </th>
-                <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
-                  Ditugaskan
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
-              {penugasan.map((p) => {
-                const par = partisipanMap[p.partisipan_id];
-                return (
-                  <tr key={p.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50">
-                    <td className="px-4 py-3">
-                      <Link
-                        href={`/time-study/${p.id}`}
-                        className="font-medium text-blue-600 hover:text-blue-800 hover:underline"
-                      >
-                        {par?.nama ?? p.partisipan_id}
-                      </Link>
-                    </td>
-                    <td className="px-4 py-3 text-gray-600 dark:text-gray-400">
-                      {par ? (jabatanMap[par.jabatan_utama_id] ?? par.jabatan_utama_id) : "?"}
-                    </td>
-                    <td className="px-4 py-3">
-                      <span
-                        className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${
-                          p.aktif ? "bg-blue-100 text-blue-700" : "bg-gray-100 text-gray-500"
-                        }`}
-                      >
-                        {p.aktif ? "Aktif" : "Nonaktif"}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 text-xs text-gray-400">
-                      {new Date(p.created_at).toLocaleDateString("id-ID")}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+        <>
+          <div className="table-container">
+            <table className="w-full text-sm">
+              <thead className="bg-gray-50 dark:bg-gray-800">
+                <tr>
+                  <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
+                    Partisipan
+                  </th>
+                  <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
+                    Jabatan
+                  </th>
+                  <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
+                    Status
+                  </th>
+                  <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
+                    Ditugaskan
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
+                {penugasan.map((p) => {
+                  const par = partisipanMap[p.partisipan_id];
+                  return (
+                    <tr key={p.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                      <td className="px-4 py-3">
+                        <Link
+                          href={`/time-study/${p.id}`}
+                          className="font-medium text-blue-600 hover:text-blue-800 hover:underline"
+                        >
+                          {par?.nama ?? p.partisipan_id}
+                        </Link>
+                      </td>
+                      <td className="px-4 py-3 text-gray-600 dark:text-gray-400">
+                        {par ? (jabatanMap[par.jabatan_utama_id] ?? par.jabatan_utama_id) : "?"}
+                      </td>
+                      <td className="px-4 py-3">
+                        <span
+                          className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${
+                            p.aktif ? "bg-blue-100 text-blue-700" : "bg-gray-100 text-gray-500"
+                          }`}
+                        >
+                          {p.aktif ? "Aktif" : "Nonaktif"}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 text-xs text-gray-400">
+                        {new Date(p.created_at).toLocaleDateString("id-ID")}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+          <Pagination
+            total={total}
+            offset={offset}
+            pageSize={UKURAN_HALAMAN}
+            paramKey="hlm"
+            basePath="/time-study"
+            searchParams={sp}
+          />
+        </>
       )}
     </div>
   );

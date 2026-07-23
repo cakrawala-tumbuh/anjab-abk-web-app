@@ -37,11 +37,13 @@ export async function fetchTahap1Data(
   if (!sesiRes.data) throw apiErrorDari(sesiRes);
   const sesi = sesiRes.data as TiSesiRead;
 
+  // Kuesioner Tahap 1 butuh SELURUH task katalog jabatan; endpoint kini `Page[T]`
+  // dengan default limit 20, jadi limit tinggi eksplisit wajib agar tak terpotong.
   const catalogRes = await client.GET("/api/v1/task-inventory/catalog", {
-    params: { query: { jabatan_id: sesi.jabatan_id } },
+    params: { query: { jabatan_id: sesi.jabatan_id, limit: 500 } },
   });
   if (!catalogRes.data) throw apiErrorDari(catalogRes);
-  const catalog = catalogRes.data as TiCatalogRead[];
+  const catalog = (catalogRes.data.items ?? []) as TiCatalogRead[];
 
   // PENGECUALIAN yang disengaja: backend melempar 404 ("Responden belum submit
   // seleksi Tahap 1") bila responden belum pernah menyimpan pilihan apa pun —

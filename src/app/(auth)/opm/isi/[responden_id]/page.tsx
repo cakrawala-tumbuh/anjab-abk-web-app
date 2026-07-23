@@ -28,12 +28,14 @@ async function fetchPageData(accessToken: string | undefined, respondenId: strin
   const responden = respondenRes.data as OpmRespondenRead;
 
   // Data kritis: daftar task ADALAH kuesionernya. Kegagalan yang ditelan jadi
-  // `[]` merender formulir kosong yang tampak sah — dilarang.
+  // `[]` merender formulir kosong yang tampak sah — dilarang. Endpoint kini
+  // `Page[T]` (default limit 20), jadi limit tinggi eksplisit wajib agar seluruh
+  // task kuesioner ikut terambil.
   const taskRes = await client.GET("/api/v1/opm/sesi/{sesi_id}/task", {
-    params: { path: { sesi_id: responden.sesi_id } },
+    params: { path: { sesi_id: responden.sesi_id }, query: { limit: 500 } },
   });
   if (!taskRes.data) throw apiErrorDari(taskRes);
-  const task = taskRes.data as OpmSesiTaskRead[];
+  const task = (taskRes.data.items ?? []) as OpmSesiTaskRead[];
 
   // Jawaban tersimpan: 200 + array kosong bila belum mengisi (kondisi sah);
   // kegagalan harus melempar, bukan tampil sebagai "belum diisi".

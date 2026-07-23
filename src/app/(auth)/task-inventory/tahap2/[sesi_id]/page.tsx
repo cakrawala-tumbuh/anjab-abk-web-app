@@ -29,13 +29,16 @@ async function fetchPageData(accessToken: string | undefined, sesiId: string) {
   if (!sesiRes.data) throw apiErrorDari(sesiRes);
   const sesi = sesiRes.data as TiSesiRead;
 
+  // `catalog` (peta kode→uraian) & `respondenList` (penentu keanggotaan) butuh
+  // himpunan PENUH; kedua endpoint kini `Page[T]` (default limit 20), jadi limit
+  // tinggi eksplisit wajib agar tak terpotong diam-diam.
   const [sayaRes, catalogRes, respondenRes] = await Promise.all([
     client.GET("/api/v1/partisipan/saya"),
     client.GET("/api/v1/task-inventory/catalog", {
-      params: { query: { jabatan_id: sesi.jabatan_id } },
+      params: { query: { jabatan_id: sesi.jabatan_id, limit: 500 } },
     }),
     client.GET("/api/v1/task-inventory/sesi/{sesi_id}/responden", {
-      params: { path: { sesi_id: sesiId } },
+      params: { path: { sesi_id: sesiId }, query: { limit: 500 } },
     }),
   ]);
 
@@ -53,11 +56,11 @@ async function fetchPageData(accessToken: string | undefined, sesiId: string) {
   if (!catalogRes.data) throw apiErrorDari(catalogRes);
   if (!respondenRes.data) throw apiErrorDari(respondenRes);
 
-  const catalog = catalogRes.data as TiCatalogRead[];
+  const catalog = (catalogRes.data.items ?? []) as TiCatalogRead[];
   const kodeToUraian: Record<string, string> = {};
   for (const c of catalog) kodeToUraian[c.kode] = c.uraian_tugas;
 
-  const respondenList = respondenRes.data as TiRespondenRead[];
+  const respondenList = (respondenRes.data.items ?? []) as TiRespondenRead[];
 
   // Review Tahap 2 hanya tersedia setelah TAHAP2 (backend menolak 422 sebelum
   // itu). Di dalam status yang sah, kegagalan = kegagalan sungguhan → lempar;

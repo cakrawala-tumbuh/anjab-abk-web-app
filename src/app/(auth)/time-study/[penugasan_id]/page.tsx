@@ -8,7 +8,6 @@ import { ToggleAktif } from "./toggle-aktif";
 import { HapusPenugasan } from "./hapus-penugasan";
 
 type TsPenugasanRead = components["schemas"]["TsPenugasanRead"];
-type TsLogRead = components["schemas"]["TsLogRead"];
 type PartisipanRead = components["schemas"]["PartisipanRead"];
 type JabatanRead = components["schemas"]["JabatanRead"];
 
@@ -30,6 +29,8 @@ async function fetchPageData(accessToken: string | undefined, penugasanId: strin
   ]);
   if (!penugasanRes.data) throw apiErrorDari(penugasanRes);
   // Log harian = data inti halaman ini; kegagalan tidak boleh tampil sebagai "belum ada log".
+  // Halaman ini hanya menampilkan JUMLAH log (bukan tabelnya), jadi cukup `total`
+  // dari `Page[T]` — bukan `items.length` yang kini terpotong default limit 20.
   if (!logRes.data) throw apiErrorDari(logRes);
 
   const penugasan = penugasanRes.data as TsPenugasanRead;
@@ -47,7 +48,7 @@ async function fetchPageData(accessToken: string | undefined, penugasanId: strin
 
   return {
     penugasan,
-    logs: logRes.data as TsLogRead[],
+    jumlahLog: logRes.data.total,
     partisipan: partisipanRes.data as PartisipanRead,
     jabatan: (jabatanListRes.data.items ?? []) as JabatanRead[],
   };
@@ -58,7 +59,7 @@ export default async function TimeStudyPenugasanDetailPage({ params }: Props) {
   if (!isAdmin(session)) notFound();
 
   const { penugasan_id } = await params;
-  const { penugasan, logs, partisipan, jabatan } = await fetchPageData(
+  const { penugasan, jumlahLog, partisipan, jabatan } = await fetchPageData(
     session?.accessToken,
     penugasan_id,
   );
@@ -101,7 +102,7 @@ export default async function TimeStudyPenugasanDetailPage({ params }: Props) {
       {/* Statistik */}
       <div className="grid grid-cols-2 gap-4">
         <div className="rounded-lg border border-gray-200 bg-white p-4 text-center">
-          <p className="text-2xl font-bold text-gray-900">{logs.length}</p>
+          <p className="text-2xl font-bold text-gray-900">{jumlahLog}</p>
           <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">Log Harian Terisi</p>
         </div>
         <div className="rounded-lg border border-gray-200 bg-white p-4 text-center">

@@ -3,10 +3,12 @@ import { notFound } from "next/navigation";
 import { auth, isAdmin } from "@/lib/auth/auth";
 import { withServerAuth } from "@/lib/api/client";
 import { apiErrorDari } from "@/lib/api/errors";
+import { Pagination, UKURAN_HALAMAN, offsetHalaman } from "@/components/pagination";
 import type { TiCatalogRead } from "@/lib/api/schema";
 
 interface PageProps {
   params: Promise<{ unit: string; kategori: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 
 export const metadata = { title: "Catalog Task — Master Data" };
@@ -15,24 +17,32 @@ async function fetchCatalog(
   unit: string,
   jabatan_id: string,
   accessToken: string | undefined,
-): Promise<TiCatalogRead[]> {
+  offset: number,
+) {
   const client = withServerAuth(accessToken);
   const res = await client.GET("/api/v1/task-inventory/catalog", {
-    params: { query: { unit, jabatan_id } },
+    params: { query: { unit, jabatan_id, limit: UKURAN_HALAMAN, offset } },
   });
   if (!res.data) throw apiErrorDari(res);
-  return res.data;
+  return { items: (res.data.items ?? []) as TiCatalogRead[], total: res.data.total };
 }
 
-export default async function TiKombinasiDetailPage({ params }: PageProps) {
+export default async function TiKombinasiDetailPage({ params, searchParams }: PageProps) {
   const session = await auth();
   if (!isAdmin(session)) notFound();
 
   const { unit, kategori } = await params;
   const jabatan_id = decodeURIComponent(kategori);
-  const catalog = await fetchCatalog(unit, jabatan_id, session?.accessToken);
+  const sp = await searchParams;
+  const offset = offsetHalaman(sp, "hlm");
+  const { items: catalog, total } = await fetchCatalog(
+    unit,
+    jabatan_id,
+    session?.accessToken,
+    offset,
+  );
 
-  if (catalog.length === 0) notFound();
+  if (total === 0) notFound();
 
   const grouped = catalog.reduce<Record<string, Record<string, TiCatalogRead[]>>>((acc, item) => {
     const dtKey = item.detil_tugas ?? "";
@@ -60,8 +70,8 @@ export default async function TiKombinasiDetailPage({ params }: PageProps) {
           — {jabatan_id}
         </h2>
         <p className="page-subtext">
-          {catalog.length} task dalam {tugasPokokList.length} tugas pokok. Data bersumber dari
-          catalog bawaan sistem (read-only).
+          {total} task, dikelompokkan per tugas pokok. Data bersumber dari catalog bawaan sistem
+          (read-only).
         </p>
       </div>
 
@@ -108,6 +118,15 @@ export default async function TiKombinasiDetailPage({ params }: PageProps) {
           );
         })}
       </div>
+
+      <Pagination
+        total={total}
+        offset={offset}
+        pageSize={UKURAN_HALAMAN}
+        paramKey="hlm"
+        basePath={`/master-data/task-inventory/${unit}/${kategori}`}
+        searchParams={sp}
+      />
     </div>
   );
 }

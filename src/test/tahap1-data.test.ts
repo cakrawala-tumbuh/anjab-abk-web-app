@@ -45,7 +45,7 @@ describe("fetchTahap1Data — kegagalan tidak boleh ditelan senyap", () => {
     get
       .mockResolvedValueOnce(ok(responden))
       .mockResolvedValueOnce(ok(sesi))
-      .mockResolvedValueOnce(ok([{ kode: "TIa" }]))
+      .mockResolvedValueOnce(ok({ items: [{ kode: "TIa" }], total: 1 }))
       .mockResolvedValueOnce(gagal(403, "forbidden", "Akses ditolak."));
 
     await expect(fetchTahap1Data("tok", "tresp_1")).rejects.toThrow(ApiError);
@@ -67,7 +67,7 @@ describe("fetchTahap1Data — kondisi sah tetap berjalan", () => {
     get
       .mockResolvedValueOnce(ok(responden))
       .mockResolvedValueOnce(ok(sesi))
-      .mockResolvedValueOnce(ok([{ kode: "TIa" }]))
+      .mockResolvedValueOnce(ok({ items: [{ kode: "TIa" }], total: 1 }))
       .mockResolvedValueOnce(gagal(404, "not_found", "Responden belum submit seleksi Tahap 1."));
 
     const data = await fetchTahap1Data("tok", "tresp_1");
@@ -79,7 +79,7 @@ describe("fetchTahap1Data — kondisi sah tetap berjalan", () => {
     get
       .mockResolvedValueOnce(ok(responden))
       .mockResolvedValueOnce(ok(sesi))
-      .mockResolvedValueOnce(ok([{ kode: "TIa" }, { kode: "TIb" }]))
+      .mockResolvedValueOnce(ok({ items: [{ kode: "TIa" }, { kode: "TIb" }], total: 2 }))
       .mockResolvedValueOnce(ok({ task_kode: ["TIa"] }));
 
     const data = await fetchTahap1Data("tok", "tresp_1");
@@ -90,7 +90,7 @@ describe("fetchTahap1Data — kondisi sah tetap berjalan", () => {
     get
       .mockResolvedValueOnce(ok(responden))
       .mockResolvedValueOnce(ok(sesi))
-      .mockResolvedValueOnce(ok([]))
+      .mockResolvedValueOnce(ok({ items: [], total: 0 }))
       .mockResolvedValueOnce(ok({ task_kode: [] }));
 
     const data = await fetchTahap1Data("tok", "tresp_1");

@@ -104,8 +104,8 @@ describe("Tahap2KoordinatorPage — issue #21: pengecualian /partisipan/saya dip
     get
       .mockResolvedValueOnce(ok(sesi)) // sesiRes
       .mockResolvedValueOnce(gagal(404, "not_found", "Partisipan tidak ditemukan.")) // sayaRes
-      .mockResolvedValueOnce(ok(catalog)) // catalogRes
-      .mockResolvedValueOnce(ok(respondenList)) // respondenRes
+      .mockResolvedValueOnce(ok({ items: catalog, total: catalog.length })) // catalogRes
+      .mockResolvedValueOnce(ok({ items: respondenList, total: respondenList.length })) // respondenRes
       .mockResolvedValueOnce(ok(review)); // reviewRes
 
     const el = (await Tahap2KoordinatorPage(props)) as ReactElement;
@@ -119,8 +119,8 @@ describe("Tahap2KoordinatorPage — issue #21: pengecualian /partisipan/saya dip
     get
       .mockResolvedValueOnce(ok(sesi)) // sesiRes
       .mockResolvedValueOnce(gagal(401, "unauthorized", "Sesi kedaluwarsa.")) // sayaRes
-      .mockResolvedValueOnce(ok(catalog)) // catalogRes
-      .mockResolvedValueOnce(ok(respondenList)); // respondenRes
+      .mockResolvedValueOnce(ok({ items: catalog, total: catalog.length })) // catalogRes
+      .mockResolvedValueOnce(ok({ items: respondenList, total: respondenList.length })); // respondenRes
 
     const err = await Tahap2KoordinatorPage(props).catch((e: unknown) => e);
     expect(err).toBeInstanceOf(ApiError);
@@ -133,8 +133,8 @@ describe("Tahap2KoordinatorPage — regresi: mode hanya-baca anggota & hak koord
     get
       .mockResolvedValueOnce(ok(sesi)) // sesiRes
       .mockResolvedValueOnce(ok({ id: partisipanId })) // sayaRes
-      .mockResolvedValueOnce(ok(catalog)) // catalogRes
-      .mockResolvedValueOnce(ok(respondenList)) // respondenRes
+      .mockResolvedValueOnce(ok({ items: catalog, total: catalog.length })) // catalogRes
+      .mockResolvedValueOnce(ok({ items: respondenList, total: respondenList.length })) // respondenRes
       .mockResolvedValueOnce(ok(review)); // reviewRes (status TAHAP2 → dipanggil)
   }
 

@@ -7,6 +7,29 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+### Ditambahkan
+
+- **Paginasi URL-driven di semua daftar (list) web app** — tiap tabel kini menampilkan satu
+  halaman data server-side dengan kontrol **Sebelumnya/Berikutnya** + teks rentang
+  ("Menampilkan 21–40 dari 137"), digerakkan query URL (`?hlm=`). Sebelumnya list mengambil data
+  dengan `limit` hardcoded lalu menghitung "N terdaftar" dari `items.length`, sehingga baris di
+  atas limit **hilang diam-diam** dan hitungannya salah.
+  - Komponen baru `src/components/pagination.tsx` (`Pagination`, Server Component, aksesibel):
+    ukuran halaman tetap 20, tombol batas nonaktif di halaman pertama/terakhir, tidak dirender
+    bila total ≤ 20, dan mempertahankan query lain saat berpindah halaman.
+  - Diterapkan pada list top-level (jabatan, sekolah, jenjang pendidikan, mata pelajaran, tugas
+    pokok, detil tugas, uraian tugas, SME panel, partisipan, Time Study, OPM, Task Inventory) dan
+    sub-list halaman detail (responden & task pada OPM; responden & task terpilih pada Task
+    Inventory; responden pada DCS/WCP; log harian Time Study; catalog task). Sub-list independen
+    memakai key query terpisah (`hlm_responden`, `hlm_task`, `hlm_task_terpilih`, `hlm_log`).
+  - Hitungan "N terdaftar" pada setiap list kini memakai `total` dari backend (`Page[T]`), bukan
+    `items.length`.
+
+### Diubah
+
+- Klien API bertipe (`openapi/openapi.json` + `src/lib/api/schema.ts`) diregenerasi mengikuti
+  retrofit backend yang memaginasi endpoint koleksi anak (responden/task/log) ke bentuk `Page[T]`.
+
 ## [4.7.0] - 2026-07-21
 
 ### Ditambahkan

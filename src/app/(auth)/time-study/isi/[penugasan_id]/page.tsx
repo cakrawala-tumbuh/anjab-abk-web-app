@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { auth, isPartisipan } from "@/lib/auth/auth";
 import { withServerAuth } from "@/lib/api/client";
 import { apiErrorDari } from "@/lib/api/errors";
+import { Pagination, UKURAN_HALAMAN, offsetHalaman } from "@/components/pagination";
 import type { components } from "@/lib/api/schema";
 import { PetunjukTs } from "./petunjuk-ts";
 
@@ -27,16 +28,17 @@ function formatMenit(menit: number): string {
 
 interface Props {
   params: Promise<{ penugasan_id: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 
-async function fetchPageData(accessToken: string | undefined, penugasanId: string) {
+async function fetchPageData(accessToken: string | undefined, penugasanId: string, offset: number) {
   const client = withServerAuth(accessToken);
   const [penugasanRes, logRes] = await Promise.all([
     client.GET("/api/v1/time-study/penugasan/{penugasan_id}", {
       params: { path: { penugasan_id: penugasanId } },
     }),
     client.GET("/api/v1/time-study/penugasan/{penugasan_id}/log", {
-      params: { path: { penugasan_id: penugasanId } },
+      params: { path: { penugasan_id: penugasanId }, query: { limit: UKURAN_HALAMAN, offset } },
     }),
   ]);
   if (!penugasanRes.data) throw apiErrorDari(penugasanRes);
@@ -45,16 +47,23 @@ async function fetchPageData(accessToken: string | undefined, penugasanId: strin
   if (!logRes.data) throw apiErrorDari(logRes);
   return {
     penugasan: penugasanRes.data as TsPenugasanRead,
-    logs: logRes.data as TsLogRead[],
+    logs: (logRes.data.items ?? []) as TsLogRead[],
+    total: logRes.data.total,
   };
 }
 
-export default async function TimeStudyIsiPage({ params }: Props) {
+export default async function TimeStudyIsiPage({ params, searchParams }: Props) {
   const session = await auth();
   if (!isPartisipan(session)) notFound();
 
   const { penugasan_id } = await params;
-  const { penugasan, logs } = await fetchPageData(session?.accessToken, penugasan_id);
+  const sp = await searchParams;
+  const offset = offsetHalaman(sp, "hlm_log");
+  const { penugasan, logs, total } = await fetchPageData(
+    session?.accessToken,
+    penugasan_id,
+    offset,
+  );
 
   return (
     <div className="space-y-6">
@@ -74,7 +83,7 @@ export default async function TimeStudyIsiPage({ params }: Props) {
           <p className="page-subtext">Catat aktivitas harian Anda untuk keperluan Studi Waktu.</p>
         </div>
         <div className="flex items-center gap-2">
-          <PetunjukTs defaultOpen={penugasan.aktif && logs.length === 0} />
+          <PetunjukTs defaultOpen={penugasan.aktif && total === 0} />
           {penugasan.aktif && (
             <Link
               href={`/time-study/isi/${penugasan_id}/tambah`}
@@ -93,7 +102,7 @@ export default async function TimeStudyIsiPage({ params }: Props) {
         </div>
       )}
 
-      {logs.length === 0 ? (
+      {total === 0 ? (
         <div className="empty-state">
           <p className="text-sm text-gray-500 dark:text-gray-400">
             Belum ada log harian. Mulai catat aktivitas Anda.
@@ -198,11 +207,19 @@ export default async function TimeStudyIsiPage({ params }: Props) {
               })}
             </tbody>
           </table>
+          <Pagination
+            total={total}
+            offset={offset}
+            pageSize={UKURAN_HALAMAN}
+            paramKey="hlm_log"
+            basePath={`/time-study/isi/${penugasan_id}`}
+            searchParams={sp}
+          />
         </div>
       )}
 
       <div className="text-sm text-gray-500 dark:text-gray-400">
-        Total: <strong>{logs.length}</strong> log hari
+        Total: <strong>{total}</strong> log hari
       </div>
     </div>
   );

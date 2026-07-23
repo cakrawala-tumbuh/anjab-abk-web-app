@@ -556,7 +556,8 @@ export interface paths {
         get?: never;
         put?: never;
         post?: never;
-        delete?: never;
+        /** Hapus satu item WCP dari master instrumen (admin) */
+        delete: operations["wcp_item_delete"];
         options?: never;
         head?: never;
         /** Ubah satu item WCP (admin) */
@@ -609,6 +610,28 @@ export interface paths {
         put?: never;
         /** Buka ulang instrumen WCP (CLOSED → OPEN) */
         post: operations["wcp_instrumen_buka_ulang"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/wcp/instrumen/reset": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Reset instrumen WCP (admin): hapus SEMUA responden & jawaban, buka kembali (OPEN)
+         * @description DESTRUKTIF: menghapus seluruh responden WCP (jawaban ikut lewat CASCADE) dan
+         *     mengembalikan instrumen ke OPEN — sah dipanggil dari status APA PUN (idempoten),
+         *     beda dari `/buka-ulang` yang hanya sah dari CLOSED dan tidak menghapus data.
+         */
+        post: operations["wcp_instrumen_reset"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1049,7 +1072,8 @@ export interface paths {
         get?: never;
         put?: never;
         post?: never;
-        delete?: never;
+        /** Hapus satu item DCS dari master instrumen (admin) */
+        delete: operations["dcs_item_delete"];
         options?: never;
         head?: never;
         /** Ubah satu item DCS (admin) */
@@ -1102,6 +1126,28 @@ export interface paths {
         put?: never;
         /** Buka ulang instrumen DCS (CLOSED → OPEN) */
         post: operations["dcs_instrumen_buka_ulang"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/dcs/instrumen/reset": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Reset instrumen DCS (admin): hapus SEMUA responden & jawaban, buka kembali (OPEN)
+         * @description DESTRUKTIF: menghapus seluruh responden DCS (jawaban ikut lewat CASCADE) dan
+         *     mengembalikan instrumen ke OPEN — sah dipanggil dari status APA PUN (idempoten),
+         *     beda dari `/buka-ulang` yang hanya sah dari CLOSED dan tidak menghapus data.
+         */
+        post: operations["dcs_instrumen_reset"];
         delete?: never;
         options?: never;
         head?: never;
@@ -3483,6 +3529,32 @@ export interface components {
              */
             catatan?: string | null;
         };
+        /** Page[DcsRespondenRead] */
+        Page_DcsRespondenRead_: {
+            /**
+             * Items
+             * @description Item pada halaman ini.
+             */
+            items: components["schemas"]["DcsRespondenRead"][];
+            /**
+             * Total
+             * @description Total item tersedia.
+             * @example 42
+             */
+            total: number;
+            /**
+             * Limit
+             * @description Maksimum item per halaman.
+             * @example 20
+             */
+            limit: number;
+            /**
+             * Offset
+             * @description Jumlah item yang dilewati.
+             * @example 0
+             */
+            offset: number;
+        };
         /** Page[DetilTugasRead] */
         Page_DetilTugasRead_: {
             /**
@@ -3587,6 +3659,32 @@ export interface components {
              */
             offset: number;
         };
+        /** Page[OpmRespondenRead] */
+        Page_OpmRespondenRead_: {
+            /**
+             * Items
+             * @description Item pada halaman ini.
+             */
+            items: components["schemas"]["OpmRespondenRead"][];
+            /**
+             * Total
+             * @description Total item tersedia.
+             * @example 42
+             */
+            total: number;
+            /**
+             * Limit
+             * @description Maksimum item per halaman.
+             * @example 20
+             */
+            limit: number;
+            /**
+             * Offset
+             * @description Jumlah item yang dilewati.
+             * @example 0
+             */
+            offset: number;
+        };
         /** Page[OpmSesiRead] */
         Page_OpmSesiRead_: {
             /**
@@ -3594,6 +3692,32 @@ export interface components {
              * @description Item pada halaman ini.
              */
             items: components["schemas"]["OpmSesiRead"][];
+            /**
+             * Total
+             * @description Total item tersedia.
+             * @example 42
+             */
+            total: number;
+            /**
+             * Limit
+             * @description Maksimum item per halaman.
+             * @example 20
+             */
+            limit: number;
+            /**
+             * Offset
+             * @description Jumlah item yang dilewati.
+             * @example 0
+             */
+            offset: number;
+        };
+        /** Page[OpmSesiTaskRead] */
+        Page_OpmSesiTaskRead_: {
+            /**
+             * Items
+             * @description Item pada halaman ini.
+             */
+            items: components["schemas"]["OpmSesiTaskRead"][];
             /**
              * Total
              * @description Total item tersedia.
@@ -3691,6 +3815,84 @@ export interface components {
              */
             offset: number;
         };
+        /** Page[TiCatalogRead] */
+        Page_TiCatalogRead_: {
+            /**
+             * Items
+             * @description Item pada halaman ini.
+             */
+            items: components["schemas"]["TiCatalogRead"][];
+            /**
+             * Total
+             * @description Total item tersedia.
+             * @example 42
+             */
+            total: number;
+            /**
+             * Limit
+             * @description Maksimum item per halaman.
+             * @example 20
+             */
+            limit: number;
+            /**
+             * Offset
+             * @description Jumlah item yang dilewati.
+             * @example 0
+             */
+            offset: number;
+        };
+        /** Page[TiDetailRead] */
+        Page_TiDetailRead_: {
+            /**
+             * Items
+             * @description Item pada halaman ini.
+             */
+            items: components["schemas"]["TiDetailRead"][];
+            /**
+             * Total
+             * @description Total item tersedia.
+             * @example 42
+             */
+            total: number;
+            /**
+             * Limit
+             * @description Maksimum item per halaman.
+             * @example 20
+             */
+            limit: number;
+            /**
+             * Offset
+             * @description Jumlah item yang dilewati.
+             * @example 0
+             */
+            offset: number;
+        };
+        /** Page[TiRespondenRead] */
+        Page_TiRespondenRead_: {
+            /**
+             * Items
+             * @description Item pada halaman ini.
+             */
+            items: components["schemas"]["TiRespondenRead"][];
+            /**
+             * Total
+             * @description Total item tersedia.
+             * @example 42
+             */
+            total: number;
+            /**
+             * Limit
+             * @description Maksimum item per halaman.
+             * @example 20
+             */
+            limit: number;
+            /**
+             * Offset
+             * @description Jumlah item yang dilewati.
+             * @example 0
+             */
+            offset: number;
+        };
         /** Page[TiSesiRead] */
         Page_TiSesiRead_: {
             /**
@@ -3698,6 +3900,58 @@ export interface components {
              * @description Item pada halaman ini.
              */
             items: components["schemas"]["TiSesiRead"][];
+            /**
+             * Total
+             * @description Total item tersedia.
+             * @example 42
+             */
+            total: number;
+            /**
+             * Limit
+             * @description Maksimum item per halaman.
+             * @example 20
+             */
+            limit: number;
+            /**
+             * Offset
+             * @description Jumlah item yang dilewati.
+             * @example 0
+             */
+            offset: number;
+        };
+        /** Page[TiTaskTerpilihRead] */
+        Page_TiTaskTerpilihRead_: {
+            /**
+             * Items
+             * @description Item pada halaman ini.
+             */
+            items: components["schemas"]["TiTaskTerpilihRead"][];
+            /**
+             * Total
+             * @description Total item tersedia.
+             * @example 42
+             */
+            total: number;
+            /**
+             * Limit
+             * @description Maksimum item per halaman.
+             * @example 20
+             */
+            limit: number;
+            /**
+             * Offset
+             * @description Jumlah item yang dilewati.
+             * @example 0
+             */
+            offset: number;
+        };
+        /** Page[TsLogRead] */
+        Page_TsLogRead_: {
+            /**
+             * Items
+             * @description Item pada halaman ini.
+             */
+            items: components["schemas"]["TsLogRead"][];
             /**
              * Total
              * @description Total item tersedia.
@@ -3776,6 +4030,32 @@ export interface components {
              * @description Item pada halaman ini.
              */
             items: components["schemas"]["UraianTugasRead"][];
+            /**
+             * Total
+             * @description Total item tersedia.
+             * @example 42
+             */
+            total: number;
+            /**
+             * Limit
+             * @description Maksimum item per halaman.
+             * @example 20
+             */
+            limit: number;
+            /**
+             * Offset
+             * @description Jumlah item yang dilewati.
+             * @example 0
+             */
+            offset: number;
+        };
+        /** Page[WcpRespondenRead] */
+        Page_WcpRespondenRead_: {
+            /**
+             * Items
+             * @description Item pada halaman ini.
+             */
+            items: components["schemas"]["WcpRespondenRead"][];
             /**
              * Total
              * @description Total item tersedia.
@@ -9075,6 +9355,63 @@ export interface operations {
             };
         };
     };
+    wcp_item_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Kode item orisinal, mis. SC1a. */
+                item_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Hanya admin yang diizinkan. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Item tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Instrumen tidak OPEN, atau item terakhir dimensi. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
     wcp_item_update: {
         parameters: {
             query?: never;
@@ -9321,7 +9658,7 @@ export interface operations {
             };
         };
     };
-    wcp_responden_list: {
+    wcp_instrumen_reset: {
         parameters: {
             query?: never;
             header?: never;
@@ -9336,7 +9673,59 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["WcpRespondenRead"][];
+                    "application/json": components["schemas"]["WcpInstrumenRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    wcp_responden_list: {
+        parameters: {
+            query?: {
+                /** @description Maks item per halaman. */
+                limit?: number;
+                /** @description Jumlah item yang dilewati. */
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Page_WcpRespondenRead_"];
                 };
             };
             /** @description Token tidak ada/invalid. */
@@ -9355,6 +9744,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };
@@ -10501,7 +10899,12 @@ export interface operations {
     };
     opm_sesi_task_list: {
         parameters: {
-            query?: never;
+            query?: {
+                /** @description Maks item per halaman. */
+                limit?: number;
+                /** @description Jumlah item yang dilewati. */
+                offset?: number;
+            };
             header?: never;
             path: {
                 /** @description ID sesi OPM. */
@@ -10517,7 +10920,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["OpmSesiTaskRead"][];
+                    "application/json": components["schemas"]["Page_OpmSesiTaskRead_"];
                 };
             };
             /** @description Token tidak ada/invalid. */
@@ -10569,7 +10972,12 @@ export interface operations {
     };
     opm_responden_list: {
         parameters: {
-            query?: never;
+            query?: {
+                /** @description Maks item per halaman. */
+                limit?: number;
+                /** @description Jumlah item yang dilewati. */
+                offset?: number;
+            };
             header?: never;
             path: {
                 /** @description ID sesi OPM. */
@@ -10585,7 +10993,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["OpmRespondenRead"][];
+                    "application/json": components["schemas"]["Page_OpmRespondenRead_"];
                 };
             };
             /** @description Token tidak ada/invalid. */
@@ -11440,6 +11848,63 @@ export interface operations {
             };
         };
     };
+    dcs_item_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Kode item orisinal, mis. D1a. */
+                item_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Hanya admin yang diizinkan. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Item tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Instrumen tidak OPEN, atau item terakhir sub-skala. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
     dcs_item_update: {
         parameters: {
             query?: never;
@@ -11686,7 +12151,7 @@ export interface operations {
             };
         };
     };
-    dcs_responden_list: {
+    dcs_instrumen_reset: {
         parameters: {
             query?: never;
             header?: never;
@@ -11701,7 +12166,59 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["DcsRespondenRead"][];
+                    "application/json": components["schemas"]["DcsInstrumenRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    dcs_responden_list: {
+        parameters: {
+            query?: {
+                /** @description Maks item per halaman. */
+                limit?: number;
+                /** @description Jumlah item yang dilewati. */
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Page_DcsRespondenRead_"];
                 };
             };
             /** @description Token tidak ada/invalid. */
@@ -11720,6 +12237,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };
@@ -12371,6 +12897,10 @@ export interface operations {
                 jabatan_id: string;
                 /** @description Unit/jenjang (TK/SD/SMP/SMA). Opsional; bila tidak diisi, kembalikan semua task untuk jabatan ini lintas unit. */
                 unit?: string | null;
+                /** @description Maks item per halaman. */
+                limit?: number;
+                /** @description Jumlah item yang dilewati. */
+                offset?: number;
             };
             header?: never;
             path?: never;
@@ -12384,7 +12914,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["TiCatalogRead"][];
+                    "application/json": components["schemas"]["Page_TiCatalogRead_"];
                 };
             };
             /** @description Token tidak ada/invalid. */
@@ -13201,7 +13731,12 @@ export interface operations {
     };
     taskinv_responden_list: {
         parameters: {
-            query?: never;
+            query?: {
+                /** @description Maks item per halaman. */
+                limit?: number;
+                /** @description Jumlah item yang dilewati. */
+                offset?: number;
+            };
             header?: never;
             path: {
                 /** @description ID sesi. */
@@ -13217,7 +13752,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["TiRespondenRead"][];
+                    "application/json": components["schemas"]["Page_TiRespondenRead_"];
                 };
             };
             /** @description Token tidak ada/invalid. */
@@ -13755,7 +14290,12 @@ export interface operations {
     };
     taskinv_detail_list: {
         parameters: {
-            query?: never;
+            query?: {
+                /** @description Maks item per halaman. */
+                limit?: number;
+                /** @description Jumlah item yang dilewati. */
+                offset?: number;
+            };
             header?: never;
             path: {
                 /** @description ID responden. */
@@ -13771,7 +14311,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["TiDetailRead"][];
+                    "application/json": components["schemas"]["Page_TiDetailRead_"];
                 };
             };
             /** @description Token tidak ada/invalid. */
@@ -14103,7 +14643,12 @@ export interface operations {
     };
     taskinv_task_terpilih: {
         parameters: {
-            query?: never;
+            query?: {
+                /** @description Maks item per halaman. */
+                limit?: number;
+                /** @description Jumlah item yang dilewati. */
+                offset?: number;
+            };
             header?: never;
             path: {
                 /** @description ID sesi. */
@@ -14119,7 +14664,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["TiTaskTerpilihRead"][];
+                    "application/json": components["schemas"]["Page_TiTaskTerpilihRead_"];
                 };
             };
             /** @description Token tidak ada/invalid. */
@@ -14732,7 +15277,12 @@ export interface operations {
     };
     ts_log_list: {
         parameters: {
-            query?: never;
+            query?: {
+                /** @description Maks item per halaman. */
+                limit?: number;
+                /** @description Jumlah item yang dilewati. */
+                offset?: number;
+            };
             header?: never;
             path: {
                 /** @description ID penugasan Time Study. */
@@ -14748,7 +15298,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["TsLogRead"][];
+                    "application/json": components["schemas"]["Page_TsLogRead_"];
                 };
             };
             /** @description Token tidak ada/invalid. */

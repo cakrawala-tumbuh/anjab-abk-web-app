@@ -57,7 +57,7 @@ describe("fetchTahap3Data — kegagalan tidak boleh ditelan senyap", () => {
     get
       .mockResolvedValueOnce(ok(responden))
       .mockResolvedValueOnce(ok(sesi))
-      .mockResolvedValueOnce(ok([{ kode: "TIa" }]))
+      .mockResolvedValueOnce(ok({ items: [{ kode: "TIa" }], total: 1 }))
       .mockResolvedValueOnce(gagal(500, "internal_error", "Kesalahan server."));
 
     await expect(fetchTahap3Data("tok", "tresp_1")).rejects.toThrow(ApiError);
@@ -76,8 +76,8 @@ describe("fetchTahap3Data — kondisi sah tetap berjalan", () => {
     get
       .mockResolvedValueOnce(ok(responden))
       .mockResolvedValueOnce(ok(sesi))
-      .mockResolvedValueOnce(ok([])) // 0 task final — sah
-      .mockResolvedValueOnce(ok([]));
+      .mockResolvedValueOnce(ok({ items: [], total: 0 })) // 0 task final — sah
+      .mockResolvedValueOnce(ok({ items: [], total: 0 }));
 
     const data = await fetchTahap3Data("tok", "tresp_1");
     expect(data.terpilih).toEqual([]);
@@ -88,7 +88,7 @@ describe("fetchTahap3Data — kondisi sah tetap berjalan", () => {
     get
       .mockResolvedValueOnce(ok(responden))
       .mockResolvedValueOnce(ok({ ...sesi, status: "TAHAP1" }))
-      .mockResolvedValueOnce(ok([])); // langsung ke detail
+      .mockResolvedValueOnce(ok({ items: [], total: 0 })); // langsung ke detail
 
     const data = await fetchTahap3Data("tok", "tresp_1");
     expect(data.terpilih).toEqual([]);
@@ -102,8 +102,8 @@ describe("fetchTahap3Data — kondisi sah tetap berjalan", () => {
     get
       .mockResolvedValueOnce(ok(responden))
       .mockResolvedValueOnce(ok(sesi))
-      .mockResolvedValueOnce(ok(tasks))
-      .mockResolvedValueOnce(ok([]));
+      .mockResolvedValueOnce(ok({ items: tasks, total: 2 }))
+      .mockResolvedValueOnce(ok({ items: [], total: 0 }));
 
     const data = await fetchTahap3Data("tok", "tresp_1");
     expect(data.terpilih).toHaveLength(2);

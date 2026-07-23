@@ -60,16 +60,20 @@ const taskTerpilih = [
   },
 ];
 
-const props = { params: Promise.resolve({ sesi_id: "tises_1" }) };
+const props = {
+  params: Promise.resolve({ sesi_id: "tises_1" }),
+  searchParams: Promise.resolve({}),
+};
 const HAPUS_PAKSA =
   "Hapus paksa analisis ini — SELURUH responden, seleksi & detail ikut terhapus permanen";
 
 function mockCoreSukses() {
   get
     .mockResolvedValueOnce(ok(sesi)) // sesiRes
-    .mockResolvedValueOnce(ok([])); // respondenRes (1st GET dalam Promise.all)
+    .mockResolvedValueOnce(ok({ items: [], total: 0 })) // respondenRes paginated (Promise.all)
+    .mockResolvedValueOnce(ok({ items: [], total: 0 })); // respondenAllRes penuh (Promise.all)
   post.mockResolvedValueOnce(ok({ items: [] })); // smeRes (POST dalam Promise.all)
-  get.mockResolvedValueOnce(ok({ items: [] })); // partisipanRes (2nd GET dalam Promise.all)
+  get.mockResolvedValueOnce(ok({ items: [], total: 0 })); // partisipanRes (GET dalam Promise.all)
 }
 
 beforeEach(() => {
@@ -106,7 +110,7 @@ describe("TiSesiDetailPage — Kasus 2 (backlog 035): task-terpilih 500 tidak me
 describe("TiSesiDetailPage — regresi: alur sukses tanpa kegagalan tidak berubah", () => {
   it("task-terpilih sukses → tabel Task Relevan Terpilih tampil, TANPA panel GagalMuatSebagian", async () => {
     mockCoreSukses();
-    get.mockResolvedValueOnce(ok(taskTerpilih)); // ttRes
+    get.mockResolvedValueOnce(ok({ items: taskTerpilih, total: 1 })); // ttRes (Page)
 
     const el = (await TiSesiDetailPage(props)) as ReactElement;
     render(el);
