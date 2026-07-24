@@ -43,13 +43,31 @@ Analisis** nonaktif dan alasannya ditampilkan di bawah tombol.
 
 > Hanya saat status **Terbuka**. Bagian **Tugaskan Responden**.
 
-1. Centang satu atau lebih partisipan pada daftar (gunakan **Pilih semua** /
-   **Batalkan pilihan** untuk mempercepat). Partisipan yang sudah ditugaskan tidak lagi
-   muncul di daftar ini.
-2. Klik **Tugaskan Terpilih (N)**. Seluruh partisipan tercentang langsung menjadi responden
-   DCS dalam satu kali submit (nama & label jabatan diisi otomatis dari data partisipan).
-3. Responden muncul di **Daftar Responden** dengan **Status Isian** = **Belum diisi**.
-4. Untuk menghapus responden yang belum mengisi, klik **Hapus** (konfirmasi muncul).
+1. Centang satu atau lebih partisipan pada daftar kandidat. Partisipan yang sudah ditugaskan
+   tidak lagi muncul di daftar ini.
+2. Daftar kandidat ditampilkan **20 nama per halaman**, dengan tombol
+   **‹ Sebelumnya / Berikutnya ›** dan keterangan "Menampilkan 1–20 dari 103" **milik daftar
+   itu sendiri** — berpindah halaman kandidat **tidak** menggeser halaman tabel **Daftar
+   Responden** di bawahnya. Kontrol halaman ini hanya muncul bila kandidatnya lebih dari 20.
+3. Gunakan tiga tombol pintas di atas daftar untuk mempercepat pemilihan (lihat tabel di bawah).
+4. Klik **Tugaskan Terpilih (N)**. Seluruh partisipan tercentang — dari halaman mana pun —
+   langsung menjadi responden DCS dalam **satu kali submit** (nama & label jabatan diisi
+   otomatis dari data partisipan).
+5. Responden muncul di **Daftar Responden** dengan **Status Isian** = **Belum diisi**.
+6. Untuk menghapus responden yang belum mengisi, klik **Hapus** (konfirmasi muncul).
+
+Arti ketiga tombol pintas:
+
+| Tombol                        | Arti                                                               |
+| ----------------------------- | ------------------------------------------------------------------ |
+| **Pilih semua (halaman ini)** | Centang seluruh nama pada halaman kandidat yang sedang tampil saja |
+| **Pilih semua (N)**           | Centang **seluruh** N kandidat, termasuk yang ada di halaman lain  |
+| **Batalkan pilihan**          | Kosongkan seluruh centangan, di semua halaman                      |
+
+!!! tip "Centangan bertahan saat berpindah halaman"
+Nama yang sudah dicentang di halaman 1 tetap tercentang setelah Anda pindah ke halaman 2 lalu
+kembali. Angka pada tombol **Tugaskan Terpilih (N)** selalu menghitung seluruh pilihan lintas
+halaman.
 
 ---
 

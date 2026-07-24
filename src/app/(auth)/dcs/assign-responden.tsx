@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
+import { DaftarPilihTerpaginasi } from "@/components/daftar-pilih-terpaginasi";
 import { formatAlasanSkip } from "@/lib/format/bulk-skip-alasan";
 import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
 import type { JabatanRead, PartisipanRead, DcsRespondenBulkResult } from "@/lib/api/schema";
@@ -18,6 +19,12 @@ interface Props {
  * Form penugasan (assign) responden DCS — multi-select, satu submit untuk
  * banyak partisipan sekaligus (`POST /api/v1/dcs/responden` menerima
  * `partisipan_ids: string[]`).
+ *
+ * Daftar kandidat dirender oleh `DaftarPilihTerpaginasi` sehingga terpaginasi
+ * sendiri, lepas dari paginasi URL (`?hlm_responden=`) milik tabel "Daftar
+ * Responden" di halaman yang sama. Himpunan `selected` tetap dipegang di sini
+ * agar centangan bertahan saat pengguna berpindah halaman kandidat, dan satu
+ * submit mengirim seluruh id terpilih lintas halaman.
  */
 export function AssignResponden({ partisipan, jabatan, accessToken }: Props) {
   const router = useRouter();
@@ -38,8 +45,13 @@ export function AssignResponden({ partisipan, jabatan, accessToken }: Props) {
     });
   }
 
-  function selectAll() {
-    setSelected(new Set(partisipan.map((p) => p.id)));
+  /** Tambahkan `ids` ke pilihan tanpa menghapus centangan halaman lain. */
+  function pilihSemua(ids: string[]) {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      for (const id of ids) next.add(id);
+      return next;
+    });
   }
 
   function clearAll() {
@@ -116,47 +128,22 @@ export function AssignResponden({ partisipan, jabatan, accessToken }: Props) {
         </div>
       )}
 
-      <div className="mb-3 flex items-center justify-between">
-        <p className="text-sm text-gray-500 dark:text-gray-400">
-          Pilih satu atau lebih partisipan untuk ditugaskan sebagai responden DCS.
-        </p>
-        <div className="flex gap-3 text-xs">
-          <button
-            type="button"
-            onClick={selectAll}
-            className="text-blue-600 hover:text-blue-800 hover:underline"
-          >
-            Pilih semua
-          </button>
-          <button
-            type="button"
-            onClick={clearAll}
-            className="text-gray-500 hover:text-gray-700 hover:underline"
-          >
-            Batalkan pilihan
-          </button>
-        </div>
-      </div>
+      <p className="mb-3 text-sm text-gray-500 dark:text-gray-400">
+        Pilih satu atau lebih partisipan untuk ditugaskan sebagai responden DCS. Centangan bertahan
+        saat berpindah halaman.
+      </p>
 
-      <div className="max-h-72 overflow-y-auto rounded-md border border-gray-100 dark:border-gray-700">
-        {partisipan.map((p) => (
-          <label
-            key={p.id}
-            className="flex cursor-pointer items-center gap-3 border-b border-gray-100 px-3 py-2 text-sm last:border-b-0 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800/50"
-          >
-            <input
-              type="checkbox"
-              checked={selected.has(p.id)}
-              onChange={() => toggle(p.id)}
-              className="size-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-            />
-            <span className="text-gray-900 dark:text-gray-100">{p.nama}</span>
-            <span className="text-xs text-gray-400">
-              {jabatanMap[p.jabatan_utama_id] ?? p.jabatan_utama_id}
-            </span>
-          </label>
-        ))}
-      </div>
+      <DaftarPilihTerpaginasi
+        items={partisipan.map((p) => ({
+          id: p.id,
+          label: p.nama,
+          keterangan: jabatanMap[p.jabatan_utama_id] ?? p.jabatan_utama_id,
+        }))}
+        terpilih={selected}
+        onToggle={toggle}
+        onPilihSemua={pilihSemua}
+        onBatalkan={clearAll}
+      />
 
       <div className="mt-4 flex items-center gap-3">
         <button

@@ -84,6 +84,37 @@ src/
 
 ## Revisi Desain
 
+### [2026-07-24] Dua daftar di satu layar = dua mekanisme paging; `limit: 500` bukan "ambil semua"
+
+Layar `/dcs` memuat dua daftar: kandidat penugasan (checkbox multi-select) dan tabel responden.
+Hanya yang kedua terpaginasi; yang pertama merender **seluruh** partisipan di kotak scroll
+`max-h-72` — pada produksi YPII (103 partisipan) praktis tak terbaca.
+
+- **Komponen bersama baru `src/components/daftar-pilih-terpaginasi.tsx`** (`DaftarPilihTerpaginasi`,
+  `"use client"`) — dirancang untuk dipakai ulang oleh layar WCP/OPM/TI/Time Study lewat item
+  backlog terpisah. Dua invariant yang membentuknya:
+  1. **Komponen hanya memegang state halaman; state pilihan tetap milik form pemanggil**
+     (`terpilih: Set<string>` + `onToggle`). Itulah yang membuat centangan bertahan lintas
+     halaman — form tidak pernah unmount, dan satu submit mengirim seluruh id terpilih.
+  2. **Paginasi kandidat digerakkan `<button>`, BUKAN URL/`<Link>`.** Navigasi lewat URL akan
+     me-render ulang Server Component induk (centangan hilang) **sekaligus** menggeser query
+     halaman tabel lain di layar yang sama. Aturannya: **satu mekanisme paging per daftar** —
+     `Pagination` (URL-driven, `?hlm*=`) untuk tabel server-side, `DaftarPilihTerpaginasi`
+     (state lokal) untuk daftar-pilih yang datanya sudah utuh di klien.
+  - Halaman aktif **di-clamp saat render** ke halaman terakhir yang masih ada bila `items`
+    menyusut (mis. setelah submit + `router.refresh()`), supaya daftar tak berhenti di halaman
+    kosong. Kontrol halaman tidak dirender bila muat satu halaman (aturan sama dengan `Pagination`).
+- **`limit: 500` telanjang dilarang di jalur baca — itu batas keras backend, bukan "ambil semua".**
+  `openapi.json` mematok `limit.maximum = 500`; koleksi di atas itu terpotong **senyap**, dan
+  untuk `/dcs` konsekuensinya bukan sekadar kosmetik: himpunan dedup "partisipan yang sudah
+  ditugaskan" ikut terpotong sehingga orang yang sudah jadi responden muncul lagi sebagai
+  kandidat. Pakai `ambilSemuaHalaman` (`src/lib/api/paginasi.ts`) — memanggil halaman demi
+  halaman sampai `total` tercapai, **tidak menangkap error** (callback wajib
+  `throw apiErrorDari(res)`, sejalan invariant jalur baca), dan melempar `Error` bila iterasi
+  melewati 50 halaman atau sebuah halaman kosong padahal `total` belum tercapai. Fetch **satu
+  halaman** untuk tabel (`limit: UKURAN_HALAMAN, offset`) tetap seperti apa adanya.
+- Detail keputusan: issue `cakrawala-tumbuh/anjab-abk-web-app#31`.
+
 ### [2026-07-19] 403/500 dari backend tidak lagi tampil sebagai crash Server Components
 
 Setelah backlog 026/031 menghentikan penelanan-senyap error API (`?? []`), error yang

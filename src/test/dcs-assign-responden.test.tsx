@@ -63,7 +63,7 @@ describe("AssignResponden (DCS)", () => {
       response: { headers: { get: () => "req-1" } },
     });
     render(<AssignResponden partisipan={partisipan} jabatan={jabatan} accessToken="tok" />);
-    fireEvent.click(screen.getByRole("button", { name: "Pilih semua" }));
+    fireEvent.click(screen.getByRole("button", { name: "Pilih semua (3)" }));
     await act(async () => {
       fireEvent.click(screen.getByRole("button", { name: /Tugaskan Terpilih/ }));
     });
@@ -92,7 +92,7 @@ describe("AssignResponden (DCS)", () => {
       response: { headers: { get: () => "req-1" } },
     });
     render(<AssignResponden partisipan={partisipan} jabatan={jabatan} accessToken="tok" />);
-    fireEvent.click(screen.getByRole("button", { name: "Pilih semua" }));
+    fireEvent.click(screen.getByRole("button", { name: "Pilih semua (3)" }));
     await act(async () => {
       fireEvent.click(screen.getByRole("button", { name: /Tugaskan Terpilih/ }));
     });
@@ -152,5 +152,28 @@ describe("AssignResponden (DCS)", () => {
     const checkboxesAfter = screen.getAllByRole("checkbox");
     expect(checkboxesAfter[0]).not.toBeChecked(); // par_a: berhasil dibuat → uncheck
     expect(checkboxesAfter[1]).toBeChecked(); // par_b: di-skip → tetap tercentang
+  });
+
+  it("pilihan lintas halaman kandidat terkirim dalam satu submit", async () => {
+    // 25 kandidat → dua halaman (20 + 5); satu dicentang di tiap halaman.
+    const banyak = Array.from({ length: 25 }, (_, i) => par(`par_${i + 1}`, `Partisipan ${i + 1}`));
+    post.mockResolvedValue({
+      data: { created: [], skipped: [] },
+      error: null,
+      response: { headers: { get: () => "req-1" } },
+    });
+    render(<AssignResponden partisipan={banyak} jabatan={jabatan} accessToken="tok" />);
+
+    fireEvent.click(screen.getAllByRole("checkbox")[0]); // par_1 (halaman 1)
+    fireEvent.click(screen.getByRole("button", { name: /Berikutnya/ }));
+    fireEvent.click(screen.getAllByRole("checkbox")[0]); // par_21 (halaman 2)
+
+    expect(screen.getByRole("button", { name: "Tugaskan Terpilih (2)" })).toBeInTheDocument();
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: /Tugaskan Terpilih/ }));
+    });
+
+    await waitFor(() => expect(post).toHaveBeenCalledTimes(1));
+    expect(post.mock.calls[0][1].body.partisipan_ids.sort()).toEqual(["par_1", "par_21"]);
   });
 });

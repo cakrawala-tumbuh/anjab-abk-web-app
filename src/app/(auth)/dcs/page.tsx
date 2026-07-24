@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { auth, isAdmin } from "@/lib/auth/auth";
 import { withServerAuth } from "@/lib/api/client";
 import { apiErrorDari } from "@/lib/api/errors";
+import { ambilSemuaHalaman } from "@/lib/api/paginasi";
 import { Pagination, UKURAN_HALAMAN, offsetHalaman } from "@/components/pagination";
 import type {
   DcsInstrumenRead,
@@ -35,38 +36,59 @@ const STATUS_LABEL: Record<string, { label: string; cls: string; desc: string }>
   },
 };
 
+/**
+ * Ambil seluruh data halaman DCS dalam satu gelombang.
+ *
+ * Ada dua jenis pengambilan di sini, sengaja dibedakan:
+ *
+ * - **Satu halaman** — tabel "Daftar Responden" (`limit: UKURAN_HALAMAN, offset`),
+ *   digerakkan query URL `?hlm_responden=`.
+ * - **Seluruh halaman** — `respondenAll` (untuk hitung submit & dedup kandidat),
+ *   `jabatan`, dan `partisipan`. Ketiganya memakai `ambilSemuaHalaman` karena
+ *   `limit: 500` adalah **batas keras** backend, bukan "ambil semua": begitu
+ *   koleksinya melewati 500 baris, potongannya senyap dan partisipan yang sudah
+ *   ditugaskan muncul lagi sebagai kandidat.
+ *
+ * @param accessToken - Bearer token sesi admin; diteruskan ke klien API.
+ * @param offsetResponden - Offset baris untuk tabel responden.
+ * @throws ApiError bila salah satu fetch gagal (jalur baca tidak menelan kegagalan).
+ */
 async function fetchPageData(accessToken: string | undefined, offsetResponden: number) {
   const client = withServerAuth(accessToken);
-  // `respondenPage` = satu halaman untuk tabel; `respondenAll` = himpunan penuh
-  // untuk hitung submit & dedup partisipan yang sudah ditugaskan (agregat yang
-  // tidak bisa dihitung dari satu halaman). Keduanya endpoint yang sama, beda limit.
-  const [instrumenRes, respondenRes, respondenAllRes, jabatanRes, partisipanRes] =
-    await Promise.all([
-      client.GET("/api/v1/dcs/instrumen"),
-      client.GET("/api/v1/dcs/responden", {
-        params: { query: { limit: UKURAN_HALAMAN, offset: offsetResponden } },
-      }),
-      client.GET("/api/v1/dcs/responden", { params: { query: { limit: 500 } } }),
-      client.GET("/api/v1/jabatan", { params: { query: { limit: 500 } } }),
-      client.GET("/api/v1/partisipan", { params: { query: { limit: 500 } } }),
-    ]);
+  const [instrumenRes, respondenRes, respondenAll, jabatan, partisipan] = await Promise.all([
+    client.GET("/api/v1/dcs/instrumen"),
+    client.GET("/api/v1/dcs/responden", {
+      params: { query: { limit: UKURAN_HALAMAN, offset: offsetResponden } },
+    }),
+    ambilSemuaHalaman<DcsRespondenRead>(async (limit, offset) => {
+      const res = await client.GET("/api/v1/dcs/responden", {
+        params: { query: { limit, offset } },
+      });
+      if (!res.data) throw apiErrorDari(res);
+      return { items: (res.data.items ?? []) as DcsRespondenRead[], total: res.data.total };
+    }),
+    ambilSemuaHalaman<JabatanRead>(async (limit, offset) => {
+      const res = await client.GET("/api/v1/jabatan", { params: { query: { limit, offset } } });
+      if (!res.data) throw apiErrorDari(res);
+      return { items: (res.data.items ?? []) as JabatanRead[], total: res.data.total };
+    }),
+    ambilSemuaHalaman<PartisipanRead>(async (limit, offset) => {
+      const res = await client.GET("/api/v1/partisipan", { params: { query: { limit, offset } } });
+      if (!res.data) throw apiErrorDari(res);
+      return { items: (res.data.items ?? []) as PartisipanRead[], total: res.data.total };
+    }),
+  ]);
   if (!instrumenRes.data) throw apiErrorDari(instrumenRes);
   // Daftar responden menentukan jumlah submit & kelayakan analisis — kegagalan
   // yang ditelan jadi `[]` menampilkan "0 dari 0 responden" seolah-olah benar.
   if (!respondenRes.data) throw apiErrorDari(respondenRes);
-  if (!respondenAllRes.data) throw apiErrorDari(respondenAllRes);
-  // `partisipan` = satu-satunya sumber pilihan form "Tugaskan Responden", dan
-  // `jabatan` melabeli tiap barisnya. Ditelan jadi `[]`, form itu tampil sebagai
-  // "semua partisipan sudah ditugaskan" — padahal daftarnya gagal diambil.
-  if (!jabatanRes.data) throw apiErrorDari(jabatanRes);
-  if (!partisipanRes.data) throw apiErrorDari(partisipanRes);
   return {
     instrumen: instrumenRes.data as DcsInstrumenRead,
     responden: (respondenRes.data.items ?? []) as DcsRespondenRead[],
     totalResponden: respondenRes.data.total,
-    respondenAll: (respondenAllRes.data.items ?? []) as DcsRespondenRead[],
-    jabatan: (jabatanRes.data.items ?? []) as JabatanRead[],
-    partisipan: (partisipanRes.data.items ?? []) as PartisipanRead[],
+    respondenAll,
+    jabatan,
+    partisipan,
   };
 }
 

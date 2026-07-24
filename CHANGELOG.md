@@ -7,6 +7,31 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+### Ditambahkan
+
+- **Paginasi tersendiri untuk daftar kandidat penugasan responden DCS** — daftar partisipan yang
+  bisa ditugaskan kini tampil 20 nama per halaman dengan kontrol **‹ Sebelumnya / Berikutnya ›**
+  dan teks rentang sendiri, terpisah dari paginasi URL (`?hlm_responden=`) milik tabel "Daftar
+  Responden". Sebelumnya seluruh partisipan dirender sekaligus di dalam kotak scroll `max-h-72`
+  — pada data produksi (103 partisipan) kotak itu praktis tak terbaca.
+  - Komponen bersama baru `src/components/daftar-pilih-terpaginasi.tsx`
+    (`DaftarPilihTerpaginasi`, Client Component): navigasi memakai tombol (bukan URL) sehingga
+    tidak me-render ulang Server Component induk maupun menggeser halaman tabel lain; state
+    pilihan tetap milik form pemanggil sehingga **centangan bertahan lintas halaman** dan satu
+    submit mengirim seluruh id terpilih. Tiga tombol pilih: "Pilih semua (halaman ini)",
+    "Pilih semua (N)", dan "Batalkan pilihan". Halaman aktif di-clamp bila daftar menyusut.
+
+### Diperbaiki
+
+- **Daftar di halaman `/dcs` tidak lagi terpotong diam-diam oleh batas `limit` backend** —
+  `limit: 500` adalah batas keras (`limit.maximum` di `openapi.json`), bukan "ambil semua":
+  begitu koleksi melewati 500 baris sisanya hilang tanpa pesan, dan himpunan dedup "sudah
+  ditugaskan" ikut terpotong sehingga partisipan yang sudah jadi responden muncul lagi sebagai
+  kandidat. Helper baru `ambilSemuaHalaman` (`src/lib/api/paginasi.ts`) mengambil halaman demi
+  halaman sampai `total` tercapai, meneruskan error apa adanya (tidak menelan jadi `[]`), dan
+  gagal keras bila backend tidak konsisten. Dipakai untuk `respondenAll`, `/api/v1/jabatan`, dan
+  `/api/v1/partisipan` di `/dcs`.
+
 ## [4.8.0] - 2026-07-23
 
 ### Ditambahkan
