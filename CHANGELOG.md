@@ -9,6 +9,20 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ### Ditambahkan
 
+- **Petunjuk pengisian Time Study kini mendefinisikan tiap kategori aktivitas & Kategori Hari
+  dan menambah contoh log terisi** (issue #38) — sebelumnya petunjuk ini hanya **mendaftar**
+  enam kategori aktivitas dan tiga Kategori Hari tanpa mendefinisikan satu pun, dan
+  sama sekali tidak punya blok "Contoh Pengisian (ilustrasi)" seperti DCS/WCP/OPM.
+  - Keenam kategori (Pekerjaan Inti, Asesmen Karakter, Pengembangan Diri, Pekerjaan
+    Strategis, Administrasi, Istirahat Terstruktur) kini dijelaskan dengan definisi + contoh
+    aktivitas konkret.
+  - Ketiga Kategori Hari (Hijau/Kuning/Merah) kini disertai kriteria, bukan sekadar nama
+    "Hari Biasa/Sibuk/Puncak".
+  - Blok baru "Contoh Pengisian (ilustrasi)" — satu kartu log statis (Waktu Masuk 07.00,
+    Waktu Keluar 15.30, Kategori Hari Hijau, beserta jam/menit keenam kategori) dalam bentuk
+    baris "label kategori — jam & menit", bukan pil angka Likert seperti DCS/WCP/OPM (Time
+    Study tidak memakai skala 1–5).
+
 - **Petunjuk pengisian OPM kini menjelaskan makna kelima nilai (1–5) tiap dimensi dan
   menambah contoh kontras bernilai rendah** (issue #37) — blok "Arti Tiga Dimensi"
   sebelumnya hanya menyebut anchor ujung (1 dan 5), meniru anchor kosong 2–4 di form,

@@ -69,10 +69,17 @@ Halaman ini juga menampilkan statistik **Log Harian Terisi** (jumlah log) dan ta
    menampilkan tabel log: **Tanggal**, **Masuk–Keluar**, **Inti**, **Karakter**,
    **Pengembangan**, **Strategis**, **Administrasi**, **Istirahat**, **Warna Hari**, **Aksi**.
 2. Saat penugasan aktif dan belum ada log, pop-up **Petunjuk Pengisian** muncul otomatis —
-   berisi cara mencatat log harian, enam kategori aktivitas, dan arti Kategori Hari
-   (Hijau/Kuning/Merah). Tutup dengan tombol **Saya Mengerti**, ikon **X**, klik area luar
-   pop-up, atau tombol **Esc**. Pop-up ini dapat dibuka lagi kapan saja lewat tombol
-   **Petunjuk Pengisian** di pojok kanan atas halaman.
+   berisi cara mencatat log harian, **definisi & contoh aktivitas** untuk tiap kategori
+   (mis. **Pekerjaan Inti** — tugas utama jabatan yang langsung melayani murid atau mandat
+   pokok jabatan, contoh: mengajar di kelas, membimbing praktik, melayani wali murid), serta
+   **kriteria** ketiga Kategori Hari (**Hijau/Hari Biasa** — beban seperti hari kerja pada
+   umumnya; **Kuning/Hari Sibuk** — ada agenda tambahan di luar rutinitas; **Merah/Hari
+   Puncak** — beban tertinggi seperti pekan ujian, akreditasi, PPDB, atau awal tahun ajaran).
+   Pop-up ini juga memuat satu kartu **"Contoh Pengisian (ilustrasi)"** — log terisi penuh
+   (Waktu Masuk 07.00, Waktu Keluar 15.30, Kategori Hari Hijau, beserta jam/menit tiap
+   kategori) sebagai contoh cara mendistribusikan waktu. Tutup dengan tombol **Saya
+   Mengerti**, ikon **X**, klik area luar pop-up, atau tombol **Esc**. Pop-up ini dapat
+   dibuka lagi kapan saja lewat tombol **Petunjuk Pengisian** di pojok kanan atas halaman.
 3. Klik **+ Tambah Log** (atau **Tambah Log Hari Ini** bila belum ada log). Tombol ini
    hanya muncul selama penugasan **Aktif**.
 4. Isi formulir:
