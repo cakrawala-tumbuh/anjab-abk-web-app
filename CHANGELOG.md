@@ -7,6 +7,8 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [4.9.0] - 2026-07-24
+
 ### Ditambahkan
 
 - **Petunjuk pengisian Time Study kini mendefinisikan tiap kategori aktivitas & Kategori Hari
