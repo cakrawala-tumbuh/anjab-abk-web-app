@@ -9,6 +9,12 @@ describe("PetunjukTahap1", () => {
     expect(screen.getAllByText(/Uraian Tugas/).length).toBeGreaterThan(0);
   });
 
+  it("defaultOpen=true → blok Kapan Mencentang dan Contoh Pengisian", () => {
+    render(<PetunjukTahap1 defaultOpen={true} />);
+    expect(screen.getByText("Kapan Mencentang")).toBeInTheDocument();
+    expect(screen.getByText("Contoh Pengisian (ilustrasi)")).toBeInTheDocument();
+  });
+
   it("defaultOpen=false → dialog tidak ter-render", () => {
     render(<PetunjukTahap1 defaultOpen={false} />);
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();

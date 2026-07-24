@@ -9,6 +9,19 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ### Ditambahkan
 
+- **Petunjuk pengisian Task Inventory Tahap 1/2/3 disetarakan kedalamannya dengan DCS & WCP**
+  (issue #36) — ketiga komponen sebelumnya jauh lebih tipis (Tahap 1/2 tanpa blok "arti
+  pilihan" maupun contoh sama sekali; Tahap 3 hanya mendaftar nilai opsi CalHR tanpa
+  penjelasan), sehingga partisipan menebak isian CalHR yang paling menentukan hasil ABK.
+  - **Tahap 1**: blok baru "Kapan Mencentang" (kriteria konkret memilih sebuah task) + "Contoh
+    Pengisian (ilustrasi)" — kaskade tiga level Tugas Pokok → Detil Tugas → Uraian Tugas
+    dengan checkbox statis.
+  - **Tahap 2**: blok baru "Arti Rasio & Cara Memutuskan" (makna `N/M` + pedoman Ya/Tidak) +
+    "Contoh Pengisian (ilustrasi)" — dua baris contoh dengan Ya/Tidak tersorot.
+  - **Tahap 3**: blok "Arti Kolom CalHR" diperluas menjadi makna tiap nilai satu per satu
+    (Sumber Bukti, Kondisi, VA Type — dibaca dari `@/components/calhr.ts`) + "Contoh Pengisian
+    (ilustrasi)" — satu kartu tugas dengan ketujuh kolom terisi.
+
 - **Paginasi tersendiri untuk daftar kandidat penugasan responden DCS** — daftar partisipan yang
   bisa ditugaskan kini tampil 20 nama per halaman dengan kontrol **‹ Sebelumnya / Berikutnya ›**
   dan teks rentang sendiri, terpisah dari paginasi URL (`?hlm_responden=`) milik tabel "Daftar

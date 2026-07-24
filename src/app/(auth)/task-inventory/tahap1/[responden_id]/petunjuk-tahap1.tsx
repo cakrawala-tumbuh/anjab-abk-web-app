@@ -6,6 +6,20 @@ interface Props {
   defaultOpen: boolean;
 }
 
+/**
+ * Konten petunjuk pengisian Tahap 1 Task Inventory (seleksi relevansi tugas),
+ * dirender di dalam {@link PetunjukModal}.
+ *
+ * Setara kedalaman dengan `PetunjukDcs`/`PetunjukWcp` (issue backlog #36): di
+ * samping "Petunjuk Umum" & "Cara Mengisi" yang sudah ada sejak backlog 049,
+ * komponen ini menambahkan blok "Kapan Mencentang" (kriteria konkret memilih
+ * sebuah task) dan blok "Contoh Pengisian (ilustrasi)" — kaskade tiga level
+ * (Tugas Pokok → Detil Tugas → Uraian Tugas) dengan checkbox statis (☑/☐),
+ * meniru gaya kartu contoh non-interaktif `PetunjukDcs`.
+ *
+ * Isi teks & data contoh mengikuti `## Keputusan Desain` issue #36 apa adanya
+ * — bukan konten yang boleh dikarang ulang.
+ */
 export function PetunjukTahap1({ defaultOpen }: Props) {
   return (
     <PetunjukModal title="Petunjuk — Tahap 1: Seleksi Relevansi" defaultOpen={defaultOpen}>
@@ -39,6 +53,24 @@ export function PetunjukTahap1({ defaultOpen }: Props) {
       </div>
 
       <div>
+        <h3 className="mb-2 font-medium text-gray-900 dark:text-gray-100">Kapan Mencentang</h3>
+        <ul className="list-disc space-y-1.5 pl-5">
+          <li>
+            <strong>Centang</strong> bila tugas <strong>benar-benar bagian pekerjaan Anda</strong>{" "}
+            walau jarang dilakukan.
+          </li>
+          <li>
+            <strong>Jangan centang</strong> bila itu tugas rekan/jabatan lain, atau Anda hanya
+            pernah sekali membantu.
+          </li>
+          <li>
+            <strong>Bila ragu, centang</strong> — task yang tidak dipilih bulat oleh seluruh anggota
+            panel akan diputuskan koordinator di Tahap 2.
+          </li>
+        </ul>
+      </div>
+
+      <div>
         <h3 className="mb-2 font-medium text-gray-900 dark:text-gray-100">Cara Mengisi</h3>
         <ol className="list-decimal space-y-1 pl-5">
           <li>
@@ -54,6 +86,41 @@ export function PetunjukTahap1({ defaultOpen }: Props) {
             &ldquo;Kirim Seleksi&rdquo;.
           </li>
         </ol>
+      </div>
+
+      <div>
+        <h3 className="mb-2 font-medium text-gray-900 dark:text-gray-100">
+          Contoh Pengisian (ilustrasi)
+        </h3>
+        <div className="rounded-lg border border-gray-100 bg-white p-4 dark:border-gray-700 dark:bg-gray-800/50">
+          <p className="mb-2 text-xs font-medium text-gray-400">Tugas Pokok</p>
+          <ul className="space-y-1 pl-1 text-sm text-gray-800 dark:text-gray-200">
+            <li>☑ Perencanaan Pembelajaran</li>
+            <li>☐ Pengelolaan Sarana Laboratorium</li>
+          </ul>
+
+          <p className="mb-2 mt-4 pl-4 text-xs font-medium text-gray-400">
+            ↳ Detil Tugas (turunan &ldquo;Perencanaan Pembelajaran&rdquo;)
+          </p>
+          <ul className="space-y-1 pl-5 text-sm text-gray-800 dark:text-gray-200">
+            <li>☑ Menyusun perangkat ajar</li>
+          </ul>
+
+          <p className="mb-2 mt-4 pl-8 text-xs font-medium text-gray-400">
+            ↳ Uraian Tugas (turunan &ldquo;Menyusun perangkat ajar&rdquo;)
+          </p>
+          <ul className="space-y-1 pl-9 text-sm text-gray-800 dark:text-gray-200">
+            <li>☑ Menyusun modul ajar per pekan</li>
+          </ul>
+
+          <p className="mt-3 text-xs italic text-gray-500 dark:text-gray-400">
+            &ldquo;Pengelolaan Sarana Laboratorium&rdquo; tidak dicentang, sehingga Detil Tugas dan
+            Uraian Tugas turunannya tidak akan muncul sama sekali di level berikutnya.
+          </p>
+        </div>
+        <p className="mt-2 text-xs italic text-gray-500 dark:text-gray-400">
+          Contoh di atas hanya ilustrasi — pilih sesuai tugas Anda yang sebenarnya.
+        </p>
       </div>
     </PetunjukModal>
   );

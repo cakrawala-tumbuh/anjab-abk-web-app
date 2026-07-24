@@ -9,6 +9,13 @@ describe("PetunjukTahap2", () => {
     expect(screen.getAllByText(/unanimous|partial/i).length).toBeGreaterThan(0);
   });
 
+  it("defaultOpen=true → contoh rasio 4/5 dan 1/5 tersorot Ya/Tidak", () => {
+    render(<PetunjukTahap2 defaultOpen={true} />);
+    expect(screen.getByText("Contoh Pengisian (ilustrasi)")).toBeInTheDocument();
+    expect(screen.getAllByText(/4\/5/).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/1\/5/).length).toBeGreaterThan(0);
+  });
+
   it("defaultOpen=false → dialog tidak ter-render", () => {
     render(<PetunjukTahap2 defaultOpen={false} />);
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();

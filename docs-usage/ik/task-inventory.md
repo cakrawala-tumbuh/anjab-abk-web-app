@@ -106,10 +106,12 @@ Saat status **TAHAP2**, muncul kotak _Tahap 2 — Review Koordinator_ dengan tom
 
 1. Dari detail analisis (status TAHAP2), klik **Buka Review Koordinator**.
 2. Bagi koordinator (atau admin) saat status masih `TAHAP2`, pop-up **Petunjuk** muncul
-   otomatis — menjelaskan bahwa yang direview adalah task **partial** (tidak unanimous), arti
-   rasio pemilih, serta cara menetapkan Ya/Tidak. Tutup dengan tombol **Saya Mengerti**, ikon
-   **X**, klik area luar pop-up, atau tombol **Esc**; dapat dibuka lagi lewat tombol
-   **Petunjuk Pengisian** di pojok kanan atas halaman.
+   otomatis — menjelaskan bahwa yang direview adalah task **partial** (tidak unanimous), blok
+   **Arti Rasio & Cara Memutuskan** (makna `N/M`, kapan memilih Ya vs Tidak), serta blok
+   **Contoh Pengisian (ilustrasi)** berisi dua baris contoh (_"Menyusun laporan bulanan wali
+   kelas"_ 4/5 → Ya, _"Mengelola inventaris laboratorium"_ 1/5 → Tidak). Tutup dengan tombol
+   **Saya Mengerti**, ikon **X**, klik area luar pop-up, atau tombol **Esc**; dapat dibuka lagi
+   lewat tombol **Petunjuk Pengisian** di pojok kanan atas halaman.
 3. Halaman menampilkan tabel task **partial** (kolom **Task**, **Pilih** = jumlah pemilih,
    **Setujui?**). Kolom **Task** menampilkan **nama uraian tugas** (mis. _"Menyusun evaluasi
    karyawan"_) dengan kode task kecil di sampingnya sebagai keterangan.
@@ -140,9 +142,12 @@ Partisipan yang bukan anggota panel akan mendapat halaman 404.
 1. Buka **Isi Tahap 1** dari tabel responden (atau dari **Kuesioner Saya**).
 2. Selama seleksi belum dikirim (dan status masih `TAHAP1`), pop-up **Petunjuk** muncul
    otomatis — menjelaskan seleksi bertingkat 3 level (Tugas Pokok → Detil Tugas → Uraian
-   Tugas) dan bahwa **Kirim Seleksi** mengunci pilihan. Tutup dengan tombol **Saya Mengerti,
-   Mulai Mengisi**, ikon **X**, klik area luar pop-up, atau tombol **Esc**; dapat dibuka lagi
-   lewat tombol **Petunjuk Pengisian** di pojok kanan atas halaman.
+   Tugas), blok **Kapan Mencentang** (centang bila benar-benar bagian pekerjaan Anda walau
+   jarang; jangan centang bila milik rekan/jabatan lain; bila ragu, centang), blok **Contoh
+   Pengisian (ilustrasi)** berupa kaskade tiga level ber-checkbox statis, dan bahwa
+   **Kirim Seleksi** mengunci pilihan. Tutup dengan tombol **Saya Mengerti, Mulai Mengisi**,
+   ikon **X**, klik area luar pop-up, atau tombol **Esc**; dapat dibuka lagi lewat tombol
+   **Petunjuk Pengisian** di pojok kanan atas halaman.
 3. Seleksi dilakukan dalam **3 langkah kaskade**:
    - **Langkah 1 — Tugas Pokok**: centang tugas pokok yang relevan, klik
      **Lanjut ke Detil Tugas**.
@@ -162,10 +167,15 @@ Setelah dikirim, seleksi Tahap 1 terkunci. Status responden menjadi **✓ Selesa
 
 1. Buka **Isi Tahap 3** dari tabel responden (atau dari **Kuesioner Saya**).
 2. Selama detail belum dikirim (dan status masih `TAHAP3`), pop-up **Petunjuk** muncul
-   otomatis — menjelaskan arti kolom CalHR, isian standar yang otomatis terpakai saat task
-   dicentang, dan bahwa **Kirim Detail** mengunci isian. Tutup dengan tombol **Saya Mengerti,
-   Mulai Mengisi**, ikon **X**, klik area luar pop-up, atau tombol **Esc**; dapat dibuka lagi
-   lewat tombol **Petunjuk Pengisian** di pojok kanan atas halaman.
+   otomatis — menjelaskan **makna tiap nilai** kolom CalHR satu per satu (bukan sekadar
+   daftar opsi): Sumber Bukti (Formal/Aktual/Keduanya), Kondisi (Baseline/Peak/Both), Durasi,
+   Jam/minggu, Jam peak (total 4 pekan periode puncak, bukan per pekan), dan VA Type
+   (VA-Core/VA-Enable/NVA-Residual/Context-Dependent/Needs Validation) — ditutup blok
+   **Contoh Pengisian (ilustrasi)** satu kartu tugas dengan ketujuh kolom terisi. Juga
+   menjelaskan isian standar yang otomatis terpakai saat task dicentang, dan bahwa
+   **Kirim Detail** mengunci isian. Tutup dengan tombol **Saya Mengerti, Mulai Mengisi**,
+   ikon **X**, klik area luar pop-up, atau tombol **Esc**; dapat dibuka lagi lewat tombol
+   **Petunjuk Pengisian** di pojok kanan atas halaman.
 3. Untuk tiap task yang Anda kerjakan, **centang** kotaknya. Formulir rincian muncul:
    - **Sumber Bukti**: Formal / Aktual / Keduanya
    - **Kondisi**: Baseline / Peak / Both
