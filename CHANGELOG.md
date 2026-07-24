@@ -9,6 +9,14 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ### Ditambahkan
 
+- **Petunjuk pengisian OPM kini menjelaskan makna kelima nilai (1–5) tiap dimensi dan
+  menambah contoh kontras bernilai rendah** (issue #37) — blok "Arti Tiga Dimensi"
+  sebelumnya hanya menyebut anchor ujung (1 dan 5), meniru anchor kosong 2–4 di form,
+  sehingga nilai tengah tidak punya makna eksplisit bagi partisipan. Kini kelima nilai
+  Importance/Frequency/Criticality dijabarkan satu per satu. Blok "Contoh Pengisian" yang
+  sebelumnya hanya satu contoh bernilai tinggi (I=5, F=4, C=4) kini menambahkan Contoh B
+  bernilai rendah (I=3, F=1, C=2) supaya nilai rendah terbaca sebagai jawaban yang sah.
+
 - **Petunjuk pengisian Task Inventory Tahap 1/2/3 disetarakan kedalamannya dengan DCS & WCP**
   (issue #36) — ketiga komponen sebelumnya jauh lebih tipis (Tahap 1/2 tanpa blok "arti
   pilihan" maupun contoh sama sekali; Tahap 3 hanya mendaftar nilai opsi CalHR tanpa

@@ -102,11 +102,13 @@ sekaligus**:
 1. Buka **Kuesioner Saya** → pada kartu **OPM** yang berstatus terbuka & belum diisi, klik
    **Isi Sekarang**.
 2. Selama kuesioner belum dikirim, pop-up **Petunjuk Pengisian** muncul otomatis saat halaman
-   dibuka — berisi arti tiga dimensi (Importance/Frequency/Criticality), aturan bahwa tiap task
-   wajib dinilai ketiga dimensinya, peringatan bahwa **Simpan** melewati task yang belum
-   lengkap, dan satu contoh pengisian. Tutup dengan tombol **Saya Mengerti, Mulai Mengisi**,
-   ikon **X**, klik area luar pop-up, atau tombol **Esc**. Pop-up ini dapat dibuka lagi kapan
-   saja lewat tombol **Petunjuk Pengisian** di pojok kanan atas halaman.
+   dibuka — berisi arti **kelima nilai (1–5)** pada tiap dimensi (Importance/Frequency/
+   Criticality), aturan bahwa tiap task wajib dinilai ketiga dimensinya, peringatan bahwa
+   **Simpan** melewati task yang belum lengkap, dan **dua contoh pengisian kontras**
+   (Contoh A bernilai tinggi, Contoh B bernilai rendah — menegaskan bahwa nilai rendah
+   adalah jawaban yang sah, bukan kesalahan pengisian). Tutup dengan tombol **Saya Mengerti,
+   Mulai Mengisi**, ikon **X**, klik area luar pop-up, atau tombol **Esc**. Pop-up ini dapat
+   dibuka lagi kapan saja lewat tombol **Petunjuk Pengisian** di pojok kanan atas halaman.
 3. Kuesioner tersusun **per task**. Untuk setiap task, isi tiga dimensi (skala 1–5):
    - **Importance** — seberapa penting (1 Tidak penting … 5 Sangat penting)
    - **Frequency** — seberapa sering (1 Insidental … 5 Sangat sering/Harian)

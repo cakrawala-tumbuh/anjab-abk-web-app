@@ -13,4 +13,14 @@ describe("PetunjukOpm", () => {
     render(<PetunjukOpm defaultOpen={false} />);
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
+
+  it("merender makna nilai 2-4 (bukan hanya anchor 1 & 5) dan kedua contoh kontras", () => {
+    render(<PetunjukOpm defaultOpen={true} />);
+    expect(screen.getAllByText(/Bulanan/).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/Dampak sedang/).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/Beberapa kali dalam setahun/).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/Contoh A\./).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/Contoh B\./).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/Mendampingi lomba tingkat kecamatan/).length).toBeGreaterThan(0);
+  });
 });
