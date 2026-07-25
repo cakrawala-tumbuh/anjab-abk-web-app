@@ -9,7 +9,7 @@ import { z } from "zod";
 import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
 import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
-import { FREKUENSI, KONDISI, SUMBER_BUKTI, VA_TYPE } from "@/components/calhr";
+import { FREKUENSI, KONDISI, SUMBER_BUKTI, VA_TYPE_PREFILL } from "@/components/calhr";
 import type { DetilTugasRead, JabatanRead, TugasPokokRead } from "@/lib/api/schema";
 
 const schema = z.object({
@@ -29,7 +29,7 @@ const schema = z.object({
   std_durasi_per_kali: z.string().max(100).optional(),
   std_jam_per_minggu: z.number().min(0).optional(),
   std_peak4w_hours: z.number().min(0).optional(),
-  std_va_type: z.enum(VA_TYPE).optional(),
+  std_va_type: z.enum(VA_TYPE_PREFILL).optional(),
 });
 
 type FormValues = z.infer<typeof schema>;
@@ -438,7 +438,7 @@ export function TambahUraianTugasForm({
               className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             >
               <option value="">— tidak ada standar —</option>
-              {VA_TYPE.map((v) => (
+              {VA_TYPE_PREFILL.map((v) => (
                 <option key={v} value={v}>
                   {v}
                 </option>

@@ -6,10 +6,25 @@ import { z } from "zod";
 import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
 import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
-import { FREKUENSI, KONDISI, SUMBER_BUKTI, VA_TYPE } from "@/components/calhr";
+import { FREKUENSI, KONDISI, SUMBER_BUKTI, VA_TYPE_FINAL } from "@/components/calhr";
 import type { TiDetailItem, TiDetailRead, TiTaskTerpilihRead } from "@/lib/api/schema";
 
-/** Skema validasi satu entri detail CalHR (dipakai juga di unit test). */
+/** `true` bila `v` termasuk 3 nilai final kanonik ({@link VA_TYPE_FINAL}) — dipakai untuk
+ * membedakan baris yang sudah sah difinalisasi dari yang masih `"Context-Dependent"`
+ * (prefill belum diselesaikan, tidak boleh dikirim sebagai jawaban akhir Tahap 3).
+ */
+function isVaTypeFinal(v: string): v is (typeof VA_TYPE_FINAL)[number] {
+  return (VA_TYPE_FINAL as readonly string[]).includes(v);
+}
+
+/**
+ * Skema validasi satu entri detail CalHR (dipakai juga di unit test).
+ *
+ * `va_type` dipersempit ke {@link VA_TYPE_FINAL} (3 nilai kanonik) — `"Context-Dependent"`
+ * bukan jawaban final yang sah untuk Tahap 3; backend menolaknya (422) saat submit
+ * (issue `cakrawala-tumbuh/anjab-abk-web-app#39`). Baris dengan `va_type` di luar 3 nilai
+ * ini gagal parse di sini, sehingga submit klien terblokir sebelum sampai ke backend.
+ */
 export const detailItemSchema = z.object({
   task_kode: z.string().min(1),
   sumber_bukti: z.enum(["Formal", "Aktual", "Keduanya"]),
@@ -18,13 +33,7 @@ export const detailItemSchema = z.object({
   durasi_per_kali: z.number().int().min(0, "Durasi wajib diisi, ≥ 0"),
   jam_per_minggu: z.number().min(0, "Jam/minggu ≥ 0"),
   peak4w_hours: z.number().min(0).default(0),
-  va_type: z.enum([
-    "VA-Core",
-    "VA-Enable",
-    "NVA-Residual",
-    "Context-Dependent",
-    "Needs Validation",
-  ]),
+  va_type: z.enum(VA_TYPE_FINAL),
   setuju_standar: z.boolean().default(true),
   catatan: z.string().max(500).optional(),
 });
@@ -128,7 +137,14 @@ export function DetailForm({ respondenId, tasks, detailAwal, accessToken }: Prop
   const checkedCount = Object.values(rows).filter((r) => r.checked).length;
   const adaTaskBerstandar = tasks.some(punyaStandar);
 
-  /** Kumpulkan entri detail yang ditandai & valid; null bila ada isian tidak valid. */
+  /**
+   * Kumpulkan entri detail yang ditandai & valid; `null` bila ada isian tidak valid.
+   *
+   * `va_type` divalidasi terhadap {@link VA_TYPE_FINAL} lewat `detailItemSchema` — baris
+   * yang masih `"Context-Dependent"` (prefill belum diselesaikan) gagal parse di sini,
+   * sehingga submit klien terblokir dengan pesan yang menyebut task & VA Type secara
+   * spesifik, bukan pesan generik (issue backlog #39).
+   */
   function buildDetailPayload(): { detail: TiDetailItem[] } | null {
     const detail: TiDetailItem[] = [];
     for (const t of tasks) {
@@ -146,7 +162,12 @@ export function DetailForm({ respondenId, tasks, detailAwal, accessToken }: Prop
         setuju_standar: r.setuju_standar,
       });
       if (!parsed.success) {
-        setError(`Periksa isian pada task "${t.uraian_tugas}".`);
+        const vaTypeInvalid = parsed.error.issues.some((iss) => iss.path[0] === "va_type");
+        setError(
+          vaTypeInvalid
+            ? `Task "${t.uraian_tugas}": pilih VA Type final (VA-Core/VA-Enable/NVA-Residual) — "Context-Dependent" belum final.`
+            : `Periksa isian pada task "${t.uraian_tugas}".`,
+        );
         return null;
       }
       detail.push(parsed.data as TiDetailItem);
@@ -418,15 +439,23 @@ export function DetailForm({ respondenId, tasks, detailAwal, accessToken }: Prop
                     </label>
                     <label className="text-xs text-gray-600">
                       VA Type
+                      {!isVaTypeFinal(r.va_type) && (
+                        <span className="ml-1 font-normal text-amber-600">— wajib dipilih</span>
+                      )}
                       <select
-                        value={r.va_type}
+                        value={isVaTypeFinal(r.va_type) ? r.va_type : ""}
                         disabled={terkunci}
                         onChange={(e) =>
                           update(t.kode, { va_type: e.target.value as RowState["va_type"] })
                         }
                         className={`mt-1 block w-full ${selectCls}`}
                       >
-                        {VA_TYPE.map((v) => (
+                        {!isVaTypeFinal(r.va_type) && (
+                          <option value="" disabled>
+                            — pilih salah satu —
+                          </option>
+                        )}
+                        {VA_TYPE_FINAL.map((v) => (
                           <option key={v}>{v}</option>
                         ))}
                       </select>

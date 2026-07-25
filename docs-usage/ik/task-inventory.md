@@ -170,10 +170,10 @@ Setelah dikirim, seleksi Tahap 1 terkunci. Status responden menjadi **✓ Selesa
    otomatis — menjelaskan **makna tiap nilai** kolom CalHR satu per satu (bukan sekadar
    daftar opsi): Sumber Bukti (Formal/Aktual/Keduanya), Kondisi (Baseline/Peak/Both), Durasi,
    Jam/minggu, Jam peak (total 4 pekan periode puncak, bukan per pekan), dan VA Type
-   (VA-Core/VA-Enable/NVA-Residual/Context-Dependent/Needs Validation) — ditutup blok
-   **Contoh Pengisian (ilustrasi)** satu kartu tugas dengan ketujuh kolom terisi. Juga
-   menjelaskan isian standar yang otomatis terpakai saat task dicentang, dan bahwa
-   **Kirim Detail** mengunci isian. Tutup dengan tombol **Saya Mengerti, Mulai Mengisi**,
+   (VA-Core/VA-Enable/NVA-Residual/Context-Dependent — `"Needs Validation"` sudah dihapus dari
+   katalog) — ditutup blok **Contoh Pengisian (ilustrasi)** satu kartu tugas dengan ketujuh
+   kolom terisi. Juga menjelaskan isian standar yang otomatis terpakai saat task dicentang, dan
+   bahwa **Kirim Detail** mengunci isian. Tutup dengan tombol **Saya Mengerti, Mulai Mengisi**,
    ikon **X**, klik area luar pop-up, atau tombol **Esc**; dapat dibuka lagi lewat tombol
    **Petunjuk Pengisian** di pojok kanan atas halaman.
 3. Untuk tiap task yang Anda kerjakan, **centang** kotaknya. Formulir rincian muncul:
@@ -186,8 +186,12 @@ Setelah dikirim, seleksi Tahap 1 terkunci. Status responden menjadi **✓ Selesa
      standar" dicentang
    - **Jam/minggu** (default 1)
    - **Jam peak (4 minggu)** (default 0)
-   - **VA Type**: VA-Core / VA-Enable / NVA-Residual
-4. Klik **Kirim Detail**.
+   - **VA Type**: VA-Core / VA-Enable / NVA-Residual — hanya 3 tipe **final** ini yang dapat
+     dipilih di sini. Bila katalog standar tugas ini bertanda `Context-Dependent`, kolom
+     tampil **belum terisi** ("— wajib dipilih") dan Anda wajib memilih salah satu dari
+     ketiganya sebelum tugas ini bisa dikirim.
+4. Klik **Kirim Detail**. Bila masih ada tugas ber-VA Type `Context-Dependent` yang belum
+   diselesaikan, pengiriman ditolak dengan pesan yang menyebut tugas mana yang dimaksud.
 
 !!! danger "Tidak dapat diubah"
 Setelah dikirim, detail Tahap 3 terkunci. Tandai minimal satu tugas sebelum mengirim.

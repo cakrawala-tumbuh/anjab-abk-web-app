@@ -1,7 +1,7 @@
 "use client";
 
 import { PetunjukModal } from "@/components/petunjuk-modal";
-import { SUMBER_BUKTI, KONDISI, VA_TYPE } from "@/components/calhr";
+import { SUMBER_BUKTI, KONDISI, VA_TYPE_PREFILL } from "@/components/calhr";
 
 /**
  * Makna tiap nilai `SUMBER_BUKTI` (`@/components/calhr`). Nilai opsinya sendiri
@@ -22,13 +22,18 @@ const KONDISI_MAKNA: Record<(typeof KONDISI)[number], string> = {
   Both: "terjadi di kedua kondisi",
 };
 
-/** Makna tiap nilai `VA_TYPE` (`@/components/calhr`). */
-const VA_TYPE_MAKNA: Record<(typeof VA_TYPE)[number], string> = {
+/**
+ * Makna tiap nilai `VA_TYPE_PREFILL` (`@/components/calhr`). `"Context-Dependent"`
+ * dijelaskan sebagai nilai awal katalog yang HARUS diselesaikan ke salah satu dari 3
+ * nilai final (VA-Core/VA-Enable/NVA-Residual) saat mengisi Tahap 3 — bukan pilihan
+ * yang bisa dikirim sebagai jawaban akhir (issue backlog #39).
+ */
+const VA_TYPE_MAKNA: Record<(typeof VA_TYPE_PREFILL)[number], string> = {
   "VA-Core": "inti, langsung menghasilkan nilai bagi murid/layanan utama",
   "VA-Enable": "pendukung yang memungkinkan pekerjaan inti berjalan",
   "NVA-Residual": "tidak menambah nilai tapi tetap harus dilakukan",
-  "Context-Dependent": "nilainya bergantung konteks/hasil",
-  "Needs Validation": "belum bisa diputuskan, perlu validasi lanjutan",
+  "Context-Dependent":
+    "nilai awal dari katalog yang belum final — wajib diselesaikan ke salah satu dari tiga nilai lain sebelum Tahap 3 dapat dikirim",
 };
 
 interface Props {
@@ -51,8 +56,10 @@ interface Props {
  *
  * Isi teks & data contoh mengikuti `## Keputusan Desain` issue #36 apa adanya
  * — bukan konten yang boleh dikarang ulang. Nilai opsi (`Formal`/`Aktual`/
- * `Keduanya`, `Baseline`/`Peak`/`Both`, lima `VA_TYPE`) tetap dibaca dari
- * `@/components/calhr.ts`, bukan diketik ulang sebagai literal.
+ * `Keduanya`, `Baseline`/`Peak`/`Both`, 4 `VA_TYPE_PREFILL`) tetap dibaca dari
+ * `@/components/calhr.ts`, bukan diketik ulang sebagai literal. Sejak issue #39,
+ * panel ini memakai set prefill (4 nilai, termasuk `"Context-Dependent"`) — bukan
+ * set final Tahap 3 (3 nilai) yang dipakai selektor `detail-form.tsx`.
  */
 export function PetunjukTahap3({ defaultOpen }: Props) {
   return (
@@ -119,7 +126,7 @@ export function PetunjukTahap3({ defaultOpen }: Props) {
           <li>
             <strong>VA Type</strong>
             <ul className="mt-1 list-disc space-y-1 pl-5 font-normal">
-              {VA_TYPE.map((v) => (
+              {VA_TYPE_PREFILL.map((v) => (
                 <li key={v}>
                   <strong>{v}</strong> = {VA_TYPE_MAKNA[v]}
                 </li>

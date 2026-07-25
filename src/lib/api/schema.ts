@@ -4641,7 +4641,7 @@ export interface components {
             /** Std Peak4W Hours */
             std_peak4w_hours?: number | null;
             /** Std Va Type */
-            std_va_type?: ("VA-Core" | "VA-Enable" | "NVA-Residual" | "Context-Dependent" | "Needs Validation") | null;
+            std_va_type?: ("VA-Core" | "VA-Enable" | "NVA-Residual" | "Context-Dependent") | null;
         };
         /**
          * TiCatalogReseedCounts
@@ -4712,7 +4712,7 @@ export interface components {
              * @description VA-Core/VA-Enable/NVA-Residual.
              * @enum {string}
              */
-            va_type: "VA-Core" | "VA-Enable" | "NVA-Residual" | "Context-Dependent" | "Needs Validation";
+            va_type: "VA-Core" | "VA-Enable" | "NVA-Residual" | "Context-Dependent";
             /**
              * Setuju Standar
              * @description True bila partisipan menerima nilai standar master apa adanya.
@@ -4773,7 +4773,7 @@ export interface components {
              * Va Type
              * @enum {string}
              */
-            va_type: "VA-Core" | "VA-Enable" | "NVA-Residual" | "Context-Dependent" | "Needs Validation";
+            va_type: "VA-Core" | "VA-Enable" | "NVA-Residual" | "Context-Dependent";
             /** Setuju Standar */
             setuju_standar: boolean;
             /** Catatan */
@@ -5397,7 +5397,7 @@ export interface components {
             /** Std Peak4W Hours */
             std_peak4w_hours?: number | null;
             /** Std Va Type */
-            std_va_type?: ("VA-Core" | "VA-Enable" | "NVA-Residual" | "Context-Dependent" | "Needs Validation") | null;
+            std_va_type?: ("VA-Core" | "VA-Enable" | "NVA-Residual" | "Context-Dependent") | null;
         };
         /**
          * TsKuesionerItemRead
@@ -5890,7 +5890,7 @@ export interface components {
              * Std Va Type
              * @description Nilai standar VA type.
              */
-            std_va_type?: ("VA-Core" | "VA-Enable" | "NVA-Residual" | "Context-Dependent" | "Needs Validation") | null;
+            std_va_type?: ("VA-Core" | "VA-Enable" | "NVA-Residual" | "Context-Dependent") | null;
         };
         /**
          * UraianTugasRead
@@ -5979,7 +5979,7 @@ export interface components {
              * Std Va Type
              * @description Nilai standar VA type.
              */
-            std_va_type?: ("VA-Core" | "VA-Enable" | "NVA-Residual" | "Context-Dependent" | "Needs Validation") | null;
+            std_va_type?: ("VA-Core" | "VA-Enable" | "NVA-Residual" | "Context-Dependent") | null;
             /**
              * Created At
              * Format: date-time
@@ -6061,7 +6061,7 @@ export interface components {
              * Std Va Type
              * @description Nilai standar VA type.
              */
-            std_va_type?: ("VA-Core" | "VA-Enable" | "NVA-Residual" | "Context-Dependent" | "Needs Validation") | null;
+            std_va_type?: ("VA-Core" | "VA-Enable" | "NVA-Residual" | "Context-Dependent") | null;
         };
         /** ValidationError */
         ValidationError: {
@@ -14481,7 +14481,7 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
-            /** @description Sesi bukan TAHAP3, responden sudah submit, atau belum ada entri detail. */
+            /** @description Sesi bukan TAHAP3, responden sudah submit, belum ada entri detail, atau masih ada entri ber-va_type "Context-Dependent" yang belum difinalisasi. */
             422: {
                 headers: {
                     [name: string]: unknown;

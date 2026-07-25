@@ -7,6 +7,22 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+### Diubah
+
+- **Selektor `va_type` final Tahap 3 dibatasi ke 3 tipe kanonik** (VA-Core/VA-Enable/
+  NVA-Residual) — mengikuti kontrak backend baru (`cakrawala-tumbuh/anjab-abk-backend#24`)
+  yang membuang `"Needs Validation"` dari `VaType` dan menolak (422) submit final ber-`va_type`
+  `"Context-Dependent"` (issue #39).
+  - `src/components/calhr.ts`: `VA_TYPE` dipecah jadi `VA_TYPE_PREFILL` (4 nilai, dipakai
+    dropdown standar master-data & panel petunjuk) dan `VA_TYPE_FINAL` (3 nilai, dipakai
+    selektor Tahap 3).
+  - Task dengan prefill `std_va_type = "Context-Dependent"` tidak lagi diberi default valid
+    di selektor Tahap 3 — partisipan wajib memilih salah satu dari 3, submit diblokir klien
+    (dengan pesan spesifik) sampai terpenuhi.
+  - Respons 422 backend saat submit (menyebut task yang masih `"Context-Dependent"`) tetap
+    tampil apa adanya lewat `role="alert"` (jalur `ApiError`/`pesanGagal` yang sudah ada).
+  - `schema.ts` diregenerasi dari `openapi.json` backend `#24`.
+
 ## [4.9.0] - 2026-07-24
 
 ### Ditambahkan

@@ -57,6 +57,24 @@ describe("TiDetailItemSchema", () => {
     expect(detailItemSchema.safeParse({ ...VALID_DETAIL, va_type: "Y" }).success).toBe(false);
   });
 
+  it("menolak va_type 'Context-Dependent' sebagai jawaban final (backlog #39)", () => {
+    expect(
+      detailItemSchema.safeParse({ ...VALID_DETAIL, va_type: "Context-Dependent" }).success,
+    ).toBe(false);
+  });
+
+  it("menolak va_type 'Needs Validation' — sudah dihapus dari kontrak backend", () => {
+    expect(
+      detailItemSchema.safeParse({ ...VALID_DETAIL, va_type: "Needs Validation" }).success,
+    ).toBe(false);
+  });
+
+  it("menerima ketiga va_type final kanonik (VA-Core/VA-Enable/NVA-Residual)", () => {
+    for (const v of ["VA-Core", "VA-Enable", "NVA-Residual"]) {
+      expect(detailItemSchema.safeParse({ ...VALID_DETAIL, va_type: v }).success).toBe(true);
+    }
+  });
+
   it("menolak jam_per_minggu negatif", () => {
     expect(detailItemSchema.safeParse({ ...VALID_DETAIL, jam_per_minggu: -1 }).success).toBe(false);
   });
