@@ -9,6 +9,13 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ### Ditambahkan
 
+- **Label & deskripsi lengkap skala 1-5 formulir OPM** (issue #43, workshop SME panel
+  2026-07-25) — kelima titik skala ketiga dimensi (Importance, Frequency, Criticality)
+  kini bertanda label singkat (mis. "3 — Rutin") di formulir, bukan lagi angka telanjang
+  untuk nilai 2-4; deskripsi lengkap tiap titik skala ditambahkan ke pop-up Petunjuk
+  Pengisian, termasuk penegasan bahwa "gagal" pada Criticality berarti tugas tidak
+  terlaksana, bukan sekadar pihak lain kecewa.
+
 - **Kolom Catatan (opsional) per task di formulir Tahap 3 Task Inventory** (issue #42) —
   textarea maks. 500 karakter untuk menuliskan keberatan/penjelasan per task yang dicentang
   (mis. bila task ini ternyata bukan tugas partisipan), dikirim sebagai `TiDetailItem.catatan`.

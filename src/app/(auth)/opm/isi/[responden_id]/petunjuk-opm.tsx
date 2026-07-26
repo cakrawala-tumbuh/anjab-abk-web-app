@@ -5,10 +5,11 @@ import { cn } from "@/lib/utils";
 
 /**
  * Makna nilai 1–5 untuk satu dimensi rating OPM (Importance, Frequency, atau
- * Criticality). Nilai 1 dan 5 memuat frasa anchor persis seperti
- * `DIMENSI_LABEL` di `opm-form.tsx`, diikuti penjelasan tambahan; nilai 2–4
- * (kosong di form) diberi makna eksplisit di sini supaya partisipan tidak
- * menumpuk rating di ujung skala karena nilai tengah tampak tanpa arti.
+ * Criticality). Setiap titik skala punya **label singkat + penjelasan dalam
+ * kurung**, persis substansi keputusan pemilik proses pada sesi 2026-07-25
+ * (lihat Keputusan Desain issue #43) — nilai 2–4 tidak lagi kosong seperti
+ * versi sebelumnya, supaya partisipan tidak menumpuk rating di ujung skala
+ * karena nilai tengah tampak tanpa arti.
  */
 interface MaknaNilai {
   nilai: 1 | 2 | 3 | 4 | 5;
@@ -17,37 +18,40 @@ interface MaknaNilai {
   criticality: string;
 }
 
-/** Tabel makna nilai 1–5 ketiga dimensi OPM — lihat Keputusan Desain issue #37. */
+/** Tabel makna nilai 1–5 ketiga dimensi OPM — lihat Keputusan Desain issue #43. */
 const MAKNA_NILAI: MaknaNilai[] = [
   {
     nilai: 1,
-    importance: "Tidak penting — bisa ditiadakan tanpa pengaruh berarti",
-    frequency: "Insidental — hanya bila ada kejadian tertentu",
-    criticality: "Dampak minimal — kekeliruan mudah diperbaiki",
+    importance: "Tidak penting (tugas bisa dihilangkan tanpa dampak)",
+    frequency: "Insidental (beberapa kali dalam karier / sekali dalam beberapa tahun)",
+    criticality: "Dampak minimal (kesalahan mudah diperbaiki, proses tetap berjalan)",
   },
   {
     nilai: 2,
-    importance: "Kurang penting",
-    frequency: "Beberapa kali dalam setahun",
-    criticality: "Dampak kecil",
+    importance:
+      "Kurang penting (kontribusi minimal, bisa dikerjakan siapa saja tanpa keahlian khusus)",
+    frequency: "Kadang-kadang (beberapa kali per semester atau per tahun ajaran)",
+    criticality: "Dampak kecil (perlu perbaikan, tanpa konsekuensi berarti)",
   },
   {
     nilai: 3,
-    importance: "Cukup penting",
-    frequency: "Bulanan",
-    criticality: "Dampak sedang",
+    importance: "Cukup penting (berkontribusi umum, bukan penentu utama keberhasilan jabatan)",
+    frequency: "Rutin (setiap minggu atau beberapa kali sebulan)",
+    criticality: "Dampak sedang (mengganggu proses, masih bisa dipulihkan)",
   },
   {
     nilai: 4,
-    importance: "Penting",
-    frequency: "Mingguan",
-    criticality: "Dampak besar",
+    importance: "Penting (berpengaruh langsung pada hasil kerja jabatan)",
+    frequency: "Sering (beberapa kali dalam seminggu)",
+    criticality: "Dampak besar (merugikan layanan/pihak lain, pemulihan sulit)",
   },
   {
     nilai: 5,
-    importance: "Sangat penting — jabatan ini kehilangan maknanya bila tugas ini tidak dikerjakan",
-    frequency: "Sangat sering/Harian",
-    criticality: "Dampak kritis — kegagalannya merugikan murid/sekolah dan sulit dipulihkan",
+    importance: "Sangat penting (inti jabatan, tanpa ini jabatan kehilangan maknanya)",
+    frequency: "Harian (setiap atau hampir setiap hari)",
+    criticality:
+      "Dampak kritis (tidak dapat dipulihkan — menyangkut keselamatan murid, aspek " +
+      "hukum, atau keberlangsungan institusi)",
   },
 ];
 
@@ -105,9 +109,11 @@ interface Props {
  * Pop-up "Petunjuk Pengisian" untuk kuesioner OPM (`/opm/isi/{responden_id}`).
  *
  * Menjelaskan makna kelima titik skala (1–5) pada tiap dimensi rating
- * (Importance, Frequency, Criticality) dan memuat dua contoh pengisian
- * kontras — satu bernilai tinggi, satu bernilai rendah — agar rating rendah
- * terbaca sebagai jawaban yang sah, bukan kesalahan pengisian.
+ * (Importance, Frequency, Criticality), menegaskan definisi "gagal" pada
+ * Criticality (tugas tidak terlaksana — bukan sekadar pihak lain kecewa),
+ * dan memuat dua contoh pengisian kontras — satu bernilai tinggi, satu
+ * bernilai rendah — agar rating rendah terbaca sebagai jawaban yang sah,
+ * bukan kesalahan pengisian.
  *
  * @param defaultOpen - Buka modal otomatis sekali saat mount (biasanya
  *   `!sudah_submit`); bila `false`, modal hanya terbuka lewat tombol pemicu.
@@ -140,6 +146,12 @@ export function PetunjukOpm({ defaultOpen }: Props) {
             </div>
           ))}
         </div>
+        <p className="mt-3 text-sm text-gray-700 dark:text-gray-300">
+          <strong>Penting untuk Criticality:</strong> yang dimaksud &ldquo;gagal&rdquo; di sini
+          adalah <strong>tugas tidak terlaksana</strong> — bukan sekadar hasilnya mengecewakan pihak
+          lain. Nilai Criticality berdasarkan seberapa berat akibatnya bila tugas ini benar-benar
+          tidak dikerjakan.
+        </p>
       </div>
 
       <div className="rounded-md bg-blue-50 p-4 dark:bg-blue-950/40">

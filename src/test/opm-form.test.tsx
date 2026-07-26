@@ -136,3 +136,66 @@ describe("OpmForm — regresi: draft parsial tidak boleh dilaporkan sebagai ters
     expect(screen.getByRole("alert")).toHaveTextContent("Sesi sudah ditutup.");
   });
 });
+
+describe("OpmForm — label skala 1-5 (issue #43: nilai 2-4 tidak lagi angka telanjang)", () => {
+  it("kelima pil tiap dimensi memuat teks label, bukan hanya angka", () => {
+    const { container } = render(
+      <OpmForm
+        respondenId="oprs_1"
+        task={[task("K001", 1)]}
+        jawabanAwal={[]}
+        sudahSubmit={false}
+        accessToken="tok"
+      />,
+    );
+
+    for (const dim of DIMENSI) {
+      for (const nilai of [1, 2, 3, 4, 5] as const) {
+        const input = container.querySelector<HTMLInputElement>(
+          `input[name="K001-${dim}"][value="${nilai}"]`,
+        );
+        expect(input).not.toBeNull();
+        const label = input!.closest("label");
+        expect(label).not.toBeNull();
+        // Teks label harus lebih dari sekadar angka telanjang, mis. "3 — Rutin".
+        expect(label!.textContent?.trim()).not.toBe(String(nilai));
+        expect(label!.textContent).toMatch(/—/);
+      }
+    }
+  });
+
+  it("memilih nilai 3 pada frequency tetap mengirim frequency: 3 (label tidak mengubah nilai)", async () => {
+    post.mockResolvedValue({ error: null, response: okResponse });
+    const { container } = renderForm();
+
+    // Lengkapi ketiga task (syarat tombol "Kirim Jawaban" aktif), lalu timpa
+    // frequency K001 jadi 3 secara eksplisit.
+    for (const t of TASKS) nilaiLengkap(container, t.task_kode, 4);
+    const freq3 = container.querySelector<HTMLInputElement>(
+      `input[name="K001-frequency"][value="3"]`,
+    );
+    if (!freq3) throw new Error("radio K001-frequency=3 tidak ditemukan");
+    fireEvent.click(freq3);
+
+    await act(async () => {
+      fireEvent.click(screen.getAllByRole("button", { name: /Kirim Jawaban/ })[0]);
+    });
+
+    await waitFor(() => expect(post).toHaveBeenCalledTimes(1));
+    const body = put.mock.calls[put.mock.calls.length - 1][1].body as {
+      jawaban: { task_kode: string; frequency: number }[];
+    };
+    const k001 = body.jawaban.find((j) => j.task_kode === "K001");
+    expect(k001?.frequency).toBe(3);
+  });
+
+  it("task yang belum dinilai ketiga dimensinya tetap membuat tombol 'Kirim Jawaban' nonaktif (regresi)", () => {
+    const { container } = renderForm();
+
+    // Hanya K001 dilengkapi; K002 & K003 dibiarkan kosong.
+    nilaiLengkap(container, "K001", 4);
+
+    const tombolKirim = screen.getAllByRole("button", { name: /Kirim Jawaban/ })[0];
+    expect(tombolKirim).toBeDisabled();
+  });
+});

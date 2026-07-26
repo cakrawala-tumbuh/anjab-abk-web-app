@@ -16,11 +16,18 @@ describe("PetunjukOpm", () => {
 
   it("merender makna nilai 2-4 (bukan hanya anchor 1 & 5) dan kedua contoh kontras", () => {
     render(<PetunjukOpm defaultOpen={true} />);
-    expect(screen.getAllByText(/Bulanan/).length).toBeGreaterThan(0);
-    expect(screen.getAllByText(/Dampak sedang/).length).toBeGreaterThan(0);
-    expect(screen.getAllByText(/Beberapa kali dalam setahun/).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/Rutin \(setiap minggu/).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/Dampak sedang \(mengganggu proses/).length).toBeGreaterThan(0);
+    expect(
+      screen.getAllByText(/Kadang-kadang \(beberapa kali per semester/).length,
+    ).toBeGreaterThan(0);
     expect(screen.getAllByText(/Contoh A\./).length).toBeGreaterThan(0);
     expect(screen.getAllByText(/Contoh B\./).length).toBeGreaterThan(0);
     expect(screen.getAllByText(/Mendampingi lomba tingkat kecamatan/).length).toBeGreaterThan(0);
+  });
+
+  it("menegaskan definisi 'gagal' pada Criticality: tugas tidak terlaksana", () => {
+    render(<PetunjukOpm defaultOpen={true} />);
+    expect(screen.getByText(/tugas tidak terlaksana/i)).toBeInTheDocument();
   });
 });

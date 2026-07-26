@@ -16,18 +16,47 @@ interface RatingState {
   catatan?: string;
 }
 
+/**
+ * Label singkat (1–3 kata) untuk kelima titik skala 1–5 ketiga dimensi rating OPM.
+ *
+ * Dipasang sebagai teks pendamping tiap pil jawaban ("3 — Rutin") supaya nilai
+ * tengah (2–4) tidak tampil sebagai angka telanjang seperti sebelumnya — hanya
+ * 1 dan 5 yang punya anchor. Deskripsi lengkap tiap titik skala (termasuk
+ * penegasan definisi "gagal" untuk `criticality`) ada di `petunjuk-opm.tsx`;
+ * di sini sengaja hanya label pendek karena baris pil harus tetap terbaca di
+ * layar ponsel. Substansi kata bersumber dari keputusan pemilik proses pada
+ * sesi 2026-07-25 (lihat Keputusan Desain issue #43) — jangan diarang ulang.
+ */
 const DIMENSI_LABEL: Record<Dimensi, { title: string; anchor: Record<number, string> }> = {
   importance: {
     title: "Importance — Seberapa Penting",
-    anchor: { 1: "Tidak penting", 2: "", 3: "", 4: "", 5: "Sangat penting" },
+    anchor: {
+      1: "Tidak penting",
+      2: "Kurang penting",
+      3: "Cukup penting",
+      4: "Penting",
+      5: "Sangat penting",
+    },
   },
   frequency: {
     title: "Frequency — Seberapa Sering",
-    anchor: { 1: "Insidental", 2: "", 3: "", 4: "", 5: "Sangat sering/Harian" },
+    anchor: {
+      1: "Insidental",
+      2: "Kadang-kadang",
+      3: "Rutin",
+      4: "Sering",
+      5: "Harian",
+    },
   },
   criticality: {
     title: "Criticality — Dampak Jika Gagal",
-    anchor: { 1: "Dampak minimal", 2: "", 3: "", 4: "", 5: "Dampak kritis" },
+    anchor: {
+      1: "Dampak minimal",
+      2: "Dampak kecil",
+      3: "Dampak sedang",
+      4: "Dampak besar",
+      5: "Dampak kritis",
+    },
   },
 };
 
