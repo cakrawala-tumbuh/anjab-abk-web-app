@@ -7,6 +7,8 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [4.10.0] - 2026-07-26
+
 ### Diubah
 
 - **Selektor `va_type` final Tahap 3 dibatasi ke 3 tipe kanonik** (VA-Core/VA-Enable/
