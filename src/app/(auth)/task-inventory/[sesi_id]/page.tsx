@@ -6,6 +6,7 @@ import { apiErrorDari } from "@/lib/api/errors";
 import { GagalMuatSebagian } from "@/components/gagal-muat";
 import { Pagination, UKURAN_HALAMAN, offsetHalaman } from "@/components/pagination";
 import type { BagianGagal } from "@/lib/api/pendukung";
+import { kandidatResponden } from "@/lib/task-inventory-kandidat";
 import type {
   PartisipanRead,
   SMEPanelRead,
@@ -206,6 +207,10 @@ export default async function TiSesiDetailPage({ params, searchParams }: Props) 
   };
   const tahap1Submit = respondenAll.filter((r) => r.tahap1_submit).length;
   const tahap3Submit = respondenAll.filter((r) => r.tahap3_submit).length;
+  // Satu sumber kebenaran untuk kedua kontrol penambahan responden (satuan &
+  // massal) di bawah — partisipan yang sudah jadi responden sesi ini dikurangkan
+  // di sini, bukan di masing-masing Client Component.
+  const kandidat = kandidatResponden(partisipan, respondenAll);
 
   return (
     <div className="space-y-6">
@@ -302,11 +307,15 @@ export default async function TiSesiDetailPage({ params, searchParams }: Props) 
               </Link>{" "}
               agar daftar partisipan dapat dipilih.
             </div>
+          ) : partisipan.length > 0 && kandidat.length === 0 ? (
+            <div className="rounded-lg border border-gray-200 bg-white p-4 text-sm text-gray-500 dark:text-gray-400">
+              Seluruh anggota panel SME sudah menjadi responden.
+            </div>
           ) : (
             <>
               <TambahResponden
                 sesiId={sesi.id}
-                partisipan={partisipan}
+                partisipan={kandidat}
                 accessToken={session?.accessToken}
               />
               <h3 className="mt-6 text-sm font-medium text-gray-500 dark:text-gray-400">
@@ -315,7 +324,7 @@ export default async function TiSesiDetailPage({ params, searchParams }: Props) 
               <div className="mt-2">
                 <AssignRespondenBanyak
                   sesiId={sesi.id}
-                  partisipan={partisipan}
+                  partisipan={kandidat}
                   accessToken={session?.accessToken}
                 />
               </div>

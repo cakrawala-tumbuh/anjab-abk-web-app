@@ -58,17 +58,24 @@ mencapai status **TAHAP2** — lihat [bagian D. Review Koordinator (Tahap 2)](#d
 3. Untuk menghapus responden yang belum mengisi, klik **Hapus** pada kolom **Aksi**
    (konfirmasi _Hapus responden "{nama}" dari analisis ini?_).
 
+> Dropdown **Pilih Partisipan** hanya memuat anggota SME panel yang **belum** menjadi
+> responden analisis ini — partisipan yang sudah terdaftar tidak ditawarkan lagi, sehingga
+> tidak bisa ditambahkan dua kali. Bila seluruh anggota panel sudah menjadi responden,
+> bagian **Tambah Responden** menampilkan pesan **"Seluruh anggota panel SME sudah menjadi
+> responden."** menggantikan kedua formulir (satuan & massal).
+
 ### B.1 Mendaftarkan Banyak Responden Sekaligus
 
 Di bawah formulir **Tambah Responden**, tersedia bagian **Atau tugaskan banyak
-sekaligus**:
+sekaligus** — daftar centangnya memakai kandidat yang sama dengan dropdown di atas (sudah
+dikurangi anggota panel yang sudah jadi responden):
 
 1. Centang anggota SME panel yang akan didaftarkan sebagai responden (**Pilih
    semua**/**Batalkan pilihan** tersedia).
 2. Klik **Tugaskan Terpilih (N)**.
-3. Aplikasi menampilkan ringkasan berhasil/dilewati. Partisipan dilewati bila: sudah
-   terdaftar sebagai responden, duplikat dalam pilihan, atau **bukan anggota SME panel**
-   jabatan ini.
+3. Aplikasi menampilkan ringkasan berhasil/dilewati. Partisipan dilewati bila: duplikat
+   dalam pilihan, **bukan anggota SME panel** jabatan ini, atau sudah terdaftar sebagai
+   responden oleh proses lain di saat yang bersamaan.
 
 ---
 

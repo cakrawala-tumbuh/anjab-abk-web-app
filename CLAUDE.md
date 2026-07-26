@@ -84,6 +84,40 @@ src/
 
 ## Revisi Desain
 
+### [2026-07-26] Task Inventory: sembunyikan partisipan yang sudah jadi responden dari kandidat
+
+Audit R3 (2026-07-26) menemukan sesi Guru BK/Bandung punya satu partisipan dengan dua baris
+responden — layar detail sesi (`task-inventory/[sesi_id]/page.tsx`) menyaring kandidat
+responden hanya berdasarkan keanggotaan SME panel, tanpa mengurangkan responden yang sudah
+ada, padahal halaman itu sudah mengambil `respondenAll`. Pola ini sudah dibenahi di `/dcs`
+sejak v4.9.0; item ini menerapkannya ke Task Inventory. Pasangan backend
+`cakrawala-tumbuh/anjab-abk-backend#29` menambahkan penjagaan 409 + `UniqueConstraint` di
+`ti_responden` — independen dari perbaikan UI ini, keduanya saling melengkapi.
+
+- **Fungsi murni baru `kandidatResponden(partisipan, responden)`** di
+  `src/lib/task-inventory-kandidat.ts` — mengembalikan partisipan yang `id`-nya tidak muncul
+  sebagai `partisipan_id` pada `responden` mana pun (`partisipan_id` `null` — responden
+  manual — tidak menggugurkan siapa pun). Diekstrak dari Server Component karena logika di
+  dalam `page.tsx` tidak bisa diuji Vitest langsung.
+- **Dipanggil satu kali di `page.tsx`** (`const kandidat = kandidatResponden(partisipan,
+respondenAll)`), hasilnya dioper ke **kedua** kontrol penambahan (`TambahResponden` dan
+  `AssignRespondenBanyak`) — kedua Client Component itu tidak menyaring sendiri, satu sumber
+  kebenaran. `respondenAll` sudah diambil halaman itu (seluruh halaman, bukan satu halaman
+  paginasi); tidak ada pemanggilan API baru.
+- **Keadaan kosong dibedakan tiga arah** di blok "Tambah Responden": `!smePanel` (panel belum
+  dibuat) mempertahankan pesan lama apa adanya; `partisipan.length > 0 && kandidat.length ===
+0` (seluruh anggota panel sudah jadi responden) menampilkan pesan baru **"Seluruh anggota
+  panel SME sudah menjadi responden."**; `partisipan.length === 0` (panel ada tapi kosong)
+  tetap jatuh ke kontrol lama tanpa perubahan (`TambahResponden` dropdown kosong,
+  `AssignRespondenBanyak` merender `null`) — tidak tertukar dengan pesan baru.
+- Test baru murni: `src/test/task-inventory-kandidat.test.ts` (positif dedup, responden
+  kosong, `partisipan_id` null, seluruh partisipan sudah jadi responden).
+- `docs-usage/ik/task-inventory.md` bagian B/B.1 diperbarui: dropdown & daftar centang bulk
+  kini sama-sama sudah dikurangi anggota yang jadi responden; alasan skip bulk "sudah
+  terdaftar sebagai responden" dipersempit ke kasus race kondisi (dua admin bersamaan) karena
+  UI kini mencegahnya di jalur normal.
+- Detail keputusan: issue `cakrawala-tumbuh/anjab-abk-web-app#46`.
+
 ### [2026-07-26] Formulir usulan tugas Tahap 1 + panel keputusan usulan Tahap 2
 
 Backlog `#45`, konsumen klien dari `anjab-abk-backend#26`/`#27`. Uji coba workshop SME panel

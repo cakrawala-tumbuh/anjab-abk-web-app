@@ -7,6 +7,14 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+### Diperbaiki
+
+- **Task Inventory: partisipan yang sudah jadi responden tidak lagi ditawarkan sebagai
+  kandidat** (issue #46, audit R3 2026-07-26) — layar detail sesi kini mengurangkan responden
+  yang sudah ada dari daftar kandidat pada kontrol penambahan satuan maupun massal, mencegah
+  penambahan ganda partisipan yang sama. Pesan "Seluruh anggota panel SME sudah menjadi
+  responden." tampil saat seluruh anggota panel sudah menjadi responden.
+
 ## [4.12.0] - 2026-07-26
 
 ### Ditambahkan
