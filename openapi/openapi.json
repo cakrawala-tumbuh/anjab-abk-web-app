@@ -128,6 +128,149 @@
         ]
       }
     },
+    "/api/v1/system/backup": {
+      "post": {
+        "tags": [
+          "system"
+        ],
+        "summary": "Unduh cadangan penuh basis data",
+        "description": "Streaming `pg_dump --format=custom --no-acl --no-owner` sebagai unduhan.\n\nServer tidak menahan salinan dump di memori/disk — setiap potongan langsung\nditeruskan ke klien begitu diterima dari subprocess `pg_dump`.",
+        "operationId": "system_backup",
+        "responses": {
+          "200": {
+            "description": "Dump `pg_dump --format=custom` (biner), dialirkan langsung.",
+            "content": {
+              "application/json": {
+                "schema": {}
+              },
+              "application/octet-stream": {}
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan admin.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/system/restore": {
+      "post": {
+        "tags": [
+          "system"
+        ],
+        "summary": "Pulihkan basis data penuh dari cadangan",
+        "description": "DESTRUKTIF: mengganti SELURUH isi basis data dengan isi `berkas`.\n\nMenolak (422) tanpa menyentuh basis data bila `konfirmasi` tidak persis sama\ndengan nama basis data tujuan. Skema TIDAK di-upgrade otomatis setelah restore —\nlihat `RestoreResult.peringatan` bila revisi Alembic hasil restore berbeda dari\nhead aplikasi.",
+        "operationId": "system_restore",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_system_restore"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestoreResult"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan admin.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Konfirmasi tidak cocok dengan nama basis data, atau berkas bukan dump valid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Berkas melebihi batas ukuran unggahan restore.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
     "/api/v1/jenjang-pendidikan": {
       "get": {
         "tags": [
@@ -14137,6 +14280,27 @@
   },
   "components": {
     "schemas": {
+      "Body_system_restore": {
+        "properties": {
+          "berkas": {
+            "type": "string",
+            "contentMediaType": "application/octet-stream",
+            "title": "Berkas",
+            "description": "Berkas dump `pg_dump --format=custom` yang diunggah."
+          },
+          "konfirmasi": {
+            "type": "string",
+            "title": "Konfirmasi",
+            "description": "Nama basis data tujuan (dari `DATABASE_URL`) — harus diketik PERSIS sama untuk mengonfirmasi restore destruktif."
+          }
+        },
+        "type": "object",
+        "required": [
+          "berkas",
+          "konfirmasi"
+        ],
+        "title": "Body_system_restore"
+      },
       "BulkAssignResult_DcsRespondenRead_": {
         "properties": {
           "created": {
@@ -18188,6 +18352,47 @@
         ],
         "title": "Principal",
         "description": "Identitas yang sudah terverifikasi dari token."
+      },
+      "RestoreResult": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "title": "Status",
+            "description": "Status operasi.",
+            "examples": [
+              "ok"
+            ]
+          },
+          "revisi_alembic": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Revisi Alembic",
+            "description": "Revisi Alembic (`alembic_version.version_num`) yang terbaca dari basis data setelah restore selesai. `null` bila tabel `alembic_version` tidak ditemukan.",
+            "examples": [
+              "fd3dd550aa99"
+            ]
+          },
+          "peringatan": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Peringatan",
+            "description": "Peringatan tindak lanjut (mis. skema tidak sinkron dengan head aplikasi). Daftar kosong berarti tidak ada tindak lanjut yang diperlukan."
+          }
+        },
+        "type": "object",
+        "required": [
+          "status"
+        ],
+        "title": "RestoreResult",
+        "description": "Hasil `POST /api/v1/system/restore`.\n\n`peringatan` berisi instruksi tindak lanjut, BUKAN indikasi kegagalan — restore\ntetap dianggap sukses (HTTP 200) meski revisi skema hasil pulihan berbeda dari\nhead Alembic aplikasi; endpoint ini SENGAJA tidak menjalankan `alembic upgrade`\nsecara otomatis (menumpuk migrasi otomatis di atas aksi yang sudah destruktif\nadalah perusakan kedua tanpa persetujuan admin)."
       },
       "SMEPanelAnggotaAdd": {
         "properties": {

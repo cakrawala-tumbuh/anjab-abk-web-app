@@ -72,6 +72,54 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/system/backup": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Unduh cadangan penuh basis data
+         * @description Streaming `pg_dump --format=custom --no-acl --no-owner` sebagai unduhan.
+         *
+         *     Server tidak menahan salinan dump di memori/disk — setiap potongan langsung
+         *     diteruskan ke klien begitu diterima dari subprocess `pg_dump`.
+         */
+        post: operations["system_backup"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/system/restore": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Pulihkan basis data penuh dari cadangan
+         * @description DESTRUKTIF: mengganti SELURUH isi basis data dengan isi `berkas`.
+         *
+         *     Menolak (422) tanpa menyentuh basis data bila `konfirmasi` tidak persis sama
+         *     dengan nama basis data tujuan. Skema TIDAK di-upgrade otomatis setelah restore —
+         *     lihat `RestoreResult.peringatan` bila revisi Alembic hasil restore berbeda dari
+         *     head aplikasi.
+         */
+        post: operations["system_restore"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/jenjang-pendidikan": {
         parameters: {
             query?: never;
@@ -1962,6 +2010,19 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** Body_system_restore */
+        Body_system_restore: {
+            /**
+             * Berkas
+             * @description Berkas dump `pg_dump --format=custom` yang diunggah.
+             */
+            berkas: string;
+            /**
+             * Konfirmasi
+             * @description Nama basis data tujuan (dari `DATABASE_URL`) — harus diketik PERSIS sama untuk mengonfirmasi restore destruktif.
+             */
+            konfirmasi: string;
+        };
         /** BulkAssignResult[DcsRespondenRead] */
         BulkAssignResult_DcsRespondenRead_: {
             /**
@@ -4287,6 +4348,35 @@ export interface components {
              * @description Scope/izin pada token.
              */
             scopes?: string[];
+        };
+        /**
+         * RestoreResult
+         * @description Hasil `POST /api/v1/system/restore`.
+         *
+         *     `peringatan` berisi instruksi tindak lanjut, BUKAN indikasi kegagalan — restore
+         *     tetap dianggap sukses (HTTP 200) meski revisi skema hasil pulihan berbeda dari
+         *     head Alembic aplikasi; endpoint ini SENGAJA tidak menjalankan `alembic upgrade`
+         *     secara otomatis (menumpuk migrasi otomatis di atas aksi yang sudah destruktif
+         *     adalah perusakan kedua tanpa persetujuan admin).
+         */
+        RestoreResult: {
+            /**
+             * Status
+             * @description Status operasi.
+             * @example ok
+             */
+            status: string;
+            /**
+             * Revisi Alembic
+             * @description Revisi Alembic (`alembic_version.version_num`) yang terbaca dari basis data setelah restore selesai. `null` bila tabel `alembic_version` tidak ditemukan.
+             * @example fd3dd550aa99
+             */
+            revisi_alembic?: string | null;
+            /**
+             * Peringatan
+             * @description Peringatan tindak lanjut (mis. skema tidak sinkron dengan head aplikasi). Daftar kosong berarti tidak ada tindak lanjut yang diperlukan.
+             */
+            peringatan?: string[];
         };
         /**
          * SMEPanelAnggotaAdd
@@ -6660,6 +6750,123 @@ export interface operations {
             };
             /** @description Token tidak ada/invalid. */
             401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    system_backup: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Dump `pg_dump --format=custom` (biner), dialirkan langsung. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                    "application/octet-stream": unknown;
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    system_restore: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["Body_system_restore"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RestoreResult"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Berkas melebihi batas ukuran unggahan restore. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Konfirmasi tidak cocok dengan nama basis data, atau berkas bukan dump valid. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -16702,7 +16909,6 @@ export interface operations {
         };
     };
 }
-
 export type JabatanRead = components["schemas"]["JabatanRead"];
 export type JenjangPendidikanRead = components["schemas"]["JenjangPendidikanRead"];
 export type MataPelajaranRead = components["schemas"]["MataPelajaranRead"];
@@ -16771,3 +16977,4 @@ export type TiRespondenBulkResult = components["schemas"]["BulkAssignResult_TiRe
 export type OpmRespondenBulkResult = components["schemas"]["BulkAssignResult_OpmRespondenRead_"];
 export type DcsRespondenBulkResult = components["schemas"]["BulkAssignResult_DcsRespondenRead_"];
 export type WcpRespondenBulkResult = components["schemas"]["BulkAssignResult_WcpRespondenRead_"];
+export type RestoreResult = components["schemas"]["RestoreResult"];
