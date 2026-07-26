@@ -68,11 +68,13 @@ describe("fetchTahap1Data — kondisi sah tetap berjalan", () => {
       .mockResolvedValueOnce(ok(responden))
       .mockResolvedValueOnce(ok(sesi))
       .mockResolvedValueOnce(ok({ items: [{ kode: "TIa" }], total: 1 }))
-      .mockResolvedValueOnce(gagal(404, "not_found", "Responden belum submit seleksi Tahap 1."));
+      .mockResolvedValueOnce(gagal(404, "not_found", "Responden belum submit seleksi Tahap 1."))
+      .mockResolvedValueOnce(ok([]));
 
     const data = await fetchTahap1Data("tok", "tresp_1");
     expect(data.terpilih).toEqual([]);
     expect(data.catalog).toHaveLength(1);
+    expect(data.usulan).toEqual([]);
   });
 
   it("alur normal: seleksi tersimpan dikembalikan apa adanya", async () => {
@@ -80,7 +82,8 @@ describe("fetchTahap1Data — kondisi sah tetap berjalan", () => {
       .mockResolvedValueOnce(ok(responden))
       .mockResolvedValueOnce(ok(sesi))
       .mockResolvedValueOnce(ok({ items: [{ kode: "TIa" }, { kode: "TIb" }], total: 2 }))
-      .mockResolvedValueOnce(ok({ task_kode: ["TIa"] }));
+      .mockResolvedValueOnce(ok({ task_kode: ["TIa"] }))
+      .mockResolvedValueOnce(ok([]));
 
     const data = await fetchTahap1Data("tok", "tresp_1");
     expect(data.terpilih).toEqual(["TIa"]);
@@ -91,9 +94,53 @@ describe("fetchTahap1Data — kondisi sah tetap berjalan", () => {
       .mockResolvedValueOnce(ok(responden))
       .mockResolvedValueOnce(ok(sesi))
       .mockResolvedValueOnce(ok({ items: [], total: 0 }))
-      .mockResolvedValueOnce(ok({ task_kode: [] }));
+      .mockResolvedValueOnce(ok({ task_kode: [] }))
+      .mockResolvedValueOnce(ok([]));
 
     const data = await fetchTahap1Data("tok", "tresp_1");
     expect(data.catalog).toEqual([]);
+  });
+
+  it("usulan yang sudah tersimpan dikembalikan apa adanya", async () => {
+    const usulan = [
+      {
+        id: "tius_1",
+        sesi_id: "tises_1",
+        responden_id: "tresp_1",
+        tugas_pokok_id: "tp1",
+        tugas_pokok: "Pengelolaan SDM",
+        detil_tugas_id: null,
+        detil_tugas: null,
+        uraian: "Menyusun ulang jadwal piket.",
+        disetujui: null,
+        task_kode: null,
+        created_at: "2026-07-26T00:00:00Z",
+      },
+    ];
+    get
+      .mockResolvedValueOnce(ok(responden))
+      .mockResolvedValueOnce(ok(sesi))
+      .mockResolvedValueOnce(ok({ items: [{ kode: "TIa" }], total: 1 }))
+      .mockResolvedValueOnce(ok({ task_kode: ["TIa"] }))
+      .mockResolvedValueOnce(ok(usulan));
+
+    const data = await fetchTahap1Data("tok", "tresp_1");
+    expect(data.usulan).toEqual(usulan);
+  });
+});
+
+describe("fetchTahap1Data — kegagalan usulan tidak boleh ditelan senyap", () => {
+  it("MELEMPAR ApiError bila GET usulan gagal (bukan ditelan jadi [])", async () => {
+    get
+      .mockResolvedValueOnce(ok(responden))
+      .mockResolvedValueOnce(ok(sesi))
+      .mockResolvedValueOnce(ok({ items: [{ kode: "TIa" }], total: 1 }))
+      .mockResolvedValueOnce(ok({ task_kode: ["TIa"] }))
+      .mockResolvedValueOnce(gagal(500, "internal_error", "Kesalahan server.", "req-usulan-500"));
+
+    const err = await fetchTahap1Data("tok", "tresp_1").catch((e: unknown) => e);
+    expect(err).toBeInstanceOf(ApiError);
+    expect((err as ApiError).status).toBe(500);
+    expect((err as ApiError).requestId).toBe("req-usulan-500");
   });
 });

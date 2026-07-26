@@ -9,6 +9,13 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ### Ditambahkan
 
+- **Formulir usulan tugas tambahan di Tahap 1 + panel keputusan usulan di Tahap 2** (issue
+  #45, workshop SME panel 2026-07-25) — peserta kini dapat menuliskan tugas yang benar-benar
+  dikerjakan tetapi tidak ada di katalog, langsung di langkah "Uraian Tugas" Tahap 1 (tombol
+  "Tambah tugas yang tidak ada di daftar" per grup detil tugas, tersimpan seketika dan bisa
+  dihapus kembali sebelum submit). Koordinator memutuskan setuju/tolak tiap usulan di layar
+  Tahap 2, bersama task partial yang sudah ada, dalam satu kali "Simpan Keputusan".
+
 - **Halaman "Kuesioner Saya" menyegarkan daftarnya sendiri secara berkala** (issue #44,
   workshop SME panel 2026-07-25) — komponen baru `AutoRefresh` memanggil `router.refresh()`
   tiap 20 detik selama tab terlihat (berhenti saat tab disembunyikan, langsung menyegarkan

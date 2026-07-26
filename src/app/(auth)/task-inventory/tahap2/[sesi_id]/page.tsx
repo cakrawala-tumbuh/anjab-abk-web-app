@@ -150,11 +150,11 @@ export default async function Tahap2KoordinatorPage({ params }: Props) {
         </div>
       )}
 
-      {!review || review.tasks.length === 0 ? (
+      {!review || (review.tasks.length === 0 && (review.usulan ?? []).length === 0) ? (
         <div className="rounded-lg border border-dashed border-gray-300 bg-white p-8 text-center">
           <p className="text-sm text-gray-500 dark:text-gray-400">
-            Tidak ada task partial — semua task dipilih secara unanimous atau belum ada yang submit
-            Tahap 1.
+            Tidak ada task partial maupun usulan tugas tambahan — semua task dipilih secara
+            unanimous atau belum ada yang submit Tahap 1.
           </p>
         </div>
       ) : (
@@ -162,6 +162,9 @@ export default async function Tahap2KoordinatorPage({ params }: Props) {
           <div className="flex gap-4 text-sm text-gray-600">
             <span>
               Total partial: <strong>{review.tasks.length}</strong>
+            </span>
+            <span>
+              Total usulan: <strong>{(review.usulan ?? []).length}</strong>
             </span>
           </div>
           <ReviewForm

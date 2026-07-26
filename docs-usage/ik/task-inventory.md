@@ -112,15 +112,20 @@ Saat status **TAHAP2**, muncul kotak _Tahap 2 — Review Koordinator_ dengan tom
    kelas"_ 4/5 → Ya, _"Mengelola inventaris laboratorium"_ 1/5 → Tidak). Tutup dengan tombol
    **Saya Mengerti**, ikon **X**, klik area luar pop-up, atau tombol **Esc**; dapat dibuka lagi
    lewat tombol **Petunjuk Pengisian** di pojok kanan atas halaman.
-3. Halaman menampilkan tabel task **partial** (kolom **Task**, **Pilih** = jumlah pemilih,
+3. Bila ada peserta yang menuliskan **usulan tugas tambahan** di Tahap 1 (lihat bagian E),
+   blok **Usulan tugas tambahan dari peserta** tampil **di atas** tabel task partial —
+   menampilkan teks usulan, hierarki induknya (tugas pokok · detil tugas), dan nama pengusul.
+   Kontrol **Ya/Tidak** untuk tiap usulan bekerja persis seperti task partial di bawahnya.
+4. Halaman menampilkan tabel task **partial** (kolom **Task**, **Pilih** = jumlah pemilih,
    **Setujui?**). Kolom **Task** menampilkan **nama uraian tugas** (mis. _"Menyusun evaluasi
    karyawan"_) dengan kode task kecil di sampingnya sebagai keterangan.
-4. Untuk tiap task, klik **Ya** (setujui) atau **Tidak** (tolak). Tersedia pintasan
-   **Setujui Semua** dan **Tolak Semua**.
-5. Klik **Simpan Keputusan**.
+5. Untuk tiap task maupun usulan, klik **Ya** (setujui) atau **Tidak** (tolak). Tersedia
+   pintasan **Setujui Semua** dan **Tolak Semua** yang berlaku ke keduanya sekaligus.
+6. Klik **Simpan Keputusan** — keputusan task partial dan usulan dikirim dalam satu kali
+   simpan yang sama.
 
 !!! note
-Jika masih ada task belum diputuskan saat menyimpan, muncul konfirmasi — task yang
+Jika masih ada task/usulan belum diputuskan saat menyimpan, muncul konfirmasi — yang
 belum diputuskan tidak akan disertakan ke Tahap 3.
 
 !!! info "Akses anggota panel"
@@ -153,11 +158,18 @@ Partisipan yang bukan anggota panel akan mendapat halaman 404.
      **Lanjut ke Detil Tugas**.
    - **Langkah 2 — Detil Tugas**: centang detil tugas (hanya dari tugas pokok terpilih),
      klik **Lanjut ke Uraian Tugas**. (Tombol **Kembali** untuk mundur.)
-   - **Langkah 3 — Uraian Tugas**: centang uraian tugas yang relevan.
+   - **Langkah 3 — Uraian Tugas**: centang uraian tugas yang relevan. Bila ada tugas yang
+     benar-benar Anda kerjakan tetapi tidak ada di daftar, klik **Tambah tugas yang tidak
+     ada di daftar** pada grup detil tugas yang sesuai, tuliskan uraiannya di kotak teks yang
+     muncul, lalu klik **Simpan Usulan** — usulan tersimpan **seketika** (tidak menunggu
+     **Kirim Seleksi**) dan langsung tampil di grup yang sama beserta tombol **Hapus** untuk
+     membatalkannya selama Tahap 1 masih berjalan. Usulan **tidak** ikut tercentang sebagai
+     uraian tugas terpilih — keputusannya ditentukan koordinator di Tahap 2 (lihat bagian D).
 4. Klik **Kirim Seleksi**.
 
 !!! danger "Tidak dapat diubah"
-Setelah dikirim, seleksi Tahap 1 terkunci. Status responden menjadi **✓ Selesai**.
+Setelah dikirim, seleksi Tahap 1 terkunci — begitu juga kontrol tambah/hapus usulan tugas
+tambahan, yang ikut disembunyikan. Status responden menjadi **✓ Selesai**.
 
 ---
 

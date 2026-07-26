@@ -10,13 +10,20 @@
  */
 import { withServerAuth } from "@/lib/api/client";
 import { apiErrorDari } from "@/lib/api/errors";
-import type { TiCatalogRead, TiRespondenRead, TiSeleksiRead, TiSesiRead } from "@/lib/api/schema";
+import type {
+  TiCatalogRead,
+  TiRespondenRead,
+  TiSeleksiRead,
+  TiSesiRead,
+  TiUsulanRead,
+} from "@/lib/api/schema";
 
 export interface Tahap1PageData {
   responden: TiRespondenRead;
   sesi: TiSesiRead;
   catalog: TiCatalogRead[];
   terpilih: string[];
+  usulan: TiUsulanRead[];
 }
 
 export async function fetchTahap1Data(
@@ -60,5 +67,18 @@ export async function fetchTahap1Data(
     if (err.status !== 404) throw err;
   }
 
-  return { responden, sesi, catalog, terpilih };
+  // Usulan uraian tugas tambahan milik responden ini (langkah 3 Tahap 1) — daftar,
+  // bukan objek tunggal, jadi tidak ada kondisi "belum ada" yang perlu ditoleransi
+  // seperti seleksi 404 di atas: koleksi kosong pada kunjungan pertama sudah sah
+  // sebagai `[]` dari backend sendiri.
+  const usulanRes = await client.GET(
+    "/api/v1/task-inventory/sesi/responden/{responden_id}/usulan",
+    {
+      params: { path: { responden_id: respondenId } },
+    },
+  );
+  if (!usulanRes.data) throw apiErrorDari(usulanRes);
+  const usulan = usulanRes.data as TiUsulanRead[];
+
+  return { responden, sesi, catalog, terpilih, usulan };
 }

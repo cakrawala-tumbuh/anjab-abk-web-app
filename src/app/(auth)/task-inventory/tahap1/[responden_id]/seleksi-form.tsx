@@ -5,12 +5,16 @@ import { useRouter } from "next/navigation";
 import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
 import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
-import type { TiCatalogRead } from "@/lib/api/schema";
+import type { TiCatalogRead, TiUsulanRead } from "@/lib/api/schema";
 
 interface Props {
   respondenId: string;
   catalog: TiCatalogRead[];
   terpilihAwal: string[];
+  /** Usulan uraian tugas tambahan responden ini, dipasok Server Component induk. */
+  usulanAwal: TiUsulanRead[];
+  /** Responden sudah mengirim seleksi Tahap 1 — menyembunyikan kontrol tambah/hapus usulan. */
+  tahap1Submit: boolean;
   accessToken: string | undefined;
 }
 
@@ -26,6 +30,11 @@ function detilKey(item: TiCatalogRead): string {
   return item.detil_tugas_id ?? `${item.tugas_pokok_id}::${NO_DETIL}`;
 }
 
+/** Kunci grup yang sama untuk usulan — dicocokkan dengan `detilKey` di atas. */
+function usulanGroupKey(u: TiUsulanRead): string {
+  return u.detil_tugas_id ?? `${u.tugas_pokok_id}::${NO_DETIL}`;
+}
+
 /**
  * Formulir Tahap 1 — seleksi relevansi bertingkat (cascade 3 level):
  *   1. Tugas Pokok  → partisipan pilih tugas pokok yang relevan dengan jabatannya.
@@ -35,8 +44,22 @@ function detilKey(item: TiCatalogRead): string {
  *
  * Catalog sudah difilter backend ke jabatan (dan unit) sesi, sehingga seluruh
  * cascade konsisten dengan jabatan dari sesi yang diikuti partisipan.
+ *
+ * Level 3 juga merender kontrol usulan tugas tambahan per grup detil tugas —
+ * partisipan yang mengerjakan tugas yang tak ada di katalog dapat menuliskannya
+ * di sana. Usulan disimpan seketika (`POST .../usulan`, bukan menunggu "Kirim
+ * Seleksi") dan TIDAK ikut `selectedUT`/payload seleksi — daftarnya selalu
+ * dirender dari prop `usulanAwal` (data Server Component), disegarkan lewat
+ * `router.refresh()` setelah tersimpan/terhapus.
  */
-export function SeleksiForm({ respondenId, catalog, terpilihAwal, accessToken }: Props) {
+export function SeleksiForm({
+  respondenId,
+  catalog,
+  terpilihAwal,
+  usulanAwal,
+  tahap1Submit,
+  accessToken,
+}: Props) {
   const router = useRouter();
   const [step, setStep] = useState<1 | 2 | 3>(1);
   // Draft tersimpan hanya berupa daftar task_kode (flat) — state wizard TP/DT
@@ -53,6 +76,17 @@ export function SeleksiForm({ respondenId, catalog, terpilihAwal, accessToken }:
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
+
+  // ── Usulan tugas tambahan (langkah 3) — HANYA interaksi UI murni sebelum
+  // submit (isi textarea, form mana yang terbuka). Daftar usulan ITU SENDIRI
+  // tidak dicerminkan ke state — selalu dirender langsung dari prop `usulanAwal`
+  // (data Server Component), disegarkan lewat `router.refresh()` setelah
+  // POST/DELETE. Lihat Keputusan Desain issue #45.
+  const [usulanOpenKeys, setUsulanOpenKeys] = useState<Set<string>>(new Set());
+  const [usulanDraft, setUsulanDraft] = useState<Record<string, string>>({});
+  const [usulanError, setUsulanError] = useState<Record<string, string | null>>({});
+  const [usulanSubmittingKey, setUsulanSubmittingKey] = useState<string | null>(null);
+  const [deletingUsulanId, setDeletingUsulanId] = useState<string | null>(null);
 
   // ── Level 1: daftar tugas pokok unik (id → nama) ───────────────────────────
   const tugasPokokList = useMemo(() => {
@@ -86,20 +120,33 @@ export function SeleksiForm({ respondenId, catalog, terpilihAwal, accessToken }:
   }, [catalog, selectedTP]);
 
   // ── Level 3: uraian tugas dari detil tugas terpilih, dikelompokkan per detil ─
+  // `tugasPokokId`/`detilTugasId` disimpan per grup agar usulan yang ditambahkan
+  // dari grup ini mewarisi induk yang benar tanpa perlu ditanyakan lagi.
   const uraianGroups = useMemo(() => {
-    const groups = new Map<string, { label: string; tasks: TiCatalogRead[] }>();
+    const groups = new Map<
+      string,
+      { label: string; tugasPokokId: string; detilTugasId: string | null; tasks: TiCatalogRead[] }
+    >();
     for (const t of catalog) {
       const key = detilKey(t);
       if (!selectedDT.has(key)) continue;
       const label = `${t.detil_tugas ?? NO_DETIL_LABEL} · ${t.tugas_pokok}`;
-      const g = groups.get(key) ?? { label, tasks: [] };
+      const g = groups.get(key) ?? {
+        label,
+        tugasPokokId: t.tugas_pokok_id,
+        detilTugasId: t.detil_tugas_id ?? null,
+        tasks: [],
+      };
       g.tasks.push(t);
       groups.set(key, g);
     }
-    return Array.from(groups.values())
-      .sort((a, b) => a.label.localeCompare(b.label))
-      .map((g) => ({
+    return Array.from(groups.entries())
+      .sort(([, a], [, b]) => a.label.localeCompare(b.label))
+      .map(([key, g]) => ({
+        key,
         label: g.label,
+        tugasPokokId: g.tugasPokokId,
+        detilTugasId: g.detilTugasId,
         tasks: g.tasks.slice().sort((a, b) => a.urutan - b.urutan),
       }));
   }, [catalog, selectedDT]);
@@ -140,6 +187,83 @@ export function SeleksiForm({ respondenId, catalog, terpilihAwal, accessToken }:
     setSelectedUT((prev) => new Set([...prev].filter((k) => validKode.has(k))));
     setError(null);
     setStep(3);
+  }
+
+  /** Buka/tutup form textarea "Tambah usulan" untuk satu grup detil tugas. */
+  function toggleUsulanForm(key: string) {
+    setUsulanError((prev) => ({ ...prev, [key]: null }));
+    setUsulanOpenKeys((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
+  }
+
+  /**
+   * Simpan usulan uraian tugas baru untuk grup `key` — memanggil `POST .../usulan`
+   * SEKETIKA (bukan menunggu "Kirim Seleksi"). Usulan bukan bagian `selectedUT` dan
+   * tidak pernah ikut payload `PUT .../seleksi`.
+   */
+  async function handleTambahUsulan(
+    key: string,
+    tugasPokokId: string,
+    detilTugasId: string | null,
+  ) {
+    const uraian = (usulanDraft[key] ?? "").trim();
+    if (!uraian) {
+      setUsulanError((prev) => ({ ...prev, [key]: "Uraian usulan tidak boleh kosong." }));
+      return;
+    }
+    setUsulanSubmittingKey(key);
+    setUsulanError((prev) => ({ ...prev, [key]: null }));
+    try {
+      const client = withServerAuth(accessToken);
+      const { error: apiError, response } = await client.POST(
+        "/api/v1/task-inventory/sesi/responden/{responden_id}/usulan",
+        {
+          params: { path: { responden_id: respondenId } },
+          body: { tugas_pokok_id: tugasPokokId, detil_tugas_id: detilTugasId, uraian },
+        },
+      );
+      const reqId = response.headers.get("x-request-id");
+      if (apiError) throw toApiError(apiError, reqId);
+      notifySukses("Usulan tugas tersimpan.");
+      setUsulanDraft((prev) => ({ ...prev, [key]: "" }));
+      setUsulanOpenKeys((prev) => {
+        const next = new Set(prev);
+        next.delete(key);
+        return next;
+      });
+      router.refresh();
+    } catch (err) {
+      setUsulanError((prev) => ({ ...prev, [key]: pesanGagal(err) }));
+      notifyGagal(err);
+    } finally {
+      setUsulanSubmittingKey(null);
+    }
+  }
+
+  /** Hapus usulan yang sudah tersimpan — memanggil `DELETE /usulan/{id}` seketika. */
+  async function handleHapusUsulan(usulanId: string, key: string) {
+    setDeletingUsulanId(usulanId);
+    setUsulanError((prev) => ({ ...prev, [key]: null }));
+    try {
+      const client = withServerAuth(accessToken);
+      const { error: apiError, response } = await client.DELETE(
+        "/api/v1/task-inventory/usulan/{usulan_id}",
+        { params: { path: { usulan_id: usulanId } } },
+      );
+      const reqId = response.headers.get("x-request-id");
+      if (apiError) throw toApiError(apiError, reqId);
+      notifySukses("Usulan dihapus.");
+      router.refresh();
+    } catch (err) {
+      setUsulanError((prev) => ({ ...prev, [key]: pesanGagal(err) }));
+      notifyGagal(err);
+    } finally {
+      setDeletingUsulanId(null);
+    }
   }
 
   async function handleSave() {
@@ -358,26 +482,101 @@ export function SeleksiForm({ respondenId, catalog, terpilihAwal, accessToken }:
               </button>
             </div>
           </div>
-          {uraianGroups.map((g) => (
-            <fieldset key={g.label} className="rounded-lg border border-gray-200 bg-white p-4">
-              <legend className="px-2 text-sm font-semibold text-gray-800">{g.label}</legend>
-              <ul className="space-y-2">
-                {g.tasks.map((t) => (
-                  <li key={t.kode}>
-                    <label className="flex cursor-pointer items-start gap-3 rounded-md p-2 hover:bg-gray-50">
-                      <input
-                        type="checkbox"
-                        checked={selectedUT.has(t.kode)}
-                        onChange={() => toggle(setSelectedUT, t.kode)}
-                        className="mt-1 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                      />
-                      <span className="text-sm text-gray-700">{t.uraian_tugas}</span>
-                    </label>
-                  </li>
-                ))}
-              </ul>
-            </fieldset>
-          ))}
+          {uraianGroups.map((g) => {
+            const usulanGrup = usulanAwal.filter((u) => usulanGroupKey(u) === g.key);
+            const formTerbuka = usulanOpenKeys.has(g.key);
+            return (
+              <fieldset key={g.key} className="rounded-lg border border-gray-200 bg-white p-4">
+                <legend className="px-2 text-sm font-semibold text-gray-800">{g.label}</legend>
+                <ul className="space-y-2">
+                  {g.tasks.map((t) => (
+                    <li key={t.kode}>
+                      <label className="flex cursor-pointer items-start gap-3 rounded-md p-2 hover:bg-gray-50">
+                        <input
+                          type="checkbox"
+                          checked={selectedUT.has(t.kode)}
+                          onChange={() => toggle(setSelectedUT, t.kode)}
+                          className="mt-1 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        />
+                        <span className="text-sm text-gray-700">{t.uraian_tugas}</span>
+                      </label>
+                    </li>
+                  ))}
+                </ul>
+
+                {!tahap1Submit && (
+                  <div className="mt-3 space-y-2 border-t border-gray-100 pt-3">
+                    {usulanGrup.length > 0 && (
+                      <ul className="space-y-1.5">
+                        {usulanGrup.map((u) => (
+                          <li
+                            key={u.id}
+                            className="flex items-start justify-between gap-2 rounded-md bg-blue-50 p-2 text-sm text-blue-800"
+                          >
+                            <span>{u.uraian}</span>
+                            <button
+                              type="button"
+                              onClick={() => handleHapusUsulan(u.id, g.key)}
+                              disabled={deletingUsulanId === u.id}
+                              className="shrink-0 text-xs font-medium text-red-600 hover:underline disabled:opacity-60"
+                            >
+                              {deletingUsulanId === u.id ? "Menghapus…" : "Hapus"}
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+
+                    {formTerbuka ? (
+                      <div className="space-y-2">
+                        <textarea
+                          value={usulanDraft[g.key] ?? ""}
+                          onChange={(e) =>
+                            setUsulanDraft((prev) => ({ ...prev, [g.key]: e.target.value }))
+                          }
+                          placeholder="Tuliskan uraian tugas yang belum ada di daftar..."
+                          rows={2}
+                          className="w-full rounded-md border border-gray-300 p-2 text-sm text-gray-700"
+                        />
+                        {usulanError[g.key] && (
+                          <p role="alert" className="text-xs text-red-600">
+                            {usulanError[g.key]}
+                          </p>
+                        )}
+                        <div className="flex gap-2">
+                          <button
+                            type="button"
+                            onClick={() =>
+                              handleTambahUsulan(g.key, g.tugasPokokId, g.detilTugasId)
+                            }
+                            disabled={usulanSubmittingKey === g.key}
+                            className="rounded-md bg-blue-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-blue-700 disabled:opacity-60"
+                          >
+                            {usulanSubmittingKey === g.key ? "Menyimpan…" : "Simpan Usulan"}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => toggleUsulanForm(g.key)}
+                            className="rounded-md border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50"
+                          >
+                            Batal
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => toggleUsulanForm(g.key)}
+                        className="text-xs font-medium text-blue-600 hover:underline"
+                      >
+                        Tambah tugas yang tidak ada di daftar
+                      </button>
+                    )}
+                  </div>
+                )}
+              </fieldset>
+            );
+          })}
           <div className="flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50 px-4 py-3">
             <p className="text-sm text-gray-600 dark:text-gray-400">
               Terpilih: <strong>{selectedUT.size}</strong> uraian tugas

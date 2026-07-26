@@ -84,6 +84,48 @@ src/
 
 ## Revisi Desain
 
+### [2026-07-26] Formulir usulan tugas Tahap 1 + panel keputusan usulan Tahap 2
+
+Backlog `#45`, konsumen klien dari `anjab-abk-backend#26`/`#27`. Uji coba workshop SME panel
+(2026-07-25) menemukan peserta berkali-kali mengerjakan tugas yang tak ada di katalog Tahap 1
+tanpa tempat menuliskannya. Backend sudah menyediakan entitas + endpoint usulan; item ini
+memasang UI-nya di kedua layar yang relevan.
+
+- **`openapi/openapi.json` disinkronkan ulang dari backend** — checkout lokal backend
+  ternyata belum mencerminkan `#27` (`TiTahap2ReviewRead.usulan`/`TiTahap2Submit.
+keputusan_usulan` tidak ada di `openapi.json` gitignored-nya meski source sudah commit
+  `74ac13c`); diregenerasi via `scripts/export_openapi.py` backend sebelum disalin ke sini.
+  `npm run gen:api` dijalankan, blok convenience re-export ditambal ulang dengan alias
+  `TiUsulanRead`/`TiUsulanCreate`/`TiUsulanReviewRead` (konvensi baku file ini).
+- **Tahap 1 (`seleksi-form.tsx`)**: kontrol usulan hidup di Level 3 (Uraian Tugas), satu per
+  grup `uraianGroups` (kunci sama dengan `detilKey` katalog) — `tugas_pokok_id`/
+  `detil_tugas_id` grup diwariskan langsung ke payload usulan, grup sentinel "(Langsung di
+  bawah tugas pokok)" mengirim `detil_tugas_id: null`. `POST .../usulan` dipanggil **seketika**
+  saat "Simpan Usulan" diklik (bukan menunggu "Kirim Seleksi") diikuti `router.refresh()`;
+  daftar usulan **tidak dicerminkan ke `useState`** — selalu dirender dari prop `usulanAwal`
+  yang dipasok `data.ts` (`GET .../usulan` ditambahkan ke `fetchTahap1Data`, invariant
+  `if (!res.data) throw` sama seperti fetch lain, TANPA pengecualian 404 karena ini daftar
+  bukan objek tunggal — kosong pada kunjungan pertama sudah `[]` yang sah dari backend).
+  State lokal hanya untuk interaksi UI murni sebelum submit (isi textarea, grup mana yang
+  formnya terbuka). Prop baru `tahap1Submit` (dari `responden.tahap1_submit`) menyembunyikan
+  SELURUH blok usulan (termasuk yang sudah tersimpan, bukan hanya kontrolnya) — defense-in-
+  depth di atas gerbang yang sudah ada di `page.tsx` (yang hanya me-render `<SeleksiForm>`
+  saat `!tahap1_submit && sesi.status === "TAHAP1"`).
+- **Tahap 2 (`review-form.tsx`)**: blok "Usulan tugas tambahan dari peserta" dirender **di
+  atas** tabel task partial (tabel task ikut disembunyikan bila `review.tasks.length === 0`,
+  simetris dengan usulan) — kolom nama pengusul (`responden_nama`) + hierarki induk
+  (`tugas_pokok · detil_tugas`, `.filter(Boolean).join(" · ")` agar aman saat detil null).
+  State `keputusanUsulan` terpisah dari `keputusan` (task) karena identitasnya beda
+  (`usulan_id` vs `task_kode`), tapi `setAll`/`belumDiputuskan`/`onSubmit` menggabungkan
+  keduanya — **satu** `POST .../tahap2` mengirim `keputusan` **dan** `keputusan_usulan`
+  sekaligus, bukan dua submit. `readOnly` yang sudah ada (admin/koordinator vs anggota
+  panel) dipakai apa adanya untuk usulan — tidak ada prop/gerbang baru.
+- `page.tsx` Tahap 2: kondisi kosong ("Tidak ada task partial") diperluas jadi
+  `review.tasks.length === 0 && (review.usulan ?? []).length === 0` — sebelumnya sesi yang
+  HANYA punya usulan (tanpa task partial) akan menampilkan pesan "tidak ada apa-apa" yang
+  keliru.
+- Detail keputusan: issue `cakrawala-tumbuh/anjab-abk-web-app#45`.
+
 ### [2026-07-24] Dua daftar di satu layar = dua mekanisme paging; `limit: 500` bukan "ambil semua"
 
 Layar `/dcs` memuat dua daftar: kandidat penugasan (checkbox multi-select) dan tabel responden.

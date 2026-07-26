@@ -41,7 +41,9 @@ Mulai Tahap 1 → daftar responden → partisipan isi Tahap 1
 
 1. Informasikan ke anggota panel bahwa seleksi sudah dibuka beserta batas waktunya.
 2. Tiap anggota membuka **Isi Tahap 1** dan menyeleksi tugas relevan melalui 3 langkah
-   (Tugas Pokok → Detil Tugas → Uraian Tugas), lalu **Kirim Seleksi**.
+   (Tugas Pokok → Detil Tugas → Uraian Tugas), lalu **Kirim Seleksi**. Tugas yang benar-benar
+   dikerjakan tetapi tidak ada di daftar dapat dituliskan sebagai **usulan tugas tambahan**
+   di langkah 3 — diputuskan koordinator bersama tugas _partial_ di Tahap 2.
 
 > Langkah teknis: [IK-04 bagian E](../ik/task-inventory.md#e-mengisi-tahap-1-seleksi-partisipan).
 
@@ -54,8 +56,9 @@ Seleksi Tahap 1 yang sudah dikirim tidak dapat diubah. Pantau kolom **Selesai Ta
 
 1. Setelah Tahap 1 cukup terkumpul, klik **Mulai Tahap 2 — Review Koordinator** (OK bila
    semua sudah submit; Cancel untuk memaksa lanjut).
-2. Koordinator membuka **Buka Review Koordinator**, memutuskan tiap tugas _partial_
-   (**Ya**/**Tidak**, atau **Setujui Semua**/**Tolak Semua**), lalu **Simpan Keputusan**.
+2. Koordinator membuka **Buka Review Koordinator**, memutuskan tiap tugas _partial_ **dan**
+   usulan tugas tambahan dari peserta (**Ya**/**Tidak**, atau **Setujui Semua**/**Tolak
+   Semua** — berlaku ke keduanya sekaligus), lalu **Simpan Keputusan** dalam satu kali kirim.
 
 > Langkah teknis: [IK-04 bagian D](../ik/task-inventory.md#d-review-koordinator-tahap-2).
 

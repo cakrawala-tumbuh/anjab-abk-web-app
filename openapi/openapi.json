@@ -11626,6 +11626,278 @@
         }
       }
     },
+    "/api/v1/task-inventory/sesi/responden/{responden_id}/usulan": {
+      "post": {
+        "tags": [
+          "taskinv.usulan"
+        ],
+        "summary": "Catat usulan uraian tugas baru dari responden Tahap 1",
+        "operationId": "taskinv_usulan_create",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "responden_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID responden.",
+              "title": "Responden Id"
+            },
+            "description": "ID responden."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TiUsulanCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TiUsulanRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan admin atau bukan pemilik responden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Responden tidak ditemukan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Sesi bukan TAHAP1, responden sudah submit Tahap 1, tugas_pokok_id tidak terkait jabatan sesi, atau detil_tugas_id bukan turunan tugas_pokok_id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "taskinv.usulan"
+        ],
+        "summary": "Daftar usulan uraian tugas milik satu responden (admin atau pemilik)",
+        "operationId": "taskinv_usulan_list",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "responden_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID responden.",
+              "title": "Responden Id"
+            },
+            "description": "ID responden."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TiUsulanRead"
+                  },
+                  "title": "Response Taskinv Usulan List"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan admin atau bukan pemilik responden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Responden tidak ditemukan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/task-inventory/usulan/{usulan_id}": {
+      "delete": {
+        "tags": [
+          "taskinv.usulan"
+        ],
+        "summary": "Hapus usulan uraian tugas milik sendiri (admin atau pemilik, sebelum submit)",
+        "operationId": "taskinv_usulan_delete",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "usulan_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID usulan.",
+              "title": "Usulan Id"
+            },
+            "description": "ID usulan."
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan admin atau bukan pemilik responden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Usulan tidak ditemukan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Sesi bukan TAHAP1, responden sudah submit Tahap 1, tugas_pokok_id tidak terkait jabatan sesi, atau detil_tugas_id bukan turunan tugas_pokok_id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/time-study/kuesioner/saya": {
       "get": {
         "tags": [
@@ -20234,10 +20506,18 @@
             "title": "Tasks",
             "description": "Task yang perlu diputuskan koordinator."
           },
+          "usulan": {
+            "items": {
+              "$ref": "#/components/schemas/TiUsulanReviewRead"
+            },
+            "type": "array",
+            "title": "Usulan",
+            "description": "Usulan uraian tugas Tahap 1 yang perlu diputuskan koordinator."
+          },
           "jumlah_belum_diputuskan": {
             "type": "integer",
             "title": "Jumlah Belum Diputuskan",
-            "description": "Jumlah task yang belum ada keputusan koordinator."
+            "description": "Jumlah task DAN usulan yang belum ada keputusan koordinator."
           },
           "submitted_at": {
             "anyOf": [
@@ -20269,18 +20549,22 @@
               "$ref": "#/components/schemas/TiTahap2KeputusanItem"
             },
             "type": "array",
-            "minItems": 1,
             "title": "Keputusan",
             "description": "Daftar keputusan koordinator per task."
+          },
+          "keputusan_usulan": {
+            "items": {
+              "$ref": "#/components/schemas/TiUsulanKeputusanItem"
+            },
+            "type": "array",
+            "title": "Keputusan Usulan",
+            "description": "Daftar keputusan koordinator per usulan Tahap 1."
           }
         },
         "additionalProperties": false,
         "type": "object",
-        "required": [
-          "keputusan"
-        ],
         "title": "TiTahap2Submit",
-        "description": "Payload submit keputusan koordinator untuk seluruh task Tahap 2."
+        "description": "Payload submit keputusan koordinator untuk task & usulan Tahap 2.\n\n`keputusan`/`keputusan_usulan` masing-masing default list kosong — submit tetap\nditolak (422, lihat router) bila **kedua-duanya** kosong, supaya sesi yang hanya\npunya usulan (tanpa task partial) tetap bisa disubmit."
       },
       "TiTahap2TaskRead": {
         "properties": {
@@ -20464,6 +20748,260 @@
         ],
         "title": "TiTaskTerpilihRead",
         "description": "Satu task pada himpunan terpilih (beku setelah TAHAP2) + statistik relevansi."
+      },
+      "TiUsulanCreate": {
+        "properties": {
+          "tugas_pokok_id": {
+            "type": "string",
+            "title": "Tugas Pokok Id",
+            "description": "ID tugas pokok induk usulan ini; harus terkait jabatan sesi.",
+            "examples": [
+              "titp_a1b2c3d4"
+            ]
+          },
+          "detil_tugas_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Detil Tugas Id",
+            "description": "ID detil tugas induk (opsional); bila diisi, harus turunan tugas_pokok_id.",
+            "examples": [
+              "tidt_a1b2c3d4"
+            ]
+          },
+          "uraian": {
+            "type": "string",
+            "maxLength": 500,
+            "minLength": 1,
+            "title": "Uraian",
+            "description": "Teks uraian tugas yang diusulkan responden.",
+            "examples": [
+              "Menyiapkan materi ajar tambahan untuk kelas inklusi."
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "tugas_pokok_id",
+          "uraian"
+        ],
+        "title": "TiUsulanCreate",
+        "description": "Payload pembuatan usulan uraian tugas baru oleh responden Tahap 1.\n\nDitulis di bawah tugas pokok (dan opsional detil tugas) pilihan responden —\ntanpa induk, usulan tidak bisa ditempatkan saat konsensus Tahap 2. Hanya sah saat\nsesi berstatus `TAHAP1` dan responden belum `tahap1_submit` (lihat endpoint)."
+      },
+      "TiUsulanKeputusanItem": {
+        "properties": {
+          "usulan_id": {
+            "type": "string",
+            "title": "Usulan Id",
+            "description": "ID usulan.",
+            "examples": [
+              "tius_a1b2c3d4"
+            ]
+          },
+          "disetujui": {
+            "type": "boolean",
+            "title": "Disetujui",
+            "description": "True jika koordinator menyetujui usulan ini masuk Tahap 3."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "usulan_id",
+          "disetujui"
+        ],
+        "title": "TiUsulanKeputusanItem",
+        "description": "Satu keputusan koordinator untuk satu usulan Tahap 1."
+      },
+      "TiUsulanRead": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id",
+            "description": "ID usulan.",
+            "examples": [
+              "tius_a1b2c3d4"
+            ]
+          },
+          "sesi_id": {
+            "type": "string",
+            "title": "Sesi Id",
+            "description": "ID sesi Task Inventory.",
+            "examples": [
+              "tises_a1b2c3d4"
+            ]
+          },
+          "responden_id": {
+            "type": "string",
+            "title": "Responden Id",
+            "description": "ID responden pengusul.",
+            "examples": [
+              "trsp_a1b2c3d4"
+            ]
+          },
+          "tugas_pokok_id": {
+            "type": "string",
+            "title": "Tugas Pokok Id",
+            "description": "ID tugas pokok induk."
+          },
+          "tugas_pokok": {
+            "type": "string",
+            "title": "Tugas Pokok",
+            "description": "Nama tugas pokok induk (ter-resolve)."
+          },
+          "detil_tugas_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Detil Tugas Id",
+            "description": "ID detil tugas induk (bila ada)."
+          },
+          "detil_tugas": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Detil Tugas",
+            "description": "Nama detil tugas induk (ter-resolve, bila ada)."
+          },
+          "uraian": {
+            "type": "string",
+            "title": "Uraian",
+            "description": "Teks uraian tugas yang diusulkan."
+          },
+          "disetujui": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Disetujui",
+            "description": "Keputusan koordinator Tahap 2. NULL = belum diputuskan."
+          },
+          "task_kode": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Task Kode",
+            "description": "Kode task hasil materialisasi ke katalog (diisi saat mulai-tahap3)."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At",
+            "description": "Waktu usulan dibuat."
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "sesi_id",
+          "responden_id",
+          "tugas_pokok_id",
+          "tugas_pokok",
+          "uraian",
+          "created_at"
+        ],
+        "title": "TiUsulanRead",
+        "description": "Representasi satu usulan uraian tugas, dengan nama induk sudah di-resolve.\n\n`tugas_pokok`/`detil_tugas` diresolusi live dari `TugasPokokService`/\n`DetilTugasService` — bukan disimpan sebagai kolom (tabel `ti_usulan_task` hanya\nmenyimpan id-nya) — supaya klien tidak perlu memanggil katalog lagi untuk\nmenampilkan nama induk."
+      },
+      "TiUsulanReviewRead": {
+        "properties": {
+          "usulan_id": {
+            "type": "string",
+            "title": "Usulan Id",
+            "description": "ID usulan.",
+            "examples": [
+              "tius_a1b2c3d4"
+            ]
+          },
+          "responden_id": {
+            "type": "string",
+            "title": "Responden Id",
+            "description": "ID responden pengusul.",
+            "examples": [
+              "trsp_a1b2c3d4"
+            ]
+          },
+          "responden_nama": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Responden Nama",
+            "description": "Nama responden pengusul."
+          },
+          "tugas_pokok": {
+            "type": "string",
+            "title": "Tugas Pokok",
+            "description": "Nama tugas pokok induk usulan (ter-resolve)."
+          },
+          "detil_tugas": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Detil Tugas",
+            "description": "Nama detil tugas induk usulan (ter-resolve, bila ada)."
+          },
+          "uraian": {
+            "type": "string",
+            "title": "Uraian",
+            "description": "Teks uraian tugas yang diusulkan."
+          },
+          "disetujui": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Disetujui",
+            "description": "Keputusan koordinator. NULL = belum diputuskan."
+          }
+        },
+        "type": "object",
+        "required": [
+          "usulan_id",
+          "responden_id",
+          "tugas_pokok",
+          "uraian"
+        ],
+        "title": "TiUsulanReviewRead",
+        "description": "Satu usulan uraian tugas Tahap 1 yang perlu diputuskan koordinator di Tahap 2.\n\nProyeksi ringkas dari `TiUsulanRead` (`taskinv/schemas/usulan.py`) khusus untuk\nlayar review koordinator — menambah `responden_nama` (bukan sekadar id) dan\nmembuang `sesi_id`/`task_kode`/`created_at` yang tidak relevan di layar ini."
       },
       "TsKuesionerItemRead": {
         "properties": {

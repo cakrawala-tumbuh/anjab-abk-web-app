@@ -1,7 +1,7 @@
 import { render, screen, fireEvent, act, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { toast } from "sonner";
-import type { TiTahap2ReviewRead } from "@/lib/api/schema";
+import type { TiTahap2ReviewRead, TiUsulanReviewRead } from "@/lib/api/schema";
 
 // ── Mock router & API client ────────────────────────────────────────────────
 const refresh = vi.fn();
@@ -188,7 +188,7 @@ describe("ReviewForm — regresi: sukses Tahap 2 tidak boleh senyap", () => {
     expect(post).toHaveBeenCalledWith(
       "/api/v1/task-inventory/sesi/{sesi_id}/tahap2",
       expect.objectContaining({
-        body: { keputusan: [{ task_kode: "TIbbb", disetujui: true }] },
+        body: { keputusan: [{ task_kode: "TIbbb", disetujui: true }], keputusan_usulan: [] },
       }),
     );
     // User harus tahu sebagian task dibuang dari payload.
@@ -247,8 +247,88 @@ describe("ReviewForm — submit memakai kode, bukan nama", () => {
         params: { path: { sesi_id: "sesi_1" } },
         body: {
           keputusan: expect.arrayContaining([{ task_kode: "TIaaa", disetujui: true }]),
+          keputusan_usulan: [],
         },
       }),
     );
+  });
+});
+
+describe("ReviewForm — usulan tugas tambahan Tahap 1 (issue #45)", () => {
+  const usulan: TiUsulanReviewRead[] = [
+    {
+      usulan_id: "tius_1",
+      responden_id: "trsp_1",
+      responden_nama: "Budi",
+      tugas_pokok: "Pengelolaan SDM",
+      detil_tugas: "Evaluasi Kinerja",
+      uraian: "Menyusun ulang jadwal piket.",
+      disetujui: null,
+    },
+  ];
+  const reviewWithUsulan: TiTahap2ReviewRead = {
+    sesi_id: "sesi_1",
+    tasks: [{ task_kode: "TIaaa", n_relevan: 2, n_total: 3, disetujui: null }],
+    usulan,
+    jumlah_belum_diputuskan: 2,
+  };
+
+  function renderWithUsulan(readOnly: boolean) {
+    return render(
+      <ReviewForm
+        sesiId="sesi_1"
+        review={reviewWithUsulan}
+        accessToken="tok"
+        readOnly={readOnly}
+        kodeToUraian={{}}
+      />,
+    );
+  }
+
+  it("menampilkan blok 'Usulan tugas tambahan dari peserta' dengan nama pengusul & hierarki induk", () => {
+    renderWithUsulan(false);
+    expect(screen.getByText("Usulan tugas tambahan dari peserta")).toBeInTheDocument();
+    expect(screen.getByText("Menyusun ulang jadwal piket.")).toBeInTheDocument();
+    expect(screen.getByText("Budi")).toBeInTheDocument();
+    expect(screen.getByText("Pengelolaan SDM · Evaluasi Kinerja")).toBeInTheDocument();
+  });
+
+  it("submit koordinator mengirim keputusan task DAN keputusan_usulan dalam satu POST", async () => {
+    vi.stubGlobal("confirm", () => true);
+    renderWithUsulan(false);
+
+    // Putuskan task TIaaa dan usulan tius_1 sekaligus (2 baris "Ya" berbeda tabel).
+    const yaButtons = screen.getAllByRole("button", { name: "Ya" });
+    fireEvent.click(yaButtons[0]); // baris usulan (tabel usulan dirender lebih dulu)
+    fireEvent.click(yaButtons[1]); // baris task TIaaa
+
+    await act(async () => {
+      fireEvent.click(screen.getAllByRole("button", { name: "Simpan Keputusan" })[0]);
+    });
+
+    await waitFor(() => expect(post).toHaveBeenCalledTimes(1));
+    expect(post).toHaveBeenCalledWith(
+      "/api/v1/task-inventory/sesi/{sesi_id}/tahap2",
+      expect.objectContaining({
+        body: {
+          keputusan: [{ task_kode: "TIaaa", disetujui: true }],
+          keputusan_usulan: [{ usulan_id: "tius_1", disetujui: true }],
+        },
+      }),
+    );
+  });
+
+  it("canEdit=false (readOnly): usulan tampil tanpa kontrol setuju/tolak, tidak ada submit", () => {
+    renderWithUsulan(true);
+    expect(screen.getByText("Menyusun ulang jadwal piket.")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Ya" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "Tidak" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "Simpan Keputusan" })).toBeNull();
+    expect(post).not.toHaveBeenCalled();
+  });
+
+  it("tidak ada usulan: blok 'Usulan tugas tambahan' tidak dirender", () => {
+    renderForm(false);
+    expect(screen.queryByText("Usulan tugas tambahan dari peserta")).not.toBeInTheDocument();
   });
 });
