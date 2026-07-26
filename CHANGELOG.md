@@ -7,7 +7,21 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+### Ditambahkan
+
+- **Kolom Catatan (opsional) per task di formulir Tahap 3 Task Inventory** (issue #42) —
+  textarea maks. 500 karakter untuk menuliskan keberatan/penjelasan per task yang dicentang
+  (mis. bila task ini ternyata bukan tugas partisipan), dikirim sebagai `TiDetailItem.catatan`.
+  Tidak ikut terkunci oleh "Setuju dengan isian standar"; nilai tersimpan tampil kembali saat
+  halaman dimuat ulang.
+
 ### Diubah
+
+- **Tombol "Kirim Detail" Tahap 3 Task Inventory kini terkunci sampai seluruh task final
+  dicentang & valid** (issue #42, workshop SME panel 2026-07-25) — kelengkapan dihitung per
+  baris lewat `detailItemSchema.safeParse`, bukan sekadar status centang; jumlah task yang
+  belum lengkap ditampilkan eksplisit di samping tombol. Tombol "Simpan" (draf) tidak terkena
+  dampak — tetap menerima isian parsial kapan saja.
 
 - **Formulir Tahap 3 Task Inventory disederhanakan jadi 4 field inti** (issue #41,
   workshop SME panel guru TK 2026-07-25) — partisipan kini hanya melihat Sumber Bukti,

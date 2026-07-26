@@ -65,13 +65,15 @@ export const detailItemSchema = z.object({
 /**
  * State per baris tugas yang dirender ke partisipan.
  *
- * Hanya memuat **4 field yang ditampilkan** (`sumber_bukti`, `kondisi`,
+ * Memuat **4 field yang ditampilkan** (`sumber_bukti`, `kondisi`,
  * `frekuensi_teks`, `durasi_per_kali`) plus `va_type` (tampil kondisional, lihat
- * `butuhPilihVaType`). **`jam_per_minggu` dan `peak4w_hours` SENGAJA tidak ada di
- * sini** — keduanya tidak lagi punya input sama sekali; nilai kirimnya dibaca
- * langsung dari `std_jam_per_minggu ?? 0`/`std_peak4w_hours ?? 0` di
- * `buildDetailPayload()`, bukan dari state baris (issue backlog
- * `cakrawala-tumbuh/anjab-abk-web-app#41`).
+ * `butuhPilihVaType`) dan `catatan` (textarea opsional, selalu dirender saat
+ * `checked`, TIDAK ikut dikunci oleh `setuju_standar` — issue backlog
+ * `cakrawala-tumbuh/anjab-abk-web-app#42`). **`jam_per_minggu` dan
+ * `peak4w_hours` SENGAJA tidak ada di sini** — keduanya tidak lagi punya input
+ * sama sekali; nilai kirimnya dibaca langsung dari
+ * `std_jam_per_minggu ?? 0`/`std_peak4w_hours ?? 0` di `buildDetailPayload()`,
+ * bukan dari state baris (issue backlog `cakrawala-tumbuh/anjab-abk-web-app#41`).
  */
 interface RowState {
   checked: boolean;
@@ -82,6 +84,12 @@ interface RowState {
   /** `null` = belum diisi responden — lihat catatan di `rowDariStandar()`. */
   durasi_per_kali: number | null;
   va_type: TiDetailItem["va_type"];
+  /**
+   * Catatan/keberatan bebas per task, string kosong `""` bila belum diisi.
+   * Dikonversi ke `undefined` saat dikirim ke backend (lihat `parseRow()`) —
+   * `""` TIDAK PERNAH dikirim sebagai nilai `catatan` di payload.
+   */
+  catatan: string;
 }
 
 /** Task punya nilai standar bila minimal satu field `std_*` non-null. */
@@ -111,6 +119,10 @@ function punyaStandar(t: TiTaskTerpilihRead): boolean {
  * di state baris. `va_type` diseed `t.std_va_type ?? "VA-Core"` seperti sebelumnya;
  * selektornya tetap dirender untuk task tanpa standar (`std_va_type` null) supaya
  * partisipan bisa mengoreksi default itu — lihat `butuhPilihVaType`.
+ *
+ * `catatan` selalu diseed `""` di sini (tidak ada nilai standar untuk catatan) —
+ * pemanggil yang punya `TiDetailRead.catatan` tersimpan (lihat inisialisasi `rows`
+ * di `DetailForm`) menimpanya sendiri.
  */
 function rowDariStandar(t: TiTaskTerpilihRead): RowState {
   return {
@@ -121,6 +133,7 @@ function rowDariStandar(t: TiTaskTerpilihRead): RowState {
     frekuensi_teks: t.std_frekuensi_teks ?? "Mingguan",
     durasi_per_kali: null,
     va_type: t.std_va_type ?? "VA-Core",
+    catatan: "",
   };
 }
 
@@ -146,6 +159,7 @@ export function DetailForm({ respondenId, tasks, detailAwal, accessToken }: Prop
           frekuensi_teks: existing.frekuensi_teks,
           durasi_per_kali: existing.durasi_per_kali,
           va_type: existing.va_type,
+          catatan: existing.catatan ?? "",
         };
         return [t.kode, row];
       }),
@@ -160,10 +174,22 @@ export function DetailForm({ respondenId, tasks, detailAwal, accessToken }: Prop
     setRows((prev) => ({ ...prev, [kode]: { ...prev[kode], ...patch } }));
   }
 
+  /**
+   * Terapkan/lepas nilai standar master ke baris `t`.
+   *
+   * Saat `setuju === true`, seluruh field field-standar (`sumber_bukti`,
+   * `kondisi`, `frekuensi_teks`, `va_type`) direset ke `rowDariStandar(t)` —
+   * **kecuali `catatan`**, yang sengaja dipertahankan dari nilai baris saat ini.
+   * Kolom catatan tidak ikut terkunci/tereset oleh "Setuju dengan isian
+   * standar" (issue backlog `cakrawala-tumbuh/anjab-abk-web-app#42`) — keberatan
+   * partisipan justru paling sering muncul pada task yang isian standarnya
+   * diterima apa adanya.
+   */
   function toggleSetuju(t: TiTaskTerpilihRead, setuju: boolean) {
     if (setuju) {
       const std = rowDariStandar(t);
-      update(t.kode, { ...std, checked: true, setuju_standar: true });
+      const catatanSaatIni = rows[t.kode]?.catatan ?? "";
+      update(t.kode, { ...std, checked: true, setuju_standar: true, catatan: catatanSaatIni });
     } else {
       update(t.kode, { setuju_standar: false });
     }
@@ -173,35 +199,69 @@ export function DetailForm({ respondenId, tasks, detailAwal, accessToken }: Prop
   const adaTaskBerstandar = tasks.some(punyaStandar);
 
   /**
+   * Validasi satu baris `t`/`r` terhadap {@link detailItemSchema}.
+   *
+   * Sumber tunggal aturan "isian baris ini sah dikirim" — dipakai baik oleh
+   * `isRowLengkap()` (menentukan status kunci tombol "Kirim Detail") maupun
+   * `buildDetailPayload()` (membangun payload sesungguhnya), sehingga kedua
+   * jalur itu **tidak pernah berbeda pendapat**: bila tombol aktif,
+   * `buildDetailPayload()` dijamin berhasil untuk seluruh baris tercentang.
+   *
+   * `jam_per_minggu`/`peak4w_hours` **selalu** dibaca dari `t.std_jam_per_minggu ?? 0` /
+   * `t.std_peak4w_hours ?? 0` — bukan dari `RowState` (yang sudah tidak memilikinya)
+   * — partisipan tidak pernah mengisi kedua field ini secara manual (issue backlog
+   * `cakrawala-tumbuh/anjab-abk-web-app#41`). `catatan` string kosong `""` diubah
+   * jadi `undefined` sebelum divalidasi/dikirim — `""` tidak pernah menjadi nilai
+   * `catatan` di payload (issue backlog `cakrawala-tumbuh/anjab-abk-web-app#42`).
+   */
+  function parseRow(t: TiTaskTerpilihRead, r: RowState) {
+    return detailItemSchema.safeParse({
+      task_kode: t.kode,
+      sumber_bukti: r.sumber_bukti,
+      kondisi: r.kondisi,
+      frekuensi_teks: r.frekuensi_teks,
+      durasi_per_kali: r.durasi_per_kali,
+      jam_per_minggu: t.std_jam_per_minggu ?? 0,
+      peak4w_hours: t.std_peak4w_hours ?? 0,
+      va_type: r.va_type,
+      setuju_standar: r.setuju_standar,
+      catatan: r.catatan === "" ? undefined : r.catatan,
+    });
+  }
+
+  /**
+   * `true` bila task `t` sudah dicentang DAN isiannya lolos {@link parseRow}.
+   *
+   * Dipakai untuk menghitung `incompleteTasks`/`semuaLengkap` yang mengunci
+   * tombol "Kirim Detail" — task yang belum dicentang **maupun** task yang
+   * dicentang tapi isiannya tidak valid (mis. `durasi_per_kali` kosong, atau
+   * `va_type` masih `"Context-Dependent"`) sama-sama dihitung "belum lengkap"
+   * (issue backlog `cakrawala-tumbuh/anjab-abk-web-app#42`).
+   */
+  function isRowLengkap(t: TiTaskTerpilihRead): boolean {
+    const r = rows[t.kode];
+    return !!r && r.checked && parseRow(t, r).success;
+  }
+
+  const incompleteTasks = tasks.filter((t) => !isRowLengkap(t));
+  const semuaLengkap = incompleteTasks.length === 0;
+
+  /**
    * Kumpulkan entri detail yang ditandai & valid; `null` bila ada isian tidak valid.
    *
    * `va_type` divalidasi terhadap {@link VA_TYPE_FINAL} lewat `detailItemSchema` — baris
    * yang masih `"Context-Dependent"` (prefill belum diselesaikan) gagal parse di sini,
    * sehingga submit klien terblokir dengan pesan yang menyebut task & VA Type secara
-   * spesifik, bukan pesan generik (issue backlog #39).
-   *
-   * `jam_per_minggu`/`peak4w_hours` **selalu** dibaca dari `t.std_jam_per_minggu ?? 0` /
-   * `t.std_peak4w_hours ?? 0` di sini — bukan dari `RowState` (yang sudah tidak
-   * memilikinya) dan bukan dari draft lama tersimpan. Partisipan tidak pernah mengisi
-   * kedua field ini secara manual (issue backlog
-   * `cakrawala-tumbuh/anjab-abk-web-app#41`).
+   * spesifik, bukan pesan generik (issue backlog #39). Dipanggil baik oleh
+   * `handleSave()` (draft, boleh parsial) maupun `onSubmit()` (final, tombolnya
+   * sendiri sudah terkunci selama `!semuaLengkap` — lihat `isRowLengkap`).
    */
   function buildDetailPayload(): { detail: TiDetailItem[] } | null {
     const detail: TiDetailItem[] = [];
     for (const t of tasks) {
       const r = rows[t.kode];
       if (!r.checked) continue;
-      const parsed = detailItemSchema.safeParse({
-        task_kode: t.kode,
-        sumber_bukti: r.sumber_bukti,
-        kondisi: r.kondisi,
-        frekuensi_teks: r.frekuensi_teks,
-        durasi_per_kali: r.durasi_per_kali,
-        jam_per_minggu: t.std_jam_per_minggu ?? 0,
-        peak4w_hours: t.std_peak4w_hours ?? 0,
-        va_type: r.va_type,
-        setuju_standar: r.setuju_standar,
-      });
+      const parsed = parseRow(t, r);
       if (!parsed.success) {
         const vaTypeInvalid = parsed.error.issues.some((iss) => iss.path[0] === "va_type");
         setError(
@@ -327,26 +387,33 @@ export function DetailForm({ respondenId, tasks, detailAwal, accessToken }: Prop
         </p>
       )}
 
-      <div className="flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50 px-4 py-3">
-        <p className="text-sm text-gray-600 dark:text-gray-400">
-          Ditandai dikerjakan: <strong>{checkedCount}</strong> dari {tasks.length} task
-        </p>
-        <div className="flex gap-2">
-          <button
-            onClick={handleSave}
-            disabled={saving || submitting}
-            className="rounded-md border border-gray-300 px-5 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-60"
-          >
-            {saving ? "Menyimpan…" : "Simpan"}
-          </button>
-          <button
-            onClick={onSubmit}
-            disabled={submitting || saving}
-            className="rounded-md bg-indigo-600 px-5 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-60"
-          >
-            {submitting ? "Mengirim…" : "Kirim Detail"}
-          </button>
+      <div className="flex flex-col gap-2 rounded-lg border border-gray-200 bg-gray-50 px-4 py-3">
+        <div className="flex items-center justify-between">
+          <p className="text-sm text-gray-600 dark:text-gray-400">
+            Ditandai dikerjakan: <strong>{checkedCount}</strong> dari {tasks.length} task
+          </p>
+          <div className="flex gap-2">
+            <button
+              onClick={handleSave}
+              disabled={saving || submitting}
+              className="rounded-md border border-gray-300 px-5 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-60"
+            >
+              {saving ? "Menyimpan…" : "Simpan"}
+            </button>
+            <button
+              onClick={onSubmit}
+              disabled={submitting || saving || !semuaLengkap}
+              className="rounded-md bg-indigo-600 px-5 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-60"
+            >
+              {submitting ? "Mengirim…" : "Kirim Detail"}
+            </button>
+          </div>
         </div>
+        {!semuaLengkap && (
+          <p className="text-xs text-amber-600">
+            {incompleteTasks.length} task belum dilengkapi — lengkapi semuanya sebelum mengirim.
+          </p>
+        )}
       </div>
 
       <div className="space-y-4">
@@ -488,6 +555,17 @@ export function DetailForm({ respondenId, tasks, detailAwal, accessToken }: Prop
                       </label>
                     )}
                   </div>
+                  <label className="mt-3 block text-xs text-gray-600">
+                    Catatan (opsional)
+                    <textarea
+                      value={r.catatan}
+                      maxLength={500}
+                      rows={2}
+                      placeholder="Tuliskan keberatan atau catatan lain, mis. bila task ini ternyata bukan tugas Anda"
+                      onChange={(e) => update(t.kode, { catatan: e.target.value })}
+                      className="mt-1 block w-full rounded-md border border-gray-300 px-2 py-1 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    />
+                  </label>
                 </div>
               )}
             </div>
@@ -495,26 +573,33 @@ export function DetailForm({ respondenId, tasks, detailAwal, accessToken }: Prop
         })}
       </div>
 
-      <div className="flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50 px-4 py-3">
-        <p className="text-sm text-gray-600 dark:text-gray-400">
-          Ditandai dikerjakan: <strong>{checkedCount}</strong> dari {tasks.length} task
-        </p>
-        <div className="flex gap-2">
-          <button
-            onClick={handleSave}
-            disabled={saving || submitting}
-            className="rounded-md border border-gray-300 px-5 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-60"
-          >
-            {saving ? "Menyimpan…" : "Simpan"}
-          </button>
-          <button
-            onClick={onSubmit}
-            disabled={submitting || saving}
-            className="rounded-md bg-indigo-600 px-5 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-60"
-          >
-            {submitting ? "Mengirim…" : "Kirim Detail"}
-          </button>
+      <div className="flex flex-col gap-2 rounded-lg border border-gray-200 bg-gray-50 px-4 py-3">
+        <div className="flex items-center justify-between">
+          <p className="text-sm text-gray-600 dark:text-gray-400">
+            Ditandai dikerjakan: <strong>{checkedCount}</strong> dari {tasks.length} task
+          </p>
+          <div className="flex gap-2">
+            <button
+              onClick={handleSave}
+              disabled={saving || submitting}
+              className="rounded-md border border-gray-300 px-5 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-60"
+            >
+              {saving ? "Menyimpan…" : "Simpan"}
+            </button>
+            <button
+              onClick={onSubmit}
+              disabled={submitting || saving || !semuaLengkap}
+              className="rounded-md bg-indigo-600 px-5 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-60"
+            >
+              {submitting ? "Mengirim…" : "Kirim Detail"}
+            </button>
+          </div>
         </div>
+        {!semuaLengkap && (
+          <p className="text-xs text-amber-600">
+            {incompleteTasks.length} task belum dilengkapi — lengkapi semuanya sebelum mengirim.
+          </p>
+        )}
       </div>
     </div>
   );

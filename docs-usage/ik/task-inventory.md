@@ -195,12 +195,21 @@ Setelah dikirim, seleksi Tahap 1 terkunci. Status responden menjadi **✓ Selesa
      final, kolom ini **tidak ditampilkan sama sekali** — nilainya terkirim otomatis.
    - "Jam/minggu" dan "Jam peak (4 minggu)" **tidak lagi ditanyakan ke partisipan** — nilainya
      terisi otomatis dari data standar master (0 bila tidak ada standarnya).
-4. Klik **Kirim Detail**. Bila masih ada tugas ber-Jenis Nilai Tambah (VA) `Context-Dependent`
-   yang belum diselesaikan, pengiriman ditolak dengan pesan yang menyebut tugas mana yang
-   dimaksud.
+   - **Catatan (opsional)** — kotak teks bebas maks. 500 karakter di bawah keempat isian di
+     atas, muncul untuk setiap task yang dicentang. Gunakan untuk menuliskan keberatan atau
+     penjelasan, mis. bila task ini **ternyata bukan tugas Anda** meski sudah masuk hasil
+     konsensus Tahap 2 — kolom ini **tidak ikut terkunci** saat "Setuju dengan isian standar"
+     dicentang, jadi tetap bisa diisi walau kolom lain terkunci.
+4. **Tombol Kirim Detail baru aktif setelah SELURUH task final dicentang dan terisi valid.**
+   Selama masih ada yang kosong — belum dicentang, atau dicentang tapi ada isian yang belum
+   valid (mis. Durasi/kali kosong, atau Jenis Nilai Tambah masih `Context-Dependent`) — tombol
+   nonaktif dan di sampingnya tertulis jumlah task yang belum lengkap, mis. _"2 task belum
+   dilengkapi — lengkapi semuanya sebelum mengirim."_ Tombol **Simpan** tetap bisa dipakai
+   kapan saja untuk menyimpan draf, walau baru sebagian task terisi.
 
 !!! danger "Tidak dapat diubah"
-Setelah dikirim, detail Tahap 3 terkunci. Tandai minimal satu tugas sebelum mengirim.
+Setelah dikirim, detail Tahap 3 terkunci. Seluruh task final wajib dicentang & terisi valid
+sebelum tombol Kirim Detail aktif.
 
 ---
 

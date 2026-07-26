@@ -89,7 +89,7 @@ describe("DetailForm — selektor VA Type Tahap 3 hanya 3 opsi final (backlog #3
     expect(screen.getByText("— wajib dipilih")).toBeInTheDocument();
   });
 
-  it("submit diblokir & pesan spesifik VA Type tampil selama baris masih 'Context-Dependent'", async () => {
+  it("tombol 'Kirim Detail' terkunci selama baris masih 'Context-Dependent'; klik 'Simpan' tetap menampilkan pesan spesifik VA Type (backlog #42)", async () => {
     render(
       <DetailForm
         respondenId="tresp_1"
@@ -101,8 +101,16 @@ describe("DetailForm — selektor VA Type Tahap 3 hanya 3 opsi final (backlog #3
 
     fireEvent.click(screen.getByRole("checkbox", { name: /Menangani insiden mendadak/ }));
 
+    // Task dicentang tapi va_type belum final (dan durasi belum diisi) → dihitung
+    // belum lengkap, tombol "Kirim Detail" (kedua salinan) terkunci.
+    for (const btn of screen.getAllByRole("button", { name: "Kirim Detail" })) {
+      expect(btn).toBeDisabled();
+    }
+
+    // "Simpan" (draft) tetap menerima isian parsial — tapi baris yang SUDAH dicentang
+    // tetap tervalidasi skema saat disimpan; pesan spesifik VA Type tetap tampil.
     await act(async () => {
-      fireEvent.click(screen.getAllByRole("button", { name: "Kirim Detail" })[0]);
+      fireEvent.click(screen.getAllByRole("button", { name: "Simpan" })[0]);
     });
 
     expect(screen.getByText(/pilih Jenis Nilai Tambah \(VA\) final/i)).toBeInTheDocument();

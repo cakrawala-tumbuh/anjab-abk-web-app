@@ -60,7 +60,7 @@ describe("DetailForm — Tahap 3: default checkbox tidak tercentang", () => {
     expect(screen.getAllByText("0").length).toBeGreaterThan(0);
   });
 
-  it("submit tanpa mencentang task apa pun menampilkan error dan tidak mengirim POST submit", async () => {
+  it("tombol 'Kirim Detail' nonaktif & menyebut jumlah task belum lengkap selagi belum ada yang dicentang (backlog #42)", async () => {
     render(
       <DetailForm
         respondenId="tresp_1"
@@ -70,13 +70,14 @@ describe("DetailForm — Tahap 3: default checkbox tidak tercentang", () => {
       />,
     );
 
-    await act(async () => {
-      fireEvent.click(screen.getAllByRole("button", { name: "Kirim Detail" })[0]);
-    });
+    const tombolKirim = screen.getAllByRole("button", { name: "Kirim Detail" });
+    for (const btn of tombolKirim) expect(btn).toBeDisabled();
+    expect(screen.getAllByText(/1 task belum dilengkapi/i).length).toBeGreaterThan(0);
 
-    expect(
-      screen.getByText("Tandai minimal satu tugas yang Anda kerjakan, lalu isi rinciannya."),
-    ).toBeInTheDocument();
+    // Tombol dinonaktifkan secara native — klik tidak memicu apa pun.
+    await act(async () => {
+      fireEvent.click(tombolKirim[0]);
+    });
     expect(put).not.toHaveBeenCalled();
     expect(push).not.toHaveBeenCalled();
   });

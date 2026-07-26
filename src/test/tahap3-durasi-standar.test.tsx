@@ -89,7 +89,7 @@ describe("DetailForm — Tahap 3: durasi standar (issue #22, Opsi A)", () => {
     expect(screen.queryByDisplayValue("60")).toBeNull();
   });
 
-  it("submit dengan durasi kosong (setuju-standar) ditolak — tidak mengirim PUT", async () => {
+  it("task dicentang tapi durasi kosong (setuju-standar) dihitung belum lengkap — tombol 'Kirim Detail' tetap nonaktif (backlog #42)", async () => {
     render(
       <DetailForm
         respondenId="tresp_1"
@@ -102,11 +102,11 @@ describe("DetailForm — Tahap 3: durasi standar (issue #22, Opsi A)", () => {
     await act(async () => {
       fireEvent.click(checkboxTugas());
     });
-    await act(async () => {
-      fireEvent.click(screen.getAllByRole("button", { name: "Kirim Detail" })[0]);
-    });
 
-    expect(screen.getByText(/Periksa isian pada task/)).toBeInTheDocument();
+    for (const btn of screen.getAllByRole("button", { name: "Kirim Detail" })) {
+      expect(btn).toBeDisabled();
+    }
+    expect(screen.getAllByText(/1 task belum dilengkapi/i).length).toBeGreaterThan(0);
     expect(put).not.toHaveBeenCalled();
     expect(push).not.toHaveBeenCalled();
   });
