@@ -6,15 +6,39 @@ import { z } from "zod";
 import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
 import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
-import { FREKUENSI, KONDISI, SUMBER_BUKTI, VA_TYPE_FINAL } from "@/components/calhr";
+import {
+  FREKUENSI,
+  KONDISI,
+  KONDISI_LABEL,
+  SUMBER_BUKTI,
+  SUMBER_BUKTI_LABEL,
+  VA_TYPE_FINAL,
+} from "@/components/calhr";
 import type { TiDetailItem, TiDetailRead, TiTaskTerpilihRead } from "@/lib/api/schema";
 
-/** `true` bila `v` termasuk 3 nilai final kanonik ({@link VA_TYPE_FINAL}) — dipakai untuk
- * membedakan baris yang sudah sah difinalisasi dari yang masih `"Context-Dependent"`
- * (prefill belum diselesaikan, tidak boleh dikirim sebagai jawaban akhir Tahap 3).
+/**
+ * `true` bila `v` termasuk 3 nilai final kanonik ({@link VA_TYPE_FINAL}) — dipakai untuk
+ * dua keperluan: (1) membedakan baris yang sudah sah difinalisasi dari yang masih
+ * `"Context-Dependent"` (prefill belum diselesaikan, tidak boleh dikirim sebagai jawaban
+ * akhir Tahap 3), dan (2) menentukan apakah selektor "Jenis Nilai Tambah (VA)" perlu
+ * dirender sama sekali untuk sebuah task (lihat `butuhPilihVaType`). Null-safe karena
+ * `TiTaskTerpilihRead.std_va_type` boleh `null`/`undefined` (task tanpa nilai standar).
  */
-function isVaTypeFinal(v: string): v is (typeof VA_TYPE_FINAL)[number] {
-  return (VA_TYPE_FINAL as readonly string[]).includes(v);
+function isVaTypeFinal(v: string | null | undefined): v is (typeof VA_TYPE_FINAL)[number] {
+  return v != null && (VA_TYPE_FINAL as readonly string[]).includes(v);
+}
+
+/**
+ * `true` bila task ini WAJIB menampilkan selektor "Jenis Nilai Tambah (VA)" ke
+ * partisipan — yaitu bila `std_va_type` bukan salah satu dari 3 nilai final
+ * ({@link VA_TYPE_FINAL}): `null` (task tanpa standar) atau `"Context-Dependent"`
+ * (prefill katalog yang belum diselesaikan). Bila standarnya sudah final, nilai itu
+ * dikirim apa adanya ke backend tanpa pernah ditampilkan ke partisipan — keputusan
+ * produk untuk menyederhanakan formulir (issue backlog
+ * `cakrawala-tumbuh/anjab-abk-web-app#41`, workshop SME panel guru TK 2026-07-25).
+ */
+function butuhPilihVaType(t: TiTaskTerpilihRead): boolean {
+  return !isVaTypeFinal(t.std_va_type);
 }
 
 /**
@@ -38,6 +62,17 @@ export const detailItemSchema = z.object({
   catatan: z.string().max(500).optional(),
 });
 
+/**
+ * State per baris tugas yang dirender ke partisipan.
+ *
+ * Hanya memuat **4 field yang ditampilkan** (`sumber_bukti`, `kondisi`,
+ * `frekuensi_teks`, `durasi_per_kali`) plus `va_type` (tampil kondisional, lihat
+ * `butuhPilihVaType`). **`jam_per_minggu` dan `peak4w_hours` SENGAJA tidak ada di
+ * sini** — keduanya tidak lagi punya input sama sekali; nilai kirimnya dibaca
+ * langsung dari `std_jam_per_minggu ?? 0`/`std_peak4w_hours ?? 0` di
+ * `buildDetailPayload()`, bukan dari state baris (issue backlog
+ * `cakrawala-tumbuh/anjab-abk-web-app#41`).
+ */
 interface RowState {
   checked: boolean;
   setuju_standar: boolean;
@@ -46,8 +81,6 @@ interface RowState {
   frekuensi_teks: string;
   /** `null` = belum diisi responden — lihat catatan di `rowDariStandar()`. */
   durasi_per_kali: number | null;
-  jam_per_minggu: number;
-  peak4w_hours: number;
   va_type: TiDetailItem["va_type"];
 }
 
@@ -72,6 +105,12 @@ function punyaStandar(t: TiTaskTerpilihRead): boolean {
  * ditampilkan sebagai petunjuk di samping input. Field ini karena itu TIDAK ikut terkunci
  * saat "Setuju dengan isian standar" dicentang (beda dari field sibling lain) — responden
  * tetap wajib mengisi angkanya sendiri. Keputusan produk: issue #22 (Opsi A).
+ *
+ * `jam_per_minggu`/`peak4w_hours` **tidak lagi diseed di sini** (lihat `RowState`) —
+ * nilainya dibaca langsung dari `t.std_*` saat membangun payload, tanpa pernah singgah
+ * di state baris. `va_type` diseed `t.std_va_type ?? "VA-Core"` seperti sebelumnya;
+ * selektornya tetap dirender untuk task tanpa standar (`std_va_type` null) supaya
+ * partisipan bisa mengoreksi default itu — lihat `butuhPilihVaType`.
  */
 function rowDariStandar(t: TiTaskTerpilihRead): RowState {
   return {
@@ -81,8 +120,6 @@ function rowDariStandar(t: TiTaskTerpilihRead): RowState {
     kondisi: t.std_kondisi ?? "Baseline",
     frekuensi_teks: t.std_frekuensi_teks ?? "Mingguan",
     durasi_per_kali: null,
-    jam_per_minggu: t.std_jam_per_minggu ?? 1,
-    peak4w_hours: t.std_peak4w_hours ?? 0,
     va_type: t.std_va_type ?? "VA-Core",
   };
 }
@@ -108,8 +145,6 @@ export function DetailForm({ respondenId, tasks, detailAwal, accessToken }: Prop
           kondisi: existing.kondisi,
           frekuensi_teks: existing.frekuensi_teks,
           durasi_per_kali: existing.durasi_per_kali,
-          jam_per_minggu: existing.jam_per_minggu,
-          peak4w_hours: existing.peak4w_hours,
           va_type: existing.va_type,
         };
         return [t.kode, row];
@@ -144,6 +179,12 @@ export function DetailForm({ respondenId, tasks, detailAwal, accessToken }: Prop
    * yang masih `"Context-Dependent"` (prefill belum diselesaikan) gagal parse di sini,
    * sehingga submit klien terblokir dengan pesan yang menyebut task & VA Type secara
    * spesifik, bukan pesan generik (issue backlog #39).
+   *
+   * `jam_per_minggu`/`peak4w_hours` **selalu** dibaca dari `t.std_jam_per_minggu ?? 0` /
+   * `t.std_peak4w_hours ?? 0` di sini — bukan dari `RowState` (yang sudah tidak
+   * memilikinya) dan bukan dari draft lama tersimpan. Partisipan tidak pernah mengisi
+   * kedua field ini secara manual (issue backlog
+   * `cakrawala-tumbuh/anjab-abk-web-app#41`).
    */
   function buildDetailPayload(): { detail: TiDetailItem[] } | null {
     const detail: TiDetailItem[] = [];
@@ -156,8 +197,8 @@ export function DetailForm({ respondenId, tasks, detailAwal, accessToken }: Prop
         kondisi: r.kondisi,
         frekuensi_teks: r.frekuensi_teks,
         durasi_per_kali: r.durasi_per_kali,
-        jam_per_minggu: r.jam_per_minggu,
-        peak4w_hours: r.peak4w_hours,
+        jam_per_minggu: t.std_jam_per_minggu ?? 0,
+        peak4w_hours: t.std_peak4w_hours ?? 0,
         va_type: r.va_type,
         setuju_standar: r.setuju_standar,
       });
@@ -165,7 +206,7 @@ export function DetailForm({ respondenId, tasks, detailAwal, accessToken }: Prop
         const vaTypeInvalid = parsed.error.issues.some((iss) => iss.path[0] === "va_type");
         setError(
           vaTypeInvalid
-            ? `Task "${t.uraian_tugas}": pilih VA Type final (VA-Core/VA-Enable/NVA-Residual) — "Context-Dependent" belum final.`
+            ? `Task "${t.uraian_tugas}": pilih Jenis Nilai Tambah (VA) final (VA-Core/VA-Enable/NVA-Residual) — "Context-Dependent" belum final.`
             : `Periksa isian pada task "${t.uraian_tugas}".`,
         );
         return null;
@@ -341,7 +382,7 @@ export function DetailForm({ respondenId, tasks, detailAwal, accessToken }: Prop
                       Setuju dengan isian standar
                     </label>
                   )}
-                  <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                  <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                     <label className="text-xs text-gray-600">
                       Sumber Bukti
                       <select
@@ -355,7 +396,9 @@ export function DetailForm({ respondenId, tasks, detailAwal, accessToken }: Prop
                         className={`mt-1 block w-full ${selectCls}`}
                       >
                         {SUMBER_BUKTI.map((v) => (
-                          <option key={v}>{v}</option>
+                          <option key={v} value={v}>
+                            {SUMBER_BUKTI_LABEL[v]}
+                          </option>
                         ))}
                       </select>
                     </label>
@@ -370,7 +413,9 @@ export function DetailForm({ respondenId, tasks, detailAwal, accessToken }: Prop
                         className={`mt-1 block w-full ${selectCls}`}
                       >
                         {KONDISI.map((v) => (
-                          <option key={v}>{v}</option>
+                          <option key={v} value={v}>
+                            {KONDISI_LABEL[v]}
+                          </option>
                         ))}
                       </select>
                     </label>
@@ -413,53 +458,35 @@ export function DetailForm({ respondenId, tasks, detailAwal, accessToken }: Prop
                         className={`mt-1 block ${numCls}`}
                       />
                     </label>
-                    <label className="text-xs text-gray-600">
-                      Jam/minggu
-                      <input
-                        type="number"
-                        min={0}
-                        step="0.5"
-                        value={r.jam_per_minggu}
-                        disabled={terkunci}
-                        onChange={(e) => update(t.kode, { jam_per_minggu: Number(e.target.value) })}
-                        className={`mt-1 block ${numCls}`}
-                      />
-                    </label>
-                    <label className="text-xs text-gray-600">
-                      Jam peak (4 minggu)
-                      <input
-                        type="number"
-                        min={0}
-                        step="0.5"
-                        value={r.peak4w_hours}
-                        disabled={terkunci}
-                        onChange={(e) => update(t.kode, { peak4w_hours: Number(e.target.value) })}
-                        className={`mt-1 block ${numCls}`}
-                      />
-                    </label>
-                    <label className="text-xs text-gray-600">
-                      VA Type
-                      {!isVaTypeFinal(r.va_type) && (
-                        <span className="ml-1 font-normal text-amber-600">— wajib dipilih</span>
-                      )}
-                      <select
-                        value={isVaTypeFinal(r.va_type) ? r.va_type : ""}
-                        disabled={terkunci}
-                        onChange={(e) =>
-                          update(t.kode, { va_type: e.target.value as RowState["va_type"] })
-                        }
-                        className={`mt-1 block w-full ${selectCls}`}
-                      >
+                    {/* "Jam/minggu" dan "Jam peak (4 minggu)" SENGAJA dicabut dari formulir
+                        partisipan (issue backlog #41) — tidak ada input sama sekali, bukan
+                        input tersembunyi. Nilainya dikirim dari nilai standar master apa
+                        adanya, lihat `buildDetailPayload`. */}
+                    {butuhPilihVaType(t) && (
+                      <label className="text-xs text-gray-600">
+                        Jenis Nilai Tambah (VA)
                         {!isVaTypeFinal(r.va_type) && (
-                          <option value="" disabled>
-                            — pilih salah satu —
-                          </option>
+                          <span className="ml-1 font-normal text-amber-600">— wajib dipilih</span>
                         )}
-                        {VA_TYPE_FINAL.map((v) => (
-                          <option key={v}>{v}</option>
-                        ))}
-                      </select>
-                    </label>
+                        <select
+                          value={isVaTypeFinal(r.va_type) ? r.va_type : ""}
+                          disabled={terkunci}
+                          onChange={(e) =>
+                            update(t.kode, { va_type: e.target.value as RowState["va_type"] })
+                          }
+                          className={`mt-1 block w-full ${selectCls}`}
+                        >
+                          {!isVaTypeFinal(r.va_type) && (
+                            <option value="" disabled>
+                              — pilih salah satu —
+                            </option>
+                          )}
+                          {VA_TYPE_FINAL.map((v) => (
+                            <option key={v}>{v}</option>
+                          ))}
+                        </select>
+                      </label>
+                    )}
                   </div>
                 </div>
               )}

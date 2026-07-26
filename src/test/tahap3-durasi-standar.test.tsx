@@ -67,9 +67,13 @@ describe("DetailForm — Tahap 3: durasi standar (issue #22, Opsi A)", () => {
     expect(screen.getByLabelText(/Sumber Bukti/i)).toBeDisabled();
     expect(screen.getByLabelText(/^Kondisi/i)).toBeDisabled();
     expect(screen.getByLabelText(/^Frekuensi/i)).toBeDisabled();
-    expect(screen.getByLabelText(/Jam\/minggu/i)).toBeDisabled();
-    expect(screen.getByLabelText(/Jam peak/i)).toBeDisabled();
-    expect(screen.getByLabelText(/VA Type/i)).toBeDisabled();
+
+    // "Jam/minggu" dan "Jam peak" sudah dicabut total dari formulir (issue #41) — tidak
+    // ada input sama sekali, bukan sekadar disabled. `std_va_type` task ini ("VA-Core")
+    // sudah final, jadi selektor "Jenis Nilai Tambah (VA)" juga tidak dirender.
+    expect(screen.queryByLabelText(/Jam\/minggu/i)).toBeNull();
+    expect(screen.queryByLabelText(/Jam peak/i)).toBeNull();
+    expect(screen.queryByLabelText(/Jenis Nilai Tambah/i)).toBeNull();
 
     // Durasi tetap dapat diedit (bukan bug lagi — keputusan produk Opsi A) dan KOSONG,
     // bukan 60 hard-code.

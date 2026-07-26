@@ -1,40 +1,7 @@
 "use client";
 
 import { PetunjukModal } from "@/components/petunjuk-modal";
-import { SUMBER_BUKTI, KONDISI, VA_TYPE_PREFILL } from "@/components/calhr";
-
-/**
- * Makna tiap nilai `SUMBER_BUKTI` (`@/components/calhr`). Nilai opsinya sendiri
- * dibaca dari konstanta, bukan diketik ulang sebagai literal — hanya
- * penjelasannya yang statis di sini (teks final sesuai `## Keputusan Desain`
- * issue backlog #36).
- */
-const SUMBER_BUKTI_MAKNA: Record<(typeof SUMBER_BUKTI)[number], string> = {
-  Formal: "tertulis di SK/uraian jabatan resmi",
-  Aktual: "nyata dikerjakan meski tidak tertulis",
-  Keduanya: "tertulis sekaligus dikerjakan",
-};
-
-/** Makna tiap nilai `KONDISI` (`@/components/calhr`). */
-const KONDISI_MAKNA: Record<(typeof KONDISI)[number], string> = {
-  Baseline: "terjadi pada pekan kerja biasa",
-  Peak: "hanya pada periode puncak (awal tahun ajaran, ujian, akreditasi, PPDB)",
-  Both: "terjadi di kedua kondisi",
-};
-
-/**
- * Makna tiap nilai `VA_TYPE_PREFILL` (`@/components/calhr`). `"Context-Dependent"`
- * dijelaskan sebagai nilai awal katalog yang HARUS diselesaikan ke salah satu dari 3
- * nilai final (VA-Core/VA-Enable/NVA-Residual) saat mengisi Tahap 3 — bukan pilihan
- * yang bisa dikirim sebagai jawaban akhir (issue backlog #39).
- */
-const VA_TYPE_MAKNA: Record<(typeof VA_TYPE_PREFILL)[number], string> = {
-  "VA-Core": "inti, langsung menghasilkan nilai bagi murid/layanan utama",
-  "VA-Enable": "pendukung yang memungkinkan pekerjaan inti berjalan",
-  "NVA-Residual": "tidak menambah nilai tapi tetap harus dilakukan",
-  "Context-Dependent":
-    "nilai awal dari katalog yang belum final — wajib diselesaikan ke salah satu dari tiga nilai lain sebelum Tahap 3 dapat dikirim",
-};
+import { SUMBER_BUKTI, SUMBER_BUKTI_LABEL, KONDISI, KONDISI_LABEL } from "@/components/calhr";
 
 interface Props {
   defaultOpen: boolean;
@@ -44,22 +11,22 @@ interface Props {
  * Konten petunjuk pengisian Tahap 3 Task Inventory (detailing CalHR),
  * dirender di dalam {@link PetunjukModal}.
  *
- * Setara kedalaman dengan `PetunjukDcs`/`PetunjukWcp` (issue backlog #36).
- * Blok "Arti Kolom CalHR" yang sebelumnya hanya mendaftar nilai opsi tanpa
- * penjelasan (mis. "Sumber Bukti — Formal / Aktual / Keduanya") diperluas
- * menjadi makna tiap nilai satu per satu (`SUMBER_BUKTI_MAKNA`,
- * `KONDISI_MAKNA`, `VA_TYPE_MAKNA`) — istilah seperti `VA-Core`/
- * `NVA-Residual`/`Baseline`/`Peak` tidak dikenal guru & staf sekolah tanpa
- * penjelasan eksplisit. Blok baru "Contoh Pengisian (ilustrasi)" menampilkan
- * satu kartu tugas dengan ketujuh kolom CalHR terisi, meniru gaya kartu contoh
- * non-interaktif `PetunjukDcs`.
+ * **Sejak issue backlog `cakrawala-tumbuh/anjab-abk-web-app#41`, formulir Tahap 3
+ * hanya menampilkan EMPAT field ke partisipan** (Sumber Bukti, Kondisi, Frekuensi,
+ * Durasi/kali) — "Jam/minggu", "Jam peak (4 minggu)", dan "VA Type" dicabut/dijadikan
+ * kondisional (lihat `detail-form.tsx`). Panel petunjuk ini karena itu **hanya
+ * menjelaskan keempat field itu**, bukan seluruh 7 komponen CalHR seperti versi
+ * sebelumnya — menjelaskan field yang tidak pernah dilihat partisipan hanya menambah
+ * kebingungan, bukan mengurangi. Latar belakang: workshop SME panel guru TK
+ * (2026-07-25, transkrip `review-aplikasi.txt` repo induk) menunjukkan tujuh field
+ * per task terlalu banyak, tiga di antaranya tidak bisa dijawab peserta, dan istilah
+ * `Baseline`/`Peak`/`Both` dibaca sebagai kata benda asing tanpa penjelasan.
  *
- * Isi teks & data contoh mengikuti `## Keputusan Desain` issue #36 apa adanya
- * — bukan konten yang boleh dikarang ulang. Nilai opsi (`Formal`/`Aktual`/
- * `Keduanya`, `Baseline`/`Peak`/`Both`, 4 `VA_TYPE_PREFILL`) tetap dibaca dari
- * `@/components/calhr.ts`, bukan diketik ulang sebagai literal. Sejak issue #39,
- * panel ini memakai set prefill (4 nilai, termasuk `"Context-Dependent"`) — bukan
- * set final Tahap 3 (3 nilai) yang dipakai selektor `detail-form.tsx`.
+ * Nilai opsi Sumber Bukti & Kondisi dibaca dari `@/components/calhr.ts`
+ * (`SUMBER_BUKTI`/`KONDISI`), teks penjelasannya dari `SUMBER_BUKTI_LABEL`/
+ * `KONDISI_LABEL` — **sumber tunggal yang sama** dengan teks `<option>` di
+ * `detail-form.tsx`, supaya penjelasan di sini tidak pernah menyimpang dari yang
+ * benar-benar dilihat partisipan saat memilih.
  */
 export function PetunjukTahap3({ defaultOpen }: Props) {
   return (
@@ -80,6 +47,10 @@ export function PetunjukTahap3({ defaultOpen }: Props) {
           </li>
           <li>Pilih minimal satu tugas.</li>
           <li>
+            Untuk tiap tugas yang dicentang, isi <strong>empat</strong> hal: Sumber Bukti, Kondisi,
+            Frekuensi, dan Durasi/kali.
+          </li>
+          <li>
             Anda bisa menekan &ldquo;Simpan&rdquo; untuk menyimpan draft dan melanjutkan nanti.
           </li>
           <li>
@@ -90,48 +61,33 @@ export function PetunjukTahap3({ defaultOpen }: Props) {
       </div>
 
       <div>
-        <h3 className="mb-2 font-medium text-gray-900 dark:text-gray-100">Arti Kolom CalHR</h3>
+        <h3 className="mb-2 font-medium text-gray-900 dark:text-gray-100">Arti Keempat Isian</h3>
         <ul className="space-y-3">
           <li>
-            <strong>Sumber Bukti</strong>
+            <strong>Sumber Bukti</strong> — dari mana tugas ini diketahui sebagai bagian pekerjaan
+            Anda.
             <ul className="mt-1 list-disc space-y-1 pl-5 font-normal">
               {SUMBER_BUKTI.map((v) => (
-                <li key={v}>
-                  <strong>{v}</strong> = {SUMBER_BUKTI_MAKNA[v]}
-                </li>
+                <li key={v}>{SUMBER_BUKTI_LABEL[v]}</li>
               ))}
             </ul>
           </li>
           <li>
-            <strong>Kondisi</strong>
+            <strong>Kondisi</strong> — kapan tugas ini biasanya terjadi.
             <ul className="mt-1 list-disc space-y-1 pl-5 font-normal">
               {KONDISI.map((v) => (
-                <li key={v}>
-                  <strong>{v}</strong> = {KONDISI_MAKNA[v]}
-                </li>
+                <li key={v}>{KONDISI_LABEL[v]}</li>
               ))}
             </ul>
           </li>
           <li>
-            <strong>Durasi/kali</strong> — lama sekali kerja dalam <strong>menit</strong>.
+            <strong>Frekuensi</strong> — seberapa sering tugas ini dilakukan: Harian, Mingguan,
+            Semesteran (mis. per semester ajaran), atau Insidental (sewaktu-waktu, tidak terjadwal
+            tetap).
           </li>
           <li>
-            <strong>Jam/minggu</strong> — perkiraan jam per pekan pada kondisi biasa ≈ (durasi ×
-            jumlah kali per pekan) ÷ 60.
-          </li>
-          <li>
-            <strong>Jam peak (4 minggu)</strong> — <strong>total</strong> jam untuk tugas ini
-            sepanjang 4 pekan periode puncak, <strong>bukan</strong> per pekan.
-          </li>
-          <li>
-            <strong>VA Type</strong>
-            <ul className="mt-1 list-disc space-y-1 pl-5 font-normal">
-              {VA_TYPE_PREFILL.map((v) => (
-                <li key={v}>
-                  <strong>{v}</strong> = {VA_TYPE_MAKNA[v]}
-                </li>
-              ))}
-            </ul>
+            <strong>Durasi/kali</strong> — lama satu kali mengerjakan tugas ini, dalam{" "}
+            <strong>menit</strong>.
           </li>
         </ul>
         <p className="mt-2 text-xs italic text-gray-500 dark:text-gray-400">
@@ -150,12 +106,9 @@ export function PetunjukTahap3({ defaultOpen }: Props) {
           </p>
           <ul className="mt-2 space-y-1 text-sm text-gray-700 dark:text-gray-300">
             <li>Sumber Bukti: Keduanya</li>
-            <li>Kondisi: Baseline</li>
+            <li>Kondisi: Rutin (hari biasa)</li>
             <li>Frekuensi: Mingguan</li>
             <li>Durasi/kali: 90 menit</li>
-            <li>Jam/minggu: 1,5 jam/minggu</li>
-            <li>Jam peak (4 minggu): 8 jam peak</li>
-            <li>VA Type: VA-Core</li>
           </ul>
         </div>
         <p className="mt-2 text-xs italic text-gray-500 dark:text-gray-400">

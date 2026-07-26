@@ -7,6 +7,18 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+### Diubah
+
+- **Formulir Tahap 3 Task Inventory disederhanakan jadi 4 field inti** (issue #41,
+  workshop SME panel guru TK 2026-07-25) — partisipan kini hanya melihat Sumber Bukti,
+  Kondisi, Frekuensi, dan Durasi/kali. "Jam/minggu" dan "Jam peak (4 minggu)" dicabut
+  total dari formulir (nilainya terisi otomatis dari standar master); selektor "Jenis
+  Nilai Tambah (VA)" (dulu "VA Type") kini hanya tampil bila nilai standarnya belum
+  final. Opsi Sumber Bukti & Kondisi kini berlabel Bahasa Indonesia
+  (`SUMBER_BUKTI_LABEL`/`KONDISI_LABEL` di `src/components/calhr.ts`) — nilai kontrak
+  yang dikirim ke backend tidak berubah. Pop-up petunjuk Tahap 3 diperbarui mengikuti
+  formulir baru (hanya menjelaskan 4 field).
+
 ## [4.11.0] - 2026-07-26
 
 ### Ditambahkan

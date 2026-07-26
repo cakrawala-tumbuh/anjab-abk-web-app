@@ -167,31 +167,37 @@ Setelah dikirim, seleksi Tahap 1 terkunci. Status responden menjadi **✓ Selesa
 
 1. Buka **Isi Tahap 3** dari tabel responden (atau dari **Kuesioner Saya**).
 2. Selama detail belum dikirim (dan status masih `TAHAP3`), pop-up **Petunjuk** muncul
-   otomatis — menjelaskan **makna tiap nilai** kolom CalHR satu per satu (bukan sekadar
-   daftar opsi): Sumber Bukti (Formal/Aktual/Keduanya), Kondisi (Baseline/Peak/Both), Durasi,
-   Jam/minggu, Jam peak (total 4 pekan periode puncak, bukan per pekan), dan VA Type
-   (VA-Core/VA-Enable/NVA-Residual/Context-Dependent — `"Needs Validation"` sudah dihapus dari
-   katalog) — ditutup blok **Contoh Pengisian (ilustrasi)** satu kartu tugas dengan ketujuh
-   kolom terisi. Juga menjelaskan isian standar yang otomatis terpakai saat task dicentang, dan
+   otomatis — menjelaskan **makna tiap nilai** dari empat isian yang perlu Anda lengkapi
+   (bukan sekadar daftar opsi): **Sumber Bukti** (Formal (tertulis di jobdesk/regulasi) /
+   Aktual (dikerjakan di lapangan) / Keduanya), **Kondisi** (Rutin (hari biasa) / Puncak
+   (masa sibuk tertentu) / Keduanya (rutin & puncak)), **Frekuensi**, dan **Durasi/kali** —
+   ditutup blok **Contoh Pengisian (ilustrasi)** satu kartu tugas dengan keempat kolom
+   terisi. Juga menjelaskan isian standar yang otomatis terpakai saat task dicentang, dan
    bahwa **Kirim Detail** mengunci isian. Tutup dengan tombol **Saya Mengerti, Mulai Mengisi**,
    ikon **X**, klik area luar pop-up, atau tombol **Esc**; dapat dibuka lagi lewat tombol
    **Petunjuk Pengisian** di pojok kanan atas halaman.
-3. Untuk tiap task yang Anda kerjakan, **centang** kotaknya. Formulir rincian muncul:
-   - **Sumber Bukti**: Formal / Aktual / Keduanya
-   - **Kondisi**: Baseline / Peak / Both
+3. Untuk tiap task yang Anda kerjakan, **centang** kotaknya. Formulir rincian menampilkan
+   **empat** isian (disederhanakan dari tujuh — feedback workshop SME panel guru TK
+   2026-07-25 menunjukkan sebagian kolom lama tidak dapat dijawab partisipan):
+   - **Sumber Bukti**: Formal (tertulis di jobdesk/regulasi) / Aktual (dikerjakan di
+     lapangan) / Keduanya
+   - **Kondisi**: Rutin (hari biasa) / Puncak (masa sibuk tertentu) / Keduanya (rutin &
+     puncak)
    - **Frekuensi** (default `Mingguan`)
    - **Durasi/kali (menit)** — **wajib diisi manual**, tidak diprefill dari standar (petunjuk
      standar tampil sebagai teks pembanding di samping input, mis. _"petunjuk standar: 1-2
      jam"_); field ini tetap dapat diedit meski field lain terkunci saat "Setuju dengan isian
      standar" dicentang
-   - **Jam/minggu** (default 1)
-   - **Jam peak (4 minggu)** (default 0)
-   - **VA Type**: VA-Core / VA-Enable / NVA-Residual — hanya 3 tipe **final** ini yang dapat
-     dipilih di sini. Bila katalog standar tugas ini bertanda `Context-Dependent`, kolom
-     tampil **belum terisi** ("— wajib dipilih") dan Anda wajib memilih salah satu dari
-     ketiganya sebelum tugas ini bisa dikirim.
-4. Klik **Kirim Detail**. Bila masih ada tugas ber-VA Type `Context-Dependent` yang belum
-   diselesaikan, pengiriman ditolak dengan pesan yang menyebut tugas mana yang dimaksud.
+   - **Jenis Nilai Tambah (VA)** — **hanya muncul** bila katalog standar tugas ini belum
+     final (kosong atau bertanda `Context-Dependent`). Bila muncul, kolom tampil **belum
+     terisi** ("— wajib dipilih") dan Anda wajib memilih salah satu dari VA-Core / VA-Enable
+     / NVA-Residual sebelum tugas ini bisa dikirim. Bila katalog standar tugas ini sudah
+     final, kolom ini **tidak ditampilkan sama sekali** — nilainya terkirim otomatis.
+   - "Jam/minggu" dan "Jam peak (4 minggu)" **tidak lagi ditanyakan ke partisipan** — nilainya
+     terisi otomatis dari data standar master (0 bila tidak ada standarnya).
+4. Klik **Kirim Detail**. Bila masih ada tugas ber-Jenis Nilai Tambah (VA) `Context-Dependent`
+   yang belum diselesaikan, pengiriman ditolak dengan pesan yang menyebut tugas mana yang
+   dimaksud.
 
 !!! danger "Tidak dapat diubah"
 Setelah dikirim, detail Tahap 3 terkunci. Tandai minimal satu tugas sebelum mengirim.

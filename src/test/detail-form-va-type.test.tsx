@@ -62,7 +62,7 @@ describe("DetailForm — selektor VA Type Tahap 3 hanya 3 opsi final (backlog #3
 
     fireEvent.click(screen.getByRole("checkbox", { name: /Menyusun modul ajar/ }));
 
-    const select = screen.getByRole("combobox", { name: /VA Type/i });
+    const select = screen.getByRole("combobox", { name: /Jenis Nilai Tambah/i });
     const options = within(select)
       .getAllByRole("option")
       .map((o) => o.textContent);
@@ -82,7 +82,9 @@ describe("DetailForm — selektor VA Type Tahap 3 hanya 3 opsi final (backlog #3
     // berstandar → checked otomatis via seed rowDariStandar saat dicentang manual.
     fireEvent.click(screen.getByRole("checkbox", { name: /Menangani insiden mendadak/ }));
 
-    const select = screen.getByRole("combobox", { name: /VA Type/i }) as HTMLSelectElement;
+    const select = screen.getByRole("combobox", {
+      name: /Jenis Nilai Tambah/i,
+    }) as HTMLSelectElement;
     expect(select.value).toBe("");
     expect(screen.getByText("— wajib dipilih")).toBeInTheDocument();
   });
@@ -103,7 +105,7 @@ describe("DetailForm — selektor VA Type Tahap 3 hanya 3 opsi final (backlog #3
       fireEvent.click(screen.getAllByRole("button", { name: "Kirim Detail" })[0]);
     });
 
-    expect(screen.getByText(/pilih VA Type final/i)).toBeInTheDocument();
+    expect(screen.getByText(/pilih Jenis Nilai Tambah \(VA\) final/i)).toBeInTheDocument();
     expect(screen.getByText(/Context-Dependent.*belum final/i)).toBeInTheDocument();
     expect(put).not.toHaveBeenCalled();
     expect(post).not.toHaveBeenCalled();
@@ -125,7 +127,7 @@ describe("DetailForm — selektor VA Type Tahap 3 hanya 3 opsi final (backlog #3
     // lepas dulu (pola UX yang sama dipakai field lain yang terkunci di komponen ini).
     fireEvent.click(screen.getByRole("checkbox", { name: /Setuju dengan isian standar/ }));
 
-    const select = screen.getByRole("combobox", { name: /VA Type/i });
+    const select = screen.getByRole("combobox", { name: /Jenis Nilai Tambah/i });
     fireEvent.change(select, { target: { value: "VA-Core" } });
     // durasi_per_kali SENGAJA tidak diprefill (lihat rowDariStandar) — isi manual
     // supaya baris valid selain va_type (bukan bagian cakupan #39, tapi wajib
@@ -166,7 +168,7 @@ describe("DetailForm — selektor VA Type Tahap 3 hanya 3 opsi final (backlog #3
 
     fireEvent.click(screen.getByRole("checkbox", { name: /Menangani insiden mendadak/ }));
     fireEvent.click(screen.getByRole("checkbox", { name: /Setuju dengan isian standar/ }));
-    fireEvent.change(screen.getByRole("combobox", { name: /VA Type/i }), {
+    fireEvent.change(screen.getByRole("combobox", { name: /Jenis Nilai Tambah/i }), {
       target: { value: "VA-Core" },
     });
     fireEvent.change(screen.getByRole("spinbutton", { name: /Durasi\/kali/i }), {

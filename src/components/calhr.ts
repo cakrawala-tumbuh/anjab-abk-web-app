@@ -3,6 +3,38 @@ export const KONDISI = ["Baseline", "Peak", "Both"] as const;
 export const FREKUENSI = ["Harian", "Mingguan", "Semesteran", "Insidental"] as const;
 
 /**
+ * Label Bahasa Indonesia untuk tiap nilai {@link SUMBER_BUKTI}, dipakai sebagai teks
+ * `<option>` selektor "Sumber Bukti" di formulir Tahap 3 (`detail-form.tsx`) dan panel
+ * petunjuk (`petunjuk-tahap3.tsx`).
+ *
+ * **Nilai kontrak yang dikirim ke backend TIDAK berubah** — hanya teks yang dibaca
+ * partisipan. Uji coba workshop SME panel guru TK (2026-07-25) menunjukkan istilah
+ * Inggris polos (`Formal`/`Aktual`/`Keduanya`) tidak cukup jelas tanpa konteks singkat
+ * (issue backlog `cakrawala-tumbuh/anjab-abk-web-app#41`).
+ */
+export const SUMBER_BUKTI_LABEL: Record<(typeof SUMBER_BUKTI)[number], string> = {
+  Formal: "Formal (tertulis di jobdesk/regulasi)",
+  Aktual: "Aktual (dikerjakan di lapangan)",
+  Keduanya: "Keduanya",
+};
+
+/**
+ * Label Bahasa Indonesia untuk tiap nilai {@link KONDISI}, dipakai sebagai teks
+ * `<option>` selektor "Kondisi" di formulir Tahap 3 (`detail-form.tsx`) dan panel
+ * petunjuk (`petunjuk-tahap3.tsx`).
+ *
+ * **Nilai kontrak yang dikirim ke backend TIDAK berubah** (`Baseline`/`Peak`/`Both`
+ * tetap dikirim apa adanya) — hanya teks yang dibaca partisipan. Istilah Inggris polos
+ * terbukti dibaca sebagai kata benda asing ("sepatu boot") oleh peserta workshop SME
+ * panel guru TK (2026-07-25, issue backlog `cakrawala-tumbuh/anjab-abk-web-app#41`).
+ */
+export const KONDISI_LABEL: Record<(typeof KONDISI)[number], string> = {
+  Baseline: "Rutin (hari biasa)",
+  Peak: "Puncak (masa sibuk tertentu)",
+  Both: "Keduanya (rutin & puncak)",
+};
+
+/**
  * Nilai `va_type` yang diterima backend sebagai **prefill/draft** (dropdown standar
  * master-data, panel penjelasan) — 4 nilai kanonik kontrak `VaType` backend
  * (`cakrawala-tumbuh/anjab-abk-backend#24`). `"Needs Validation"` sudah dihapus dari
