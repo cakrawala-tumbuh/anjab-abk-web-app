@@ -85,7 +85,10 @@ Anda harus mengisi Tahap 1 **terpisah** untuk tiap panel.
 Buka **Kuesioner Saya** dari Dashboard. Alat ukur muncul otomatis begitu administrator
 menugaskan/mendaftarkan Anda sebagai responden dan alat ukur tersebut berstatus
 terbuka/aktif (DCS/WCP sudah terbuka sejak awal; Time Study aktif sejak ditugaskan;
-TI/OPM perlu sesi/analisisnya dibuka lebih dulu oleh administrator).
+TI/OPM perlu sesi/analisisnya dibuka lebih dulu oleh administrator). Halaman **Kuesioner
+Saya** menyegarkan daftarnya sendiri secara berkala selama tab terbuka — Anda **tidak
+perlu me-refresh halaman secara manual** untuk melihat alat ukur atau tahap baru yang
+baru saja dibuka administrator.
 
 ??? question "Tombol Kirim Jawaban tidak aktif."
 Pada DCS/WCP, semua pernyataan wajib dijawab dulu. Periksa penghitung _"{terjawab} /

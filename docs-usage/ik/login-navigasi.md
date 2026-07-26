@@ -31,7 +31,9 @@ Kartu yang muncul bergantung peran:
 
 === "Partisipan"
 
-    - **Kuesioner Saya** → daftar alat ukur yang ditugaskan.
+    - **Kuesioner Saya** → daftar alat ukur yang ditugaskan. Daftar ini menyegarkan
+      dirinya sendiri secara berkala selama tab terbuka, jadi alat ukur/tahap baru yang
+      dibuka administrator akan muncul tanpa perlu me-refresh halaman secara manual.
 
 ---
 

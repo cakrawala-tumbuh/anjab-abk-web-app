@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { auth, isPartisipan } from "@/lib/auth/auth";
 import { withServerAuth } from "@/lib/api/client";
 import { apiErrorDari } from "@/lib/api/errors";
+import { AutoRefresh } from "@/components/auto-refresh";
 import type {
   DcsKuesionerItemRead,
   OpmKuesionerItemRead,
@@ -74,6 +75,8 @@ export default async function KuesionerSayaPage() {
 
   return (
     <div className="space-y-6">
+      <AutoRefresh intervalMs={20000} />
+
       {/* Header */}
       <div>
         <h1 className="page-heading">Kuesioner Saya</h1>
@@ -81,6 +84,9 @@ export default async function KuesionerSayaPage() {
           {total === 0
             ? "Belum ada alat ukur yang aktif."
             : `${total} alat ukur, ${belumDiisi} belum diisi.`}
+        </p>
+        <p className="mt-1 text-xs text-gray-400">
+          Daftar ini diperbarui otomatis secara berkala — tidak perlu me-refresh halaman.
         </p>
       </div>
 

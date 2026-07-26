@@ -9,6 +9,12 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ### Ditambahkan
 
+- **Halaman "Kuesioner Saya" menyegarkan daftarnya sendiri secara berkala** (issue #44,
+  workshop SME panel 2026-07-25) — komponen baru `AutoRefresh` memanggil `router.refresh()`
+  tiap 20 detik selama tab terlihat (berhenti saat tab disembunyikan, langsung menyegarkan
+  begitu tab terlihat lagi), sehingga peserta tidak perlu lagi diminta me-refresh halaman
+  secara manual tiap fasilitator membuka tahap baru.
+
 - **Label & deskripsi lengkap skala 1-5 formulir OPM** (issue #43, workshop SME panel
   2026-07-25) — kelima titik skala ketiga dimensi (Importance, Frequency, Criticality)
   kini bertanda label singkat (mis. "3 — Rutin") di formulir, bukan lagi angka telanjang
