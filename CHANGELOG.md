@@ -7,6 +7,8 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [4.12.1] - 2026-07-26
+
 ### Diperbaiki
 
 - **Task Inventory: partisipan yang sudah jadi responden tidak lagi ditawarkan sebagai
