@@ -7,6 +7,7 @@ import {
   ClipboardList,
   Clock,
   Database,
+  DatabaseBackup,
   FileText,
   Gauge,
   LayoutDashboard,
@@ -57,6 +58,7 @@ export const NAV_ADMIN: ReadonlyArray<NavEntry> = [
     icon: Database,
     items: MASTER_DATA_ITEMS,
   },
+  { kind: "link", href: "/backup", label: "Backup & Restore", icon: DatabaseBackup },
 ];
 
 export const NAV_PARTISIPAN: ReadonlyArray<NavEntry> = [

@@ -55,6 +55,7 @@ describe("struktur menu admin", () => {
       "/dcs",
       "/wcp",
       "/master-data",
+      "/backup",
     ]);
   });
 });

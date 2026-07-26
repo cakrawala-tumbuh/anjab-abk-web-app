@@ -14,6 +14,7 @@ detail klik tombol, mengisi formulir, dan menginput data. IK adalah pelengkap
 | [IK-06](dcs.md)            | DCS                 | Administrator, Partisipan              |
 | [IK-07](wcp.md)            | WCP                 | Administrator, Partisipan              |
 | [IK-08](opm.md)            | OPM (Rating Tugas)  | Administrator, Partisipan              |
+| [IK-09](backup-restore.md) | Backup & Restore    | Administrator                          |
 
 ---
 

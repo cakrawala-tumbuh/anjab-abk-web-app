@@ -91,5 +91,6 @@ nav:
       - "IK-06 DCS": ik/dcs.md
       - "IK-07 WCP": ik/wcp.md
       - "IK-08 OPM": ik/opm.md
+      - "IK-09 Backup & Restore": ik/backup-restore.md
   - Referensi:
       - FAQ: referensi/faq.md

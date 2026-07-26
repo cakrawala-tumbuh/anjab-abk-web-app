@@ -7,6 +7,28 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+### Ditambahkan
+
+- **Halaman admin Backup & Restore basis data** (`/backup`, issue #40, lintas-project dengan
+  `cakrawala-tumbuh/anjab-abk-backend#25`) — admin kini dapat mengunduh cadangan penuh basis
+  data dan memulihkannya kembali langsung dari web app, tanpa `curl` manual dengan Bearer token.
+  - Guard admin di Server Component (`notFound()` untuk non-admin) + entri sidebar baru
+    "Backup & Restore" di `NAV_ADMIN`.
+  - Dua Route Handler proxy server-side — `POST /api/backup/unduh` dan
+    `POST /api/backup/pulihkan` — mengambil token lewat `auth()` dan menyisipkannya sebagai
+    `Authorization: Bearer` ke backend; token tidak pernah sampai ke browser. Unggahan berkas
+    dump memakai `FormData` streaming lewat Route Handler (BUKAN Server Action — batas body
+    1 MB default Next.js jauh di bawah ukuran dump basis data).
+  - Formulir pemulihan: file picker `.dump` + input teks konfirmasi, tombol terkunci sampai
+    keduanya terisi dan selama proses berjalan. UI sengaja tidak memvalidasi/menampilkan nilai
+    konfirmasi yang benar — validasi murni di backend (422 bila salah). Peringatan destruktif
+    tampil jelas sebelum tombol pulihkan ditekan.
+  - Error 422 (konfirmasi salah)/413 (berkas terlalu besar)/403 (bukan admin) tampil sebagai
+    pesan berbeda-beda, diambil apa adanya dari `ApiError.message` (envelope backend).
+  - `openapi.json`/`schema.ts` diregenerasi dari `anjab-abk-backend#25` (endpoint
+    `POST /api/v1/system/{backup,restore}`).
+  - `docs-usage/ik/backup-restore.md` (IK-09) ditambahkan.
+
 ## [4.10.0] - 2026-07-26
 
 ### Diubah
