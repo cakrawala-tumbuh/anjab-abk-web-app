@@ -7,6 +7,8 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [4.12.0] - 2026-07-26
+
 ### Ditambahkan
 
 - **Formulir usulan tugas tambahan di Tahap 1 + panel keputusan usulan di Tahap 2** (issue
