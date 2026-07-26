@@ -7,6 +7,8 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [4.11.0] - 2026-07-26
+
 ### Ditambahkan
 
 - **Halaman admin Backup & Restore basis data** (`/backup`, issue #40, lintas-project dengan
