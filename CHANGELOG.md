@@ -7,6 +7,18 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [4.12.2] - 2026-07-29
+
+### Diperbaiki
+
+- **Task Inventory Tahap 3: selektor "Jenis Nilai Tambah (VA)" tidak lagi terkunci oleh
+  "Setuju dengan isian standar"** (issue #47, trial Playwright TI Pembina OSIS/Bandung
+  2026-07-29) — task dengan `std_va_type: "Context-Dependent"` tidak punya nilai standar
+  final yang bisa "disetujui", sehingga field wajib diisi tapi `disabled`, membuat
+  partisipan buntu tanpa petunjuk apa pun. Selektor VA kini tidak pernah dikunci
+  `setuju_standar` (perlakuan sejajar `durasi_per_kali` dan `catatan`); pilihan VA
+  partisipan dipertahankan saat "Setuju dengan isian standar" dilepas lalu dicentang ulang.
+
 ## [4.12.1] - 2026-07-26
 
 ### Diperbaiki
