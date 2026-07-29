@@ -121,9 +121,22 @@ sekaligus**:
    - **Criticality** — dampak jika gagal (1 Dampak minimal … 2 Dampak kecil … 3 Dampak sedang
      … 4 Dampak besar … 5 Dampak kritis)
    - **Catatan** (opsional)
+
+!!! info "Nilai bawaan (prefill)"
+Sebagian task mungkin sudah **terisi otomatis** saat halaman dibuka — nilai standar dari
+Task Bank (bila tersedia untuk task itu), ditandai badge **"Nilai bawaan"** di pojok
+kanan atas kartu task. Ini bukan jawaban final Anda: periksa dan **ubah bila menurut
+Anda tidak sesuai** keadaan pekerjaan Anda yang sebenarnya. Badge hilang otomatis begitu
+salah satu dari ketiga dimensi task itu diubah. Task tanpa nilai standar tetap tampil
+kosong seperti biasa.
+
 4. Pantau penghitung _"{lengkap} / {total} tugas lengkap"_ di bagian bawah — satu task
-   dianggap lengkap bila ketiga dimensi terisi.
-5. Setelah **semua** task lengkap, klik **Kirim Jawaban**.
+   dianggap lengkap bila ketiga dimensi terisi (termasuk yang masih nilai bawaan).
+5. Setelah **semua** task lengkap, klik **Kirim Jawaban**. Bila masih ada task bertanda
+   **"Nilai bawaan"** yang belum Anda ubah, muncul dialog konfirmasi yang menyebutkan
+   jumlahnya (_"N dari M task masih memakai nilai bawaan"_) — klik **OK** untuk tetap
+   mengirim apa adanya, atau **Batal** untuk kembali memeriksa task tersebut terlebih
+   dahulu (tidak ada apa pun yang terkirim bila Batal).
 
 !!! success "Setelah dikirim"
 Muncul _"Jawaban berhasil dikirim!"_. Jawaban bersifat final; kuesioner dapat dibuka

@@ -84,6 +84,41 @@ src/
 
 ## Revisi Desain
 
+### [2026-07-29] OPM: prefill form dari nilai standar + penanda "Nilai bawaan"
+
+Backend (`anjab-abk-backend#34`) membekukan `std_importance`/`std_frequency`/
+`std_criticality` per task ke snapshot sesi OPM dan mengeksposnya di
+`GET /api/v1/opm/sesi/{id}/task` — item ini memakainya sebagai nilai awal form
+(`opm-form.tsx`) sehingga responden tinggal mengoreksi yang tidak ia setujui,
+bukan menilai dari nol.
+
+- **`openapi/openapi.json` diregenerasi** dari checkout lokal backend
+  (`scripts/export_openapi.py`, commit `4a55f28`) — `npm run gen:api` dijalankan,
+  blok convenience re-export akhir file ditambal ulang (konvensi baku, sama seperti
+  entri [2026-06-21]).
+- **Resolusi nilai awal per dimensi** (`resolveNilaiAwal`): jawaban tersimpan
+  responden → nilai standar → kosong. Resolusinya **per dimensi** (bukan
+  all-or-nothing per task) karena `std_importance`/`std_frequency`/`std_criticality`
+  masing-masing nullable independen di kontrak backend.
+- **Penanda "Nilai bawaan"** (`isTaskBawaanAwal`, state `bawaan: Set<string>`) hanya
+  dipasang pada task yang **ketiga** dimensinya sekaligus berasal dari nilai standar
+  (tanpa jawaban tersimpan) — persis makna "seluruh dimensinya" di Kriteria Penerimaan.
+  Task dengan `std_*` sebagian/seluruhnya `null` tidak pernah dapat penanda (kosong ≠
+  bawaan) meski dimensi yang tersedia tetap diisi. Penanda murni state klien, **tidak**
+  dikirim ke backend, dan hilang begitu `setSkor` dipanggil pada task itu (mengubah
+  catatan TIDAK menghilangkan penanda — hanya ketiga dimensi rating yang relevan).
+- **Gate submit final** (bukan draft-save): bila `jumlahBawaan > 0` saat "Kirim Jawaban"
+  diklik, `window.confirm(...)` menyebut jumlahnya eksplisit ("N dari M task masih
+  memakai nilai bawaan"); Batal = `return` sebelum `PUT`/`POST` apa pun dipanggil. Tombol
+  "Simpan" (draft, `handleSave`) sama sekali tidak disentuh oleh gate ini.
+- `petunjuk-opm.tsx` mendapat satu butir baru di "Petunjuk Umum" yang menjelaskan badge
+  "Nilai bawaan" — bagian lain petunjuk pengisian tidak diubah (di luar cakupan #48).
+- Test baru: `src/test/opm-form.test.tsx` (describe block baru) — prefill lengkap +
+  badge, jawaban tersimpan menang, `std_*` null tetap kosong tanpa badge, mengubah satu
+  dimensi hanya menghilangkan badge task itu, Batal/OK pada dialog gate, dan tanpa
+  dialog saat tidak ada task bawaan.
+- Detail keputusan: issue `cakrawala-tumbuh/anjab-abk-web-app#48`.
+
 ### [2026-07-26] Task Inventory: sembunyikan partisipan yang sudah jadi responden dari kandidat
 
 Audit R3 (2026-07-26) menemukan sesi Guru BK/Bandung punya satu partisipan dengan dua baris

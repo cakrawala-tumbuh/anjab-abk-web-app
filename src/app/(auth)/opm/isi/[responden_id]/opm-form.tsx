@@ -70,6 +70,41 @@ export function isTaskLengkap(rating: RatingState | undefined): boolean {
   );
 }
 
+/**
+ * Resolusi nilai awal satu task sesuai urutan Keputusan Desain issue #48:
+ * jawaban tersimpan responden → nilai standar (`std_importance`/`std_frequency`/
+ * `std_criticality`) → kosong. `stored` diambil dari `jawabanAwal` (bila
+ * responden pernah menyimpan draft/submit task ini); resolusi berlaku
+ * **per dimensi**, bukan all-or-nothing per task, karena `std_*` masing-masing
+ * nullable independen di kontrak backend.
+ */
+function resolveNilaiAwal(t: OpmSesiTaskRead, stored: RatingState | undefined): RatingState {
+  return {
+    importance: stored?.importance ?? t.std_importance ?? undefined,
+    frequency: stored?.frequency ?? t.std_frequency ?? undefined,
+    criticality: stored?.criticality ?? t.std_criticality ?? undefined,
+    catatan: stored?.catatan,
+  };
+}
+
+/**
+ * True bila task `t` layak ditandai "nilai bawaan" saat form dibuka: responden
+ * belum pernah menyimpan jawaban untuk task ini, **dan** ketiga dimensi
+ * (`std_importance`/`std_frequency`/`std_criticality`) tersedia dari nilai
+ * standar — persis "seluruh dimensinya berasal dari nilai bawaan" yang
+ * disyaratkan Keputusan Desain issue #48. Task dengan `std_*` sebagian atau
+ * seluruhnya `null` TIDAK mendapat penanda (kosong ≠ bawaan), meski dimensi
+ * yang tersedia tetap terisi oleh {@link resolveNilaiAwal}.
+ */
+function isTaskBawaanAwal(t: OpmSesiTaskRead, stored: RatingState | undefined): boolean {
+  return (
+    stored == null &&
+    t.std_importance != null &&
+    t.std_frequency != null &&
+    t.std_criticality != null
+  );
+}
+
 interface Props {
   respondenId: string;
   task: OpmSesiTaskRead[];
@@ -78,10 +113,32 @@ interface Props {
   accessToken: string | undefined;
 }
 
+/**
+ * Formulir pengisian kuesioner OPM (Importance/Frequency/Criticality per task).
+ *
+ * Nilai awal tiap dimensi diresolusi via {@link resolveNilaiAwal} (jawaban
+ * tersimpan → nilai standar → kosong); task yang seluruh dimensinya masih
+ * murni nilai standar bawaan diberi penanda "Nilai bawaan" (state klien saja,
+ * lihat {@link isTaskBawaanAwal}) yang hilang begitu responden mengubah salah
+ * satu dimensinya. Submit final digerbang oleh dialog konfirmasi
+ * (`window.confirm`) bila masih ada task bawaan; draft-save (`Simpan`) tidak
+ * digerbang sama sekali. Lihat Keputusan Desain issue
+ * `cakrawala-tumbuh/anjab-abk-web-app#48`.
+ *
+ * @param respondenId - ID baris `opm_responden` pemilik jawaban.
+ * @param task - Snapshot task sesi OPM (termasuk `std_*` nilai standar), sudah
+ *   diurutkan menaik berdasarkan `urutan` sebelum dirender.
+ * @param jawabanAwal - Jawaban yang sudah tersimpan sebelumnya untuk responden
+ *   ini (draft atau hasil submit) — selalu menang atas nilai standar.
+ * @param sudahSubmit - Bila `true`, seluruh input dirender read-only dan tombol
+ *   aksi disembunyikan.
+ * @param accessToken - Bearer token untuk `withServerAuth`; `undefined` bila
+ *   sesi tidak terautentikasi (permintaan akan ditolak backend).
+ */
 export function OpmForm({ respondenId, task, jawabanAwal, sudahSubmit, accessToken }: Props) {
   const router = useRouter();
 
-  const initialValues: Record<string, RatingState> = Object.fromEntries(
+  const jawabanTersimpan: Record<string, RatingState> = Object.fromEntries(
     jawabanAwal.map((j) => [
       j.task_kode,
       {
@@ -93,7 +150,19 @@ export function OpmForm({ respondenId, task, jawabanAwal, sudahSubmit, accessTok
     ]),
   );
 
+  const initialValues: Record<string, RatingState> = Object.fromEntries(
+    task.map((t) => [t.task_kode, resolveNilaiAwal(t, jawabanTersimpan[t.task_kode])]),
+  );
+
+  const bawaanAwal = new Set(
+    task.filter((t) => isTaskBawaanAwal(t, jawabanTersimpan[t.task_kode])).map((t) => t.task_kode),
+  );
+
   const [rating, setRating] = useState<Record<string, RatingState>>(initialValues);
+  // Task yang seluruh dimensinya (importance+frequency+criticality) MASIH
+  // persis nilai standar bawaan, belum disentuh responden sama sekali —
+  // murni state klien, TIDAK dikirim ke backend (Keputusan Desain issue #48).
+  const [bawaan, setBawaan] = useState<Set<string>>(bawaanAwal);
   const [submitting, setSubmitting] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -103,12 +172,21 @@ export function OpmForm({ respondenId, task, jawabanAwal, sudahSubmit, accessTok
   const sortedTask = task.slice().sort((a, b) => a.urutan - b.urutan);
   const jumlahLengkap = sortedTask.filter((t) => isTaskLengkap(rating[t.task_kode])).length;
   const allComplete = sortedTask.length > 0 && jumlahLengkap === sortedTask.length;
+  const jumlahBawaan = sortedTask.filter((t) => bawaan.has(t.task_kode)).length;
 
   function setSkor(taskKode: string, dimensi: Dimensi, nilai: number) {
     setRating((prev) => ({
       ...prev,
       [taskKode]: { ...prev[taskKode], [dimensi]: nilai },
     }));
+    // Mengubah SALAH SATU dari 3 dimensi menghilangkan penanda bawaan task
+    // ini — task lain yang belum disentuh tidak terpengaruh.
+    setBawaan((prev) => {
+      if (!prev.has(taskKode)) return prev;
+      const next = new Set(prev);
+      next.delete(taskKode);
+      return next;
+    });
   }
 
   function setCatatan(taskKode: string, catatan: string) {
@@ -175,6 +253,15 @@ export function OpmForm({ respondenId, task, jawabanAwal, sudahSubmit, accessTok
     if (!allComplete) {
       setError("Semua task wajib dinilai pada ketiga dimensi sebelum mengirim.");
       return;
+    }
+    // Gate HANYA di submit final — draft-save (handleSave) tidak digerbang sama
+    // sekali. Batal dialog = tidak ada request terkirim (return sebelum apa pun
+    // dipanggil). Nilai bawaan sendiri TETAP ikut terkirim bila dilanjutkan.
+    if (jumlahBawaan > 0) {
+      const pesan =
+        `${jumlahBawaan} dari ${sortedTask.length} task masih memakai nilai bawaan ` +
+        "(belum diubah dari nilai standar). Lanjutkan mengirim jawaban?";
+      if (!confirm(pesan)) return;
     }
     setError(null);
     setSaveMessage(null);
@@ -263,11 +350,22 @@ export function OpmForm({ respondenId, task, jawabanAwal, sudahSubmit, accessTok
 
       {sortedTask.map((t, idx) => {
         const r = rating[t.task_kode] ?? {};
+        const isBawaan = bawaan.has(t.task_kode);
         return (
           <div key={t.task_kode} className="rounded-lg border border-gray-200 bg-white p-4">
-            <p className="text-xs font-medium text-gray-400">
-              {idx + 1}. {t.task_kode}
-            </p>
+            <div className="flex items-start justify-between gap-2">
+              <p className="text-xs font-medium text-gray-400">
+                {idx + 1}. {t.task_kode}
+              </p>
+              {isBawaan && (
+                <span
+                  title="Ketiga rating task ini masih nilai standar bawaan — belum Anda ubah."
+                  className="shrink-0 rounded-full border border-amber-300 bg-amber-50 px-2 py-0.5 text-[11px] font-medium text-amber-700 dark:border-amber-700 dark:bg-amber-950/40 dark:text-amber-300"
+                >
+                  Nilai bawaan
+                </span>
+              )}
+            </div>
             <p className="mt-1 text-sm font-medium text-gray-900">{t.uraian_tugas}</p>
             <p className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
               {t.tugas_pokok}

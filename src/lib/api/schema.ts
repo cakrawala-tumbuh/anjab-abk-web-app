@@ -1549,7 +1549,16 @@ export interface paths {
         /** Daftar responden dalam sesi (admin atau peserta sesi) */
         get: operations["taskinv_responden_list"];
         put?: never;
-        /** Daftarkan responden ke sesi (admin; saat DRAFT/TAHAP1) */
+        /**
+         * Daftarkan responden ke sesi (admin; saat DRAFT/TAHAP1)
+         * @description Daftarkan satu responden ke sesi Task Inventory `sesi_id` (admin).
+         *
+         *     Menolak `422` bila sesi bukan `DRAFT`/`TAHAP1`, atau bila `payload.partisipan_id`
+         *     diisi tapi bukan anggota SME panel jabatan sesi ini. Menolak `409` bila
+         *     `payload.partisipan_id` non-null sudah terdaftar sebagai responden di sesi ini
+         *     (`SqlTiRespondenService.create()`, backlog `anjab-abk-backend#29`) —
+         *     `partisipan_id` kosong (responden manual tanpa partisipan) boleh berulang.
+         */
         post: operations["taskinv_responden_create"];
         delete?: never;
         options?: never;
@@ -3595,6 +3604,21 @@ export interface components {
              * @description Urutan tampil task.
              */
             urutan: number;
+            /**
+             * Std Importance
+             * @description Nilai standar Importance (1-5), dibekukan dari katalog Task Inventory saat sesi OPM dibuat. Saran nilai awal untuk klien — bukan jawaban tersimpan; `null` bila task ini tidak punya nilai standar di katalog.
+             */
+            std_importance?: number | null;
+            /**
+             * Std Frequency
+             * @description Nilai standar Frequency (1-5), dibekukan dari katalog Task Inventory saat sesi OPM dibuat. Saran nilai awal untuk klien — bukan jawaban tersimpan; `null` bila task ini tidak punya nilai standar di katalog.
+             */
+            std_frequency?: number | null;
+            /**
+             * Std Criticality
+             * @description Nilai standar Criticality (1-5), dibekukan dari katalog Task Inventory saat sesi OPM dibuat. Saran nilai awal untuk klien — bukan jawaban tersimpan; `null` bila task ini tidak punya nilai standar di katalog.
+             */
+            std_criticality?: number | null;
         };
         /**
          * OpmSesiUpdate
@@ -4767,6 +4791,21 @@ export interface components {
             std_peak4w_hours?: number | null;
             /** Std Va Type */
             std_va_type?: ("VA-Core" | "VA-Enable" | "NVA-Residual" | "Context-Dependent") | null;
+            /**
+             * Std Opm Importance
+             * @description Nilai standar OPM — importance (skala 1-5).
+             */
+            std_opm_importance?: number | null;
+            /**
+             * Std Opm Frequency
+             * @description Nilai standar OPM — frequency (skala 1-5).
+             */
+            std_opm_frequency?: number | null;
+            /**
+             * Std Opm Criticality
+             * @description Nilai standar OPM — criticality (skala 1-5).
+             */
+            std_opm_criticality?: number | null;
         };
         /**
          * TiCatalogReseedCounts
@@ -5537,6 +5576,21 @@ export interface components {
             std_peak4w_hours?: number | null;
             /** Std Va Type */
             std_va_type?: ("VA-Core" | "VA-Enable" | "NVA-Residual" | "Context-Dependent") | null;
+            /**
+             * Std Opm Importance
+             * @description Nilai standar OPM — importance (skala 1-5).
+             */
+            std_opm_importance?: number | null;
+            /**
+             * Std Opm Frequency
+             * @description Nilai standar OPM — frequency (skala 1-5).
+             */
+            std_opm_frequency?: number | null;
+            /**
+             * Std Opm Criticality
+             * @description Nilai standar OPM — criticality (skala 1-5).
+             */
+            std_opm_criticality?: number | null;
         };
         /**
          * TiUsulanCreate
@@ -6192,6 +6246,24 @@ export interface components {
              * @description Nilai standar VA type.
              */
             std_va_type?: ("VA-Core" | "VA-Enable" | "NVA-Residual" | "Context-Dependent") | null;
+            /**
+             * Std Opm Importance
+             * @description Nilai standar OPM — importance (skala 1-5).
+             * @example 3
+             */
+            std_opm_importance?: number | null;
+            /**
+             * Std Opm Frequency
+             * @description Nilai standar OPM — frequency (skala 1-5).
+             * @example 2
+             */
+            std_opm_frequency?: number | null;
+            /**
+             * Std Opm Criticality
+             * @description Nilai standar OPM — criticality (skala 1-5).
+             * @example 3
+             */
+            std_opm_criticality?: number | null;
         };
         /**
          * UraianTugasRead
@@ -6282,6 +6354,21 @@ export interface components {
              */
             std_va_type?: ("VA-Core" | "VA-Enable" | "NVA-Residual" | "Context-Dependent") | null;
             /**
+             * Std Opm Importance
+             * @description Nilai standar OPM — importance (skala 1-5).
+             */
+            std_opm_importance?: number | null;
+            /**
+             * Std Opm Frequency
+             * @description Nilai standar OPM — frequency (skala 1-5).
+             */
+            std_opm_frequency?: number | null;
+            /**
+             * Std Opm Criticality
+             * @description Nilai standar OPM — criticality (skala 1-5).
+             */
+            std_opm_criticality?: number | null;
+            /**
              * Created At
              * Format: date-time
              * @description Waktu pembuatan (UTC, ISO-8601).
@@ -6363,6 +6450,21 @@ export interface components {
              * @description Nilai standar VA type.
              */
             std_va_type?: ("VA-Core" | "VA-Enable" | "NVA-Residual" | "Context-Dependent") | null;
+            /**
+             * Std Opm Importance
+             * @description Nilai standar OPM — importance (skala 1-5).
+             */
+            std_opm_importance?: number | null;
+            /**
+             * Std Opm Frequency
+             * @description Nilai standar OPM — frequency (skala 1-5).
+             */
+            std_opm_frequency?: number | null;
+            /**
+             * Std Opm Criticality
+             * @description Nilai standar OPM — criticality (skala 1-5).
+             */
+            std_opm_criticality?: number | null;
         };
         /** ValidationError */
         ValidationError: {
@@ -14265,6 +14367,15 @@ export interface operations {
             };
             /** @description Sesi tidak ditemukan. */
             404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Partisipan ini sudah terdaftar sebagai responden pada sesi ini. */
+            409: {
                 headers: {
                     [name: string]: unknown;
                 };

@@ -10200,6 +10200,7 @@
           "taskinv.responden"
         ],
         "summary": "Daftarkan responden ke sesi (admin; saat DRAFT/TAHAP1)",
+        "description": "Daftarkan satu responden ke sesi Task Inventory `sesi_id` (admin).\n\nMenolak `422` bila sesi bukan `DRAFT`/`TAHAP1`, atau bila `payload.partisipan_id`\ndiisi tapi bukan anggota SME panel jabatan sesi ini. Menolak `409` bila\n`payload.partisipan_id` non-null sudah terdaftar sebagai responden di sesi ini\n(`SqlTiRespondenService.create()`, backlog `anjab-abk-backend#29`) —\n`partisipan_id` kosong (responden manual tanpa partisipan) boleh berulang.",
         "operationId": "taskinv_responden_create",
         "security": [
           {
@@ -10272,6 +10273,16 @@
           },
           "404": {
             "description": "Sesi tidak ditemukan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Partisipan ini sudah terdaftar sebagai responden pada sesi ini.",
             "content": {
               "application/json": {
                 "schema": {
@@ -17242,6 +17253,48 @@
             "type": "integer",
             "title": "Urutan",
             "description": "Urutan tampil task."
+          },
+          "std_importance": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 5.0,
+                "minimum": 1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Std Importance",
+            "description": "Nilai standar Importance (1-5), dibekukan dari katalog Task Inventory saat sesi OPM dibuat. Saran nilai awal untuk klien — bukan jawaban tersimpan; `null` bila task ini tidak punya nilai standar di katalog."
+          },
+          "std_frequency": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 5.0,
+                "minimum": 1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Std Frequency",
+            "description": "Nilai standar Frequency (1-5), dibekukan dari katalog Task Inventory saat sesi OPM dibuat. Saran nilai awal untuk klien — bukan jawaban tersimpan; `null` bila task ini tidak punya nilai standar di katalog."
+          },
+          "std_criticality": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 5.0,
+                "minimum": 1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Std Criticality",
+            "description": "Nilai standar Criticality (1-5), dibekukan dari katalog Task Inventory saat sesi OPM dibuat. Saran nilai awal untuk klien — bukan jawaban tersimpan; `null` bila task ini tidak punya nilai standar di katalog."
           }
         },
         "type": "object",
@@ -19383,6 +19436,48 @@
               }
             ],
             "title": "Std Va Type"
+          },
+          "std_opm_importance": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 5.0,
+                "minimum": 1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Std Opm Importance",
+            "description": "Nilai standar OPM — importance (skala 1-5)."
+          },
+          "std_opm_frequency": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 5.0,
+                "minimum": 1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Std Opm Frequency",
+            "description": "Nilai standar OPM — frequency (skala 1-5)."
+          },
+          "std_opm_criticality": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 5.0,
+                "minimum": 1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Std Opm Criticality",
+            "description": "Nilai standar OPM — criticality (skala 1-5)."
           }
         },
         "type": "object",
@@ -20735,6 +20830,48 @@
               }
             ],
             "title": "Std Va Type"
+          },
+          "std_opm_importance": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 5.0,
+                "minimum": 1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Std Opm Importance",
+            "description": "Nilai standar OPM — importance (skala 1-5)."
+          },
+          "std_opm_frequency": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 5.0,
+                "minimum": 1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Std Opm Frequency",
+            "description": "Nilai standar OPM — frequency (skala 1-5)."
+          },
+          "std_opm_criticality": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 5.0,
+                "minimum": 1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Std Opm Criticality",
+            "description": "Nilai standar OPM — criticality (skala 1-5)."
           }
         },
         "type": "object",
@@ -21887,6 +22024,57 @@
             ],
             "title": "Std Va Type",
             "description": "Nilai standar VA type."
+          },
+          "std_opm_importance": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 5.0,
+                "minimum": 1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Std Opm Importance",
+            "description": "Nilai standar OPM — importance (skala 1-5).",
+            "examples": [
+              3
+            ]
+          },
+          "std_opm_frequency": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 5.0,
+                "minimum": 1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Std Opm Frequency",
+            "description": "Nilai standar OPM — frequency (skala 1-5).",
+            "examples": [
+              2
+            ]
+          },
+          "std_opm_criticality": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 5.0,
+                "minimum": 1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Std Opm Criticality",
+            "description": "Nilai standar OPM — criticality (skala 1-5).",
+            "examples": [
+              3
+            ]
           }
         },
         "additionalProperties": false,
@@ -22078,6 +22266,48 @@
             ],
             "title": "Std Va Type",
             "description": "Nilai standar VA type."
+          },
+          "std_opm_importance": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 5.0,
+                "minimum": 1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Std Opm Importance",
+            "description": "Nilai standar OPM — importance (skala 1-5)."
+          },
+          "std_opm_frequency": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 5.0,
+                "minimum": 1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Std Opm Frequency",
+            "description": "Nilai standar OPM — frequency (skala 1-5)."
+          },
+          "std_opm_criticality": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 5.0,
+                "minimum": 1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Std Opm Criticality",
+            "description": "Nilai standar OPM — criticality (skala 1-5)."
           },
           "created_at": {
             "type": "string",
@@ -22297,6 +22527,48 @@
             ],
             "title": "Std Va Type",
             "description": "Nilai standar VA type."
+          },
+          "std_opm_importance": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 5.0,
+                "minimum": 1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Std Opm Importance",
+            "description": "Nilai standar OPM — importance (skala 1-5)."
+          },
+          "std_opm_frequency": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 5.0,
+                "minimum": 1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Std Opm Frequency",
+            "description": "Nilai standar OPM — frequency (skala 1-5)."
+          },
+          "std_opm_criticality": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 5.0,
+                "minimum": 1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Std Opm Criticality",
+            "description": "Nilai standar OPM — criticality (skala 1-5)."
           }
         },
         "additionalProperties": false,

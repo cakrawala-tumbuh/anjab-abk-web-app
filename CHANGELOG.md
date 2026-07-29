@@ -7,6 +7,18 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+### Ditambahkan
+
+- **Form OPM diprefill nilai standar per task + penanda "Nilai bawaan"** (issue #48,
+  konsumen `anjab-abk-backend#34`) — rating Importance/Frequency/Criticality kini terisi
+  otomatis dari nilai standar Task Bank (`std_importance`/`std_frequency`/`std_criticality`)
+  saat responden pertama kali membuka form, bila belum pernah menyimpan jawaban untuk task
+  itu. Task yang seluruh dimensinya masih murni nilai bawaan diberi badge "Nilai bawaan"
+  yang hilang otomatis begitu salah satu dimensinya diubah. Submit final ditahan dialog
+  konfirmasi bila masih ada task bawaan ("N dari M task masih memakai nilai bawaan");
+  draft-save (tombol "Simpan") tidak digerbang. Task tanpa nilai standar (`std_* null`)
+  tetap kosong seperti sebelumnya.
+
 ## [4.12.2] - 2026-07-29
 
 ### Diperbaiki

@@ -172,6 +172,12 @@ export function PetunjukOpm({ defaultOpen }: Props) {
             dinilai lengkap.
           </li>
           <li>
+            Sebagian tugas mungkin sudah terisi otomatis dengan nilai standar dan ditandai badge{" "}
+            <strong>&ldquo;Nilai bawaan&rdquo;</strong> — periksa dan ubah bila menurut Anda tidak
+            sesuai keadaan pekerjaan Anda. Penanda hilang otomatis begitu Anda mengubah salah satu
+            nilainya.
+          </li>
+          <li>
             Jawaban <strong>rahasia</strong>, dipakai untuk analisis jabatan/beban kerja.
           </li>
         </ul>
