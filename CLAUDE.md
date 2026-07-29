@@ -84,6 +84,34 @@ src/
 
 ## Revisi Desain
 
+### [2026-07-29] Task Inventory Tahap 2: tabel task partial dipindah ke atas blok usulan
+
+Pemilik proses menilai urutan render `ReviewForm` (`task-inventory/tahap2/[sesi_id]/
+review-form.tsx`) yang dipasang bersama fitur usulan (entri `[2026-07-26]` di bawah,
+issue `#45`) terbalik dari alur berpikir konsensus: koordinator dihadapkan pada usulan
+tugas baru **sebelum** ia melihat & memutuskan daftar uraian tugas yang perlu
+dikonsolidasi, padahal rekomendasi uraian tugas yang harus disepakati semestinya lebih
+dulu.
+
+- **Murni perubahan komposisi JSX** — urutan render final: panel aksi atas → **tabel
+  task partial** → **blok usulan** → panel aksi bawah. State `keputusan`/
+  `keputusanUsulan`, `setAll`, `belumDiputuskan`, dan `onSubmit` tidak berubah; satu
+  `POST .../tahap2` tetap membawa `keputusan` **dan** `keputusan_usulan` sekaligus.
+- Tabel task partial mendapat heading baru **"Task partial"** (`<h2>`, gaya sama dengan
+  heading "Usulan tugas tambahan dari peserta" yang sudah ada) — sebelumnya tabel itu
+  tidak berheading sendiri karena selalu tampil di bagian bawah tanpa blok lain di
+  atasnya.
+- Test yang menargetkan baris lewat **indeks array global** hasil `getAllByRole`
+  diganti menjadi query **berbasis konteks baris** (`within(row)` pada baris yang
+  ditemukan lewat teks usulan/task-nya) — indeks global rapuh terhadap urutan render,
+  persis yang membuatnya pecah pada perubahan ini. Test baru
+  `src/test/review-form.test.tsx` (describe "urutan render tabel task partial vs blok
+  usulan") memverifikasi tabel task partial mendahului blok usulan di DOM, dan kedua
+  blok tetap independen saat salah satunya kosong.
+- `docs-usage/ik/task-inventory.md` bagian D diperbarui: langkah tabel task partial kini
+  disebut lebih dulu, blok usulan menyebut tampil "di bawah" (bukan "di atas") tabel.
+- Detail keputusan: issue `cakrawala-tumbuh/anjab-abk-web-app#50`.
+
 ### [2026-07-29] Task Inventory Tahap 3: urutkan task per tugas pokok, detil tugas, lalu alfabet uraian
 
 Layar Tahap 3 — Detailing (`/task-inventory/tahap3/{responden_id}`) menerima task dari
@@ -217,15 +245,17 @@ keputusan_usulan` tidak ada di `openapi.json` gitignored-nya meski source sudah 
   SELURUH blok usulan (termasuk yang sudah tersimpan, bukan hanya kontrolnya) — defense-in-
   depth di atas gerbang yang sudah ada di `page.tsx` (yang hanya me-render `<SeleksiForm>`
   saat `!tahap1_submit && sesi.status === "TAHAP1"`).
-- **Tahap 2 (`review-form.tsx`)**: blok "Usulan tugas tambahan dari peserta" dirender **di
-  atas** tabel task partial (tabel task ikut disembunyikan bila `review.tasks.length === 0`,
-  simetris dengan usulan) — kolom nama pengusul (`responden_nama`) + hierarki induk
+- **Tahap 2 (`review-form.tsx`)**: blok "Usulan tugas tambahan dari peserta" dirender
+  (tabel task ikut disembunyikan bila `review.tasks.length === 0`, simetris dengan
+  usulan) — kolom nama pengusul (`responden_nama`) + hierarki induk
   (`tugas_pokok · detil_tugas`, `.filter(Boolean).join(" · ")` agar aman saat detil null).
   State `keputusanUsulan` terpisah dari `keputusan` (task) karena identitasnya beda
   (`usulan_id` vs `task_kode`), tapi `setAll`/`belumDiputuskan`/`onSubmit` menggabungkan
   keduanya — **satu** `POST .../tahap2` mengirim `keputusan` **dan** `keputusan_usulan`
   sekaligus, bukan dua submit. `readOnly` yang sudah ada (admin/koordinator vs anggota
   panel) dipakai apa adanya untuk usulan — tidak ada prop/gerbang baru.
+  **Urutan relatif terhadap tabel task partial dibalik pada [2026-07-29] (issue #50)**
+  — lihat entri di atas; sisa ringkasan di bawah ini tidak terpengaruh.
 - `page.tsx` Tahap 2: kondisi kosong ("Tidak ada task partial") diperluas jadi
   `review.tasks.length === 0 && (review.usulan ?? []).length === 0` — sebelumnya sesi yang
   HANYA punya usulan (tanpa task partial) akan menampilkan pesan "tidak ada apa-apa" yang

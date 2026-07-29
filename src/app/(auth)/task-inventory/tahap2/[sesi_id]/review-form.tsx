@@ -25,6 +25,11 @@ type Keputusan = Record<string, boolean | null>;
  * `Keputusan` (task) dan `keputusanUsulan` (usulan) disatukan hanya di payload
  * `onSubmit`, tetap dua state React terpisah karena identitasnya beda
  * (`task_kode` vs `usulan_id`).
+ *
+ * Urutan render (issue #50): panel aksi atas → tabel **task partial** →
+ * blok **usulan tugas tambahan** → panel aksi bawah. Tabel task partial
+ * tampil lebih dulu supaya koordinator melihat & memutuskan konsolidasi
+ * uraian tugas sebelum dihadapkan pada usulan tambahan peserta.
  */
 export function ReviewForm({ sesiId, review, accessToken, readOnly, kodeToUraian }: Props) {
   const router = useRouter();
@@ -152,6 +157,87 @@ export function ReviewForm({ sesiId, review, accessToken, readOnly, kodeToUraian
         </div>
       )}
 
+      {review.tasks.length > 0 && (
+        <div className="space-y-2">
+          <h2 className="text-sm font-semibold text-gray-800 dark:text-gray-200">Task partial</h2>
+          <div className="table-container">
+            <table className="w-full text-sm">
+              <thead className="bg-gray-50 dark:bg-gray-800">
+                <tr>
+                  <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
+                    Task
+                  </th>
+                  <th className="px-4 py-3 text-center font-medium text-gray-600">Pilih</th>
+                  <th className="px-4 py-3 text-center font-medium text-gray-600">
+                    {readOnly ? "Keputusan" : "Setujui?"}
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
+                {review.tasks.map((t: TiTahap2TaskRead) => {
+                  const val = keputusan[t.task_kode];
+                  return (
+                    <tr key={t.task_kode} className="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                      <td className="px-4 py-3 text-gray-800">
+                        <span>{kodeToUraian[t.task_kode] ?? t.task_kode}</span>
+                        {kodeToUraian[t.task_kode] && (
+                          <span className="ml-2 text-xs text-gray-400">{t.task_kode}</span>
+                        )}
+                      </td>
+                      <td className="px-4 py-3 text-center text-gray-500">
+                        {t.n_relevan}/{t.n_total}
+                      </td>
+                      <td className="px-4 py-3 text-center">
+                        {readOnly ? (
+                          <span
+                            className={
+                              t.disetujui === true
+                                ? "text-green-700"
+                                : t.disetujui === false
+                                  ? "text-red-600"
+                                  : "text-gray-400"
+                            }
+                          >
+                            {t.disetujui === true
+                              ? "✓ Disetujui"
+                              : t.disetujui === false
+                                ? "✗ Ditolak"
+                                : "—"}
+                          </span>
+                        ) : (
+                          <div className="flex justify-center gap-2">
+                            <button
+                              onClick={() => setKeputusan((p) => ({ ...p, [t.task_kode]: true }))}
+                              className={`rounded px-3 py-1 text-xs font-medium ${
+                                val === true
+                                  ? "bg-green-600 text-white"
+                                  : "border border-green-300 text-green-700 hover:bg-green-50"
+                              }`}
+                            >
+                              Ya
+                            </button>
+                            <button
+                              onClick={() => setKeputusan((p) => ({ ...p, [t.task_kode]: false }))}
+                              className={`rounded px-3 py-1 text-xs font-medium ${
+                                val === false
+                                  ? "bg-red-600 text-white"
+                                  : "border border-red-300 text-red-700 hover:bg-red-50"
+                              }`}
+                            >
+                              Tidak
+                            </button>
+                          </div>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
       {usulanList.length > 0 && (
         <div className="space-y-2">
           <h2 className="text-sm font-semibold text-gray-800 dark:text-gray-200">
@@ -233,84 +319,6 @@ export function ReviewForm({ sesiId, review, accessToken, readOnly, kodeToUraian
               </tbody>
             </table>
           </div>
-        </div>
-      )}
-
-      {review.tasks.length > 0 && (
-        <div className="table-container">
-          <table className="w-full text-sm">
-            <thead className="bg-gray-50 dark:bg-gray-800">
-              <tr>
-                <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
-                  Task
-                </th>
-                <th className="px-4 py-3 text-center font-medium text-gray-600">Pilih</th>
-                <th className="px-4 py-3 text-center font-medium text-gray-600">
-                  {readOnly ? "Keputusan" : "Setujui?"}
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
-              {review.tasks.map((t: TiTahap2TaskRead) => {
-                const val = keputusan[t.task_kode];
-                return (
-                  <tr key={t.task_kode} className="hover:bg-gray-50 dark:hover:bg-gray-800/50">
-                    <td className="px-4 py-3 text-gray-800">
-                      <span>{kodeToUraian[t.task_kode] ?? t.task_kode}</span>
-                      {kodeToUraian[t.task_kode] && (
-                        <span className="ml-2 text-xs text-gray-400">{t.task_kode}</span>
-                      )}
-                    </td>
-                    <td className="px-4 py-3 text-center text-gray-500">
-                      {t.n_relevan}/{t.n_total}
-                    </td>
-                    <td className="px-4 py-3 text-center">
-                      {readOnly ? (
-                        <span
-                          className={
-                            t.disetujui === true
-                              ? "text-green-700"
-                              : t.disetujui === false
-                                ? "text-red-600"
-                                : "text-gray-400"
-                          }
-                        >
-                          {t.disetujui === true
-                            ? "✓ Disetujui"
-                            : t.disetujui === false
-                              ? "✗ Ditolak"
-                              : "—"}
-                        </span>
-                      ) : (
-                        <div className="flex justify-center gap-2">
-                          <button
-                            onClick={() => setKeputusan((p) => ({ ...p, [t.task_kode]: true }))}
-                            className={`rounded px-3 py-1 text-xs font-medium ${
-                              val === true
-                                ? "bg-green-600 text-white"
-                                : "border border-green-300 text-green-700 hover:bg-green-50"
-                            }`}
-                          >
-                            Ya
-                          </button>
-                          <button
-                            onClick={() => setKeputusan((p) => ({ ...p, [t.task_kode]: false }))}
-                            className={`rounded px-3 py-1 text-xs font-medium ${
-                              val === false
-                                ? "bg-red-600 text-white"
-                                : "border border-red-300 text-red-700 hover:bg-red-50"
-                            }`}
-                          >
-                            Tidak
-                          </button>
-                        </div>
-                      )}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
         </div>
       )}
 

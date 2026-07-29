@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, act, waitFor } from "@testing-library/react";
+import { render, screen, within, fireEvent, act, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { toast } from "sonner";
 import type { TiTahap2ReviewRead, TiUsulanReviewRead } from "@/lib/api/schema";
@@ -297,10 +297,17 @@ describe("ReviewForm — usulan tugas tambahan Tahap 1 (issue #45)", () => {
     vi.stubGlobal("confirm", () => true);
     renderWithUsulan(false);
 
-    // Putuskan task TIaaa dan usulan tius_1 sekaligus (2 baris "Ya" berbeda tabel).
-    const yaButtons = screen.getAllByRole("button", { name: "Ya" });
-    fireEvent.click(yaButtons[0]); // baris usulan (tabel usulan dirender lebih dulu)
-    fireEvent.click(yaButtons[1]); // baris task TIaaa
+    // Putuskan task TIaaa dan usulan tius_1 sekaligus — ditargetkan lewat baris
+    // masing-masing (bukan indeks global), karena tabel task partial dan blok
+    // usulan sama-sama merender tombol "Ya" (issue #50: urutan render tabel
+    // ditukar, indeks global jadi rapuh terhadap urutan).
+    const taskRow = screen.getByText("TIaaa").closest("tr");
+    if (!taskRow) throw new Error("baris task TIaaa tidak ditemukan");
+    fireEvent.click(within(taskRow).getByRole("button", { name: "Ya" }));
+
+    const usulanRow = screen.getByText("Menyusun ulang jadwal piket.").closest("tr");
+    if (!usulanRow) throw new Error("baris usulan tidak ditemukan");
+    fireEvent.click(within(usulanRow).getByRole("button", { name: "Ya" }));
 
     await act(async () => {
       fireEvent.click(screen.getAllByRole("button", { name: "Simpan Keputusan" })[0]);
@@ -329,6 +336,83 @@ describe("ReviewForm — usulan tugas tambahan Tahap 1 (issue #45)", () => {
 
   it("tidak ada usulan: blok 'Usulan tugas tambahan' tidak dirender", () => {
     renderForm(false);
+    expect(screen.queryByText("Usulan tugas tambahan dari peserta")).not.toBeInTheDocument();
+  });
+});
+
+describe("ReviewForm — urutan render tabel task partial vs blok usulan (issue #50)", () => {
+  const usulan: TiUsulanReviewRead[] = [
+    {
+      usulan_id: "tius_1",
+      responden_id: "trsp_1",
+      responden_nama: "Budi",
+      tugas_pokok: "Pengelolaan SDM",
+      detil_tugas: "Evaluasi Kinerja",
+      uraian: "Menyusun ulang jadwal piket.",
+      disetujui: null,
+    },
+  ];
+
+  it("keduanya ada: tabel task partial dirender SEBELUM blok usulan di DOM", () => {
+    const review: TiTahap2ReviewRead = {
+      sesi_id: "sesi_1",
+      tasks: [{ task_kode: "TIaaa", n_relevan: 2, n_total: 3, disetujui: null }],
+      usulan,
+      jumlah_belum_diputuskan: 2,
+    };
+    render(
+      <ReviewForm
+        sesiId="sesi_1"
+        review={review}
+        accessToken="tok"
+        readOnly={false}
+        kodeToUraian={{}}
+      />,
+    );
+    const taskHeading = screen.getByText("Task partial");
+    const usulanHeading = screen.getByText("Usulan tugas tambahan dari peserta");
+    // DOCUMENT_POSITION_FOLLOWING pada usulanHeading berarti taskHeading mendahuluinya.
+    expect(
+      taskHeading.compareDocumentPosition(usulanHeading) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+  });
+
+  it("hanya usulan (tanpa task partial): blok usulan tetap tampil, tabel task tidak dirender", () => {
+    const review: TiTahap2ReviewRead = {
+      sesi_id: "sesi_1",
+      tasks: [],
+      usulan,
+      jumlah_belum_diputuskan: 1,
+    };
+    render(
+      <ReviewForm
+        sesiId="sesi_1"
+        review={review}
+        accessToken="tok"
+        readOnly={false}
+        kodeToUraian={{}}
+      />,
+    );
+    expect(screen.getByText("Usulan tugas tambahan dari peserta")).toBeInTheDocument();
+    expect(screen.queryByText("Task partial")).not.toBeInTheDocument();
+  });
+
+  it("hanya task partial (tanpa usulan): tabel tetap tampil, blok usulan tidak dirender", () => {
+    const review: TiTahap2ReviewRead = {
+      sesi_id: "sesi_1",
+      tasks: [{ task_kode: "TIaaa", n_relevan: 2, n_total: 3, disetujui: null }],
+      jumlah_belum_diputuskan: 1,
+    };
+    render(
+      <ReviewForm
+        sesiId="sesi_1"
+        review={review}
+        accessToken="tok"
+        readOnly={false}
+        kodeToUraian={{}}
+      />,
+    );
+    expect(screen.getByText("Task partial")).toBeInTheDocument();
     expect(screen.queryByText("Usulan tugas tambahan dari peserta")).not.toBeInTheDocument();
   });
 });

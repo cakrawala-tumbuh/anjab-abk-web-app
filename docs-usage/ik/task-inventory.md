@@ -119,13 +119,13 @@ Saat status **TAHAP2**, muncul kotak _Tahap 2 — Review Koordinator_ dengan tom
    kelas"_ 4/5 → Ya, _"Mengelola inventaris laboratorium"_ 1/5 → Tidak). Tutup dengan tombol
    **Saya Mengerti**, ikon **X**, klik area luar pop-up, atau tombol **Esc**; dapat dibuka lagi
    lewat tombol **Petunjuk Pengisian** di pojok kanan atas halaman.
-3. Bila ada peserta yang menuliskan **usulan tugas tambahan** di Tahap 1 (lihat bagian E),
-   blok **Usulan tugas tambahan dari peserta** tampil **di atas** tabel task partial —
-   menampilkan teks usulan, hierarki induknya (tugas pokok · detil tugas), dan nama pengusul.
-   Kontrol **Ya/Tidak** untuk tiap usulan bekerja persis seperti task partial di bawahnya.
-4. Halaman menampilkan tabel task **partial** (kolom **Task**, **Pilih** = jumlah pemilih,
+3. Halaman menampilkan tabel task **partial** (kolom **Task**, **Pilih** = jumlah pemilih,
    **Setujui?**). Kolom **Task** menampilkan **nama uraian tugas** (mis. _"Menyusun evaluasi
    karyawan"_) dengan kode task kecil di sampingnya sebagai keterangan.
+4. Bila ada peserta yang menuliskan **usulan tugas tambahan** di Tahap 1 (lihat bagian E),
+   blok **Usulan tugas tambahan dari peserta** tampil **di bawah** tabel task partial —
+   menampilkan teks usulan, hierarki induknya (tugas pokok · detil tugas), dan nama pengusul.
+   Kontrol **Ya/Tidak** untuk tiap usulan bekerja persis seperti task partial di atasnya.
 5. Untuk tiap task maupun usulan, klik **Ya** (setujui) atau **Tidak** (tolak). Tersedia
    pintasan **Setujui Semua** dan **Tolak Semua** yang berlaku ke keduanya sekaligus.
 6. Klik **Simpan Keputusan** — keputusan task partial dan usulan dikirim dalam satu kali
