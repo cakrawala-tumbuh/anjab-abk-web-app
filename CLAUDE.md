@@ -92,7 +92,7 @@ melihat potongan pertama beberapa kata plus "…" tanpa tooltip maupun jalan lai
 teks lengkap selain membuka halaman detail satu per satu (issue `#52`).
 
 - Kelas `truncate` dicabut dari sel kolom Uraian; diganti `whitespace-normal
-  break-words` agar teks membungkus ke beberapa baris tanpa melebarkan tabel. **Bukan**
+break-words` agar teks membungkus ke beberapa baris tanpa melebarkan tabel. **Bukan**
   `line-clamp-*`, **bukan** tooltip `title`, **bukan** disclosure "lihat selengkapnya" —
   seluruh teks terlihat tanpa interaksi apa pun.
 - Batas lebar sel `max-w-xs` **dipertahankan** supaya tujuh kolom lain tidak terhimpit
