@@ -109,3 +109,47 @@ describe("fetchTahap3Data — kondisi sah tetap berjalan", () => {
     expect(data.terpilih).toHaveLength(2);
   });
 });
+
+describe("fetchTahap3Data — paginasi (ambilSemuaHalaman, bukan limit: 500 telanjang)", () => {
+  it("menggabungkan dua halaman task-terpilih menjadi satu daftar utuh saat total melebihi satu halaman", async () => {
+    const halaman1 = [{ kode: "TIa" }, { kode: "TIb" }];
+    const halaman2 = [{ kode: "TIc" }];
+    get
+      .mockResolvedValueOnce(ok(responden))
+      .mockResolvedValueOnce(ok(sesi))
+      .mockResolvedValueOnce(ok({ items: halaman1, total: 3 }))
+      .mockResolvedValueOnce(ok({ items: halaman2, total: 3 }))
+      .mockResolvedValueOnce(ok({ items: [], total: 0 })); // detail, satu halaman
+
+    const data = await fetchTahap3Data("tok", "tresp_1");
+    expect(data.terpilih).toEqual([...halaman1, ...halaman2]);
+  });
+
+  it("halaman kedua task-terpilih gagal → melempar ApiError lengkap, bukan daftar terpotong", async () => {
+    const halaman1 = [{ kode: "TIa" }, { kode: "TIb" }];
+    get
+      .mockResolvedValueOnce(ok(responden))
+      .mockResolvedValueOnce(ok(sesi))
+      .mockResolvedValueOnce(ok({ items: halaman1, total: 3 }))
+      .mockResolvedValueOnce(gagal(500, "internal_error", "Kesalahan server.", "req-halaman-2"));
+
+    const err = await fetchTahap3Data("tok", "tresp_1").catch((e: unknown) => e);
+    expect(err).toBeInstanceOf(ApiError);
+    expect((err as ApiError).status).toBe(500);
+    expect((err as ApiError).requestId).toBe("req-halaman-2");
+  });
+
+  it("menggabungkan dua halaman detail menjadi satu daftar utuh saat total melebihi satu halaman", async () => {
+    const halaman1 = [{ task_kode: "TIa" }];
+    const halaman2 = [{ task_kode: "TIb" }];
+    get
+      .mockResolvedValueOnce(ok(responden))
+      .mockResolvedValueOnce(ok(sesi))
+      .mockResolvedValueOnce(ok({ items: [], total: 0 })) // task-terpilih, satu halaman
+      .mockResolvedValueOnce(ok({ items: halaman1, total: 2 }))
+      .mockResolvedValueOnce(ok({ items: halaman2, total: 2 }));
+
+    const data = await fetchTahap3Data("tok", "tresp_1");
+    expect(data.detail).toEqual([...halaman1, ...halaman2]);
+  });
+});

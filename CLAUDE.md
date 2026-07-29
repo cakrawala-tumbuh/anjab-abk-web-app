@@ -84,6 +84,43 @@ src/
 
 ## Revisi Desain
 
+### [2026-07-29] Task Inventory Tahap 3: urutkan task per tugas pokok, detil tugas, lalu alfabet uraian
+
+Layar Tahap 3 — Detailing (`/task-inventory/tahap3/{responden_id}`) menerima task dari
+`GET .../task-terpilih` yang diurutkan backend `(-n_relevan, kode)` — relevansi menurun lalu
+kode hash. Urutan itu bermakna untuk tabel admin "Task relevan terpilih" (di luar cakupan
+ini, tidak diubah), tapi membuat task dari tugas pokok yang sama berserakan di layar
+responden, padahal Tahap 1 sudah menyajikan hierarki tugas pokok → detil tugas → uraian
+tugas.
+
+- **Fungsi murni baru `urutkanTaskTahap3`** (`src/lib/task-inventory-tahap3-urutan.ts`) —
+  mengurutkan berjenjang `tugas_pokok` → `detil_tugas` → `uraian_tugas` → `kode`
+  (`localeCompare` per level, `kode` sebagai pemutus deterministik), **tidak memutasi**
+  argumennya. Task ber-`detil_tugas` `""` (menggantung langsung di bawah tugas pokok) tampil
+  paling atas dalam tugas pokoknya — konsekuensi wajar `"" < teks apa pun`. Perbandingan
+  memakai `?? ""` meski kontrak menyebut `string` non-null, sebagai jaga-jaga.
+- **Pengurutan dilakukan di web app, bukan backend** — backend mengurutkan **setelah**
+  memaginasi (`get_task_terpilih` mengiris dulu, baru `compute_task_terpilih` menyortir isi
+  halaman), sehingga urutan global tidak bisa diandalkan dari sana tanpa perubahan yang lebih
+  besar; lagipula urutan `(-n_relevan, kode)` tetap dibutuhkan tabel admin.
+- **Dipanggil sekali di `page.tsx`** (Server Component) saat meneruskan `tasks` ke
+  `<DetailForm>` — `urutkanTaskTahap3(terpilih)`. `detail-form.tsx` sendiri **tidak**
+  menyortir; ia merender apa adanya berdasar urutan prop yang diterima. State `rows`
+  berkunci `task_kode`, jadi urutan tidak memengaruhi draft/payload yang dikirim.
+- **`fetchTahap3Data` (`data.ts`) dipindah dari `limit: 500` telanjang ke `ambilSemuaHalaman`**
+  untuk **kedua** fetch (`task-terpilih` dan `detail`) — mengurutkan himpunan yang terpotong
+  paginasi akan menghasilkan urutan yang salah (task dari tugas pokok yang sama bisa
+  terpisah ke dua "halaman" yang berbeda secara implisit). Invariant jalur baca tetap:
+  `if (!res.data) throw apiErrorDari(res)`.
+- Test baru: `src/test/task-inventory-tahap3-urutan.test.ts` (fungsi murni: hierarki, detil
+  kosong mendahului, tiebreak kode, non-mutasi, array kosong), `src/test/detail-form-urutan.test.tsx`
+  (render sesuai urutan prop, submit tetap mengirim `task_kode` yang benar), serta skenario
+  paginasi baru di `src/test/tahap3-data.test.ts` (gabung dua halaman, gagal di halaman
+  kedua → `ApiError` lengkap, bukan daftar terpotong).
+- `docs-usage/ik/task-inventory.md` bagian F diperbarui: langkah 1 menyebut daftar task kini
+  terkelompok per hierarki.
+- Detail keputusan: issue `cakrawala-tumbuh/anjab-abk-web-app#49`.
+
 ### [2026-07-29] OPM: prefill form dari nilai standar + penanda "Nilai bawaan"
 
 Backend (`anjab-abk-backend#34`) membekukan `std_importance`/`std_frequency`/

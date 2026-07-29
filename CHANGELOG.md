@@ -7,6 +7,17 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+### Diubah
+
+- **Task Inventory Tahap 3: daftar task kini terurut per tugas pokok, detil tugas, lalu
+  alfabet uraian** (issue #49) — sebelumnya daftar mengikuti urutan backend
+  `(-n_relevan, kode)` sehingga task dari tugas pokok yang sama berserakan di layar
+  pengisian, kehilangan konteks hierarki yang sudah disajikan Tahap 1. Pengurutan
+  dilakukan di web app (fungsi murni `urutkanTaskTahap3`), tidak mengubah kontrak/urutan
+  backend yang tetap dipakai tabel admin. Pengambilan `task-terpilih` dan `detail` Tahap 3
+  sekaligus dipindah dari `limit: 500` telanjang ke paginasi utuh (`ambilSemuaHalaman`)
+  agar pengurutan tidak dijalankan atas himpunan yang terpotong.
+
 ### Ditambahkan
 
 - **Form OPM diprefill nilai standar per task + penanda "Nilai bawaan"** (issue #48,

@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { auth, isAdmin } from "@/lib/auth/auth";
 import { ApiError, isTidakBerhak } from "@/lib/api/errors";
 import { GagalMuat, TidakBerhak } from "@/components/gagal-muat";
+import { urutkanTaskTahap3 } from "@/lib/task-inventory-tahap3-urutan";
 import { fetchTahap3Data, type Tahap3PageData } from "./data";
 import { DetailForm } from "./detail-form";
 import { PetunjukTahap3 } from "./petunjuk-tahap3";
@@ -72,7 +73,7 @@ export default async function Tahap3Page({ params }: Props) {
       ) : (
         <DetailForm
           respondenId={responden_id}
-          tasks={terpilih}
+          tasks={urutkanTaskTahap3(terpilih)}
           detailAwal={detail}
           accessToken={session?.accessToken}
         />

@@ -184,7 +184,11 @@ tambahan, yang ikut disembunyikan. Status responden menjadi **✓ Selesai**.
 
 > Tersedia setelah status analisis **TAHAP3**.
 
-1. Buka **Isi Tahap 3** dari tabel responden (atau dari **Kuesioner Saya**).
+1. Buka **Isi Tahap 3** dari tabel responden (atau dari **Kuesioner Saya**). Daftar task
+   ditampilkan **terkelompok**: seluruh task satu tugas pokok berurutan, di dalamnya
+   berurutan per detil tugas, dan di dalam itu berurutan alfabet menurut uraian tugasnya —
+   bukan urutan acak seperti sebelumnya, sehingga konteks hierarki dari Tahap 1 tetap
+   terlihat saat mengisi rincian.
 2. Selama detail belum dikirim (dan status masih `TAHAP3`), pop-up **Petunjuk** muncul
    otomatis — menjelaskan **makna tiap nilai** dari empat isian yang perlu Anda lengkapi
    (bukan sekadar daftar opsi): **Sumber Bukti** (Formal (tertulis di jobdesk/regulasi) /
