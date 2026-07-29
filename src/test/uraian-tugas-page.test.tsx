@@ -111,6 +111,40 @@ describe("UraianTugasPage", () => {
     expect(table.queryByText("jbt_1")).not.toBeInTheDocument();
   });
 
+  it("uraian tugas panjang (200+ karakter) → sel kolom Uraian membungkus teks penuh, tidak truncate", async () => {
+    const uraianPanjang =
+      "Menyusun rencana pelaksanaan pembelajaran per kompetensi dasar untuk seluruh mata pelajaran " +
+      "yang diampu pada semester berjalan, termasuk menyiapkan bahan ajar, lembar kerja peserta " +
+      "didik, dan instrumen penilaian formatif maupun sumatif sesuai kurikulum yang berlaku saat ini.";
+    expect(uraianPanjang.length).toBeGreaterThan(200);
+    post.mockResolvedValueOnce(
+      ok({
+        items: [
+          {
+            id: "ut_2",
+            kode: "TIdef",
+            uraian: uraianPanjang,
+            unit: "SD",
+            jabatan_id: "jbt_1",
+            tugas_pokok_id: "tp_1",
+            detil_tugas_id: "dt_1",
+            urutan: 1,
+            std_frekuensi_teks: null,
+          },
+        ],
+        total: 1,
+      }),
+    );
+    mockDropdowns();
+
+    render(await UraianTugasPage(props()));
+
+    const sel = screen.getByText(uraianPanjang);
+    expect(sel.className).not.toMatch(/\btruncate\b/);
+    expect(sel.className).toMatch(/\bwhitespace-normal\b/);
+    expect(sel.className).toMatch(/\bbreak-words\b/);
+  });
+
   it("baris hitung menyebut 'cocok dengan filter' saat filter aktif", async () => {
     post.mockResolvedValueOnce(ok({ items: [], total: 0 }));
     mockDropdowns();

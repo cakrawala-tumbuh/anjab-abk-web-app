@@ -104,11 +104,11 @@ export default async function UraianTugasPage({ searchParams }: Props) {
               </thead>
               <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
                 {uraianTugas.map((ut) => (
-                  <tr key={ut.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                  <tr key={ut.id} className="align-top hover:bg-gray-50 dark:hover:bg-gray-800/50">
                     <td className="px-4 py-3 font-mono text-xs text-gray-600 dark:text-gray-400">
                       {ut.kode}
                     </td>
-                    <td className="max-w-xs px-4 py-3 text-gray-900 dark:text-gray-100 truncate">
+                    <td className="max-w-xs whitespace-normal break-words px-4 py-3 text-gray-900 dark:text-gray-100">
                       {ut.uraian}
                     </td>
                     <td className="px-4 py-3">

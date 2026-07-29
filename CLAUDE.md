@@ -84,6 +84,31 @@ src/
 
 ## Revisi Desain
 
+### [2026-07-30] Master Data Uraian Tugas: kolom Uraian membungkus teks penuh
+
+Kolom **Uraian** pada tabel daftar `master-data/uraian-tugas/page.tsx` dirender dengan
+`max-w-xs … truncate` — uraian tugas produksi adalah kalimat penuh, sehingga admin hanya
+melihat potongan pertama beberapa kata plus "…" tanpa tooltip maupun jalan lain membaca
+teks lengkap selain membuka halaman detail satu per satu (issue `#52`).
+
+- Kelas `truncate` dicabut dari sel kolom Uraian; diganti `whitespace-normal
+  break-words` agar teks membungkus ke beberapa baris tanpa melebarkan tabel. **Bukan**
+  `line-clamp-*`, **bukan** tooltip `title`, **bukan** disclosure "lihat selengkapnya" —
+  seluruh teks terlihat tanpa interaksi apa pun.
+- Batas lebar sel `max-w-xs` **dipertahankan** supaya tujuh kolom lain tidak terhimpit
+  dan `.table-container` (`overflow-hidden`, tanpa scroll horizontal) tidak meluber pada
+  viewport sempit.
+- `<tr>` mendapat kelas `align-top` (bukan per-`<td>`) — idiom yang sama dengan
+  `master-data/dcs/[kode]/dcs-item-editor.tsx` dan `wcp-item-editor.tsx` — agar isi baris
+  sejajar ke atas saat sel Uraian membuat baris jadi tinggi.
+- `page.tsx` tetap Server Component; tidak ada `"use client"` baru, tidak ada state,
+  tidak ada panggilan API baru. `data.ts` dan `filter-uraian-tugas.tsx` tidak disentuh.
+- Test baru di `src/test/uraian-tugas-page.test.tsx`: uraian 200+ karakter → `className`
+  sel mengandung `whitespace-normal`+`break-words`, tidak mengandung `truncate` — jsdom
+  tidak menghitung layout Tailwind, jadi kontraknya diverifikasi lewat kelas CSS, bukan
+  tinggi/lebar render.
+- Detail keputusan: issue `cakrawala-tumbuh/anjab-abk-web-app#52`.
+
 ### [2026-07-29] Master Data Uraian Tugas: filter jabatan/tugas pokok/detil tugas
 
 Halaman `master-data/uraian-tugas/page.tsx` sebelumnya hanya memanggil

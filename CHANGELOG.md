@@ -7,6 +7,15 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+### Diubah
+
+- **Kolom Uraian di daftar Master Data → Uraian Tugas kini membungkus teks penuh**
+  (issue #52) — sebelumnya kelas `truncate` memotong uraian panjang jadi "…" tanpa
+  cara membacanya di daftar; kelas itu dicabut dan diganti `whitespace-normal
+  break-words` (lebar sel `max-w-xs` dipertahankan), isi baris disejajarkan ke atas
+  (`align-top`). Tanpa tooltip/`line-clamp`/disclosure — seluruh teks langsung
+  terlihat.
+
 ## [4.13.0] - 2026-07-29
 
 ### Ditambahkan
