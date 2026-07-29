@@ -7,6 +7,8 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [4.13.0] - 2026-07-29
+
 ### Ditambahkan
 
 - **Filter master data Uraian Tugas per jabatan/tugas pokok/detil tugas** (issue #51) —
