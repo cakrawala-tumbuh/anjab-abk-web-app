@@ -210,8 +210,12 @@ tambahan, yang ikut disembunyikan. Status responden menjadi **✓ Selesai**.
    - **Jenis Nilai Tambah (VA)** — **hanya muncul** bila katalog standar tugas ini belum
      final (kosong atau bertanda `Context-Dependent`). Bila muncul, kolom tampil **belum
      terisi** ("— wajib dipilih") dan Anda wajib memilih salah satu dari VA-Core / VA-Enable
-     / NVA-Residual sebelum tugas ini bisa dikirim. Bila katalog standar tugas ini sudah
-     final, kolom ini **tidak ditampilkan sama sekali** — nilainya terkirim otomatis.
+     / NVA-Residual sebelum tugas ini bisa dikirim. Kolom ini **tidak ikut terkunci** saat
+     "Setuju dengan isian standar" dicentang — sama seperti Durasi/kali dan Catatan — karena
+     tidak ada nilai standar yang sah untuk "disetujui" pada tugas semacam ini; pilihan Anda
+     tetap tersimpan meski centang "Setuju dengan isian standar" dilepas lalu dicentang
+     kembali. Bila katalog standar tugas ini sudah final, kolom ini **tidak ditampilkan sama
+     sekali** — nilainya terkirim otomatis.
    - "Jam/minggu" dan "Jam peak (4 minggu)" **tidak lagi ditanyakan ke partisipan** — nilainya
      terisi otomatis dari data standar master (0 bila tidak ada standarnya).
    - **Catatan (opsional)** — kotak teks bebas maks. 500 karakter di bawah keempat isian di

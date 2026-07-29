@@ -118,7 +118,11 @@ function punyaStandar(t: TiTaskTerpilihRead): boolean {
  * nilainya dibaca langsung dari `t.std_*` saat membangun payload, tanpa pernah singgah
  * di state baris. `va_type` diseed `t.std_va_type ?? "VA-Core"` seperti sebelumnya;
  * selektornya tetap dirender untuk task tanpa standar (`std_va_type` null) supaya
- * partisipan bisa mengoreksi default itu — lihat `butuhPilihVaType`.
+ * partisipan bisa mengoreksi default itu — lihat `butuhPilihVaType`. Selektor VA, seperti
+ * `durasi_per_kali`, **tidak ikut dikunci** oleh "Setuju dengan isian standar" saat
+ * `butuhPilihVaType(t)` bernilai true — tidak ada nilai standar VA yang final untuk
+ * "disetujui" pada task semacam itu (issue backlog
+ * `cakrawala-tumbuh/anjab-abk-web-app#47`).
  *
  * `catatan` selalu diseed `""` di sini (tidak ada nilai standar untuk catatan) —
  * pemanggil yang punya `TiDetailRead.catatan` tersimpan (lihat inisialisasi `rows`
@@ -179,17 +183,30 @@ export function DetailForm({ respondenId, tasks, detailAwal, accessToken }: Prop
    *
    * Saat `setuju === true`, seluruh field field-standar (`sumber_bukti`,
    * `kondisi`, `frekuensi_teks`, `va_type`) direset ke `rowDariStandar(t)` —
-   * **kecuali `catatan`**, yang sengaja dipertahankan dari nilai baris saat ini.
-   * Kolom catatan tidak ikut terkunci/tereset oleh "Setuju dengan isian
-   * standar" (issue backlog `cakrawala-tumbuh/anjab-abk-web-app#42`) — keberatan
+   * **kecuali `catatan`**, yang sengaja dipertahankan dari nilai baris saat ini
+   * (issue backlog `cakrawala-tumbuh/anjab-abk-web-app#42`) — keberatan
    * partisipan justru paling sering muncul pada task yang isian standarnya
-   * diterima apa adanya.
+   * diterima apa adanya, dan **kecuali `va_type`** bila
+   * {@link butuhPilihVaType}`(t)` bernilai true (issue backlog
+   * `cakrawala-tumbuh/anjab-abk-web-app#47`) — untuk task ber-`std_va_type`
+   * belum final (mis. `"Context-Dependent"`), `rowDariStandar(t)` akan
+   * mengembalikan `va_type` ke nilai tidak-valid itu, membatalkan pilihan sah
+   * yang sudah dibuat partisipan dan mengunci ulang formulir. Bila
+   * `std_va_type` sudah final, `rowDariStandar(t).va_type` sama dengan nilai
+   * final itu sendiri sehingga pengecualian ini tidak berpengaruh.
    */
   function toggleSetuju(t: TiTaskTerpilihRead, setuju: boolean) {
     if (setuju) {
       const std = rowDariStandar(t);
       const catatanSaatIni = rows[t.kode]?.catatan ?? "";
-      update(t.kode, { ...std, checked: true, setuju_standar: true, catatan: catatanSaatIni });
+      const vaTypeSaatIni = rows[t.kode]?.va_type ?? std.va_type;
+      update(t.kode, {
+        ...std,
+        checked: true,
+        setuju_standar: true,
+        catatan: catatanSaatIni,
+        va_type: butuhPilihVaType(t) ? vaTypeSaatIni : std.va_type,
+      });
     } else {
       update(t.kode, { setuju_standar: false });
     }
@@ -537,7 +554,6 @@ export function DetailForm({ respondenId, tasks, detailAwal, accessToken }: Prop
                         )}
                         <select
                           value={isVaTypeFinal(r.va_type) ? r.va_type : ""}
-                          disabled={terkunci}
                           onChange={(e) =>
                             update(t.kode, { va_type: e.target.value as RowState["va_type"] })
                           }
