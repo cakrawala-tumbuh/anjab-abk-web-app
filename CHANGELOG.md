@@ -7,6 +7,18 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+### Ditambahkan
+
+- **Filter master data Uraian Tugas per jabatan/tugas pokok/detil tugas** (issue #51) —
+  daftar `Master Data → Uraian Tugas` (sebelumnya hanya paginasi tanpa filter, katalog
+  produksi 1.263 baris) kini bisa dipersempit lewat tiga dropdown (kombinasi bebas,
+  saling AND), tersimpan di URL (`?jabatan=`, `?tp=`, `?dt=`) sehingga bisa
+  dibagikan/di-bookmark. Dropdown Tugas Pokok & Detil Tugas menyempit mengikuti
+  hierarki katalog saat Jabatan/Tugas Pokok dipilih. Kolom "Jabatan ID" diganti nama
+  jabatan, kolom "Detil Tugas" ditambahkan — keduanya tampil sebagai nama, bukan ID
+  mentah. Keadaan kosong dibedakan: "belum ada data" vs "tidak ada yang cocok dengan
+  filter".
+
 ### Diubah
 
 - **Task Inventory Tahap 3: daftar task kini terurut per tugas pokok, detil tugas, lalu

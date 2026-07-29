@@ -122,9 +122,22 @@ Panel** di halaman detail sesi — lihat
 
 ## Uraian Tugas
 
-1. **Master Data → Uraian Tugas**. Kolom: **Kode**, **Uraian**, **Unit**, **Jabatan ID**,
-   **Tugas Pokok**, **Aksi**.
-2. Klik **+ Tambah Uraian Tugas**, isi formulir (termasuk pilih **Tugas Pokok**), simpan.
+1. **Master Data → Uraian Tugas**. Kolom: **Kode**, **Uraian**, **Unit**, **Jabatan**,
+   **Tugas Pokok**, **Detil Tugas**, **Standar**, **Aksi** — jabatan & detil tugas
+   ditampilkan sebagai nama, bukan ID mentah.
+2. **Filter** — tiga dropdown di atas tabel: **Jabatan**, **Tugas Pokok**, **Detil
+   Tugas**. Kombinasi bebas (memilih lebih dari satu berlaku sekaligus, saling AND).
+   Memilih jabatan menyempitkan pilihan Tugas Pokok & Detil Tugas ke yang terkait
+   jabatan itu; memilih tugas pokok ikut menyempitkan Detil Tugas. Mengubah jabatan
+   mengosongkan pilihan Tugas Pokok & Detil Tugas; mengubah tugas pokok mengosongkan
+   Detil Tugas. Filter tersimpan di URL (bisa dibagikan/di-bookmark) dan langsung
+   berlaku begitu dropdown diubah — tanpa tombol submit. Klik **Hapus filter** (muncul
+   hanya saat ada filter aktif) untuk kembali ke daftar penuh.
+3. Bila filter aktif tidak menghasilkan baris apa pun, tampil pesan **"Tidak ada
+   uraian tugas yang cocok dengan filter."** beserta tautan **Hapus filter** — berbeda
+   dari pesan **"Belum ada uraian tugas"** yang hanya tampil saat memang belum ada data
+   sama sekali (tanpa filter aktif).
+4. Klik **+ Tambah Uraian Tugas**, isi formulir (termasuk pilih **Tugas Pokok**), simpan.
 
 ---
 

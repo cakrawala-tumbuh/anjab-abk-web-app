@@ -84,6 +84,44 @@ src/
 
 ## Revisi Desain
 
+### [2026-07-29] Master Data Uraian Tugas: filter jabatan/tugas pokok/detil tugas
+
+Halaman `master-data/uraian-tugas/page.tsx` sebelumnya hanya memanggil
+`GET .../uraian-tugas` dengan `limit`/`offset` tanpa filter sama sekali — katalog
+produksi 1.263 baris berarti menelusuri 64 halaman @20 baris untuk memeriksa tugas satu
+jabatan, dan kolom "Jabatan ID" menampilkan ID mentah sehingga penelusuran manual pun
+tidak terbaca (issue `#51`).
+
+- **Sumber data daftar pindah ke `POST .../uraian-tugas/search`** untuk SEMUA kondisi
+  (termasuk tanpa filter, `domain: []`) — satu jalur kode, bukan dua. `search()` tanpa
+  `order` memakai urutan default identik dengan `list()`.
+- **Fungsi murni baru `src/lib/uraian-tugas-filter.ts`**: `bacaFilter` (baca
+  `?jabatan=`/`?tp=`/`?dt=` dari `searchParams`), `domainFilter` (rakit domain ala Odoo
+  dari filter terisi), `opsiTugasPokok`/`opsiDetilTugas` (penyempitan dropdown mengikuti
+  hierarki katalog: Jabatan → Tugas Pokok (`jabatan_ids`) → Detil Tugas (`tugas_pokok_id`
+  dan/atau `jabatan_ids`)). Diekstrak agar `page.tsx` tidak mengekspor fungsi sembarang
+  dan agar bisa diuji langsung.
+- **Pengambilan data dipindah ke `data.ts`** co-located (preseden Tahap 1/3 Task
+  Inventory) — ketiga dropdown (jabatan, tugas pokok, detil tugas) diambil via
+  `ambilSemuaHalaman`, **menggantikan** pemanggilan `tugasPokok` `limit: 500` telanjang
+  yang sudah ada di halaman ini sebelumnya. Ketiganya diperlakukan sebagai data INTI
+  (satu-satunya sumber pilihan filter) — kegagalannya melempar, bukan `pendukungList`.
+- **Kontrol filter = Client Component baru** `filter-uraian-tugas.tsx`: tiga `<select>`
+  tanpa tombol submit, `onChange` langsung `router.push()`. Mengubah jabatan mengosongkan
+  tugas pokok & detil tugas; mengubah tugas pokok mengosongkan detil tugas. Setiap
+  perubahan filter mereset `hlm` (tidak diikutkan pada URL baru).
+- Kolom "Jabatan ID" diganti nama jabatan (fallback ID mentah bila tak ditemukan), kolom
+  "Detil Tugas" ditambahkan. Keadaan kosong dibedakan: tanpa filter → pesan lama; filter
+  aktif & 0 hasil → "Tidak ada uraian tugas yang cocok dengan filter." + tautan hapus
+  filter.
+- Test baru: `src/test/uraian-tugas-filter.test.ts` (fungsi murni), `src/test/filter-uraian-tugas.test.tsx`
+  (komponen, `useRouter` di-mock), `src/test/uraian-tugas-data.test.ts` (body POST
+  `/search`, kegagalan dropdown melempar), `src/test/uraian-tugas-page.test.tsx`
+  (render halaman, keadaan kosong, pelabelan nama).
+- `docs-usage/ik/master-data.md` bagian Uraian Tugas diperbarui: kolom baru & cara pakai
+  filter.
+- Detail keputusan: issue `cakrawala-tumbuh/anjab-abk-web-app#51`.
+
 ### [2026-07-29] Task Inventory Tahap 2: tabel task partial dipindah ke atas blok usulan
 
 Pemilik proses menilai urutan render `ReviewForm` (`task-inventory/tahap2/[sesi_id]/
