@@ -11,24 +11,30 @@ OPM menilai **setiap task** hasil **Task Inventory** yang sudah dibekukan (Tahap
 3 dimensi skala 1–5: **Importance**, **Frequency**, **Criticality**. Status analisis:
 `Draft → Terbuka → Tertutup → Teranalisis`.
 
-!!! note "Satu analisis per jabatan"
-Setiap jabatan hanya boleh memiliki **satu** Analisis Jabatan OPM. Jabatan harus sudah
-memiliki **SME panel** dengan anggota, dan Analisis Jabatan Task Inventory sumbernya
-harus sudah dibekukan (status Tahap 3/Tertutup/Teranalisis dengan task terpilih).
+!!! note "Satu analisis per jabatan PER CABANG"
+Setiap jabatan boleh memiliki **satu Analisis Jabatan OPM per cabang** (Bandung dan
+Semarang berdampingan) — bukan lagi satu analisis untuk seluruh jabatan. **Cabang
+Analisis Jabatan OPM mengikuti cabang Analisis Jabatan Task Inventory sumbernya**,
+tidak diisi terpisah saat membuat analisis. Jabatan harus sudah memiliki **SME panel**
+dengan anggota, dan Analisis Jabatan Task Inventory sumbernya harus sudah dibekukan
+(status Tahap 3/Tertutup/Teranalisis dengan task terpilih) **dan sudah punya cabang
+terisi**.
 
 ---
 
 ## A. Memulai Analisis Jabatan
 
 1. Buka **OPM** dari navigasi. Daftar Analisis Jabatan menampilkan **Keterangan**,
-   **Jabatan**, **Status**, **Jumlah Task**, **Dibuat**.
+   **Jabatan**, **Cabang**, **Status**, **Jumlah Task**, **Dibuat**.
 2. Klik **+ Mulai Analisis Jabatan**.
 3. Isi formulir:
    - **Jabatan** (wajib) — hanya menampilkan jabatan yang sudah memiliki SME panel.
      Setelah dipilih, aplikasi menampilkan **jumlah anggota SME panel** jabatan itu.
    - **Analisis Jabatan Task Inventory (sumber task)** (wajib) — hanya menampilkan
-     Analisis Jabatan TI milik jabatan terpilih yang sudah dibekukan (ditampilkan
-     sebagai `cabang — N task`).
+     Analisis Jabatan TI milik jabatan terpilih yang sudah dibekukan **dan sudah punya
+     cabang terisi** (ditampilkan sebagai `cabang — N task`). Tidak ada field cabang
+     terpisah — cabang Analisis Jabatan OPM mengikuti cabang sesi TI yang dipilih di
+     sini.
    - **Periode** (wajib, format `YYYY-MM`, mis. `2026-06`)
    - **Min. Responden** (default 3) dan **Maks. Responden** (harus ≥ min). **Maks. Responden**
      terisi otomatis sebesar jumlah anggota SME panel jabatan terpilih.
@@ -47,6 +53,12 @@ mis. _"Jumlah anggota SME panel (11) melebihi max_responden (10)."_ Naikkan
 Jika dropdown **Analisis Jabatan Task Inventory** kosong setelah memilih jabatan, berarti
 belum ada Analisis Jabatan TI jabatan tersebut yang mencapai Tahap 3 (task dibekukan).
 Selesaikan [IK-04 Task Inventory](task-inventory.md) sampai tahap 3 terlebih dahulu.
+
+!!! warning "Cabang sesi TI masih kosong"
+Bila dropdown **Analisis Jabatan Task Inventory** kosong padahal Analisis Jabatan TI
+jabatan itu sudah dibekukan, kemungkinan cabangnya belum terisi (sesi TI lama). Isi
+cabang Analisis Jabatan TI tersebut terlebih dahulu (lihat [IK-04 Task
+Inventory](task-inventory.md)), lalu kembali ke sini.
 
 ---
 
@@ -146,10 +158,13 @@ lagi dalam mode baca-saja.
 
 ## F. Melihat Hasil
 
-Setelah analisis **Teranalisis**, buka halaman **Hasil** dari detail analisis. Tabel menampilkan
-per task: rata-rata (mean) & simpangan baku (SD) tiap dimensi, badge **Selection
-Essential** dan **Workload Essential**, serta proporsi responden yang menandai task
-tersebut esensial secara individual.
+Setelah analisis **Teranalisis**, buka halaman **Hasil** dari detail analisis. Header
+halaman menampilkan **cabang** analisis (mengikuti cabang Analisis Jabatan TI sumbernya)
+di samping periode dan jumlah responden — penting untuk membedakan hasil Bandung vs
+Semarang pada jabatan yang sama. Tabel menampilkan per task: rata-rata (mean) &
+simpangan baku (SD) tiap dimensi, badge **Selection Essential** dan **Workload
+Essential**, serta proporsi responden yang menandai task tersebut esensial secara
+individual.
 
 ---
 

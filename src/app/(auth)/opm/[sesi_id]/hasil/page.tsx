@@ -66,8 +66,9 @@ export default async function OpmHasilPage({ params }: Props) {
       <div>
         <h1 className="page-heading">Hasil OPM — {hasil.jabatan_nama ?? hasil.jabatan_id}</h1>
         <p className="page-subtext">
-          Periode <span className="font-mono">{hasil.periode}</span> · {hasil.n_responden_submit}{" "}
-          responden telah mengisi
+          Cabang <span className="font-medium">{hasil.cabang ?? "—"}</span> · Periode{" "}
+          <span className="font-mono">{hasil.periode}</span> · {hasil.n_responden_submit} responden
+          telah mengisi
         </p>
       </div>
 

@@ -9991,6 +9991,106 @@
         }
       }
     },
+    "/api/v1/task-inventory/sesi/{sesi_id}/batalkan-tahap3": {
+      "post": {
+        "tags": [
+          "taskinv.sesi"
+        ],
+        "summary": "Batalkan freeze Tahap 3 — kembalikan sesi ke TAHAP2 (unfreeze) (admin)",
+        "description": "Kembalikan sebuah sesi Task Inventory dari TAHAP3 ke TAHAP2 (unfreeze).\n\nMembalik pembekuan task terpilih (`freeze_task_terpilih`) tanpa kehilangan data\nseleksi Tahap 1 responden maupun keputusan koordinator Tahap 2 yang sudah\ntersimpan — hanya status sesi dan link task terpilih yang dibalik. Setiap\npemanggilan dicatat via `logger.warning` terstruktur (siapa, sesi mana, kapan,\nalasan apa) untuk audit, mengikuti pola `paksa=true` pada `delete_sesi`.\n\nArgs:\n    sesi_id: ID sesi Task Inventory yang akan dibatalkan freeze-nya.\n    payload: Alasan pembatalan (`alasan`, wajib diisi, dicatat di audit log).\n    service: Seam `TiSesiService` yang menjalankan efek balik status + link task.\n    principal: Principal admin yang memanggil endpoint ini (dari `require_admin`).\n\nReturns:\n    `TiSesiRead` sesi setelah `status` kembali ke `\"TAHAP2\"`.\n\nRaises:\n    NotFoundError: `sesi_id` tidak ditemukan (404).\n    ValidationAppError: status sesi saat ini bukan `\"TAHAP3\"` (422).",
+        "operationId": "taskinv_sesi_batalkan_tahap3",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "sesi_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID sesi.",
+              "title": "Sesi Id"
+            },
+            "description": "ID sesi."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TiSesiBatalkanTahap3"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TiSesiRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan admin.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sesi Task Inventory tidak ditemukan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Sesi tidak berstatus TAHAP3, atau alasan kosong.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/task-inventory/sesi/{sesi_id}/tutup": {
       "post": {
         "tags": [
@@ -16485,6 +16585,22 @@
             "title": "Jabatan Nama",
             "description": "Nama jabatan yang dinilai."
           },
+          "cabang": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "Bandung",
+                  "Semarang"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cabang",
+            "description": "Cabang lokasi kajian (echo dari `OpmSesiRead.cabang`)."
+          },
           "periode": {
             "type": "string",
             "title": "Periode",
@@ -16830,6 +16946,25 @@
             "title": "Sesi Catatan",
             "description": "Catatan sesi OPM."
           },
+          "sesi_cabang": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "Bandung",
+                  "Semarang"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sesi Cabang",
+            "description": "Cabang sesi OPM (echo dari `OpmSesiRead.cabang`) — dipakai klien untuk membedakan dua kartu kuesioner OPM jabatan yang sama, mirror `TiKuesionerItemRead.sesi_cabang`.",
+            "examples": [
+              "Bandung"
+            ]
+          },
           "sudah_submit": {
             "type": "boolean",
             "title": "Sudah Submit",
@@ -17112,7 +17247,7 @@
           "periode"
         ],
         "title": "OpmSesiCreate",
-        "description": "Payload pembuatan sesi OPM."
+        "description": "Payload pembuatan sesi OPM.\n\n**Sengaja tidak punya field `cabang`** (backlog `anjab-abk-backend#37`):\n`SqlOpmSesiService.create()` menurunkannya dari `ti_sesi.cabang` milik\n`ti_sesi_id` yang dikirim, sehingga `cabang` OPM mustahil menyimpang dari\nsumbernya. Payload yang tetap mengirim `cabang` ditolak `422`\n(`extra=\"forbid\"`)."
       },
       "OpmSesiRead": {
         "properties": {
@@ -17148,6 +17283,25 @@
             "type": "string",
             "title": "Ti Sesi Id",
             "description": "ID sesi Task Inventory sumber snapshot."
+          },
+          "cabang": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "Bandung",
+                  "Semarang"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cabang",
+            "description": "Cabang lokasi kajian, DITURUNKAN dari `ti_sesi.cabang` sesi Task Inventory sumber saat sesi ini dibuat — bisa `null` bila sesi TI sumbernya sendiri ber-`cabang` null (sesi lama).",
+            "examples": [
+              "Bandung"
+            ]
           },
           "periode": {
             "type": "string",
@@ -20327,6 +20481,26 @@
         ],
         "title": "TiSeleksiRead",
         "description": "Representasi seleksi Tahap 1 satu responden."
+      },
+      "TiSesiBatalkanTahap3": {
+        "properties": {
+          "alasan": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Alasan",
+            "description": "Alasan pembatalan freeze, dicatat di audit log (wajib diisi).",
+            "examples": [
+              "Sesi ter-freeze prematur, Tahap 1 baru 3/7 responden submit."
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "alasan"
+        ],
+        "title": "TiSesiBatalkanTahap3",
+        "description": "Payload pembatalan freeze Tahap 3 (revert TAHAP3 → TAHAP2)."
       },
       "TiSesiCreate": {
         "properties": {

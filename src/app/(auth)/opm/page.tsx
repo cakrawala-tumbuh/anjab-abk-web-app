@@ -78,6 +78,9 @@ export default async function OpmSesiPage({ searchParams }: Props) {
                     Jabatan
                   </th>
                   <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
+                    Cabang
+                  </th>
+                  <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
                     Status
                   </th>
                   <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
@@ -105,6 +108,7 @@ export default async function OpmSesiPage({ searchParams }: Props) {
                         </Link>
                       </td>
                       <td className="px-4 py-3 text-gray-700">{s.jabatan_nama ?? s.jabatan_id}</td>
+                      <td className="px-4 py-3 text-gray-700">{s.cabang ?? "—"}</td>
                       <td className="px-4 py-3">
                         <span
                           className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${st.cls}`}

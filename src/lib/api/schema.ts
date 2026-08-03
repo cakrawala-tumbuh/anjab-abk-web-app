@@ -1522,6 +1522,45 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/task-inventory/sesi/{sesi_id}/batalkan-tahap3": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Batalkan freeze Tahap 3 — kembalikan sesi ke TAHAP2 (unfreeze) (admin)
+         * @description Kembalikan sebuah sesi Task Inventory dari TAHAP3 ke TAHAP2 (unfreeze).
+         *
+         *     Membalik pembekuan task terpilih (`freeze_task_terpilih`) tanpa kehilangan data
+         *     seleksi Tahap 1 responden maupun keputusan koordinator Tahap 2 yang sudah
+         *     tersimpan — hanya status sesi dan link task terpilih yang dibalik. Setiap
+         *     pemanggilan dicatat via `logger.warning` terstruktur (siapa, sesi mana, kapan,
+         *     alasan apa) untuk audit, mengikuti pola `paksa=true` pada `delete_sesi`.
+         *
+         *     Args:
+         *         sesi_id: ID sesi Task Inventory yang akan dibatalkan freeze-nya.
+         *         payload: Alasan pembatalan (`alasan`, wajib diisi, dicatat di audit log).
+         *         service: Seam `TiSesiService` yang menjalankan efek balik status + link task.
+         *         principal: Principal admin yang memanggil endpoint ini (dari `require_admin`).
+         *
+         *     Returns:
+         *         `TiSesiRead` sesi setelah `status` kembali ke `"TAHAP2"`.
+         *
+         *     Raises:
+         *         NotFoundError: `sesi_id` tidak ditemukan (404).
+         *         ValidationAppError: status sesi saat ini bukan `"TAHAP3"` (422).
+         */
+        post: operations["taskinv_sesi_batalkan_tahap3"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/task-inventory/sesi/{sesi_id}/tutup": {
         parameters: {
             query?: never;
@@ -3124,6 +3163,11 @@ export interface components {
              */
             jabatan_nama?: string | null;
             /**
+             * Cabang
+             * @description Cabang lokasi kajian (echo dari `OpmSesiRead.cabang`).
+             */
+            cabang?: ("Bandung" | "Semarang") | null;
+            /**
              * Periode
              * @description Periode survei.
              */
@@ -3342,6 +3386,12 @@ export interface components {
              */
             sesi_catatan?: string | null;
             /**
+             * Sesi Cabang
+             * @description Cabang sesi OPM (echo dari `OpmSesiRead.cabang`) — dipakai klien untuk membedakan dua kartu kuesioner OPM jabatan yang sama, mirror `TiKuesionerItemRead.sesi_cabang`.
+             * @example Bandung
+             */
+            sesi_cabang?: ("Bandung" | "Semarang") | null;
+            /**
              * Sudah Submit
              * @description True jika jawaban sudah disubmit.
              */
@@ -3467,6 +3517,12 @@ export interface components {
         /**
          * OpmSesiCreate
          * @description Payload pembuatan sesi OPM.
+         *
+         *     **Sengaja tidak punya field `cabang`** (backlog `anjab-abk-backend#37`):
+         *     `SqlOpmSesiService.create()` menurunkannya dari `ti_sesi.cabang` milik
+         *     `ti_sesi_id` yang dikirim, sehingga `cabang` OPM mustahil menyimpang dari
+         *     sumbernya. Payload yang tetap mengirim `cabang` ditolak `422`
+         *     (`extra="forbid"`).
          */
         OpmSesiCreate: {
             /**
@@ -3534,6 +3590,12 @@ export interface components {
              * @description ID sesi Task Inventory sumber snapshot.
              */
             ti_sesi_id: string;
+            /**
+             * Cabang
+             * @description Cabang lokasi kajian, DITURUNKAN dari `ti_sesi.cabang` sesi Task Inventory sumber saat sesi ini dibuat — bisa `null` bila sesi TI sumbernya sendiri ber-`cabang` null (sesi lama).
+             * @example Bandung
+             */
+            cabang?: ("Bandung" | "Semarang") | null;
             /**
              * Periode
              * @description Periode survei (YYYY-MM).
@@ -5323,6 +5385,18 @@ export interface components {
              * @description Waktu submit.
              */
             submitted_at?: string | null;
+        };
+        /**
+         * TiSesiBatalkanTahap3
+         * @description Payload pembatalan freeze Tahap 3 (revert TAHAP3 → TAHAP2).
+         */
+        TiSesiBatalkanTahap3: {
+            /**
+             * Alasan
+             * @description Alasan pembatalan freeze, dicatat di audit log (wajib diisi).
+             * @example Sesi ter-freeze prematur, Tahap 1 baru 3/7 responden submit.
+             */
+            alasan: string;
         };
         /**
          * TiSesiCreate
@@ -14162,6 +14236,78 @@ export interface operations {
                 };
             };
             /** @description Belum semua task diputuskan koordinator / tidak ada task relevan. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    taskinv_sesi_batalkan_tahap3: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID sesi. */
+                sesi_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TiSesiBatalkanTahap3"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TiSesiRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Sesi Task Inventory tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Sesi tidak berstatus TAHAP3, atau alasan kosong. */
             422: {
                 headers: {
                     [name: string]: unknown;

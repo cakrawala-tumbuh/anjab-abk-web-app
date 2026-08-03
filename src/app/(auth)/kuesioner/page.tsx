@@ -148,7 +148,7 @@ export default async function KuesionerSayaPage() {
               <KuesionerCard
                 key={k.id}
                 label={k.sesi_catatan ?? k.sesi_periode}
-                periode={k.sesi_periode}
+                cabang={k.sesi_cabang}
                 sesi_status={k.sesi_status}
                 sudah_submit={k.sudah_submit}
                 href={`/opm/isi/${k.id}`}
@@ -190,14 +190,15 @@ export default async function KuesionerSayaPage() {
 
 function KuesionerCard({
   label,
-  periode,
+  cabang,
   sesi_status,
   sudah_submit,
   href,
   tipe,
 }: {
   label: string;
-  periode: string;
+  /** Cabang sesi (mis. `sesi_cabang` OPM) — `null` untuk sesi lama tanpa cabang. */
+  cabang: string | null | undefined;
   sesi_status: string;
   sudah_submit: boolean;
   href: string;
@@ -210,7 +211,7 @@ function KuesionerCard({
       <div>
         <p className="font-medium text-gray-900 dark:text-gray-50">{label}</p>
         <p className="mt-0.5 text-sm text-gray-500">
-          {tipe} · Periode {periode}
+          {tipe} · Cabang {cabang ?? "—"}
         </p>
         <div className="mt-2 flex items-center gap-2">
           <span

@@ -7,6 +7,16 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+### Ditambahkan
+
+- **Cabang sesi OPM ditampilkan di daftar, detail, hasil, dan kartu kuesioner** (issue
+  #54, mengikuti backend #37) — satu jabatan kini bisa punya sesi OPM Bandung dan
+  Semarang berdampingan, jadi seluruh permukaan OPM menampilkan kolom/baris **Cabang**
+  (`s.cabang ?? "—"`) agar admin & partisipan bisa membedakan keduanya. Form "Mulai
+  Analisis Jabatan — OPM" tidak menambah field cabang — nilainya mengikuti sesi Task
+  Inventory sumber yang dipilih, dan sesi TI ber-cabang kosong disaring dari dropdown
+  disertai pesan penjelas.
+
 ## [4.14.0] - 2026-07-30
 
 ### Diubah

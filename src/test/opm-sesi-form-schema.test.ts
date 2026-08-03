@@ -68,4 +68,9 @@ describe("OpmSesiSchema", () => {
   it("menolak catatan > 500 karakter", () => {
     expect(opmSesiSchema.safeParse({ ...VALID_OPM, catatan: "a".repeat(501) }).success).toBe(false);
   });
+
+  it("menolak payload yang menyertakan field cabang (backlog #54 — cabang bukan masukan form)", () => {
+    const result = opmSesiSchema.safeParse({ ...VALID_OPM, cabang: "Bandung" });
+    expect(result.success).toBe(false);
+  });
 });

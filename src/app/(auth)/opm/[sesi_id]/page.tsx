@@ -151,6 +151,9 @@ export default async function OpmSesiDetailPage({ params, searchParams }: Props)
           <p className="mt-1 text-sm text-gray-500">
             Jabatan: <span className="font-medium">{sesi.jabatan_nama ?? sesi.jabatan_id}</span>
           </p>
+          <p className="mt-1 text-sm text-gray-500">
+            Cabang: <span className="font-medium">{sesi.cabang ?? "—"}</span>
+          </p>
           <p className="mt-1 font-mono text-sm text-gray-500">{sesi.periode}</p>
           {sesi.catatan && <p className="mt-2 text-sm italic text-gray-600">{sesi.catatan}</p>}
         </div>

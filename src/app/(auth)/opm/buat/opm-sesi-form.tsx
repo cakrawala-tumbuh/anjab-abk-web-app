@@ -34,6 +34,7 @@ export const schema = z
       .default(10),
     catatan: z.string().max(500).optional(),
   })
+  .strict()
   .refine((d) => d.max_responden >= d.min_responden, {
     message: "Maksimum harus ≥ minimum",
     path: ["max_responden"],
@@ -76,10 +77,22 @@ export function OpmSesiForm({ jabatan, tiSesi, petaAnggota, accessToken }: Props
     }
   }, [jumlahAnggota, setValue]);
 
-  const tiSesiTersedia = useMemo(
+  // Sesi TI beku (task terpilih > 0) milik jabatan terpilih — sebelum disaring cabang,
+  // dipakai untuk membedakan dua pesan bantu yang berbeda sebab & solusinya di bawah.
+  const tiSesiJabatanBeku = useMemo(
     () => tiSesi.filter((t) => t.jabatan_id === jabatanId && (t.jumlah_task_terpilih ?? 0) > 0),
     [tiSesi, jabatanId],
   );
+  // Cabang OPM diturunkan dari sesi TI sumber (Keputusan Desain) — sesi TI ber-`cabang: null`
+  // tidak boleh dipilih, karena OPM hasilnya akan ikut `cabang: null` dan tidak bisa dibedakan
+  // dari sesi OPM lain jabatan yang sama.
+  const tiSesiTersedia = useMemo(
+    () => tiSesiJabatanBeku.filter((t) => t.cabang != null),
+    [tiSesiJabatanBeku],
+  );
+  // Ada sesi TI beku untuk jabatan ini, tapi seluruhnya tersaring karena cabangnya kosong —
+  // beda sebab (dan beda solusi) dari "belum ada Analisis Jabatan TI yang dibekukan" di bawah.
+  const tersaringKarenaCabangKosong = tiSesiJabatanBeku.length > 0 && tiSesiTersedia.length === 0;
 
   async function onSubmit(values: FormValues) {
     setServerError(null);
@@ -161,9 +174,20 @@ export function OpmSesiForm({ jabatan, tiSesi, petaAnggota, accessToken }: Props
             </option>
           ))}
         </select>
-        {jabatanId && tiSesiTersedia.length === 0 && (
+        <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+          Cabang Analisis Jabatan OPM mengikuti cabang Analisis Jabatan Task Inventory yang dipilih
+          di atas — tidak diisi terpisah.
+        </p>
+        {jabatanId && tiSesiJabatanBeku.length === 0 && (
           <p className="mt-1 text-xs text-yellow-600">
             Belum ada Analisis Jabatan TI yang dibekukan untuk jabatan ini.
+          </p>
+        )}
+        {jabatanId && tersaringKarenaCabangKosong && (
+          <p className="mt-1 text-xs text-yellow-600">
+            Analisis Jabatan TI jabatan ini sudah dibekukan, tetapi cabangnya belum terisi sehingga
+            tidak dapat dipakai sebagai sumber OPM. Isi cabang Analisis Jabatan TI tersebut terlebih
+            dahulu, lalu kembali ke sini.
           </p>
         )}
         {errors.ti_sesi_id && (

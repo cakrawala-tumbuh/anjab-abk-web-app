@@ -27,11 +27,14 @@ Dari rata-rata tiga dimensi tersebut diturunkan dua flag:
 
 Status analisis: `DRAFT → Terbuka → Tertutup → Teranalisis`.
 
-!!! note "Satu analisis per jabatan, task berasal dari Task Inventory"
-Setiap jabatan hanya boleh memiliki **satu** Analisis Jabatan OPM. Task yang dinilai
-adalah task yang sudah **dibekukan** di Analisis Jabatan Task Inventory (Tahap 3) milik
-jabatan yang sama — task tersebut di-**snapshot** ke Analisis Jabatan OPM saat dibuat,
-sehingga tidak berubah meski Analisis Jabatan TI sumber diubah setelahnya.
+!!! note "Satu analisis per jabatan PER CABANG, task berasal dari Task Inventory"
+Setiap jabatan boleh memiliki **satu Analisis Jabatan OPM per cabang** (Bandung dan
+Semarang berdampingan pada jabatan yang sama) — bukan lagi satu analisis untuk seluruh
+jabatan. **Cabang Analisis Jabatan OPM diturunkan dari cabang Analisis Jabatan Task
+Inventory sumbernya**, tidak diisi terpisah. Task yang dinilai adalah task yang sudah
+**dibekukan** di Analisis Jabatan Task Inventory (Tahap 3) milik jabatan yang sama —
+task tersebut di-**snapshot** ke Analisis Jabatan OPM saat dibuat, sehingga tidak
+berubah meski Analisis Jabatan TI sumber diubah setelahnya.
 
 ---
 
@@ -57,11 +60,16 @@ sehingga tidak berubah meski Analisis Jabatan TI sumber diubah setelahnya.
 Backend menolak pembuatan Analisis Jabatan OPM bila jabatan belum memiliki SME panel,
 atau panelnya belum memiliki anggota.
 
-### 2. Pastikan Task Inventory jabatan target sudah dibekukan
+### 2. Pastikan Task Inventory jabatan target sudah dibekukan DAN sudah punya cabang
 
-1. Buka **Task Inventory**, cari analisis milik jabatan target.
+1. Buka **Task Inventory**, cari analisis milik jabatan target (cabang yang akan
+   dianalisis OPM-nya).
 2. Pastikan analisis sudah mencapai **Tahap 3** (task terpilih final sudah dibekukan) —
    status analisis Tahap 3, Tertutup, atau Teranalisis, dengan **jumlah task > 0**.
+3. Pastikan kolom **Cabang** analisis TI tersebut **terisi** (Bandung/Semarang) — sesi
+   TI lama ber-cabang kosong tidak dapat dipakai sebagai sumber OPM; web app akan
+   menyaringnya dari dropdown "Analisis Jabatan Task Inventory" beserta pesan
+   penjelasnya.
 
 Langkah lengkap: [SOP Persiapan Task Inventory](persiapan-task-inventory.md) dan
 [SOP Pelaksanaan Task Inventory](pelaksanaan-task-inventory.md).
@@ -70,14 +78,14 @@ Langkah lengkap: [SOP Persiapan Task Inventory](persiapan-task-inventory.md) dan
 
 Mulai analisis dengan parameter berikut (langkah: [IK-08 OPM](../ik/opm.md#a-memulai-analisis-jabatan)):
 
-| Parameter                           | Pedoman pengisian                                                          |
-| ----------------------------------- | -------------------------------------------------------------------------- |
-| **Jabatan**                         | Hanya jabatan yang sudah memiliki SME panel.                               |
-| **Analisis Jabatan Task Inventory** | Hanya Analisis Jabatan TI jabatan terpilih yang sudah dibekukan (Tahap 3). |
-| **Periode**                         | Format `YYYY-MM` (mis. `2026-06`).                                         |
-| **Min. Responden**                  | Default 3. Minimum agar hasil layak dianalisis.                            |
-| **Maks. Responden**                 | Default 10. Harus ≥ Min. Responden.                                        |
-| **Catatan**                         | Opsional — keterangan analisis.                                            |
+| Parameter                           | Pedoman pengisian                                                                                                                                                                      |
+| ----------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Jabatan**                         | Hanya jabatan yang sudah memiliki SME panel.                                                                                                                                           |
+| **Analisis Jabatan Task Inventory** | Hanya Analisis Jabatan TI jabatan terpilih yang sudah dibekukan (Tahap 3) **dan sudah punya cabang terisi**. Cabang Analisis Jabatan OPM mengikuti pilihan ini — tidak diisi terpisah. |
+| **Periode**                         | Format `YYYY-MM` (mis. `2026-06`).                                                                                                                                                     |
+| **Min. Responden**                  | Default 3. Minimum agar hasil layak dianalisis.                                                                                                                                        |
+| **Maks. Responden**                 | Default 10. Harus ≥ Min. Responden.                                                                                                                                                    |
+| **Catatan**                         | Opsional — keterangan analisis.                                                                                                                                                        |
 
 Saat analisis dibuat, task hasil Task Inventory di-snapshot dan **responden dibuat otomatis**
 dari seluruh anggota SME panel jabatan tersebut — tidak perlu didaftarkan manual satu per
@@ -93,6 +101,7 @@ lanjut ke [SOP Pelaksanaan OPM](pelaksanaan-opm.md).
 
 - [ ] Partisipan terdaftar
 - [ ] SME panel jabatan target dibuat & punya anggota
-- [ ] Task Inventory jabatan target sudah dibekukan (Tahap 3, jumlah task > 0)
+- [ ] Task Inventory jabatan target sudah dibekukan (Tahap 3, jumlah task > 0) DAN
+      cabangnya terisi
 - [ ] Analisis Jabatan OPM dibuat dengan jabatan, Analisis Jabatan TI sumber, periode & batas
       responden yang benar

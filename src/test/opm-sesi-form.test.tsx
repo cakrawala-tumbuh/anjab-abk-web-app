@@ -21,6 +21,7 @@ const tiSesi = [
   {
     id: "tises_1",
     jabatan_id: "jbt_gr_sd",
+    cabang: "Bandung",
     periode: "2026-06",
     status: "CLOSED",
     jumlah_task_terpilih: 19,
@@ -117,5 +118,71 @@ describe("OpmSesiForm — 422 backend tampil utuh", () => {
     });
     expect(await screen.findByText(pesan)).toBeInTheDocument();
     expect(push).not.toHaveBeenCalled();
+  });
+});
+
+describe("OpmSesiForm — restriksi cabang sesi TI (backlog #54)", () => {
+  it("sesi TI ber-cabang null tidak muncul di dropdown, disertai pesan penjelas", async () => {
+    const tiSesiCabangKosong = [
+      {
+        id: "tises_kosong",
+        jabatan_id: "jbt_gr_sd",
+        cabang: null,
+        periode: "2026-06",
+        status: "CLOSED",
+        jumlah_task_terpilih: 19,
+      },
+    ] as unknown as TiSesiRead[];
+
+    render(
+      <OpmSesiForm
+        jabatan={jabatan}
+        tiSesi={tiSesiCabangKosong}
+        petaAnggota={petaAnggota}
+        accessToken="tok"
+      />,
+    );
+
+    await act(async () => {
+      fireEvent.change(screen.getByLabelText(/^Jabatan/), { target: { value: "jbt_gr_sd" } });
+    });
+
+    const select = screen.getByLabelText(/^Analisis Jabatan Task Inventory/) as HTMLSelectElement;
+    // Hanya opsi placeholder yang tersisa — sesi ber-cabang null tersaring.
+    expect(select.options).toHaveLength(1);
+    expect(
+      screen.getByText(/cabangnya belum terisi sehingga tidak dapat dipakai sebagai sumber OPM/),
+    ).toBeInTheDocument();
+    // Pesan "belum ada Analisis Jabatan TI yang dibekukan" TIDAK muncul — sebabnya beda.
+    expect(
+      screen.queryByText(/Belum ada Analisis Jabatan TI yang dibekukan/),
+    ).not.toBeInTheDocument();
+  });
+
+  it("sesi TI ber-cabang terisi tetap muncul di dropdown seperti sebelumnya", async () => {
+    render(
+      <OpmSesiForm jabatan={jabatan} tiSesi={tiSesi} petaAnggota={petaAnggota} accessToken="tok" />,
+    );
+
+    await act(async () => {
+      fireEvent.change(screen.getByLabelText(/^Jabatan/), { target: { value: "jbt_gr_sd" } });
+    });
+
+    expect(screen.getByRole("option", { name: /Bandung — 19 task/ })).toBeInTheDocument();
+    expect(
+      screen.queryByText(/cabangnya belum terisi sehingga tidak dapat dipakai sebagai sumber OPM/),
+    ).not.toBeInTheDocument();
+  });
+
+  it("tidak ada jabatan dipilih: tidak ada pesan cabang maupun 'belum dibekukan'", () => {
+    render(
+      <OpmSesiForm jabatan={jabatan} tiSesi={tiSesi} petaAnggota={petaAnggota} accessToken="tok" />,
+    );
+    expect(
+      screen.queryByText(/Belum ada Analisis Jabatan TI yang dibekukan/),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(/cabangnya belum terisi sehingga tidak dapat dipakai sebagai sumber OPM/),
+    ).not.toBeInTheDocument();
   });
 });
