@@ -7,6 +7,8 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [4.15.0] - 2026-08-05
+
 ### Ditambahkan
 
 - **Cabang sesi OPM ditampilkan di daftar, detail, hasil, dan kartu kuesioner** (issue
