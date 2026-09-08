@@ -7,6 +7,8 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [4.16.0] - 2026-09-09
+
 ### Ditambahkan
 
 - **Input Cabang pada form tambah sekolah** (issue #57, mengikuti backend #40/#41) —
