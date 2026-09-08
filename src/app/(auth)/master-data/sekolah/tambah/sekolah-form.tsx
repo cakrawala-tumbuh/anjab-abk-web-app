@@ -20,6 +20,7 @@ const schema = z.object({
   jenjang_pendidikan_id: z.string().min(1, "Jenjang pendidikan wajib dipilih"),
   kota: z.string().max(100, "Kota terlalu panjang").optional().or(z.literal("")),
   provinsi: z.string().max(100, "Provinsi terlalu panjang").optional().or(z.literal("")),
+  cabang: z.enum(["Bandung", "Semarang"]).optional().or(z.literal("")),
   aktif: z.boolean().default(true),
 });
 
@@ -30,6 +31,15 @@ interface Props {
   accessToken: string | undefined;
 }
 
+/**
+ * Formulir penambahan sekolah / satuan pendidikan baru.
+ *
+ * `cabang` (Bandung/Semarang) bersifat opsional — pilihan "Belum ditentukan"
+ * mengirim `undefined`, sejalan dengan kolom nullable di backend. Nilai
+ * cabang menjadi penanda cabang bagi partisipan sekolah ini (lewat
+ * `partisipan.sekolah_id`), dipakai penyaringan responden & koordinator sesi
+ * Task Inventory per cabang.
+ */
 export function TambahSekolahForm({ jenjang, accessToken }: Props) {
   const router = useRouter();
   const [serverError, setServerError] = useState<string | null>(null);
@@ -54,6 +64,7 @@ export function TambahSekolahForm({ jenjang, accessToken }: Props) {
           jenjang_pendidikan_id: values.jenjang_pendidikan_id,
           kota: values.kota || undefined,
           provinsi: values.provinsi || undefined,
+          cabang: values.cabang || undefined,
           aktif: values.aktif,
         },
       });
@@ -166,6 +177,27 @@ export function TambahSekolahForm({ jenjang, accessToken }: Props) {
             placeholder="cth. Jawa Barat"
             className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
           />
+        </div>
+        <div className="flex-1">
+          <label htmlFor="cabang" className="form-label">
+            Cabang <span className="font-normal text-gray-400">(opsional)</span>
+          </label>
+          <select
+            id="cabang"
+            {...register("cabang")}
+            defaultValue=""
+            className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            aria-invalid={!!errors.cabang}
+          >
+            <option value="">-- Belum ditentukan --</option>
+            <option value="Bandung">Bandung</option>
+            <option value="Semarang">Semarang</option>
+          </select>
+          {errors.cabang && (
+            <p className="form-error" role="alert">
+              {errors.cabang.message}
+            </p>
+          )}
         </div>
       </div>
 

@@ -1,7 +1,7 @@
 import { render, screen, fireEvent, act, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { toast } from "sonner";
-import type { PartisipanRead } from "@/lib/api/schema";
+import type { TiRespondenRead } from "@/lib/api/schema";
 
 // ── Mock router & API client ────────────────────────────────────────────────
 const refresh = vi.fn();
@@ -17,27 +17,38 @@ vi.mock("@/lib/api/client", () => ({
 import { AturKoordinator } from "@/app/(auth)/task-inventory/[sesi_id]/atur-koordinator";
 
 // ── Fixtures ────────────────────────────────────────────────────────────────
-function par(id: string, nama: string): PartisipanRead {
+function resp(
+  id: string,
+  nama: string,
+  partisipanId: string | null,
+  over: Partial<TiRespondenRead> = {},
+): TiRespondenRead {
   return {
     id,
+    sesi_id: "sesi_1",
     nama,
-    email: `${id}@sekolah.id`,
-    sekolah_id: "skl_1",
-    jabatan_utama_id: "jbt_1",
-    jabatan_tambahan_ids: [],
-  } as unknown as PartisipanRead;
+    partisipan_id: partisipanId,
+    tahap1_submit: false,
+    tahap1_submitted_at: null,
+    tahap3_submit: false,
+    tahap3_submitted_at: null,
+    created_at: "2026-09-08T00:00:00Z",
+    ...over,
+  };
 }
-const anggota = [par("par_a", "Agustinus Widjianta"), par("par_b", "Susana")];
-// par_x sengaja BUKAN anggota panel → tidak boleh muncul sebagai opsi
-const bukanAnggota = par("par_x", "Orang Luar");
+const responden = [
+  resp("trsp_a", "Agustinus Widjianta", "par_a"),
+  resp("trsp_b", "Susana", "par_b"),
+];
+// Responden manual (tanpa partisipan_id) tidak boleh muncul sebagai kandidat.
+const respondenManual = resp("trsp_x", "Orang Manual", null);
 
 function renderCmp(over: Partial<Parameters<typeof AturKoordinator>[0]> = {}) {
   return render(
     <AturKoordinator
       sesiId="sesi_1"
       koordinatorId={null}
-      anggotaPanel={anggota}
-      hasPanel={true}
+      responden={responden}
       accessToken="tok"
       {...over}
     />,
@@ -55,14 +66,14 @@ beforeEach(() => {
   patch.mockResolvedValue({ error: null, response: { headers: { get: () => "req-1" } } });
 });
 
-describe("AturKoordinator — hanya anggota panel yang dapat dipilih", () => {
-  it("opsi select = anggota panel + opsi kosong; non-anggota tidak muncul", () => {
-    renderCmp();
+describe("AturKoordinator — hanya responden sesi yang dapat dipilih", () => {
+  it("opsi select = responden sesi (bernama) + opsi kosong; responden manual tidak muncul", () => {
+    renderCmp({ responden: [...responden, respondenManual] });
     expect(screen.getByRole("option", { name: "Agustinus Widjianta" })).toBeInTheDocument();
     expect(screen.getByRole("option", { name: "Susana" })).toBeInTheDocument();
     expect(screen.getByRole("option", { name: "— Tidak ada koordinator —" })).toBeInTheDocument();
-    expect(screen.queryByRole("option", { name: bukanAnggota.nama })).toBeNull();
-    // total opsi = 2 anggota + 1 kosong
+    expect(screen.queryByRole("option", { name: "Orang Manual" })).toBeNull();
+    // total opsi = 2 responden bertaut partisipan + 1 kosong
     expect(screen.getAllByRole("option")).toHaveLength(3);
   });
 
@@ -161,16 +172,16 @@ describe("AturKoordinator — regresi: notifikasi sukses tidak boleh bergantung 
   });
 });
 
-describe("AturKoordinator — tanpa panel / tanpa anggota", () => {
-  it("hasPanel=false: tidak ada select, tampil peringatan", () => {
-    renderCmp({ hasPanel: false, anggotaPanel: [] });
+describe("AturKoordinator — sesi belum punya responden (kandidat)", () => {
+  it("daftar responden kosong: tidak ada select, tampil pesan penjelasan", () => {
+    renderCmp({ responden: [] });
     expect(screen.queryByLabelText("Pilih koordinator")).toBeNull();
-    expect(screen.getByText(/SME panel untuk jabatan ini belum dibuat/)).toBeInTheDocument();
+    expect(screen.getByText(/Belum ada responden pada sesi ini/)).toBeInTheDocument();
   });
 
-  it("panel tanpa anggota: tidak ada select, tampil peringatan", () => {
-    renderCmp({ hasPanel: true, anggotaPanel: [] });
+  it("seluruh responden manual (tanpa partisipan_id): tidak ada select, tampil pesan penjelasan", () => {
+    renderCmp({ responden: [respondenManual] });
     expect(screen.queryByLabelText("Pilih koordinator")).toBeNull();
-    expect(screen.getByText(/belum memiliki anggota/)).toBeInTheDocument();
+    expect(screen.getByText(/Belum ada responden pada sesi ini/)).toBeInTheDocument();
   });
 });

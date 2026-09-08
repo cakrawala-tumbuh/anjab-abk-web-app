@@ -50,8 +50,15 @@ Isi master data sesuai urutan ini agar pilihan dropdown saling tersedia:
    - **Jenjang Pendidikan** (wajib, pilih dari dropdown)
    - **NPSN** (opsional, 8 digit)
    - **Kota**, **Provinsi** (opsional)
+   - **Cabang** (opsional; **Bandung** atau **Semarang** — biarkan **Belum ditentukan**
+     bila belum diketahui)
    - **Aktif** (centang)
 4. Klik **Tambah Sekolah**.
+
+!!! note "Cabang menentukan penyaringan responden & koordinator"
+Cabang sekolah menjadi penanda cabang bagi partisipan yang bersekolah di sana (lewat
+relasi sekolah partisipan). Nilai ini dipakai untuk menyaring responden & koordinator
+sesi Task Inventory per cabang — lihat [IK-04 Task Inventory](task-inventory.md).
 
 ---
 

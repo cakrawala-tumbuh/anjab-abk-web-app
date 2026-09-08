@@ -274,8 +274,7 @@ export default async function TiSesiDetailPage({ params, searchParams }: Props) 
       <AturKoordinator
         sesiId={sesi.id}
         koordinatorId={sesi.koordinator_id ?? null}
-        anggotaPanel={partisipan}
-        hasPanel={!!smePanel}
+        responden={respondenAll}
         accessToken={session?.accessToken}
       />
 

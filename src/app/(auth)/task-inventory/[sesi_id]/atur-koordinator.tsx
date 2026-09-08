@@ -5,16 +5,25 @@ import { useRouter } from "next/navigation";
 import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
 import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
-import type { PartisipanRead } from "@/lib/api/schema";
+import type { TiRespondenRead } from "@/lib/api/schema";
+
+/** Kandidat koordinator: nama untuk ditampilkan, `partisipanId` untuk submit. */
+interface KandidatKoordinator {
+  partisipanId: string;
+  nama: string;
+}
 
 interface Props {
   sesiId: string;
   /** Koordinator saat ini (id partisipan), null bila belum ditentukan. */
   koordinatorId: string | null;
-  /** Anggota SME panel jabatan sesi — HANYA mereka yang boleh dipilih. */
-  anggotaPanel: PartisipanRead[];
-  /** False bila SME panel jabatan belum dibuat. */
-  hasPanel: boolean;
+  /**
+   * Daftar responden sesi ini — sumber kandidat koordinator (backlog `#57`,
+   * menggantikan anggota SME panel). Backend sudah menyaring responden per
+   * cabang saat auto-populate/penambahan (`anjab-abk-backend#41`), jadi
+   * daftar ini TIDAK disaring ulang cabang di klien.
+   */
+  responden: TiRespondenRead[];
   accessToken: string | undefined;
 }
 
@@ -22,22 +31,30 @@ interface Props {
  * Kartu pengaturan koordinator SME panel pada detail sesi Task Inventory.
  *
  * Admin dapat menentukan/mengubah koordinator kapan saja (mis. ketika koordinator
- * baru ditetapkan setelah sesi dimulai). Pilihan dibatasi ke anggota SME panel
- * jabatan sesi tersebut.
+ * baru ditetapkan setelah sesi dimulai). Kandidat dibatasi ke responden sesi ini
+ * yang tertaut partisipan (`partisipan_id` non-null) — responden manual tanpa
+ * partisipan tidak dapat dijadikan koordinator karena `koordinator_id` sesi
+ * merujuk id partisipan. Kandidat ditampilkan sebagai nama; id partisipan hanya
+ * disimpan untuk submit.
  */
-export function AturKoordinator({
-  sesiId,
-  koordinatorId,
-  anggotaPanel,
-  hasPanel,
-  accessToken,
-}: Props) {
+export function AturKoordinator({ sesiId, koordinatorId, responden, accessToken }: Props) {
   const router = useRouter();
   const [pilihan, setPilihan] = useState<string>(koordinatorId ?? "");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const koordinatorSekarang = anggotaPanel.find((p) => p.id === koordinatorId) ?? null;
+  // Dedup by partisipanId — satu partisipan seharusnya hanya jadi satu responden,
+  // tapi dedup di sini murah dan menghindari opsi <select> berduplikat bila data
+  // lama (pra-#29) masih menyisakan responden ganda.
+  const kandidat: KandidatKoordinator[] = [];
+  const dilihat = new Set<string>();
+  for (const r of responden) {
+    if (!r.partisipan_id || dilihat.has(r.partisipan_id)) continue;
+    dilihat.add(r.partisipan_id);
+    kandidat.push({ partisipanId: r.partisipan_id, nama: r.nama ?? r.partisipan_id });
+  }
+
+  const koordinatorSekarang = kandidat.find((k) => k.partisipanId === koordinatorId) ?? null;
   const berubah = (pilihan || null) !== (koordinatorId ?? null);
 
   async function simpan() {
@@ -68,8 +85,8 @@ export function AturKoordinator({
     <div className="rounded-lg border border-gray-200 bg-white p-4">
       <h2 className="text-lg font-medium text-gray-900">Koordinator SME Panel</h2>
       <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-        Koordinator bertugas mereview task pada Tahap 2. Hanya anggota SME panel jabatan ini yang
-        dapat dipilih.
+        Koordinator bertugas mereview task pada Tahap 2. Hanya responden sesi ini yang dapat
+        dipilih.
       </p>
 
       <p className="mt-3 text-sm text-gray-600 dark:text-gray-400">
@@ -80,7 +97,7 @@ export function AturKoordinator({
           </span>
         ) : koordinatorId ? (
           <span className="font-medium text-amber-700">
-            (koordinator di luar daftar anggota panel)
+            (koordinator di luar daftar responden sesi)
           </span>
         ) : (
           <span className="italic text-gray-400">Belum ditentukan</span>
@@ -92,13 +109,10 @@ export function AturKoordinator({
           {error}
         </p>
       )}
-      {!hasPanel ? (
+      {kandidat.length === 0 ? (
         <p className="mt-3 rounded-md border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800">
-          SME panel untuk jabatan ini belum dibuat, sehingga koordinator belum dapat ditentukan.
-        </p>
-      ) : anggotaPanel.length === 0 ? (
-        <p className="mt-3 rounded-md border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800">
-          SME panel belum memiliki anggota. Tambahkan anggota panel terlebih dahulu.
+          Belum ada responden pada sesi ini, sehingga koordinator belum dapat ditentukan. Tambahkan
+          responden terlebih dahulu.
         </p>
       ) : (
         <div className="mt-3 flex flex-wrap items-end gap-3">
@@ -114,9 +128,9 @@ export function AturKoordinator({
               className="mt-1 block w-72 rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:opacity-60"
             >
               <option value="">— Tidak ada koordinator —</option>
-              {anggotaPanel.map((p) => (
-                <option key={p.id} value={p.id}>
-                  {p.nama}
+              {kandidat.map((k) => (
+                <option key={k.partisipanId} value={k.partisipanId}>
+                  {k.nama}
                 </option>
               ))}
             </select>

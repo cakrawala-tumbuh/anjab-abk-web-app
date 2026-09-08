@@ -7,6 +7,27 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+### Ditambahkan
+
+- **Input Cabang pada form tambah sekolah** (issue #57, mengikuti backend #40/#41) —
+  `TambahSekolahForm` kini punya field opsional **Cabang** (Bandung/Semarang, opsi
+  kosong "Belum ditentukan"), diteruskan ke `POST /api/v1/sekolah`. Nilai ini menjadi
+  penanda cabang bagi partisipan sekolah tersebut, dipakai penyaringan responden &
+  koordinator sesi Task Inventory per cabang.
+
+### Diubah
+
+- **Kandidat koordinator sesi Task Inventory kini dari daftar responden sesi**
+  (issue #57) — `AturKoordinator` sebelumnya membatasi kandidat ke seluruh anggota
+  SME panel jabatan, tanpa mempertimbangkan cabang; kini kandidat diambil dari
+  responden sesi (`GET .../responden`, sudah tersedia di halaman detail sesi tanpa
+  panggilan API baru), yang sejak backend #41 sudah disaring per cabang saat
+  didaftarkan. Empty state baru: "Belum ada responden pada sesi ini" menggantikan
+  pesan "SME panel belum dibuat/belum punya anggota".
+- `openapi/openapi.json` diregenerasi dari backend (kolom `cabang` pada
+  `SekolahCreate`/`SekolahUpdate`/`SekolahRead`, penyaringan cabang pada auto-populate
+  responden TI); `src/lib/api/schema.ts` diregenerasi mengikuti.
+
 ## [4.15.1] - 2026-09-08
 
 ### Diperbaiki

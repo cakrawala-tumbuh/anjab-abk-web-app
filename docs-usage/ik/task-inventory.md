@@ -30,16 +30,16 @@ bergabung belakangan, atau bila jabatan belum punya panel saat analisis dibuat.
 ### A.1 Menetapkan Koordinator (Administrator)
 
 1. Di detail analisis, temukan kartu **Koordinator SME Panel**.
-2. Pada dropdown **Pilih koordinator**, pilih salah satu **anggota SME panel** jabatan ini
-   (hanya anggota panel yang muncul di daftar). Klik **Simpan Koordinator**.
+2. Pada dropdown **Pilih koordinator**, pilih salah satu **responden sesi ini** (hanya
+   responden yang tertaut partisipan yang muncul di daftar). Klik **Simpan Koordinator**.
 3. Untuk mengosongkan: pilih **— Tidak ada koordinator —**, lalu klik **Simpan Koordinator**.
 
-!!! note "Hubungan dengan koordinator SME Panel"
-Koordinator sesi **secara default mengikuti** koordinator SME panel jabatan (lihat
-[IK-02 Master Data → SME Panel](master-data.md#sme-panel)). Kartu ini memungkinkan admin
-**mengubahnya khusus untuk sesi ini**, kapan saja — termasuk setelah sesi berjalan. Bila
-SME panel jabatan ini belum dibuat, atau belum punya anggota, kartu menampilkan pesan dan
-koordinator belum dapat ditentukan.
+!!! note "Kandidat koordinator = responden sesi ini"
+Kandidat koordinator diambil dari **daftar responden sesi** — bukan lagi dari seluruh
+anggota SME Panel jabatan. Karena responden sudah disaring sesuai cabang sesi saat
+didaftarkan, dropdown ini otomatis hanya menawarkan orang yang sah untuk cabang sesi
+ini. Bila sesi belum punya responden, kartu menampilkan pesan dan koordinator belum
+dapat ditentukan — daftarkan responden terlebih dahulu (bagian B).
 
 Koordinator yang ditetapkan di sini bertugas menjalankan review Tahap 2 setelah analisis
 mencapai status **TAHAP2** — lihat [bagian D. Review Koordinator (Tahap 2)](#d-review-koordinator-tahap-2).

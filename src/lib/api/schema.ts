@@ -1592,11 +1592,15 @@ export interface paths {
          * Daftarkan responden ke sesi (admin; saat DRAFT/TAHAP1)
          * @description Daftarkan satu responden ke sesi Task Inventory `sesi_id` (admin).
          *
-         *     Menolak `422` bila sesi bukan `DRAFT`/`TAHAP1`, atau bila `payload.partisipan_id`
-         *     diisi tapi bukan anggota SME panel jabatan sesi ini. Menolak `409` bila
-         *     `payload.partisipan_id` non-null sudah terdaftar sebagai responden di sesi ini
-         *     (`SqlTiRespondenService.create()`, backlog `anjab-abk-backend#29`) —
-         *     `partisipan_id` kosong (responden manual tanpa partisipan) boleh berulang.
+         *     Menolak `422` bila sesi bukan `DRAFT`/`TAHAP1`, bila `payload.partisipan_id`
+         *     diisi tapi bukan anggota SME panel jabatan sesi ini, atau bila cabang sekolah
+         *     partisipan diketahui dan berbeda dari cabang sesi
+         *     (`SqlTiRespondenService.create()`, backlog `anjab-abk-backend#41` — "tidak
+         *     tahu ≠ salah": cabang sesi/partisipan yang tidak diketahui diloloskan).
+         *     Menolak `409` bila `payload.partisipan_id` non-null sudah terdaftar sebagai
+         *     responden di sesi ini (`SqlTiRespondenService.create()`, backlog
+         *     `anjab-abk-backend#29`) — `partisipan_id` kosong (responden manual tanpa
+         *     partisipan) boleh berulang.
          */
         post: operations["taskinv_responden_create"];
         delete?: never;
@@ -2180,7 +2184,7 @@ export interface components {
             partisipan_id: string;
             /**
              * Alasan
-             * @description Kode alasan dilewati: 'sudah_terdaftar' | 'duplikat_input' | 'bukan_anggota_sme_panel' | 'kapasitas_penuh'.
+             * @description Kode alasan dilewati: 'sudah_terdaftar' | 'duplikat_input' | 'bukan_anggota_sme_panel' | 'kapasitas_penuh' | 'beda_cabang' (backlog `anjab-abk-backend#41` — partisipan bercabang sekolah berbeda dari cabang sesi; hanya dipakai auto-populate responden sesi Task Inventory).
              * @example sudah_terdaftar
              */
             alasan: string;
@@ -4677,6 +4681,12 @@ export interface components {
              */
             provinsi?: string | null;
             /**
+             * Cabang
+             * @description Cabang lokasi sekolah — penanda cabang bagi partisipan sekolah ini (lewat `partisipan.sekolah_id`). `null` bila belum diketahui; nilai di luar Bandung/Semarang ditolak (422).
+             * @example Bandung
+             */
+            cabang?: ("Bandung" | "Semarang") | null;
+            /**
              * Aktif
              * @description Status aktif sekolah.
              * @default true
@@ -4721,6 +4731,11 @@ export interface components {
              */
             provinsi?: string | null;
             /**
+             * Cabang
+             * @description Cabang lokasi sekolah.
+             */
+            cabang?: ("Bandung" | "Semarang") | null;
+            /**
              * Aktif
              * @description Status aktif.
              */
@@ -4762,6 +4777,11 @@ export interface components {
              * @description Provinsi baru.
              */
             provinsi?: string | null;
+            /**
+             * Cabang
+             * @description Cabang lokasi sekolah baru.
+             */
+            cabang?: ("Bandung" | "Semarang") | null;
             /**
              * Aktif
              * @description Status aktif baru.
@@ -13764,13 +13784,13 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
-            /** @description Validation Error */
+            /** @description Koordinator bercabang berbeda dari cabang sesi. */
             422: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
             /** @description Terlalu banyak permintaan. */
@@ -14033,13 +14053,13 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
-            /** @description Validation Error */
+            /** @description Sesi bukan DRAFT dengan perubahan selain koordinator, atau koordinator bercabang berbeda dari cabang sesi. */
             422: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
             /** @description Terlalu banyak permintaan. */
@@ -14537,7 +14557,7 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
-            /** @description Partisipan bukan anggota SME panel jabatan sesi ini. */
+            /** @description Partisipan bukan anggota SME panel jabatan sesi ini, atau cabang sekolah partisipan berbeda dari cabang sesi. */
             422: {
                 headers: {
                     [name: string]: unknown;

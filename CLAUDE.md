@@ -84,6 +84,37 @@ src/
 
 ## Revisi Desain
 
+### [2026-09-08] Cabang di form sekolah; kandidat koordinator TI dari daftar responden sesi
+
+Menyusul pemisahan cabang partisipan di backend (`anjab-abk-backend#40`/`#41`, konteks lengkap
+di lampiran `cakrawala-tumbuh/anjab-abk-web-app#57`): sekolah kini punya kolom `cabang`
+(penanda cabang bagi partisipan lewat `partisipan.sekolah_id`), dan auto-populate responden TI
+menyaring per cabang. Web app menyusulkan dua sisinya.
+
+- **`openapi/openapi.json` diregenerasi** dari checkout backend commit `f7afd5a` lewat
+  `scripts/export_openapi.py` di dalam image `Dockerfile.test` backend (script gagal di host —
+  dependensi Python tak terpasang). `npm run gen:api` dijalankan; blok convenience re-export di
+  akhir `src/lib/api/schema.ts` ditambal ulang (konvensi baku, lihat entri [2026-06-21]).
+- **Form tambah sekolah** (`sekolah-form.tsx`) mendapat field **Cabang** — `<select>` dua opsi
+  (Bandung/Semarang) + opsi kosong bermakna "belum ditentukan", **opsional** (payload
+  `cabang: values.cabang || undefined`, pola sama dengan npsn/kota/provinsi). Halaman **edit**
+  sekolah sengaja **tidak** dibuat di item ini — belum ada di repo ini sebelumnya, dan
+  pengisian cabang 17 sekolah existing ditangani migrasi backfill backend, bukan UI.
+- **Kandidat koordinator sesi TI (`AturKoordinator`) pindah sumber**: dari `anggotaPanel:
+PartisipanRead[]` (seluruh anggota SME panel jabatan, tanpa syarat cabang) menjadi
+  `responden: TiRespondenRead[]` (daftar responden sesi ini). Karena responden sudah disaring
+  cabang saat didaftarkan (`#41`), **tidak ada penyaringan cabang tambahan di klien** dan
+  **tidak ada panggilan API baru** — `page.tsx` sudah memiliki `respondenAll` (limit 500) untuk
+  keperluan lain, dioper apa adanya. Kandidat = responden ber-`partisipan_id` non-null (dedup),
+  ditampilkan sebagai `nama`; responden manual tanpa `partisipan_id` tidak dapat jadi
+  koordinator (kontrak `koordinator_id` sesi merujuk id partisipan). Empty state baru: "Belum
+  ada responden pada sesi ini" (dulu dua pesan terpisah untuk "panel belum dibuat"/"panel
+  belum punya anggota").
+- Test: `src/test/atur-koordinator.test.tsx` ditulis ulang total (fixture `TiRespondenRead`);
+  `src/test/sekolah-form.test.tsx` baru (dropdown cabang, submit dgn/tanpa cabang).
+- `docs-usage/ik/task-inventory.md` §A.1 dan `docs-usage/ik/master-data.md` §Sekolah diperbarui.
+- Detail keputusan: issue `cakrawala-tumbuh/anjab-abk-web-app#57`.
+
 ### [2026-07-30] Master Data Uraian Tugas: kolom Uraian membungkus teks penuh
 
 Kolom **Uraian** pada tabel daftar `master-data/uraian-tugas/page.tsx` dirender dengan
