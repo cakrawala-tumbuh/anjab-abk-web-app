@@ -7,6 +7,39 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [4.15.1] - 2026-09-08
+
+### Diperbaiki
+
+- **Tombol "Simpan" OPM menyimpan rating parsial** (issue #56, mengikuti backend #39) —
+  `buildJawabanPayload()` sebelumnya menyaring `isTaskLengkap`, sehingga task yang baru
+  dinilai pada satu atau dua dimensi **dibuang** dari payload; karena `PUT` bersifat
+  replace penuh, penilaian separuh jalan hilang setiap kali partisipan meninggalkan
+  halaman. Fungsi itu kini dipecah: `buildDraftPayload()` (dipakai tombol "Simpan")
+  mengirim setiap task yang punya minimal satu dimensi terisi atau catatan tidak kosong,
+  dimensi yang belum dinilai dikirim `null`; `buildSubmitPayload()` (dipakai "Kirim
+  Jawaban") mempertahankan perilaku lama. Pesan sukses jadi `"Draft tersimpan."` tanpa
+  syarat — cabang "N dari M task" dan butir peringatan senada di `petunjuk-opm.tsx`
+  dicabut, bukan disembunyikan. Gerbang `allComplete` dan dialog "Nilai bawaan" tidak
+  berubah.
+- **Tombol "Simpan" Task Inventory Tahap 3 menyimpan draft parsial** (issue #55,
+  mengikuti backend #38) — `handleSave()` sebelumnya memakai `buildDetailPayload()` yang
+  sama dengan tombol "Kirim Detail": fungsi itu mengembalikan `null` pada baris tak valid
+  pertama, sehingga backend **tidak pernah dipanggil sama sekali** dan yang muncul hanya
+  "Periksa isian pada task X". Karena baris yang baru dicentang di-seed
+  `durasi_per_kali: null`, kondisi itu adalah keadaan normal — partisipan yang menandai 30
+  tugas dan baru mengisi 10 kehilangan seluruh pekerjaannya. Payload kini dipecah jadi
+  `buildDraftPayload()` (tanpa validasi) dan `buildSubmitPayload()` (validasi
+  `detailItemSchema` penuh); `RowState` dilonggarkan dan selektor Sumber Bukti, Kondisi,
+  serta Frekuensi diberi opsi kosong. Gerbang `semuaLengkap` pada "Kirim Detail" tidak
+  berubah.
+
+### Diubah
+
+- Tipe klien API diregenerasi dari `openapi.json` backend `v0.45.0` — `TiDetailItem` dan
+  `OpmJawabanItem` kini hanya mewajibkan `task_kode`; field CalHR dan ketiga dimensi OPM
+  bertipe `number | null`.
+
 ## [4.15.0] - 2026-08-05
 
 ### Ditambahkan
