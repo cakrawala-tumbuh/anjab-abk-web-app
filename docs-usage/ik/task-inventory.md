@@ -231,8 +231,14 @@ tambahan, yang ikut disembunyikan. Status responden menjadi **✓ Selesai**.
    Selama masih ada yang kosong — belum dicentang, atau dicentang tapi ada isian yang belum
    valid (mis. Durasi/kali kosong, atau Jenis Nilai Tambah masih `Context-Dependent`) — tombol
    nonaktif dan di sampingnya tertulis jumlah task yang belum lengkap, mis. _"2 task belum
-   dilengkapi — lengkapi semuanya sebelum mengirim."_ Tombol **Simpan** tetap bisa dipakai
-   kapan saja untuk menyimpan draf, walau baru sebagian task terisi.
+   dilengkapi — lengkapi semuanya sebelum mengirim."_
+5. **Tombol Simpan menyimpan draf TANPA syarat kelengkapan** — berbeda dari Kirim Detail.
+   Klik Simpan kapan saja mengirim **seluruh task yang sudah dicentang apa adanya**, termasuk
+   task yang isiannya baru sebagian (mis. baru mencentang 30 task dan mengisi durasi 10 di
+   antaranya) — tidak ada validasi yang membatalkan penyimpanan, dan tidak ada pesan error
+   yang muncul karena isian belum lengkap. Ini mencegah pekerjaan hilang bila Anda meninggalkan
+   halaman sebelum selesai. Saat halaman dibuka kembali, isian yang sudah tersimpan (termasuk
+   kolom yang masih kosong) tampil apa adanya dan dapat dilanjutkan.
 
 !!! danger "Tidak dapat diubah"
 Setelah dikirim, detail Tahap 3 terkunci. Seluruh task final wajib dicentang & terisi valid

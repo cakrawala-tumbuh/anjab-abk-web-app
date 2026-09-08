@@ -3272,6 +3272,10 @@ export interface components {
         /**
          * OpmJawabanItem
          * @description Satu jawaban rating task dalam bulk submission.
+         *
+         *     Ketiga dimensi (`importance`/`frequency`/`criticality`) boleh `null` — draft
+         *     rating parsial disimpan apa adanya oleh `PUT .../jawaban`; kelengkapan
+         *     ketiganya baru ditegakkan saat finalisasi (`POST .../jawaban/submit`).
          */
         OpmJawabanItem: {
             /**
@@ -3282,22 +3286,22 @@ export interface components {
             task_kode: string;
             /**
              * Importance
-             * @description Seberapa penting (1 Tidak penting … 5 Sangat penting).
+             * @description Seberapa penting (1 Tidak penting … 5 Sangat penting). Boleh `null` pada draft — ketiga dimensi baru wajib terisi saat submit (`POST .../jawaban/submit`).
              * @example 4
              */
-            importance: number;
+            importance?: number | null;
             /**
              * Frequency
-             * @description Seberapa sering (1 Insidental … 5 Sangat sering/Harian).
+             * @description Seberapa sering (1 Insidental … 5 Sangat sering/Harian). Boleh `null` pada draft — ketiga dimensi baru wajib terisi saat submit (`POST .../jawaban/submit`).
              * @example 3
              */
-            frequency: number;
+            frequency?: number | null;
             /**
              * Criticality
-             * @description Dampak jika gagal (1 Dampak minimal … 5 Dampak kritis).
+             * @description Dampak jika gagal (1 Dampak minimal … 5 Dampak kritis). Boleh `null` pada draft — ketiga dimensi baru wajib terisi saat submit (`POST .../jawaban/submit`).
              * @example 5
              */
-            criticality: number;
+            criticality?: number | null;
             /**
              * Catatan
              * @description Catatan opsional.
@@ -3307,6 +3311,9 @@ export interface components {
         /**
          * OpmJawabanRead
          * @description Representasi satu jawaban yang dikembalikan API.
+         *
+         *     Ketiga dimensi bisa `null` selama baris masih berstatus draft (belum
+         *     dilengkapi dan/atau belum submit).
          */
         OpmJawabanRead: {
             /**
@@ -3329,19 +3336,19 @@ export interface components {
             task_kode: string;
             /**
              * Importance
-             * @description Skor importance 1–5.
+             * @description Skor importance 1–5, atau `null`.
              */
-            importance: number;
+            importance?: number | null;
             /**
              * Frequency
-             * @description Skor frequency 1–5.
+             * @description Skor frequency 1–5, atau `null`.
              */
-            frequency: number;
+            frequency?: number | null;
             /**
              * Criticality
-             * @description Skor criticality 1–5.
+             * @description Skor criticality 1–5, atau `null`.
              */
-            criticality: number;
+            criticality?: number | null;
             /**
              * Catatan
              * @description Catatan.
@@ -4893,6 +4900,14 @@ export interface components {
         /**
          * TiDetailItem
          * @description Field detail CalHR untuk satu task relevan.
+         *
+         *     Sejak backlog `anjab-abk-backend#38`, kelima field CalHR inti
+         *     (`sumber_bukti`/`kondisi`/`frekuensi_teks`/`durasi_per_kali`/`va_type`) bersifat
+         *     **opsional** agar draft parsial (baru mengisi sebagian task) dapat disimpan lewat
+         *     `PUT .../detail` tanpa ditolak `422`. Kelengkapan seluruh field baru ditegakkan saat
+         *     finalisasi (`POST .../detail/submit`, lihat `TiDetailService.submit`). Batas nilai yang
+         *     ada (`min_length`/`max_length`/`ge`) tetap berlaku untuk nilai non-null; `None` melewati
+         *     validasi itu apa adanya.
          */
         TiDetailItem: {
             /**
@@ -4903,28 +4918,27 @@ export interface components {
             /**
              * Sumber Bukti
              * @description Formal/Aktual/Keduanya.
-             * @enum {string}
              */
-            sumber_bukti: "Formal" | "Aktual" | "Keduanya";
+            sumber_bukti?: ("Formal" | "Aktual" | "Keduanya") | null;
             /**
              * Kondisi
              * @description Baseline/Peak/Both.
-             * @enum {string}
              */
-            kondisi: "Baseline" | "Peak" | "Both";
+            kondisi?: ("Baseline" | "Peak" | "Both") | null;
             /**
              * Frekuensi Teks
              * @description Frekuensi (Harian/Mingguan/Bulanan/dst).
              */
-            frekuensi_teks: string;
+            frekuensi_teks?: string | null;
             /**
              * Durasi Per Kali
              * @description Durasi per pelaksanaan (menit).
              */
-            durasi_per_kali: number;
+            durasi_per_kali?: number | null;
             /**
              * Jam Per Minggu
-             * @description Estimasi jam per minggu.
+             * @description Estimasi jam per minggu (tidak lagi diisi partisipan).
+             * @default 0
              */
             jam_per_minggu: number;
             /**
@@ -4936,9 +4950,8 @@ export interface components {
             /**
              * Va Type
              * @description VA-Core/VA-Enable/NVA-Residual.
-             * @enum {string}
              */
-            va_type: "VA-Core" | "VA-Enable" | "NVA-Residual" | "Context-Dependent";
+            va_type?: ("VA-Core" | "VA-Enable" | "NVA-Residual" | "Context-Dependent") | null;
             /**
              * Setuju Standar
              * @description True bila partisipan menerima nilai standar master apa adanya.
@@ -4954,6 +4967,10 @@ export interface components {
         /**
          * TiDetailRead
          * @description Representasi satu entri detail Tahap 2.
+         *
+         *     Kelima field CalHR inti bertipe `| None` sejak `anjab-abk-backend#38`: entri draft
+         *     parsial (belum lengkap) melapor `null` pada field yang belum diisi alih-alih memaksa
+         *     nilai palsu. Payload lama yang sudah lengkap tetap sah tanpa perubahan (pelonggaran murni).
          */
         TiDetailRead: {
             /**
@@ -4977,29 +4994,20 @@ export interface components {
              * @description Kode task.
              */
             task_kode: string;
-            /**
-             * Sumber Bukti
-             * @enum {string}
-             */
-            sumber_bukti: "Formal" | "Aktual" | "Keduanya";
-            /**
-             * Kondisi
-             * @enum {string}
-             */
-            kondisi: "Baseline" | "Peak" | "Both";
+            /** Sumber Bukti */
+            sumber_bukti?: ("Formal" | "Aktual" | "Keduanya") | null;
+            /** Kondisi */
+            kondisi?: ("Baseline" | "Peak" | "Both") | null;
             /** Frekuensi Teks */
-            frekuensi_teks: string;
+            frekuensi_teks?: string | null;
             /** Durasi Per Kali */
-            durasi_per_kali: number;
+            durasi_per_kali?: number | null;
             /** Jam Per Minggu */
             jam_per_minggu: number;
             /** Peak4W Hours */
             peak4w_hours: number;
-            /**
-             * Va Type
-             * @enum {string}
-             */
-            va_type: "VA-Core" | "VA-Enable" | "NVA-Residual" | "Context-Dependent";
+            /** Va Type */
+            va_type?: ("VA-Core" | "VA-Enable" | "NVA-Residual" | "Context-Dependent") | null;
             /** Setuju Standar */
             setuju_standar: boolean;
             /** Catatan */
@@ -15156,7 +15164,7 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
-            /** @description Sesi bukan TAHAP3, responden sudah submit, belum ada entri detail, atau masih ada entri ber-va_type "Context-Dependent" yang belum difinalisasi. */
+            /** @description Sesi bukan TAHAP3, responden sudah submit, belum ada entri detail, ada entri belum lengkap kelima field CalHR-nya, atau masih ada entri ber-va_type "Context-Dependent" yang belum difinalisasi. */
             422: {
                 headers: {
                     [name: string]: unknown;

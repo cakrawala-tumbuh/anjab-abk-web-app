@@ -48,6 +48,11 @@ function butuhPilihVaType(t: TiTaskTerpilihRead): boolean {
  * bukan jawaban final yang sah untuk Tahap 3; backend menolaknya (422) saat submit
  * (issue `cakrawala-tumbuh/anjab-abk-web-app#39`). Baris dengan `va_type` di luar 3 nilai
  * ini gagal parse di sini, sehingga submit klien terblokir sebelum sampai ke backend.
+ *
+ * **Dipakai HANYA oleh {@link buildSubmitPayload} (dan `isRowLengkap`/`parseRow`).**
+ * {@link buildDraftPayload} (dipakai `handleSave()`) TIDAK memvalidasi terhadap skema
+ * ini sama sekali — kelengkapan hanya digerbang saat submit final (issue backlog
+ * `cakrawala-tumbuh/anjab-abk-web-app#55`).
  */
 export const detailItemSchema = z.object({
   task_kode: z.string().min(1),
@@ -72,15 +77,26 @@ export const detailItemSchema = z.object({
  * `cakrawala-tumbuh/anjab-abk-web-app#42`). **`jam_per_minggu` dan
  * `peak4w_hours` SENGAJA tidak ada di sini** — keduanya tidak lagi punya input
  * sama sekali; nilai kirimnya dibaca langsung dari
- * `std_jam_per_minggu ?? 0`/`std_peak4w_hours ?? 0` di `buildDetailPayload()`,
- * bukan dari state baris (issue backlog `cakrawala-tumbuh/anjab-abk-web-app#41`).
+ * `std_jam_per_minggu ?? 0`/`std_peak4w_hours ?? 0` di `buildSubmitPayload()`/
+ * `buildDraftPayload()`, bukan dari state baris (issue backlog
+ * `cakrawala-tumbuh/anjab-abk-web-app#41`).
+ *
+ * **`sumber_bukti`, `kondisi`, `frekuensi_teks`, dan `va_type` boleh `null`**
+ * sejak issue backlog `cakrawala-tumbuh/anjab-abk-web-app#55` — mengikuti
+ * pelonggaran kontrak `TiDetailItem`/`TiDetailRead` (`anjab-abk-backend#38`).
+ * `null` di sini berarti "belum diisi responden": muncul saat sebuah baris
+ * dimuat dari draft tersimpan yang belum lengkap (`detailAwal`), TIDAK PERNAH
+ * dari `rowDariStandar()` (yang selalu mengembalikan nilai default konkret).
+ * Render (`<select>`) menampilkan placeholder "— pilih salah satu —" saat
+ * nilainya `null` alih-alih crash; `parseRow()`/`detailItemSchema` tetap
+ * menolak baris ber-`null` sebagai "belum lengkap" untuk keperluan submit.
  */
 interface RowState {
   checked: boolean;
   setuju_standar: boolean;
   sumber_bukti: TiDetailItem["sumber_bukti"];
   kondisi: TiDetailItem["kondisi"];
-  frekuensi_teks: string;
+  frekuensi_teks: string | null;
   /** `null` = belum diisi responden — lihat catatan di `rowDariStandar()`. */
   durasi_per_kali: number | null;
   va_type: TiDetailItem["va_type"];
@@ -158,11 +174,14 @@ export function DetailForm({ respondenId, tasks, detailAwal, accessToken }: Prop
         const row: RowState = {
           checked: true,
           setuju_standar: existing.setuju_standar,
-          sumber_bukti: existing.sumber_bukti,
-          kondisi: existing.kondisi,
-          frekuensi_teks: existing.frekuensi_teks,
-          durasi_per_kali: existing.durasi_per_kali,
-          va_type: existing.va_type,
+          // `?? null` menormalkan `undefined` (field opsional di `TiDetailRead`
+          // sejak anjab-abk-backend#38) — RowState tidak pernah menyimpan
+          // `undefined`, hanya nilai konkret atau `null` ("belum diisi").
+          sumber_bukti: existing.sumber_bukti ?? null,
+          kondisi: existing.kondisi ?? null,
+          frekuensi_teks: existing.frekuensi_teks ?? null,
+          durasi_per_kali: existing.durasi_per_kali ?? null,
+          va_type: existing.va_type ?? null,
           catatan: existing.catatan ?? "",
         };
         return [t.kode, row];
@@ -218,11 +237,12 @@ export function DetailForm({ respondenId, tasks, detailAwal, accessToken }: Prop
   /**
    * Validasi satu baris `t`/`r` terhadap {@link detailItemSchema}.
    *
-   * Sumber tunggal aturan "isian baris ini sah dikirim" — dipakai baik oleh
+   * Sumber tunggal aturan "isian baris ini sah dikirim FINAL" — dipakai baik oleh
    * `isRowLengkap()` (menentukan status kunci tombol "Kirim Detail") maupun
-   * `buildDetailPayload()` (membangun payload sesungguhnya), sehingga kedua
-   * jalur itu **tidak pernah berbeda pendapat**: bila tombol aktif,
-   * `buildDetailPayload()` dijamin berhasil untuk seluruh baris tercentang.
+   * `buildSubmitPayload()` (membangun payload submit sesungguhnya), sehingga
+   * kedua jalur itu **tidak pernah berbeda pendapat**: bila tombol aktif,
+   * `buildSubmitPayload()` dijamin berhasil untuk seluruh baris tercentang.
+   * `buildDraftPayload()` (dipakai `handleSave()`) TIDAK memanggil fungsi ini.
    *
    * `jam_per_minggu`/`peak4w_hours` **selalu** dibaca dari `t.std_jam_per_minggu ?? 0` /
    * `t.std_peak4w_hours ?? 0` — bukan dari `RowState` (yang sudah tidak memilikinya)
@@ -264,16 +284,50 @@ export function DetailForm({ respondenId, tasks, detailAwal, accessToken }: Prop
   const semuaLengkap = incompleteTasks.length === 0;
 
   /**
+   * Petakan SELURUH baris `checked` menjadi entri payload — TANPA validasi zod
+   * sama sekali. Field yang belum diisi (`null`) dikirim apa adanya; backend
+   * (`anjab-abk-backend#38`) menerima draft parsial lewat `PUT .../detail` tanpa
+   * menolaknya. Fungsi ini **tidak pernah** mengembalikan `null` dan **tidak
+   * pernah** memanggil `setError` — dipakai HANYA oleh `handleSave()`, sehingga
+   * tombol "Simpan" tidak lagi bisa dibatalkan oleh isian tak lengkap (issue
+   * backlog `cakrawala-tumbuh/anjab-abk-web-app#55`). Bandingkan dengan
+   * {@link buildSubmitPayload}, yang tetap memvalidasi penuh dan dipakai
+   * `onSubmit()`.
+   */
+  function buildDraftPayload(): { detail: TiDetailItem[] } {
+    const detail: TiDetailItem[] = tasks
+      .filter((t) => rows[t.kode]?.checked)
+      .map((t) => {
+        const r = rows[t.kode];
+        return {
+          task_kode: t.kode,
+          sumber_bukti: r.sumber_bukti ?? null,
+          kondisi: r.kondisi ?? null,
+          frekuensi_teks: r.frekuensi_teks ?? null,
+          durasi_per_kali: r.durasi_per_kali ?? null,
+          jam_per_minggu: t.std_jam_per_minggu ?? 0,
+          peak4w_hours: t.std_peak4w_hours ?? 0,
+          va_type: r.va_type ?? null,
+          setuju_standar: r.setuju_standar,
+          catatan: r.catatan === "" ? undefined : r.catatan,
+        };
+      });
+    return { detail };
+  }
+
+  /**
    * Kumpulkan entri detail yang ditandai & valid; `null` bila ada isian tidak valid.
    *
    * `va_type` divalidasi terhadap {@link VA_TYPE_FINAL} lewat `detailItemSchema` — baris
    * yang masih `"Context-Dependent"` (prefill belum diselesaikan) gagal parse di sini,
    * sehingga submit klien terblokir dengan pesan yang menyebut task & VA Type secara
-   * spesifik, bukan pesan generik (issue backlog #39). Dipanggil baik oleh
-   * `handleSave()` (draft, boleh parsial) maupun `onSubmit()` (final, tombolnya
-   * sendiri sudah terkunci selama `!semuaLengkap` — lihat `isRowLengkap`).
+   * spesifik, bukan pesan generik (issue backlog #39). Dipanggil **hanya** oleh
+   * `onSubmit()` (final, tombolnya sendiri sudah terkunci selama `!semuaLengkap` —
+   * lihat `isRowLengkap`). `handleSave()` (draft) memakai {@link buildDraftPayload},
+   * bukan fungsi ini — sejak issue backlog `cakrawala-tumbuh/anjab-abk-web-app#55`
+   * kelengkapan hanya digerbang saat submit final.
    */
-  function buildDetailPayload(): { detail: TiDetailItem[] } | null {
+  function buildSubmitPayload(): { detail: TiDetailItem[] } | null {
     const detail: TiDetailItem[] = [];
     for (const t of tasks) {
       const r = rows[t.kode];
@@ -293,11 +347,18 @@ export function DetailForm({ respondenId, tasks, detailAwal, accessToken }: Prop
     return { detail };
   }
 
+  /**
+   * Simpan draft — mengirim SELURUH baris tercentang apa adanya lewat
+   * {@link buildDraftPayload}, tanpa syarat kelengkapan. Tidak pernah gagal
+   * karena validasi klien; kegagalan yang mungkin muncul hanya dari panggilan
+   * backend (jaringan, 4xx/5xx tak terduga). Pesan sukses tetap
+   * `"Draft tersimpan."` tanpa rincian "N dari M" — seluruh baris tercentang
+   * memang tersimpan (issue backlog `cakrawala-tumbuh/anjab-abk-web-app#55`).
+   */
   async function handleSave() {
     setError(null);
     setSaveMessage(null);
-    const payload = buildDetailPayload();
-    if (!payload) return;
+    const payload = buildDraftPayload();
     setSaving(true);
     try {
       const client = withServerAuth(accessToken);
@@ -320,7 +381,7 @@ export function DetailForm({ respondenId, tasks, detailAwal, accessToken }: Prop
   async function onSubmit() {
     setError(null);
     setSaveMessage(null);
-    const payload = buildDetailPayload();
+    const payload = buildSubmitPayload();
     if (!payload) return;
     if (payload.detail.length === 0) {
       setError("Tandai minimal satu tugas yang Anda kerjakan, lalu isi rinciannya.");
@@ -469,8 +530,11 @@ export function DetailForm({ respondenId, tasks, detailAwal, accessToken }: Prop
                   <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                     <label className="text-xs text-gray-600">
                       Sumber Bukti
+                      {r.sumber_bukti == null && (
+                        <span className="ml-1 font-normal text-amber-600">— wajib dipilih</span>
+                      )}
                       <select
-                        value={r.sumber_bukti}
+                        value={r.sumber_bukti ?? ""}
                         disabled={terkunci}
                         onChange={(e) =>
                           update(t.kode, {
@@ -479,6 +543,11 @@ export function DetailForm({ respondenId, tasks, detailAwal, accessToken }: Prop
                         }
                         className={`mt-1 block w-full ${selectCls}`}
                       >
+                        {r.sumber_bukti == null && (
+                          <option value="" disabled>
+                            — pilih salah satu —
+                          </option>
+                        )}
                         {SUMBER_BUKTI.map((v) => (
                           <option key={v} value={v}>
                             {SUMBER_BUKTI_LABEL[v]}
@@ -488,14 +557,22 @@ export function DetailForm({ respondenId, tasks, detailAwal, accessToken }: Prop
                     </label>
                     <label className="text-xs text-gray-600">
                       Kondisi
+                      {r.kondisi == null && (
+                        <span className="ml-1 font-normal text-amber-600">— wajib dipilih</span>
+                      )}
                       <select
-                        value={r.kondisi}
+                        value={r.kondisi ?? ""}
                         disabled={terkunci}
                         onChange={(e) =>
                           update(t.kode, { kondisi: e.target.value as RowState["kondisi"] })
                         }
                         className={`mt-1 block w-full ${selectCls}`}
                       >
+                        {r.kondisi == null && (
+                          <option value="" disabled>
+                            — pilih salah satu —
+                          </option>
+                        )}
                         {KONDISI.map((v) => (
                           <option key={v} value={v}>
                             {KONDISI_LABEL[v]}
@@ -505,15 +582,24 @@ export function DetailForm({ respondenId, tasks, detailAwal, accessToken }: Prop
                     </label>
                     <label className="text-xs text-gray-600">
                       Frekuensi
+                      {r.frekuensi_teks == null && (
+                        <span className="ml-1 font-normal text-amber-600">— wajib dipilih</span>
+                      )}
                       <select
-                        value={r.frekuensi_teks}
+                        value={r.frekuensi_teks ?? ""}
                         disabled={terkunci}
                         onChange={(e) => update(t.kode, { frekuensi_teks: e.target.value })}
                         className={`mt-1 block w-full ${selectCls}`}
                       >
-                        {(FREKUENSI.includes(r.frekuensi_teks as (typeof FREKUENSI)[number])
-                          ? FREKUENSI
-                          : [r.frekuensi_teks, ...FREKUENSI]
+                        {r.frekuensi_teks == null && (
+                          <option value="" disabled>
+                            — pilih salah satu —
+                          </option>
+                        )}
+                        {(r.frekuensi_teks != null &&
+                        !FREKUENSI.includes(r.frekuensi_teks as (typeof FREKUENSI)[number])
+                          ? [r.frekuensi_teks, ...FREKUENSI]
+                          : FREKUENSI
                         ).map((v) => (
                           <option key={v}>{v}</option>
                         ))}
@@ -545,7 +631,7 @@ export function DetailForm({ respondenId, tasks, detailAwal, accessToken }: Prop
                     {/* "Jam/minggu" dan "Jam peak (4 minggu)" SENGAJA dicabut dari formulir
                         partisipan (issue backlog #41) — tidak ada input sama sekali, bukan
                         input tersembunyi. Nilainya dikirim dari nilai standar master apa
-                        adanya, lihat `buildDetailPayload`. */}
+                        adanya, lihat `buildSubmitPayload`/`buildDraftPayload`. */}
                     {butuhPilihVaType(t) && (
                       <label className="text-xs text-gray-600">
                         Jenis Nilai Tambah (VA)

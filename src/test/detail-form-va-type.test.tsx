@@ -89,7 +89,7 @@ describe("DetailForm — selektor VA Type Tahap 3 hanya 3 opsi final (backlog #3
     expect(screen.getByText("— wajib dipilih")).toBeInTheDocument();
   });
 
-  it("tombol 'Kirim Detail' terkunci selama baris masih 'Context-Dependent'; klik 'Simpan' tetap menampilkan pesan spesifik VA Type (backlog #42)", async () => {
+  it("tombol 'Kirim Detail' terkunci selama baris masih 'Context-Dependent'; klik 'Simpan' menyimpan draf apa adanya tanpa pesan error (backlog #55)", async () => {
     render(
       <DetailForm
         respondenId="tresp_1"
@@ -107,15 +107,18 @@ describe("DetailForm — selektor VA Type Tahap 3 hanya 3 opsi final (backlog #3
       expect(btn).toBeDisabled();
     }
 
-    // "Simpan" (draft) tetap menerima isian parsial — tapi baris yang SUDAH dicentang
-    // tetap tervalidasi skema saat disimpan; pesan spesifik VA Type tetap tampil.
+    // "Simpan" (draft) sejak backlog #55 TIDAK LAGI memvalidasi skema — baris
+    // dengan va_type "Context-Dependent" (belum final) tetap tersimpan apa adanya,
+    // tanpa pesan error apa pun, dan tanpa memanggil endpoint submit.
     await act(async () => {
       fireEvent.click(screen.getAllByRole("button", { name: "Simpan" })[0]);
     });
 
-    expect(screen.getByText(/pilih Jenis Nilai Tambah \(VA\) final/i)).toBeInTheDocument();
-    expect(screen.getByText(/Context-Dependent.*belum final/i)).toBeInTheDocument();
-    expect(put).not.toHaveBeenCalled();
+    expect(screen.queryByRole("alert")).toBeNull();
+    expect(put).toHaveBeenCalledTimes(1);
+    const body = put.mock.calls[0][1].body;
+    expect(body.detail).toHaveLength(1);
+    expect(body.detail[0].va_type).toBe("Context-Dependent");
     expect(post).not.toHaveBeenCalled();
     expect(push).not.toHaveBeenCalled();
   });

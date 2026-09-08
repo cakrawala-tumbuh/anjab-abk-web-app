@@ -51,7 +51,9 @@ export function PetunjukTahap3({ defaultOpen }: Props) {
             Frekuensi, dan Durasi/kali.
           </li>
           <li>
-            Anda bisa menekan &ldquo;Simpan&rdquo; untuk menyimpan draft dan melanjutkan nanti.
+            &ldquo;Simpan&rdquo; menyimpan tugas yang sudah Anda centang <strong>apa adanya</strong>{" "}
+            — walau isiannya belum lengkap — sehingga Anda bisa melanjutkan nanti tanpa kehilangan
+            pekerjaan.
           </li>
           <li>
             <strong>&ldquo;Kirim Detail&rdquo; mengunci</strong> isian Anda — setelah dikirim tidak

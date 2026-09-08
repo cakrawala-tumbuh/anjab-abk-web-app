@@ -9,10 +9,24 @@ import type { OpmJawabanRead, OpmSesiTaskRead } from "@/lib/api/schema";
 
 type Dimensi = "importance" | "frequency" | "criticality";
 
+/**
+ * State rating klien untuk satu task (tiga dimensi + catatan).
+ *
+ * `importance`/`frequency`/`criticality` bertipe `number | null` (bukan hanya
+ * `number`) sejak issue backlog `cakrawala-tumbuh/anjab-abk-web-app#55` — murni
+ * **adaptasi tipe**, akibat wajar regenerasi kontrak bersama TI+OPM
+ * (`anjab-abk-backend#38`+`#39`) yang tak bisa dipecah per-endpoint dan melonggarkan
+ * `OpmJawabanRead.importance/frequency/criticality` dari wajib menjadi nullable.
+ * **Tidak ada perubahan perilaku**: `isTaskLengkap()` sudah memakai `!= null`
+ * (null-safe terhadap `null` maupun `undefined` sejak awal), jadi baris berisi
+ * `null` tetap dihitung "belum lengkap" — persis seperti `undefined` sebelumnya.
+ * Pemisahan draft/submit yang sesungguhnya (menerima & mengirim `null` apa
+ * adanya) adalah scope issue `cakrawala-tumbuh/anjab-abk-web-app#56`, BUKAN di sini.
+ */
 interface RatingState {
-  importance?: number;
-  frequency?: number;
-  criticality?: number;
+  importance?: number | null;
+  frequency?: number | null;
+  criticality?: number | null;
   catatan?: string;
 }
 

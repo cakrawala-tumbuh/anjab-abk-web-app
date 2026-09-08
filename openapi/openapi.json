@@ -11245,7 +11245,7 @@
             }
           },
           "422": {
-            "description": "Sesi bukan TAHAP3, responden sudah submit, belum ada entri detail, atau masih ada entri ber-va_type \"Context-Dependent\" yang belum difinalisasi.",
+            "description": "Sesi bukan TAHAP3, responden sudah submit, belum ada entri detail, ada entri belum lengkap kelima field CalHR-nya, atau masih ada entri ber-va_type \"Context-Dependent\" yang belum difinalisasi.",
             "content": {
               "application/json": {
                 "schema": {
@@ -16780,31 +16780,52 @@
             ]
           },
           "importance": {
-            "type": "integer",
-            "maximum": 5.0,
-            "minimum": 1.0,
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 5.0,
+                "minimum": 1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
             "title": "Importance",
-            "description": "Seberapa penting (1 Tidak penting … 5 Sangat penting).",
+            "description": "Seberapa penting (1 Tidak penting … 5 Sangat penting). Boleh `null` pada draft — ketiga dimensi baru wajib terisi saat submit (`POST .../jawaban/submit`).",
             "examples": [
               4
             ]
           },
           "frequency": {
-            "type": "integer",
-            "maximum": 5.0,
-            "minimum": 1.0,
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 5.0,
+                "minimum": 1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
             "title": "Frequency",
-            "description": "Seberapa sering (1 Insidental … 5 Sangat sering/Harian).",
+            "description": "Seberapa sering (1 Insidental … 5 Sangat sering/Harian). Boleh `null` pada draft — ketiga dimensi baru wajib terisi saat submit (`POST .../jawaban/submit`).",
             "examples": [
               3
             ]
           },
           "criticality": {
-            "type": "integer",
-            "maximum": 5.0,
-            "minimum": 1.0,
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 5.0,
+                "minimum": 1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
             "title": "Criticality",
-            "description": "Dampak jika gagal (1 Dampak minimal … 5 Dampak kritis).",
+            "description": "Dampak jika gagal (1 Dampak minimal … 5 Dampak kritis). Boleh `null` pada draft — ketiga dimensi baru wajib terisi saat submit (`POST .../jawaban/submit`).",
             "examples": [
               5
             ]
@@ -16826,13 +16847,10 @@
         "additionalProperties": false,
         "type": "object",
         "required": [
-          "task_kode",
-          "importance",
-          "frequency",
-          "criticality"
+          "task_kode"
         ],
         "title": "OpmJawabanItem",
-        "description": "Satu jawaban rating task dalam bulk submission."
+        "description": "Satu jawaban rating task dalam bulk submission.\n\nKetiga dimensi (`importance`/`frequency`/`criticality`) boleh `null` — draft\nrating parsial disimpan apa adanya oleh `PUT .../jawaban`; kelengkapan\nketiganya baru ditegakkan saat finalisasi (`POST .../jawaban/submit`)."
       },
       "OpmJawabanRead": {
         "properties": {
@@ -16861,19 +16879,40 @@
             ]
           },
           "importance": {
-            "type": "integer",
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
             "title": "Importance",
-            "description": "Skor importance 1–5."
+            "description": "Skor importance 1–5, atau `null`."
           },
           "frequency": {
-            "type": "integer",
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
             "title": "Frequency",
-            "description": "Skor frequency 1–5."
+            "description": "Skor frequency 1–5, atau `null`."
           },
           "criticality": {
-            "type": "integer",
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
             "title": "Criticality",
-            "description": "Skor criticality 1–5."
+            "description": "Skor criticality 1–5, atau `null`."
           },
           "catatan": {
             "anyOf": [
@@ -16892,13 +16931,10 @@
         "required": [
           "id",
           "responden_id",
-          "task_kode",
-          "importance",
-          "frequency",
-          "criticality"
+          "task_kode"
         ],
         "title": "OpmJawabanRead",
-        "description": "Representasi satu jawaban yang dikembalikan API."
+        "description": "Representasi satu jawaban yang dikembalikan API.\n\nKetiga dimensi bisa `null` selama baris masih berstatus draft (belum\ndilengkapi dan/atau belum submit)."
       },
       "OpmJawabanUpsert": {
         "properties": {
@@ -19697,35 +19733,63 @@
             "description": "Kode task (harus ada di himpunan terpilih)."
           },
           "sumber_bukti": {
-            "type": "string",
-            "enum": [
-              "Formal",
-              "Aktual",
-              "Keduanya"
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "Formal",
+                  "Aktual",
+                  "Keduanya"
+                ]
+              },
+              {
+                "type": "null"
+              }
             ],
             "title": "Sumber Bukti",
             "description": "Formal/Aktual/Keduanya."
           },
           "kondisi": {
-            "type": "string",
-            "enum": [
-              "Baseline",
-              "Peak",
-              "Both"
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "Baseline",
+                  "Peak",
+                  "Both"
+                ]
+              },
+              {
+                "type": "null"
+              }
             ],
             "title": "Kondisi",
             "description": "Baseline/Peak/Both."
           },
           "frekuensi_teks": {
-            "type": "string",
-            "maxLength": 100,
-            "minLength": 1,
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 100,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
             "title": "Frekuensi Teks",
             "description": "Frekuensi (Harian/Mingguan/Bulanan/dst)."
           },
           "durasi_per_kali": {
-            "type": "integer",
-            "minimum": 0.0,
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
             "title": "Durasi Per Kali",
             "description": "Durasi per pelaksanaan (menit)."
           },
@@ -19733,7 +19797,8 @@
             "type": "number",
             "minimum": 0.0,
             "title": "Jam Per Minggu",
-            "description": "Estimasi jam per minggu."
+            "description": "Estimasi jam per minggu (tidak lagi diisi partisipan).",
+            "default": 0.0
           },
           "peak4w_hours": {
             "type": "number",
@@ -19743,12 +19808,19 @@
             "default": 0.0
           },
           "va_type": {
-            "type": "string",
-            "enum": [
-              "VA-Core",
-              "VA-Enable",
-              "NVA-Residual",
-              "Context-Dependent"
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "VA-Core",
+                  "VA-Enable",
+                  "NVA-Residual",
+                  "Context-Dependent"
+                ]
+              },
+              {
+                "type": "null"
+              }
             ],
             "title": "Va Type",
             "description": "VA-Core/VA-Enable/NVA-Residual."
@@ -19776,16 +19848,10 @@
         "additionalProperties": false,
         "type": "object",
         "required": [
-          "task_kode",
-          "sumber_bukti",
-          "kondisi",
-          "frekuensi_teks",
-          "durasi_per_kali",
-          "jam_per_minggu",
-          "va_type"
+          "task_kode"
         ],
         "title": "TiDetailItem",
-        "description": "Field detail CalHR untuk satu task relevan."
+        "description": "Field detail CalHR untuk satu task relevan.\n\nSejak backlog `anjab-abk-backend#38`, kelima field CalHR inti\n(`sumber_bukti`/`kondisi`/`frekuensi_teks`/`durasi_per_kali`/`va_type`) bersifat\n**opsional** agar draft parsial (baru mengisi sebagian task) dapat disimpan lewat\n`PUT .../detail` tanpa ditolak `422`. Kelengkapan seluruh field baru ditegakkan saat\nfinalisasi (`POST .../detail/submit`, lihat `TiDetailService.submit`). Batas nilai yang\nada (`min_length`/`max_length`/`ge`) tetap berlaku untuk nilai non-null; `None` melewati\nvalidasi itu apa adanya."
       },
       "TiDetailRead": {
         "properties": {
@@ -19813,29 +19879,57 @@
             "description": "Kode task."
           },
           "sumber_bukti": {
-            "type": "string",
-            "enum": [
-              "Formal",
-              "Aktual",
-              "Keduanya"
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "Formal",
+                  "Aktual",
+                  "Keduanya"
+                ]
+              },
+              {
+                "type": "null"
+              }
             ],
             "title": "Sumber Bukti"
           },
           "kondisi": {
-            "type": "string",
-            "enum": [
-              "Baseline",
-              "Peak",
-              "Both"
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "Baseline",
+                  "Peak",
+                  "Both"
+                ]
+              },
+              {
+                "type": "null"
+              }
             ],
             "title": "Kondisi"
           },
           "frekuensi_teks": {
-            "type": "string",
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
             "title": "Frekuensi Teks"
           },
           "durasi_per_kali": {
-            "type": "integer",
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
             "title": "Durasi Per Kali"
           },
           "jam_per_minggu": {
@@ -19847,12 +19941,19 @@
             "title": "Peak4W Hours"
           },
           "va_type": {
-            "type": "string",
-            "enum": [
-              "VA-Core",
-              "VA-Enable",
-              "NVA-Residual",
-              "Context-Dependent"
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "VA-Core",
+                  "VA-Enable",
+                  "NVA-Residual",
+                  "Context-Dependent"
+                ]
+              },
+              {
+                "type": "null"
+              }
             ],
             "title": "Va Type"
           },
@@ -19878,17 +19979,12 @@
           "responden_id",
           "sesi_id",
           "task_kode",
-          "sumber_bukti",
-          "kondisi",
-          "frekuensi_teks",
-          "durasi_per_kali",
           "jam_per_minggu",
           "peak4w_hours",
-          "va_type",
           "setuju_standar"
         ],
         "title": "TiDetailRead",
-        "description": "Representasi satu entri detail Tahap 2."
+        "description": "Representasi satu entri detail Tahap 2.\n\nKelima field CalHR inti bertipe `| None` sejak `anjab-abk-backend#38`: entri draft\nparsial (belum lengkap) melapor `null` pada field yang belum diisi alih-alih memaksa\nnilai palsu. Payload lama yang sudah lengkap tetap sah tanpa perubahan (pelonggaran murni)."
       },
       "TiDetailUpsert": {
         "properties": {
