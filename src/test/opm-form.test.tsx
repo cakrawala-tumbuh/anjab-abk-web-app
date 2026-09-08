@@ -109,27 +109,72 @@ beforeEach(() => {
   vi.spyOn(window, "confirm");
 });
 
-describe("OpmForm — regresi: draft parsial tidak boleh dilaporkan sebagai tersimpan penuh", () => {
-  it("hanya 1 dari 3 task lengkap: pesan menyebut '1 dari 3', bukan sekadar 'Draft tersimpan.'", async () => {
+/** Isi textarea catatan satu task. */
+function isiCatatan(kode: string, teks: string) {
+  const textarea = document.getElementById(`catatan-${kode}`) as HTMLTextAreaElement;
+  if (!textarea) throw new Error(`textarea catatan-${kode} tidak ditemukan`);
+  fireEvent.change(textarea, { target: { value: teks } });
+}
+
+describe("OpmForm — 'Simpan' menyimpan rating parsial tanpa syarat kelengkapan (issue #56)", () => {
+  it("hanya 1 dimensi (importance) satu task terisi: PUT terkirim 1 entri dengan frequency/criticality null, pesan 'Draft tersimpan.' tanpa 'dari'", async () => {
     const { container } = renderForm();
 
-    nilaiLengkap(container, "K001");
-    nilaiParsial(container, "K002"); // 1 dimensi saja → dibuang payload
-    // K003 sama sekali tidak dinilai
+    nilaiParsial(container, "K001"); // hanya importance yang diisi
+    // K002 & K003 sama sekali tidak disentuh.
 
     await klikSimpan();
 
     await waitFor(() => expect(put).toHaveBeenCalledTimes(1));
 
-    // Inti regresi: user diberi tahu berapa yang benar-benar tersimpan.
-    expect(toastSukses).toHaveBeenCalledWith(expect.stringContaining("1 dari 3"));
-    expect(screen.getByText(/1 dari 3/)).toBeInTheDocument();
+    const body = put.mock.calls[0][1].body as {
+      jawaban: {
+        task_kode: string;
+        importance: number | null;
+        frequency: number | null;
+        criticality: number | null;
+      }[];
+    };
+    expect(body.jawaban).toHaveLength(1);
+    expect(body.jawaban[0]).toMatchObject({
+      task_kode: "K001",
+      frequency: null,
+      criticality: null,
+    });
+    expect(body.jawaban[0].importance).not.toBeNull();
 
-    // Bukti bahwa task parsial memang dibuang: body PUT hanya berisi 1 jawaban.
+    // Pesan sukses selalu tetap, tanpa keterangan "N dari M" apa pun.
+    expect(toastSukses).toHaveBeenCalledWith("Draft tersimpan.");
+    expect(toastSukses).not.toHaveBeenCalledWith(expect.stringContaining("dari"));
+    expect(toastError).not.toHaveBeenCalled();
+  });
+
+  it("task tanpa dimensi tapi bercatatan ikut terkirim; task kosong tanpa catatan tidak terkirim", async () => {
+    renderForm();
+
+    isiCatatan("K001", "Sudah dikerjakan tapi belum sempat dinilai.");
+    // K002 & K003 dibiarkan benar-benar kosong (tanpa dimensi, tanpa catatan).
+
+    await klikSimpan();
+
+    await waitFor(() => expect(put).toHaveBeenCalledTimes(1));
     const body = put.mock.calls[0][1].body as { jawaban: { task_kode: string }[] };
     expect(body.jawaban).toHaveLength(1);
     expect(body.jawaban[0].task_kode).toBe("K001");
+    expect(toastSukses).toHaveBeenCalledWith("Draft tersimpan.");
+  });
+
+  it("seluruh task kosong tanpa catatan: PUT terkirim dengan jawaban: [] tanpa error", async () => {
+    renderForm();
+
+    await klikSimpan();
+
+    await waitFor(() => expect(put).toHaveBeenCalledTimes(1));
+    const body = put.mock.calls[0][1].body as { jawaban: unknown[] };
+    expect(body.jawaban).toEqual([]);
+    expect(toastSukses).toHaveBeenCalledWith("Draft tersimpan.");
     expect(toastError).not.toHaveBeenCalled();
+    expect(screen.queryByRole("alert")).toBeNull();
   });
 
   it("semua task lengkap: pesan persis 'Draft tersimpan.' tanpa keterangan 'dari'", async () => {
@@ -145,6 +190,63 @@ describe("OpmForm — regresi: draft parsial tidak boleh dilaporkan sebagai ters
 
     const body = put.mock.calls[0][1].body as { jawaban: { task_kode: string }[] };
     expect(body.jawaban).toHaveLength(3);
+  });
+
+  it("draft tersimpan berisi dimensi null di-render ulang sebagai kontrol kosong, tanpa crash dan tanpa penanda 'Nilai bawaan'", () => {
+    const jawabanParsial: OpmJawabanRead = {
+      id: "opjw_K001",
+      responden_id: "oprs_1",
+      task_kode: "K001",
+      importance: 4,
+      frequency: null,
+      criticality: null,
+      catatan: null,
+    };
+    const { container } = render(
+      <OpmForm
+        respondenId="oprs_1"
+        task={TASKS}
+        jawabanAwal={[jawabanParsial]}
+        sudahSubmit={false}
+        accessToken="tok"
+      />,
+    );
+
+    const imp4 = container.querySelector<HTMLInputElement>(
+      'input[name="K001-importance"][value="4"]',
+    );
+    expect(imp4?.checked).toBe(true);
+    for (const nilai of [1, 2, 3, 4, 5] as const) {
+      const freq = container.querySelector<HTMLInputElement>(
+        `input[name="K001-frequency"][value="${nilai}"]`,
+      );
+      expect(freq?.checked).toBe(false);
+    }
+    // Task dari jawaban tersimpan (walau parsial) tidak pernah diberi badge bawaan.
+    expect(screen.queryByText("Nilai bawaan")).not.toBeInTheDocument();
+  });
+
+  it("'Kirim Jawaban' saat ada task belum lengkap: tombol terkunci, dan submit form tetap ditolak dengan pesan yang sudah ada — tidak ada POST", async () => {
+    const { container } = renderForm();
+
+    nilaiLengkap(container, "K001");
+    // K002 & K003 belum lengkap.
+
+    const tombolKirim = screen.getAllByRole("button", { name: /Kirim Jawaban/ })[0];
+    expect(tombolKirim).toBeDisabled();
+
+    // Defense-in-depth: memicu submit form langsung (melewati disabled-nya tombol)
+    // tetap ditolak oleh guard `allComplete` di handleSubmit.
+    const form = container.querySelector("form")!;
+    await act(async () => {
+      fireEvent.submit(form);
+    });
+
+    expect(
+      screen.getByText("Semua task wajib dinilai pada ketiga dimensi sebelum mengirim."),
+    ).toBeInTheDocument();
+    expect(post).not.toHaveBeenCalled();
+    expect(put).not.toHaveBeenCalled();
   });
 
   it("PUT gagal: toast.error dipanggil dan tidak ada notifikasi sukses palsu", async () => {

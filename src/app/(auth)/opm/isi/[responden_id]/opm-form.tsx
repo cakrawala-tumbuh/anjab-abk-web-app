@@ -12,16 +12,14 @@ type Dimensi = "importance" | "frequency" | "criticality";
 /**
  * State rating klien untuk satu task (tiga dimensi + catatan).
  *
- * `importance`/`frequency`/`criticality` bertipe `number | null` (bukan hanya
- * `number`) sejak issue backlog `cakrawala-tumbuh/anjab-abk-web-app#55` — murni
- * **adaptasi tipe**, akibat wajar regenerasi kontrak bersama TI+OPM
- * (`anjab-abk-backend#38`+`#39`) yang tak bisa dipecah per-endpoint dan melonggarkan
- * `OpmJawabanRead.importance/frequency/criticality` dari wajib menjadi nullable.
- * **Tidak ada perubahan perilaku**: `isTaskLengkap()` sudah memakai `!= null`
- * (null-safe terhadap `null` maupun `undefined` sejak awal), jadi baris berisi
- * `null` tetap dihitung "belum lengkap" — persis seperti `undefined` sebelumnya.
- * Pemisahan draft/submit yang sesungguhnya (menerima & mengirim `null` apa
- * adanya) adalah scope issue `cakrawala-tumbuh/anjab-abk-web-app#56`, BUKAN di sini.
+ * `importance`/`frequency`/`criticality` bertipe `number | null` sejak issue
+ * backlog `cakrawala-tumbuh/anjab-abk-web-app#55` (adaptasi tipe atas regenerasi
+ * kontrak bersama TI+OPM). Sejak issue `cakrawala-tumbuh/anjab-abk-web-app#56`,
+ * `null` di sini benar-benar dipakai: `buildDraftPayload()` (dipakai
+ * `handleSave()`) mengirim dimensi yang belum dipilih sebagai `null` apa
+ * adanya (draft parsial), sedangkan `isTaskLengkap()` tetap memperlakukan
+ * `null`/`undefined` sebagai "belum lengkap" — dipakai HANYA oleh gerbang
+ * submit final (`buildSubmitPayload()`, tombol "Kirim Jawaban").
  */
 interface RatingState {
   importance?: number | null;
@@ -210,8 +208,50 @@ export function OpmForm({ respondenId, task, jawabanAwal, sudahSubmit, accessTok
     }));
   }
 
-  /** Hanya task yang sudah lengkap 3 dimensi bisa dikirim — item OPM tidak punya field parsial. */
-  function buildJawabanPayload() {
+  /**
+   * Petakan task yang punya **minimal satu dimensi terisi atau catatan tidak
+   * kosong** menjadi entri payload — dimensi yang belum dipilih dikirim
+   * `null` apa adanya, TANPA syarat kelengkapan. Task yang seluruh
+   * dimensinya kosong dan tanpa catatan TIDAK dikirim (tidak ada yang perlu
+   * disimpan). Dipakai HANYA oleh `handleSave()`; endpoint ini PUT (replace
+   * penuh) sehingga task yang tidak disertakan di payload akan terhapus dari
+   * baris tersimpan sebelumnya — tidak menyertakan task kosong-tanpa-catatan
+   * di sini justru benar: task itu memang tidak (lagi) punya apa pun untuk
+   * disimpan. Bandingkan dengan {@link buildSubmitPayload}, yang tetap
+   * menuntut ketiga dimensi terisi dan dipakai `onSubmit()`. Lihat Keputusan
+   * Desain issue `cakrawala-tumbuh/anjab-abk-web-app#56`.
+   */
+  function buildDraftPayload() {
+    return sortedTask
+      .filter((t) => {
+        const r = rating[t.task_kode];
+        if (r == null) return false;
+        const adaDimensi = r.importance != null || r.frequency != null || r.criticality != null;
+        const adaCatatan = (r.catatan ?? "").trim() !== "";
+        return adaDimensi || adaCatatan;
+      })
+      .map((t) => {
+        const r = rating[t.task_kode]!;
+        return {
+          task_kode: t.task_kode,
+          importance: r.importance ?? null,
+          frequency: r.frequency ?? null,
+          criticality: r.criticality ?? null,
+          catatan: r.catatan || null,
+        };
+      });
+  }
+
+  /**
+   * Petakan HANYA task yang sudah lengkap ketiga dimensinya (lihat
+   * `isTaskLengkap()`) menjadi entri payload — dipakai **hanya** oleh
+   * `onSubmit()`. Tombolnya sendiri sudah terkunci selama `!allComplete`,
+   * jadi dalam praktiknya fungsi ini selalu mengembalikan seluruh
+   * `sortedTask` saat benar-benar dipanggil. Bandingkan dengan
+   * {@link buildDraftPayload}, yang dipakai `handleSave()` dan menerima
+   * task belum lengkap apa adanya.
+   */
+  function buildSubmitPayload() {
     return sortedTask
       .filter((t) => isTaskLengkap(rating[t.task_kode]))
       .map((t) => {
@@ -226,13 +266,20 @@ export function OpmForm({ respondenId, task, jawabanAwal, sudahSubmit, accessTok
       });
   }
 
+  /**
+   * Simpan draft — mengirim seluruh task yang punya isian apa pun (lihat
+   * {@link buildDraftPayload}) tanpa syarat kelengkapan. Pesan sukses selalu
+   * `"Draft tersimpan."` tanpa keterangan "N dari M" — sejak issue backlog
+   * `cakrawala-tumbuh/anjab-abk-web-app#56` tidak ada lagi task yang dibuang
+   * diam-diam dari draft.
+   */
   async function handleSave() {
     setError(null);
     setSaveMessage(null);
     setSaving(true);
     try {
       const client = withServerAuth(accessToken);
-      const jawaban = buildJawabanPayload();
+      const jawaban = buildDraftPayload();
       const { error: apiError, response } = await client.PUT(
         "/api/v1/opm/sesi/responden/{responden_id}/jawaban",
         {
@@ -243,15 +290,7 @@ export function OpmForm({ respondenId, task, jawabanAwal, sudahSubmit, accessTok
       const reqId = response.headers.get("x-request-id");
       if (apiError) throw toApiError(apiError, reqId);
 
-      // `buildJawabanPayload` MEMBUANG task yang belum lengkap 3 dimensi, dan endpoint
-      // ini PUT (replace penuh) — jadi task parsial tidak tersimpan sama sekali. User
-      // harus tahu persis berapa yang benar-benar tersimpan, bukan sekadar "tersimpan".
-      const total = sortedTask.length;
-      const pesan =
-        jawaban.length === total
-          ? "Draft tersimpan."
-          : `Draft tersimpan — ${jawaban.length} dari ${total} task. ` +
-            "Task yang belum dinilai pada ketiga dimensi tidak ikut tersimpan.";
+      const pesan = "Draft tersimpan.";
       setSaveMessage(pesan);
       notifySukses(pesan);
     } catch (err) {
@@ -286,7 +325,7 @@ export function OpmForm({ respondenId, task, jawabanAwal, sudahSubmit, accessTok
         "/api/v1/opm/sesi/responden/{responden_id}/jawaban",
         {
           params: { path: { responden_id: respondenId } },
-          body: { jawaban: buildJawabanPayload() },
+          body: { jawaban: buildSubmitPayload() },
         },
       );
       const saveReqId = saveResponse.headers.get("x-request-id");

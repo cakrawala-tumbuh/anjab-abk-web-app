@@ -163,13 +163,13 @@ export function PetunjukOpm({ defaultOpen }: Props) {
           </li>
           <li>Isi catatan bila perlu — bersifat opsional.</li>
           <li>
-            <strong>Perhatian:</strong> saat Anda menekan &ldquo;Simpan&rdquo; (draft), tugas yang{" "}
-            <strong>belum lengkap ketiga dimensinya tidak ikut tersimpan</strong>. Pastikan tiap
-            tugas yang ingin Anda simpan sudah dinilai penuh.
+            &ldquo;Simpan&rdquo; menyimpan progres Anda <strong>apa adanya</strong> kapan saja —
+            walau baru sebagian dimensi yang terisi — sehingga Anda bisa melanjutkan nanti tanpa
+            kehilangan pekerjaan.
           </li>
           <li>
             Tombol &ldquo;Kirim Jawaban&rdquo; baru aktif bila <strong>semua tugas</strong> sudah
-            dinilai lengkap.
+            dinilai lengkap pada ketiga dimensi.
           </li>
           <li>
             Sebagian tugas mungkin sudah terisi otomatis dengan nilai standar dan ditandai badge{" "}

@@ -117,8 +117,9 @@ sekaligus**:
    dibuka — berisi **deskripsi lengkap kelima titik skala (1–5)** pada tiap dimensi
    (Importance/Frequency/Criticality), penegasan bahwa **"gagal" pada Criticality berarti
    tugas tidak terlaksana** (bukan sekadar hasilnya mengecewakan pihak lain), aturan bahwa
-   tiap task wajib dinilai ketiga dimensinya, peringatan bahwa **Simpan** melewati task yang
-   belum lengkap, dan **dua contoh pengisian kontras** (Contoh A bernilai tinggi, Contoh B
+   tiap task wajib dinilai ketiga dimensinya, penjelasan bahwa **Simpan** menyimpan progres apa
+   adanya kapan saja (walau baru sebagian dimensi terisi), dan **dua contoh pengisian kontras**
+   (Contoh A bernilai tinggi, Contoh B
    bernilai rendah — menegaskan bahwa nilai rendah adalah jawaban yang sah, bukan kesalahan
    pengisian). Tutup dengan tombol **Saya Mengerti, Mulai Mengisi**, ikon **X**, klik area
    luar pop-up, atau tombol **Esc**. Pop-up ini dapat dibuka lagi kapan saja lewat tombol
@@ -144,7 +145,15 @@ kosong seperti biasa.
 
 4. Pantau penghitung _"{lengkap} / {total} tugas lengkap"_ di bagian bawah — satu task
    dianggap lengkap bila ketiga dimensi terisi (termasuk yang masih nilai bawaan).
-5. Setelah **semua** task lengkap, klik **Kirim Jawaban**. Bila masih ada task bertanda
+5. **Tombol Simpan menyimpan draf TANPA syarat kelengkapan** — berbeda dari Kirim Jawaban.
+   Klik Simpan kapan saja mengirim **seluruh task yang punya isian apa pun** (minimal satu
+   dimensi terisi atau catatan diisi) apa adanya, termasuk task yang baru dinilai pada satu
+   atau dua dimensi — dimensi yang belum dipilih tersimpan kosong, tidak ada validasi yang
+   membatalkan penyimpanan. Task yang seluruh dimensinya kosong dan tanpa catatan tidak ikut
+   terkirim (memang tidak ada yang perlu disimpan). Pesan **"Draft tersimpan."** selalu muncul
+   tanpa keterangan jumlah. Ini mencegah rating yang sudah dipilih hilang bila Anda
+   meninggalkan halaman sebelum selesai.
+6. Setelah **semua** task lengkap, klik **Kirim Jawaban**. Bila masih ada task bertanda
    **"Nilai bawaan"** yang belum Anda ubah, muncul dialog konfirmasi yang menyebutkan
    jumlahnya (_"N dari M task masih memakai nilai bawaan"_) — klik **OK** untuk tetap
    mengirim apa adanya, atau **Batal** untuk kembali memeriksa task tersebut terlebih
