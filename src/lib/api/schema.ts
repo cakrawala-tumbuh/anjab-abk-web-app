@@ -2399,7 +2399,7 @@ export interface paths {
         put?: never;
         /**
          * Cari masalah (domain ala Odoo) (tim-kajian)
-         * @description Cari dengan domain ala Odoo; field: kode, konteks_id, sekolah_id, status_awal,
+         * @description Cari dengan domain ala Odoo; field: kode, konteks_id, sekolah_id, status_awal, eskalasi_pada,
          *     gelombang, dibuka_untuk_konfirmasi.
          */
         post: operations["redesain_masalah_search"];
@@ -2571,10 +2571,338 @@ export interface paths {
         patch: operations["redesain_langkah_update"];
         trace?: never;
     };
+    "/api/v1/redesain/langkah/{langkah_id}/koreksi": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Daftar koreksi sebuah langkah (tim-kajian)
+         * @description Seluruh koreksi langkah (Tim maupun sekolah) terurut `waktu`.
+         */
+        get: operations["redesain_langkah_koreksi_list"];
+        put?: never;
+        /**
+         * Tulis koreksi untuk satu langkah (tim-kajian atau sekolah-pengisi)
+         * @description Tambah koreksi append-only; isi langkah TIDAK berubah.
+         *
+         *     `tim-kajian` boleh tanpa `konfirmasi_id` (tersimpan NULL). `sekolah-pengisi` wajib
+         *     menyertakan `konfirmasi_id` miliknya yang dugaannya sudah tampil, untuk masalah dan
+         *     sekolah yang sama dengan proses langkah itu. Riwayat `entitas="koreksi_langkah"`.
+         */
+        post: operations["redesain_langkah_koreksi_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/redesain/sekolah/masalah": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Daftar masalah yang dibuka untuk konfirmasi sekolah Anda (sekolah-pengisi)
+         * @description Masalah `dibuka_untuk_konfirmasi=true` milik sekolah pemanggil, terurut `kode`.
+         *
+         *     Hanya bagian A Lembar Konfirmasi — `rumusan_hipotesis` sengaja tidak ikut agar dugaan
+         *     Tim tidak terlihat sebelum cerita pengisi dikunci.
+         */
+        get: operations["redesain_sekolah_masalah_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/redesain/konfirmasi": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Daftar seluruh konfirmasi (tim-kajian)
+         * @description Seluruh konfirmasi terlama dulu, dengan penanda `digantikan`.
+         */
+        get: operations["redesain_konfirmasi_list"];
+        put?: never;
+        /**
+         * Mulai draf konfirmasi untuk satu masalah (sekolah-pengisi)
+         * @description Buat draf `daring` untuk masalah sekolah pemanggil; `sekolah_id` disalin dari partisipan.
+         *
+         *     Masalah sekolah lain atau belum dibuka → 403; satu orang hanya satu draf/terkirim per
+         *     masalah → 409.
+         */
+        post: operations["redesain_konfirmasi_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/redesain/konfirmasi/saya": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Daftar konfirmasi milik saya, semua versi (sekolah-pengisi)
+         * @description Konfirmasi milik `kode_orang` pemanggil (draf, terkirim, dan yang sudah diralat).
+         */
+        get: operations["redesain_konfirmasi_saya"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/redesain/konfirmasi/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Cari konfirmasi (domain ala Odoo) (tim-kajian)
+         * @description Cari dengan domain ala Odoo; field: masalah_id, sekolah_id, kode_orang, status, sumber,
+         *     indikasi_risiko.
+         */
+        post: operations["redesain_konfirmasi_search"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/redesain/konfirmasi/luring": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Catat isian luring (kertas) atas nama pemberi keterangan (tim-kajian)
+         * @description Simpan langsung `terkirim` dengan `sumber="luring"`; membekukan status awal masalah
+         *     dan menandai eskalasi seperti `kirim`. Riwayat `create` oleh Tim pemanggil.
+         */
+        post: operations["redesain_konfirmasi_luring"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/redesain/konfirmasi/{konfirmasi_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Detail konfirmasi (pemilik atau tim-kajian)
+         * @description Ambil satu konfirmasi beserta `dugaan_diperlihatkan` (`Ya`/`Belum`).
+         *
+         *     `tim-kajian` boleh membaca semua; `sekolah-pengisi` hanya miliknya sendiri (403).
+         *     Rumusan hipotesis tidak pernah ikut di respons ini.
+         */
+        get: operations["redesain_konfirmasi_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Ubah draf konfirmasi milik sendiri (sekolah-pengisi)
+         * @description Ubah parsial draf; `cerita_sebelum` hanya sebelum dikunci, bagian C–E hanya setelah
+         *     dugaan ditampilkan. Riwayat `aksi="update"` dicatat.
+         */
+        patch: operations["redesain_konfirmasi_update"];
+        trace?: never;
+    };
+    "/api/v1/redesain/konfirmasi/{konfirmasi_id}/kunci-cerita": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Kunci cerita bebas sebelum dugaan ditampilkan (sekolah-pengisi)
+         * @description Isi `cerita_dikunci_pada`; setelahnya `cerita_sebelum` tidak dapat diubah.
+         */
+        post: operations["redesain_konfirmasi_kunci_cerita"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/redesain/konfirmasi/{konfirmasi_id}/tampilkan-dugaan": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Tampilkan rumusan dugaan Tim setelah cerita dikunci (sekolah-pengisi)
+         * @description Kembalikan `rumusan_hipotesis`; panggilan pertama mengisi `dugaan_ditampilkan_pada`.
+         */
+        post: operations["redesain_konfirmasi_tampilkan_dugaan"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/redesain/konfirmasi/{konfirmasi_id}/kirim": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Kirim konfirmasi (final, tidak dapat diubah) (sekolah-pengisi)
+         * @description Kirim: wajib `peran`, `kesesuaian`, `k1`…`k4`, `indikasi_risiko`.
+         *
+         *     Membekukan `masalah.status_awal` (bila belum) dan menandai `masalah.eskalasi_pada`
+         *     bila `indikasi_risiko="Ada indikasi"`. Riwayat `aksi="kirim"` dicatat.
+         */
+        post: operations["redesain_konfirmasi_kirim"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/redesain/konfirmasi/{konfirmasi_id}/alur": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Peta langkah alur sekolah Anda setelah dugaan tampil (sekolah-pengisi)
+         * @description Proses dengan `masalah_id` dan `sekolah_id` sama dengan konfirmasi, beserta langkahnya.
+         *
+         *     Hanya pemilik konfirmasi; proses sekolah lain tidak pernah ikut. Sebelum dugaan
+         *     ditampilkan → 409.
+         */
+        get: operations["redesain_konfirmasi_alur"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/redesain/konfirmasi/{konfirmasi_id}/ralat": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Ralat konfirmasi terkirim: buat versi baru (sekolah-pengisi)
+         * @description Buat draf baru berisi salinan isi lama dengan `menggantikan_id` = id lama.
+         *
+         *     Versi lama tidak berubah; cerita tidak dibuka ulang. Draf ralat diedit lewat PATCH dan
+         *     dikirim lewat `kirim` seperti biasa.
+         */
+        post: operations["redesain_konfirmasi_ralat"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/redesain/konfirmasi/{konfirmasi_id}/angkat-masalah": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Angkat masalah baru dari konfirmasi menjadi masalah register (tim-kajian)
+         * @description Buat masalah `Keterangan kasus` untuk sekolah konfirmasi dengan `sumber_konfirmasi_id`
+         *     terisi; teks `masalah_baru` konfirmasi tidak diubah.
+         */
+        post: operations["redesain_konfirmasi_angkat_masalah"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /**
+         * AlurRead
+         * @description Peta alur untuk satu konfirmasi: hanya proses sekolah & masalah konfirmasi itu.
+         */
+        AlurRead: {
+            /** Konfirmasi Id */
+            konfirmasi_id: string;
+            /** Masalah Id */
+            masalah_id: string;
+            /** Sekolah Id */
+            sekolah_id: string;
+            /** Proses */
+            proses: components["schemas"]["ProsesAlurRead"][];
+        };
+        /**
+         * AngkatMasalahCreate
+         * @description Payload mengangkat `masalah_baru` sebuah konfirmasi menjadi masalah register.
+         */
+        AngkatMasalahCreate: {
+            /**
+             * Konteks Id
+             * @description ID konteks redesain tempat masalah baru dikelompokkan.
+             */
+            konteks_id: string;
+            /**
+             * Rumusan Hipotesis
+             * @description Rumusan hipotesis yang disusun Tim dari keterangan sekolah.
+             */
+            rumusan_hipotesis: string;
+        };
         /** Body_system_restore */
         Body_system_restore: {
             /**
@@ -3225,6 +3553,19 @@ export interface components {
              */
             jabatan_ids?: string[] | null;
         };
+        /**
+         * DugaanRead
+         * @description Respons `tampilkan-dugaan`: rumusan hipotesis Tim + waktu pertama kali ditampilkan.
+         */
+        DugaanRead: {
+            /** Rumusan Hipotesis */
+            rumusan_hipotesis: string;
+            /**
+             * Dugaan Ditampilkan Pada
+             * Format: date-time
+             */
+            dugaan_ditampilkan_pada: string;
+        };
         /** ErrorDetail */
         ErrorDetail: {
             /**
@@ -3590,6 +3931,326 @@ export interface components {
             keterangan_peran?: string | null;
         };
         /**
+         * KonfirmasiCreate
+         * @description Payload memulai draf konfirmasi untuk satu masalah.
+         */
+        KonfirmasiCreate: {
+            /**
+             * Masalah Id
+             * @description ID masalah yang dibuka untuk sekolah pemanggil.
+             */
+            masalah_id: string;
+        };
+        /**
+         * KonfirmasiDaftarRead
+         * @description Konfirmasi pada daftar (`/saya`, daftar & search Tim): menambah penanda ralat.
+         */
+        KonfirmasiDaftarRead: {
+            /**
+             * Id
+             * @description ID konfirmasi (UUID v4).
+             */
+            id: string;
+            /** Masalah Id */
+            masalah_id: string;
+            /**
+             * Kode Orang
+             * @description Pseudonim pengisi.
+             * @example O-0001
+             */
+            kode_orang: string;
+            /** Sekolah Id */
+            sekolah_id: string;
+            /**
+             * Sumber
+             * @enum {string}
+             */
+            sumber: "daring" | "luring";
+            /** Peran */
+            peran: string | null;
+            /**
+             * Tanggal
+             * Format: date
+             */
+            tanggal: string;
+            /** Cerita Sebelum */
+            cerita_sebelum: string | null;
+            /** Cerita Dikunci Pada */
+            cerita_dikunci_pada: string | null;
+            /** Dugaan Ditampilkan Pada */
+            dugaan_ditampilkan_pada: string | null;
+            /**
+             * Dugaan Diperlihatkan
+             * @description `Ya` bila dugaan Tim sudah ditampilkan ke pengisi, selain itu `Belum`.
+             * @enum {string}
+             */
+            dugaan_diperlihatkan: "Ya" | "Belum";
+            /** Dikirim Pada */
+            dikirim_pada: string | null;
+            /** Kesesuaian */
+            kesesuaian: ("Ya" | "Sebagian" | "Tidak" | "Belum bisa memastikan") | null;
+            /** Koreksi */
+            koreksi: string | null;
+            /** Masalah Baru */
+            masalah_baru: string | null;
+            /** Alasan K */
+            alasan_k: string | null;
+            /** Bukti Dapat Diperiksa */
+            bukti_dapat_diperiksa: string | null;
+            /** Hal Belum Jelas */
+            hal_belum_jelas: string | null;
+            /** Catatan Independensi */
+            catatan_independensi: string | null;
+            /** Catatan Akses */
+            catatan_akses: string | null;
+            /** K1 */
+            k1: ("Tinggi" | "Sedang" | "Rendah" | "Belum tahu") | null;
+            /** K2 */
+            k2: ("Tinggi" | "Sedang" | "Rendah" | "Belum tahu") | null;
+            /** K3 */
+            k3: ("Tinggi" | "Sedang" | "Rendah" | "Belum tahu") | null;
+            /** K4 */
+            k4: ("Tinggi" | "Sedang" | "Rendah" | "Belum tahu") | null;
+            /** Indikasi Risiko */
+            indikasi_risiko: ("Ada indikasi" | "Tidak terlihat" | "Belum tahu") | null;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "draf" | "terkirim";
+            /** Menggantikan Id */
+            menggantikan_id: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+            /**
+             * Digantikan
+             * @description True bila ada versi ralat yang menunjuk record ini (`menggantikan_id`).
+             */
+            digantikan: boolean;
+        };
+        /**
+         * KonfirmasiLuringCreate
+         * @description Payload Tim memasukkan isian kertas atas nama pemberi keterangan (sumber `luring`).
+         *
+         *     Field wajib sama dengan aksi `kirim` (`FIELD_WAJIB_KIRIM`); konfirmasi langsung
+         *     berstatus `terkirim` tanpa melewati urutan cerita-dugaan.
+         */
+        KonfirmasiLuringCreate: {
+            /** Masalah Id */
+            masalah_id: string;
+            /**
+             * Kode Orang
+             * @description Kode pseudonim pemberi keterangan.
+             */
+            kode_orang: string;
+            /** Sekolah Id */
+            sekolah_id: string;
+            /** Peran */
+            peran: string;
+            /**
+             * Tanggal
+             * @description Tanggal isian; default hari ini.
+             */
+            tanggal?: string | null;
+            /** Cerita Sebelum */
+            cerita_sebelum?: string | null;
+            /**
+             * Kesesuaian
+             * @enum {string}
+             */
+            kesesuaian: "Ya" | "Sebagian" | "Tidak" | "Belum bisa memastikan";
+            /** Koreksi */
+            koreksi?: string | null;
+            /** Masalah Baru */
+            masalah_baru?: string | null;
+            /** Alasan K */
+            alasan_k?: string | null;
+            /** Bukti Dapat Diperiksa */
+            bukti_dapat_diperiksa?: string | null;
+            /** Hal Belum Jelas */
+            hal_belum_jelas?: string | null;
+            /** Catatan Independensi */
+            catatan_independensi?: string | null;
+            /** Catatan Akses */
+            catatan_akses?: string | null;
+            /**
+             * K1
+             * @enum {string}
+             */
+            k1: "Tinggi" | "Sedang" | "Rendah" | "Belum tahu";
+            /**
+             * K2
+             * @enum {string}
+             */
+            k2: "Tinggi" | "Sedang" | "Rendah" | "Belum tahu";
+            /**
+             * K3
+             * @enum {string}
+             */
+            k3: "Tinggi" | "Sedang" | "Rendah" | "Belum tahu";
+            /**
+             * K4
+             * @enum {string}
+             */
+            k4: "Tinggi" | "Sedang" | "Rendah" | "Belum tahu";
+            /**
+             * Indikasi Risiko
+             * @enum {string}
+             */
+            indikasi_risiko: "Ada indikasi" | "Tidak terlihat" | "Belum tahu";
+        };
+        /**
+         * KonfirmasiRead
+         * @description Representasi konfirmasi; tidak memuat rumusan hipotesis masalah.
+         */
+        KonfirmasiRead: {
+            /**
+             * Id
+             * @description ID konfirmasi (UUID v4).
+             */
+            id: string;
+            /** Masalah Id */
+            masalah_id: string;
+            /**
+             * Kode Orang
+             * @description Pseudonim pengisi.
+             * @example O-0001
+             */
+            kode_orang: string;
+            /** Sekolah Id */
+            sekolah_id: string;
+            /**
+             * Sumber
+             * @enum {string}
+             */
+            sumber: "daring" | "luring";
+            /** Peran */
+            peran: string | null;
+            /**
+             * Tanggal
+             * Format: date
+             */
+            tanggal: string;
+            /** Cerita Sebelum */
+            cerita_sebelum: string | null;
+            /** Cerita Dikunci Pada */
+            cerita_dikunci_pada: string | null;
+            /** Dugaan Ditampilkan Pada */
+            dugaan_ditampilkan_pada: string | null;
+            /**
+             * Dugaan Diperlihatkan
+             * @description `Ya` bila dugaan Tim sudah ditampilkan ke pengisi, selain itu `Belum`.
+             * @enum {string}
+             */
+            dugaan_diperlihatkan: "Ya" | "Belum";
+            /** Dikirim Pada */
+            dikirim_pada: string | null;
+            /** Kesesuaian */
+            kesesuaian: ("Ya" | "Sebagian" | "Tidak" | "Belum bisa memastikan") | null;
+            /** Koreksi */
+            koreksi: string | null;
+            /** Masalah Baru */
+            masalah_baru: string | null;
+            /** Alasan K */
+            alasan_k: string | null;
+            /** Bukti Dapat Diperiksa */
+            bukti_dapat_diperiksa: string | null;
+            /** Hal Belum Jelas */
+            hal_belum_jelas: string | null;
+            /** Catatan Independensi */
+            catatan_independensi: string | null;
+            /** Catatan Akses */
+            catatan_akses: string | null;
+            /** K1 */
+            k1: ("Tinggi" | "Sedang" | "Rendah" | "Belum tahu") | null;
+            /** K2 */
+            k2: ("Tinggi" | "Sedang" | "Rendah" | "Belum tahu") | null;
+            /** K3 */
+            k3: ("Tinggi" | "Sedang" | "Rendah" | "Belum tahu") | null;
+            /** K4 */
+            k4: ("Tinggi" | "Sedang" | "Rendah" | "Belum tahu") | null;
+            /** Indikasi Risiko */
+            indikasi_risiko: ("Ada indikasi" | "Tidak terlihat" | "Belum tahu") | null;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "draf" | "terkirim";
+            /** Menggantikan Id */
+            menggantikan_id: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+        };
+        /**
+         * KonfirmasiUpdate
+         * @description Payload ubah parsial draf. Field yang tidak dikirim tidak berubah.
+         *
+         *     `cerita_sebelum` hanya selama cerita belum dikunci; field bagian C–E
+         *     (`FIELD_BAGIAN_C_E`) hanya setelah dugaan ditampilkan.
+         */
+        KonfirmasiUpdate: {
+            /**
+             * Peran
+             * @description Peran/jabatan pengisi, bukan nama.
+             */
+            peran?: string | null;
+            /**
+             * Tanggal
+             * @description Tanggal pengisian.
+             */
+            tanggal?: string | null;
+            /**
+             * Cerita Sebelum
+             * @description Cerita bebas pengisi SEBELUM melihat dugaan Tim.
+             */
+            cerita_sebelum?: string | null;
+            /** Kesesuaian */
+            kesesuaian?: ("Ya" | "Sebagian" | "Tidak" | "Belum bisa memastikan") | null;
+            /** Koreksi */
+            koreksi?: string | null;
+            /** Masalah Baru */
+            masalah_baru?: string | null;
+            /** Alasan K */
+            alasan_k?: string | null;
+            /** Bukti Dapat Diperiksa */
+            bukti_dapat_diperiksa?: string | null;
+            /** Hal Belum Jelas */
+            hal_belum_jelas?: string | null;
+            /** Catatan Independensi */
+            catatan_independensi?: string | null;
+            /** Catatan Akses */
+            catatan_akses?: string | null;
+            /** K1 */
+            k1?: ("Tinggi" | "Sedang" | "Rendah" | "Belum tahu") | null;
+            /** K2 */
+            k2?: ("Tinggi" | "Sedang" | "Rendah" | "Belum tahu") | null;
+            /** K3 */
+            k3?: ("Tinggi" | "Sedang" | "Rendah" | "Belum tahu") | null;
+            /** K4 */
+            k4?: ("Tinggi" | "Sedang" | "Rendah" | "Belum tahu") | null;
+            /**
+             * Indikasi Risiko
+             * @description Indikasi risiko (istilah Lembar Konfirmasi bagian E).
+             */
+            indikasi_risiko?: ("Ada indikasi" | "Tidak terlihat" | "Belum tahu") | null;
+        };
+        /**
          * KonteksCreate
          * @description Payload konteks baru.
          */
@@ -3692,6 +4353,90 @@ export interface components {
             batas_pemeriksaan?: string | null;
             /** Aktif */
             aktif?: boolean | null;
+        };
+        /**
+         * KoreksiCreate
+         * @description Payload koreksi sebuah langkah.
+         *
+         *     `konfirmasi_id` wajib bagi `sekolah-pengisi` (konfirmasi miliknya yang dugaannya
+         *     sudah tampil); `tim-kajian` boleh tanpa dan nilainya diabaikan.
+         */
+        KoreksiCreate: {
+            /**
+             * Isi
+             * @description Isi koreksi / keterangan pemeriksa (tidak boleh kosong).
+             */
+            isi: string;
+            /**
+             * Konfirmasi Id
+             * @description ID konfirmasi pengisi.
+             */
+            konfirmasi_id?: string | null;
+        };
+        /**
+         * KoreksiRead
+         * @description Satu koreksi langkah (baris append-only).
+         */
+        KoreksiRead: {
+            /**
+             * Id
+             * @description ID koreksi (UUID v4).
+             */
+            id: string;
+            /** Langkah Id */
+            langkah_id: string;
+            /**
+             * Konfirmasi Id
+             * @description NULL bila ditulis Tim Kajian.
+             */
+            konfirmasi_id: string | null;
+            /**
+             * Kode Orang
+             * @description Kode pseudonim penulis.
+             * @example O-0001
+             */
+            kode_orang: string;
+            /** Isi */
+            isi: string;
+            /**
+             * Waktu
+             * Format: date-time
+             */
+            waktu: string;
+        };
+        /**
+         * LangkahAlurRead
+         * @description Langkah proses sebagaimana tampil bagi sekolah (tanpa kolom audit).
+         */
+        LangkahAlurRead: {
+            /** Id */
+            id: string;
+            /**
+             * Kode
+             * @example P-001-S01
+             */
+            kode: string;
+            /** Urutan */
+            urutan: number;
+            /** Tahap */
+            tahap: string;
+            /** Pemicu Input */
+            pemicu_input: string;
+            /** Pelaksana */
+            pelaksana: string;
+            /** Pekerjaan Sistem */
+            pekerjaan_sistem: string;
+            /** Keluaran Penerima */
+            keluaran_penerima: string;
+            /** Pemeriksa Pemutus */
+            pemeriksa_pemutus: string | null;
+            /** Hambatan */
+            hambatan: string | null;
+            /**
+             * Status Langkah
+             * @enum {string}
+             */
+            status_langkah: "Hipotesis" | "Keterangan kasus" | "Diperkuat untuk klaim" | "Diperselisihkan" | "Tidak berlaku";
         };
         /**
          * LangkahCreate
@@ -3946,6 +4691,16 @@ export interface components {
              */
             status_awal_dibekukan_pada: string | null;
             /**
+             * Eskalasi Pada
+             * @description Saat konfirmasi ber-indikasi risiko pertama terkirim; null = belum.
+             */
+            eskalasi_pada?: string | null;
+            /**
+             * Sumber Konfirmasi Id
+             * @description ID konfirmasi asal bila masalah diangkat dari `masalah_baru`; null = bukan.
+             */
+            sumber_konfirmasi_id?: string | null;
+            /**
              * Uraian Tugas Ids
              * @description ID uraian tugas tertaut, terurut.
              */
@@ -3960,6 +4715,41 @@ export interface components {
              * Format: date-time
              */
             updated_at: string;
+        };
+        /**
+         * MasalahSekolahRead
+         * @description Bagian A Lembar Konfirmasi: masalah yang dibuka untuk sekolah pemanggil.
+         *
+         *     Sengaja TANPA `rumusan_hipotesis` — dugaan Tim baru boleh terlihat setelah cerita
+         *     pengisi dikunci.
+         */
+        MasalahSekolahRead: {
+            /**
+             * Id
+             * @description ID masalah (UUID v4).
+             */
+            id: string;
+            /**
+             * Kode
+             * @example M-K01-01
+             */
+            kode: string;
+            /**
+             * Konteks Kode
+             * @example K-01
+             */
+            konteks_kode: string;
+            /** Konteks Tema */
+            konteks_tema: string;
+            /** Periode Acuan */
+            periode_acuan: string;
+            /** Sumber Awal Keterbatasan */
+            sumber_awal_keterbatasan: string;
+            /**
+             * Status Awal
+             * @enum {string}
+             */
+            status_awal: "Hipotesis" | "Keterangan kasus" | "Diperkuat untuk klaim" | "Diperselisihkan";
         };
         /**
          * MasalahStatusKonfirmasi
@@ -4844,6 +5634,32 @@ export interface components {
              */
             offset: number;
         };
+        /** Page[KonfirmasiDaftarRead] */
+        Page_KonfirmasiDaftarRead_: {
+            /**
+             * Items
+             * @description Item pada halaman ini.
+             */
+            items: components["schemas"]["KonfirmasiDaftarRead"][];
+            /**
+             * Total
+             * @description Total item tersedia.
+             * @example 42
+             */
+            total: number;
+            /**
+             * Limit
+             * @description Maksimum item per halaman.
+             * @example 20
+             */
+            limit: number;
+            /**
+             * Offset
+             * @description Jumlah item yang dilewati.
+             * @example 0
+             */
+            offset: number;
+        };
         /** Page[KonteksRead] */
         Page_KonteksRead_: {
             /**
@@ -4870,6 +5686,32 @@ export interface components {
              */
             offset: number;
         };
+        /** Page[KoreksiRead] */
+        Page_KoreksiRead_: {
+            /**
+             * Items
+             * @description Item pada halaman ini.
+             */
+            items: components["schemas"]["KoreksiRead"][];
+            /**
+             * Total
+             * @description Total item tersedia.
+             * @example 42
+             */
+            total: number;
+            /**
+             * Limit
+             * @description Maksimum item per halaman.
+             * @example 20
+             */
+            limit: number;
+            /**
+             * Offset
+             * @description Jumlah item yang dilewati.
+             * @example 0
+             */
+            offset: number;
+        };
         /** Page[MasalahRead] */
         Page_MasalahRead_: {
             /**
@@ -4877,6 +5719,32 @@ export interface components {
              * @description Item pada halaman ini.
              */
             items: components["schemas"]["MasalahRead"][];
+            /**
+             * Total
+             * @description Total item tersedia.
+             * @example 42
+             */
+            total: number;
+            /**
+             * Limit
+             * @description Maksimum item per halaman.
+             * @example 20
+             */
+            limit: number;
+            /**
+             * Offset
+             * @description Jumlah item yang dilewati.
+             * @example 0
+             */
+            offset: number;
+        };
+        /** Page[MasalahSekolahRead] */
+        Page_MasalahSekolahRead_: {
+            /**
+             * Items
+             * @description Item pada halaman ini.
+             */
+            items: components["schemas"]["MasalahSekolahRead"][];
             /**
              * Total
              * @description Total item tersedia.
@@ -5602,6 +6470,25 @@ export interface components {
              * @description Scope/izin pada token.
              */
             scopes?: string[];
+        };
+        /**
+         * ProsesAlurRead
+         * @description Proses milik sekolah konfirmasi beserta langkahnya terurut `urutan`.
+         */
+        ProsesAlurRead: {
+            /** Id */
+            id: string;
+            /**
+             * Kode
+             * @example P-001
+             */
+            kode: string;
+            /** Periode */
+            periode: string;
+            /** Nama Proses */
+            nama_proses: string;
+            /** Langkah */
+            langkah: components["schemas"]["LangkahAlurRead"][];
         };
         /**
          * ProsesCreate
@@ -20778,6 +21665,1155 @@ export interface operations {
             };
         };
     };
+    redesain_langkah_koreksi_list: {
+        parameters: {
+            query?: {
+                /** @description Maks item per halaman. */
+                limit?: number;
+                /** @description Jumlah item yang dilewati. */
+                offset?: number;
+            };
+            header?: never;
+            path: {
+                langkah_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Page_KoreksiRead_"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan anggota grup tim-kajian. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Langkah tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    redesain_langkah_koreksi_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                langkah_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["KoreksiCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["KoreksiRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Tanpa `konfirmasi_id` (pengisi), konfirmasi bukan milik pemanggil, atau langkah di luar masalah/sekolah konfirmasi. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Langkah/konfirmasi tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Dugaan belum ditampilkan (`DUGAAN_BELUM_DITAMPILKAN`). */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description `isi` kosong. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    redesain_sekolah_masalah_list: {
+        parameters: {
+            query?: {
+                /** @description Maks item per halaman. */
+                limit?: number;
+                /** @description Jumlah item yang dilewati. */
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Page_MasalahSekolahRead_"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan sekolah pengisi, di luar sekolah Anda, atau bukan milik Anda. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    redesain_konfirmasi_list: {
+        parameters: {
+            query?: {
+                /** @description Maks item per halaman. */
+                limit?: number;
+                /** @description Jumlah item yang dilewati. */
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Page_KonfirmasiDaftarRead_"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan anggota grup tim-kajian. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    redesain_konfirmasi_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["KonfirmasiCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["KonfirmasiRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan sekolah pengisi, di luar sekolah Anda, atau bukan milik Anda. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Masalah tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Sudah ada draf/terkirim untuk masalah ini (`KONFIRMASI_SUDAH_ADA`). */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    redesain_konfirmasi_saya: {
+        parameters: {
+            query?: {
+                /** @description Maks item per halaman. */
+                limit?: number;
+                /** @description Jumlah item yang dilewati. */
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Page_KonfirmasiDaftarRead_"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan sekolah pengisi, di luar sekolah Anda, atau bukan milik Anda. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    redesain_konfirmasi_search: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SearchRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Page_KonfirmasiDaftarRead_"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan anggota grup tim-kajian. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Domain/field tidak valid. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    redesain_konfirmasi_luring: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["KonfirmasiLuringCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["KonfirmasiRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan anggota grup tim-kajian. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Pasangan masalah & kode orang sudah punya konfirmasi. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Field wajib kosong, kode orang/masalah tak dikenal, sekolah tak cocok. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    redesain_konfirmasi_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                konfirmasi_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["KonfirmasiRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan sekolah pengisi, di luar sekolah Anda, atau bukan milik Anda. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Konfirmasi tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    redesain_konfirmasi_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                konfirmasi_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["KonfirmasiUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["KonfirmasiRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan sekolah pengisi, di luar sekolah Anda, atau bukan milik Anda. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Konfirmasi tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description `KONFIRMASI_SUDAH_TERKIRIM`, `CERITA_SUDAH_DIKUNCI`, atau `DUGAAN_BELUM_DITAMPILKAN`. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    redesain_konfirmasi_kunci_cerita: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                konfirmasi_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["KonfirmasiRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan sekolah pengisi, di luar sekolah Anda, atau bukan milik Anda. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Konfirmasi tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Konfirmasi sudah terkirim (`KONFIRMASI_SUDAH_TERKIRIM`). */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description `cerita_sebelum` kosong/spasi. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    redesain_konfirmasi_tampilkan_dugaan: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                konfirmasi_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DugaanRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan sekolah pengisi, di luar sekolah Anda, atau bukan milik Anda. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Konfirmasi tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Cerita belum dikunci (`CERITA_BELUM_DIKUNCI`). */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    redesain_konfirmasi_kirim: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                konfirmasi_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["KonfirmasiRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan sekolah pengisi, di luar sekolah Anda, atau bukan milik Anda. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Konfirmasi tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Konfirmasi sudah terkirim (`KONFIRMASI_SUDAH_TERKIRIM`). */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Field wajib kosong (disebut per field). */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    redesain_konfirmasi_alur: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                konfirmasi_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AlurRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan sekolah pengisi, di luar sekolah Anda, atau bukan milik Anda. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Konfirmasi tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Dugaan belum ditampilkan (`DUGAAN_BELUM_DITAMPILKAN`). */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    redesain_konfirmasi_ralat: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                konfirmasi_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["KonfirmasiRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan sekolah pengisi, di luar sekolah Anda, atau bukan milik Anda. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Konfirmasi tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description `KONFIRMASI_BELUM_TERKIRIM`, `KONFIRMASI_SUDAH_DIGANTIKAN`, atau `KONFIRMASI_SUDAH_ADA` (sudah ada draf). */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    redesain_konfirmasi_angkat_masalah: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                konfirmasi_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AngkatMasalahCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MasalahRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan anggota grup tim-kajian. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Konfirmasi tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description `KONFIRMASI_BELUM_TERKIRIM` atau `MASALAH_SUDAH_DIANGKAT`. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description `masalah_baru` kosong atau konteks tak dikenal. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
 }
 export type JabatanRead = components["schemas"]["JabatanRead"];
 export type JenjangPendidikanRead = components["schemas"]["JenjangPendidikanRead"];
@@ -20851,3 +22887,8 @@ export type OpmRespondenBulkResult = components["schemas"]["BulkAssignResult_Opm
 export type DcsRespondenBulkResult = components["schemas"]["BulkAssignResult_DcsRespondenRead_"];
 export type WcpRespondenBulkResult = components["schemas"]["BulkAssignResult_WcpRespondenRead_"];
 export type RestoreResult = components["schemas"]["RestoreResult"];
+export type MasalahSekolahRead = components["schemas"]["MasalahSekolahRead"];
+export type KonfirmasiRead = components["schemas"]["KonfirmasiRead"];
+export type KonfirmasiDaftarRead = components["schemas"]["KonfirmasiDaftarRead"];
+export type KonfirmasiUpdate = components["schemas"]["KonfirmasiUpdate"];
+export type DugaanRead = components["schemas"]["DugaanRead"];

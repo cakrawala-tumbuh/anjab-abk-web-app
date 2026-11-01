@@ -4,6 +4,7 @@ import Link from "next/link";
 import {
   BarChart3,
   ChevronDown,
+  ClipboardCheck,
   ClipboardList,
   Compass,
   Clock,
@@ -21,6 +22,9 @@ import { cn } from "@/lib/utils";
 
 /** Nama grup Tim Kajian (cermin `GRUP_TIM_KAJIAN` di auth.ts; tidak diimpor agar Client Component tidak menarik Auth.js). */
 const GRUP_TIM_KAJIAN = "tim-kajian";
+
+/** Nama grup pengisi sekolah (cermin `GRUP_SEKOLAH_PENGISI` di auth.ts). */
+const GRUP_SEKOLAH_PENGISI = "sekolah-pengisi";
 
 export type NavLink = { kind: "link"; href: string; label: string; icon: LucideIcon };
 export type NavGroup = {
@@ -65,6 +69,14 @@ const NAV_REDESAIN_TIM: NavGroup = {
   items: REDESAIN_TIM_ITEMS,
 };
 
+/** Entri menu "Konfirmasi Redesain" — hanya ditambahkan untuk pengguna grup `sekolah-pengisi`. */
+const NAV_REDESAIN_SEKOLAH: NavLink = {
+  kind: "link",
+  href: "/redesain-sekolah",
+  label: "Konfirmasi Redesain",
+  icon: ClipboardCheck,
+};
+
 export const NAV_ADMIN: ReadonlyArray<NavEntry> = [
   { kind: "link", href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { kind: "link", href: "/partisipan", label: "Partisipan", icon: Users },
@@ -92,7 +104,8 @@ export const NAV_PARTISIPAN: ReadonlyArray<NavEntry> = [
  * Pilih daftar menu sidebar sesuai grup Authentik pengguna.
  *
  * Menu dasar: `NAV_ADMIN` bila punya "admin", selain itu `NAV_PARTISIPAN`. Bila punya
- * "tim-kajian", grup menu "Redesain Pekerjaan" ditambahkan di akhir. Grup "admin" saja
+ * "tim-kajian", grup menu "Redesain Pekerjaan" ditambahkan di akhir; bila punya
+ * "sekolah-pengisi", tautan "Konfirmasi Redesain" ditambahkan. Grup "admin" saja
  * TIDAK memunculkan menu redesain.
  *
  * @param groups - Klaim `groups` dari sesi.
@@ -100,7 +113,10 @@ export const NAV_PARTISIPAN: ReadonlyArray<NavEntry> = [
  */
 export function navForGroups(groups: ReadonlyArray<string>): ReadonlyArray<NavEntry> {
   const dasar = groups.includes("admin") ? NAV_ADMIN : NAV_PARTISIPAN;
-  return groups.includes(GRUP_TIM_KAJIAN) ? [...dasar, NAV_REDESAIN_TIM] : dasar;
+  const tambahan: NavEntry[] = [];
+  if (groups.includes(GRUP_TIM_KAJIAN)) tambahan.push(NAV_REDESAIN_TIM);
+  if (groups.includes(GRUP_SEKOLAH_PENGISI)) tambahan.push(NAV_REDESAIN_SEKOLAH);
+  return tambahan.length > 0 ? [...dasar, ...tambahan] : dasar;
 }
 
 /** Item aktif = pathname persis sama, atau sub-route (`href` + `/...`). */

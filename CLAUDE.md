@@ -84,6 +84,17 @@ src/
 
 ## Revisi Desain
 
+### [2026-11-01] Wizard konfirmasi sekolah (WEB-2a)
+
+Butir WEB-2a pelacak `cakrawala-tumbuh/ypii-support#424`; konsumen `anjab-abk-backend#53`/`#55`.
+
+- **Segmen `src/app/(auth)/redesain-sekolah/`**: `layout.tsx` = `WajibGrup` `sekolah-pengisi` + `BannerPrototipe`; `page.tsx` (daftar) menggabungkan `GET sekolah/masalah` + `GET konfirmasi/saya` (`data.ts`, keduanya via `ambilSemuaHalaman`, kegagalan melempar); `mulai-isi-tombol.tsx` (`POST konfirmasi`, 409 → `router.refresh()`).
+- **Wizard** `konfirmasi/[id]/{page,wizard}.tsx`: langkah yang boleh dibuka DITURUNKAN dari cap waktu server (`langkahMaks`/`langkahAwal` di `src/lib/redesain-konfirmasi.ts`); state lokal hanya langkah yang dilihat (ter-clamp) + isian teks. `page.tsx` memanggil `tampilkan-dugaan` HANYA bila `dugaan_ditampilkan_pada` sudah terisi; cerita belum dikunci → endpoint itu tidak pernah disentuh. "Kunci cerita" = PATCH cerita lalu `POST kunci-cerita` setelah `confirm()`.
+- Pemetaan 409 (`CERITA_SUDAH_DIKUNCI`, `CERITA_BELUM_DIKUNCI`, `DUGAAN_BELUM_DITAMPILKAN`) dan 422 `kirim` (field dari `details[].loc`) di `pesanGagalWizard`.
+- Menu: `navForGroups` menambah tautan "Konfirmasi Redesain" untuk `sekolah-pengisi`.
+- `openapi/openapi.json` diregenerasi dari backend master `c8a7991` (klon scratch, image `Dockerfile.test`); alias tipe `MasalahSekolahRead`/`KonfirmasiRead`/`KonfirmasiDaftarRead`/`KonfirmasiUpdate`/`DugaanRead` ditambahkan di akhir `schema.ts`.
+- Detail keputusan: issue `cakrawala-tumbuh/anjab-abk-web-app#61`.
+
 ### [2026-11-01] Fondasi redesain: peran `tim-kajian`, menu, banner PROTOTIPE, riwayat (WEB-1)
 
 Butir WEB-1 pelacak `cakrawala-tumbuh/ypii-support#424`; konsumen `anjab-abk-backend#48` (BE-1).

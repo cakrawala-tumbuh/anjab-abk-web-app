@@ -9,6 +9,11 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ### Ditambahkan
 
+- **Wizard konfirmasi sekolah Redesain Pekerjaan** (issue #61, mengikuti backend #53/#55) — menu
+  **Konfirmasi Redesain** untuk peran `sekolah-pengisi`: daftar masalah sekolah dengan status
+  isian (Mulai isi / Lanjutkan / Lihat) dan wizard lima langkah (cerita → dugaan → akibat K1–K4 →
+  sumber → kirim). Cerita dikunci lebih dulu; rumusan dugaan tidak pernah tampil sebelum cerita
+  terkunci. Panduan: IK-11.
 - **Fondasi Redesain Pekerjaan untuk Tim Kajian** (issue #58, mengikuti backend #48) — menu
   **Redesain Pekerjaan** (Beranda, Riwayat Perubahan) hanya untuk peran `tim-kajian` (admin saja
   tidak cukup), banner PROTOTIPE di semua layar redesain, dan halaman baca **Riwayat Perubahan**

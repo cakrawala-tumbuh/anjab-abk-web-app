@@ -16227,7 +16227,7 @@
           "redesain"
         ],
         "summary": "Cari masalah (domain ala Odoo) (tim-kajian)",
-        "description": "Cari dengan domain ala Odoo; field: kode, konteks_id, sekolah_id, status_awal,\ngelombang, dibuka_untuk_konfirmasi.",
+        "description": "Cari dengan domain ala Odoo; field: kode, konteks_id, sekolah_id, status_awal, eskalasi_pada,\ngelombang, dibuka_untuk_konfirmasi.",
         "operationId": "redesain_masalah_search",
         "requestBody": {
           "content": {
@@ -17237,10 +17237,1625 @@
           }
         }
       }
+    },
+    "/api/v1/redesain/langkah/{langkah_id}/koreksi": {
+      "post": {
+        "tags": [
+          "redesain"
+        ],
+        "summary": "Tulis koreksi untuk satu langkah (tim-kajian atau sekolah-pengisi)",
+        "description": "Tambah koreksi append-only; isi langkah TIDAK berubah.\n\n`tim-kajian` boleh tanpa `konfirmasi_id` (tersimpan NULL). `sekolah-pengisi` wajib\nmenyertakan `konfirmasi_id` miliknya yang dugaannya sudah tampil, untuk masalah dan\nsekolah yang sama dengan proses langkah itu. Riwayat `entitas=\"koreksi_langkah\"`.",
+        "operationId": "redesain_langkah_koreksi_create",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "langkah_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Langkah Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/KoreksiCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/KoreksiRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Tanpa `konfirmasi_id` (pengisi), konfirmasi bukan milik pemanggil, atau langkah di luar masalah/sekolah konfirmasi.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Langkah/konfirmasi tidak ditemukan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Dugaan belum ditampilkan (`DUGAAN_BELUM_DITAMPILKAN`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "`isi` kosong.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "redesain"
+        ],
+        "summary": "Daftar koreksi sebuah langkah (tim-kajian)",
+        "description": "Seluruh koreksi langkah (Tim maupun sekolah) terurut `waktu`.",
+        "operationId": "redesain_langkah_koreksi_list",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "langkah_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Langkah Id"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 500,
+              "minimum": 1,
+              "description": "Maks item per halaman.",
+              "default": 20,
+              "title": "Limit"
+            },
+            "description": "Maks item per halaman."
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Jumlah item yang dilewati.",
+              "default": 0,
+              "title": "Offset"
+            },
+            "description": "Jumlah item yang dilewati."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_KoreksiRead_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan anggota grup tim-kajian.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Langkah tidak ditemukan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/redesain/sekolah/masalah": {
+      "get": {
+        "tags": [
+          "redesain"
+        ],
+        "summary": "Daftar masalah yang dibuka untuk konfirmasi sekolah Anda (sekolah-pengisi)",
+        "description": "Masalah `dibuka_untuk_konfirmasi=true` milik sekolah pemanggil, terurut `kode`.\n\nHanya bagian A Lembar Konfirmasi — `rumusan_hipotesis` sengaja tidak ikut agar dugaan\nTim tidak terlihat sebelum cerita pengisi dikunci.",
+        "operationId": "redesain_sekolah_masalah_list",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 500,
+              "minimum": 1,
+              "description": "Maks item per halaman.",
+              "default": 20,
+              "title": "Limit"
+            },
+            "description": "Maks item per halaman."
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Jumlah item yang dilewati.",
+              "default": 0,
+              "title": "Offset"
+            },
+            "description": "Jumlah item yang dilewati."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_MasalahSekolahRead_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan sekolah pengisi, di luar sekolah Anda, atau bukan milik Anda.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/redesain/konfirmasi": {
+      "post": {
+        "tags": [
+          "redesain"
+        ],
+        "summary": "Mulai draf konfirmasi untuk satu masalah (sekolah-pengisi)",
+        "description": "Buat draf `daring` untuk masalah sekolah pemanggil; `sekolah_id` disalin dari partisipan.\n\nMasalah sekolah lain atau belum dibuka → 403; satu orang hanya satu draf/terkirim per\nmasalah → 409.",
+        "operationId": "redesain_konfirmasi_create",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/KonfirmasiCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/KonfirmasiRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan sekolah pengisi, di luar sekolah Anda, atau bukan milik Anda.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Masalah tidak ditemukan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Sudah ada draf/terkirim untuk masalah ini (`KONFIRMASI_SUDAH_ADA`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "redesain"
+        ],
+        "summary": "Daftar seluruh konfirmasi (tim-kajian)",
+        "description": "Seluruh konfirmasi terlama dulu, dengan penanda `digantikan`.",
+        "operationId": "redesain_konfirmasi_list",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 500,
+              "minimum": 1,
+              "description": "Maks item per halaman.",
+              "default": 20,
+              "title": "Limit"
+            },
+            "description": "Maks item per halaman."
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Jumlah item yang dilewati.",
+              "default": 0,
+              "title": "Offset"
+            },
+            "description": "Jumlah item yang dilewati."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_KonfirmasiDaftarRead_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan anggota grup tim-kajian.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/redesain/konfirmasi/saya": {
+      "get": {
+        "tags": [
+          "redesain"
+        ],
+        "summary": "Daftar konfirmasi milik saya, semua versi (sekolah-pengisi)",
+        "description": "Konfirmasi milik `kode_orang` pemanggil (draf, terkirim, dan yang sudah diralat).",
+        "operationId": "redesain_konfirmasi_saya",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 500,
+              "minimum": 1,
+              "description": "Maks item per halaman.",
+              "default": 20,
+              "title": "Limit"
+            },
+            "description": "Maks item per halaman."
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Jumlah item yang dilewati.",
+              "default": 0,
+              "title": "Offset"
+            },
+            "description": "Jumlah item yang dilewati."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_KonfirmasiDaftarRead_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan sekolah pengisi, di luar sekolah Anda, atau bukan milik Anda.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/redesain/konfirmasi/search": {
+      "post": {
+        "tags": [
+          "redesain"
+        ],
+        "summary": "Cari konfirmasi (domain ala Odoo) (tim-kajian)",
+        "description": "Cari dengan domain ala Odoo; field: masalah_id, sekolah_id, kode_orang, status, sumber,\nindikasi_risiko.",
+        "operationId": "redesain_konfirmasi_search",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_KonfirmasiDaftarRead_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan anggota grup tim-kajian.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Domain/field tidak valid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/redesain/konfirmasi/luring": {
+      "post": {
+        "tags": [
+          "redesain"
+        ],
+        "summary": "Catat isian luring (kertas) atas nama pemberi keterangan (tim-kajian)",
+        "description": "Simpan langsung `terkirim` dengan `sumber=\"luring\"`; membekukan status awal masalah\ndan menandai eskalasi seperti `kirim`. Riwayat `create` oleh Tim pemanggil.",
+        "operationId": "redesain_konfirmasi_luring",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/KonfirmasiLuringCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/KonfirmasiRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan anggota grup tim-kajian.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Pasangan masalah & kode orang sudah punya konfirmasi.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Field wajib kosong, kode orang/masalah tak dikenal, sekolah tak cocok.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/redesain/konfirmasi/{konfirmasi_id}": {
+      "get": {
+        "tags": [
+          "redesain"
+        ],
+        "summary": "Detail konfirmasi (pemilik atau tim-kajian)",
+        "description": "Ambil satu konfirmasi beserta `dugaan_diperlihatkan` (`Ya`/`Belum`).\n\n`tim-kajian` boleh membaca semua; `sekolah-pengisi` hanya miliknya sendiri (403).\nRumusan hipotesis tidak pernah ikut di respons ini.",
+        "operationId": "redesain_konfirmasi_get",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "konfirmasi_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Konfirmasi Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/KonfirmasiRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan sekolah pengisi, di luar sekolah Anda, atau bukan milik Anda.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Konfirmasi tidak ditemukan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "redesain"
+        ],
+        "summary": "Ubah draf konfirmasi milik sendiri (sekolah-pengisi)",
+        "description": "Ubah parsial draf; `cerita_sebelum` hanya sebelum dikunci, bagian C–E hanya setelah\ndugaan ditampilkan. Riwayat `aksi=\"update\"` dicatat.",
+        "operationId": "redesain_konfirmasi_update",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "konfirmasi_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Konfirmasi Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/KonfirmasiUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/KonfirmasiRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan sekolah pengisi, di luar sekolah Anda, atau bukan milik Anda.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Konfirmasi tidak ditemukan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "`KONFIRMASI_SUDAH_TERKIRIM`, `CERITA_SUDAH_DIKUNCI`, atau `DUGAAN_BELUM_DITAMPILKAN`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/redesain/konfirmasi/{konfirmasi_id}/kunci-cerita": {
+      "post": {
+        "tags": [
+          "redesain"
+        ],
+        "summary": "Kunci cerita bebas sebelum dugaan ditampilkan (sekolah-pengisi)",
+        "description": "Isi `cerita_dikunci_pada`; setelahnya `cerita_sebelum` tidak dapat diubah.",
+        "operationId": "redesain_konfirmasi_kunci_cerita",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "konfirmasi_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Konfirmasi Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/KonfirmasiRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan sekolah pengisi, di luar sekolah Anda, atau bukan milik Anda.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Konfirmasi tidak ditemukan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Konfirmasi sudah terkirim (`KONFIRMASI_SUDAH_TERKIRIM`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "`cerita_sebelum` kosong/spasi.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/redesain/konfirmasi/{konfirmasi_id}/tampilkan-dugaan": {
+      "post": {
+        "tags": [
+          "redesain"
+        ],
+        "summary": "Tampilkan rumusan dugaan Tim setelah cerita dikunci (sekolah-pengisi)",
+        "description": "Kembalikan `rumusan_hipotesis`; panggilan pertama mengisi `dugaan_ditampilkan_pada`.",
+        "operationId": "redesain_konfirmasi_tampilkan_dugaan",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "konfirmasi_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Konfirmasi Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DugaanRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan sekolah pengisi, di luar sekolah Anda, atau bukan milik Anda.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Konfirmasi tidak ditemukan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Cerita belum dikunci (`CERITA_BELUM_DIKUNCI`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/redesain/konfirmasi/{konfirmasi_id}/kirim": {
+      "post": {
+        "tags": [
+          "redesain"
+        ],
+        "summary": "Kirim konfirmasi (final, tidak dapat diubah) (sekolah-pengisi)",
+        "description": "Kirim: wajib `peran`, `kesesuaian`, `k1`…`k4`, `indikasi_risiko`.\n\nMembekukan `masalah.status_awal` (bila belum) dan menandai `masalah.eskalasi_pada`\nbila `indikasi_risiko=\"Ada indikasi\"`. Riwayat `aksi=\"kirim\"` dicatat.",
+        "operationId": "redesain_konfirmasi_kirim",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "konfirmasi_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Konfirmasi Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/KonfirmasiRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan sekolah pengisi, di luar sekolah Anda, atau bukan milik Anda.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Konfirmasi tidak ditemukan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Konfirmasi sudah terkirim (`KONFIRMASI_SUDAH_TERKIRIM`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Field wajib kosong (disebut per field).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/redesain/konfirmasi/{konfirmasi_id}/alur": {
+      "get": {
+        "tags": [
+          "redesain"
+        ],
+        "summary": "Peta langkah alur sekolah Anda setelah dugaan tampil (sekolah-pengisi)",
+        "description": "Proses dengan `masalah_id` dan `sekolah_id` sama dengan konfirmasi, beserta langkahnya.\n\nHanya pemilik konfirmasi; proses sekolah lain tidak pernah ikut. Sebelum dugaan\nditampilkan → 409.",
+        "operationId": "redesain_konfirmasi_alur",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "konfirmasi_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Konfirmasi Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AlurRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan sekolah pengisi, di luar sekolah Anda, atau bukan milik Anda.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Konfirmasi tidak ditemukan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Dugaan belum ditampilkan (`DUGAAN_BELUM_DITAMPILKAN`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/redesain/konfirmasi/{konfirmasi_id}/ralat": {
+      "post": {
+        "tags": [
+          "redesain"
+        ],
+        "summary": "Ralat konfirmasi terkirim: buat versi baru (sekolah-pengisi)",
+        "description": "Buat draf baru berisi salinan isi lama dengan `menggantikan_id` = id lama.\n\nVersi lama tidak berubah; cerita tidak dibuka ulang. Draf ralat diedit lewat PATCH dan\ndikirim lewat `kirim` seperti biasa.",
+        "operationId": "redesain_konfirmasi_ralat",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "konfirmasi_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Konfirmasi Id"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/KonfirmasiRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan sekolah pengisi, di luar sekolah Anda, atau bukan milik Anda.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Konfirmasi tidak ditemukan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "`KONFIRMASI_BELUM_TERKIRIM`, `KONFIRMASI_SUDAH_DIGANTIKAN`, atau `KONFIRMASI_SUDAH_ADA` (sudah ada draf).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/redesain/konfirmasi/{konfirmasi_id}/angkat-masalah": {
+      "post": {
+        "tags": [
+          "redesain"
+        ],
+        "summary": "Angkat masalah baru dari konfirmasi menjadi masalah register (tim-kajian)",
+        "description": "Buat masalah `Keterangan kasus` untuk sekolah konfirmasi dengan `sumber_konfirmasi_id`\nterisi; teks `masalah_baru` konfirmasi tidak diubah.",
+        "operationId": "redesain_konfirmasi_angkat_masalah",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "konfirmasi_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Konfirmasi Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AngkatMasalahCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MasalahRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan anggota grup tim-kajian.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Konfirmasi tidak ditemukan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "`KONFIRMASI_BELUM_TERKIRIM` atau `MASALAH_SUDAH_DIANGKAT`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "`masalah_baru` kosong atau konteks tak dikenal.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
     "schemas": {
+      "AlurRead": {
+        "properties": {
+          "konfirmasi_id": {
+            "type": "string",
+            "title": "Konfirmasi Id"
+          },
+          "masalah_id": {
+            "type": "string",
+            "title": "Masalah Id"
+          },
+          "sekolah_id": {
+            "type": "string",
+            "title": "Sekolah Id"
+          },
+          "proses": {
+            "items": {
+              "$ref": "#/components/schemas/ProsesAlurRead"
+            },
+            "type": "array",
+            "title": "Proses"
+          }
+        },
+        "type": "object",
+        "required": [
+          "konfirmasi_id",
+          "masalah_id",
+          "sekolah_id",
+          "proses"
+        ],
+        "title": "AlurRead",
+        "description": "Peta alur untuk satu konfirmasi: hanya proses sekolah & masalah konfirmasi itu."
+      },
+      "AngkatMasalahCreate": {
+        "properties": {
+          "konteks_id": {
+            "type": "string",
+            "title": "Konteks Id",
+            "description": "ID konteks redesain tempat masalah baru dikelompokkan."
+          },
+          "rumusan_hipotesis": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Rumusan Hipotesis",
+            "description": "Rumusan hipotesis yang disusun Tim dari keterangan sekolah."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "konteks_id",
+          "rumusan_hipotesis"
+        ],
+        "title": "AngkatMasalahCreate",
+        "description": "Payload mengangkat `masalah_baru` sebuah konfirmasi menjadi masalah register."
+      },
       "Body_system_restore": {
         "properties": {
           "berkas": {
@@ -18366,6 +19981,26 @@
         "title": "DetilTugasUpdate",
         "description": "Payload pembaruan sebagian detil tugas."
       },
+      "DugaanRead": {
+        "properties": {
+          "rumusan_hipotesis": {
+            "type": "string",
+            "title": "Rumusan Hipotesis"
+          },
+          "dugaan_ditampilkan_pada": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Dugaan Ditampilkan Pada"
+          }
+        },
+        "type": "object",
+        "required": [
+          "rumusan_hipotesis",
+          "dugaan_ditampilkan_pada"
+        ],
+        "title": "DugaanRead",
+        "description": "Respons `tampilkan-dugaan`: rumusan hipotesis Tim + waktu pertama kali ditampilkan."
+      },
       "ErrorDetail": {
         "properties": {
           "loc": {
@@ -19053,6 +20688,1145 @@
         "title": "KodeOrangUpdate",
         "description": "Payload ubah kode orang; hanya `keterangan_peran` yang boleh berubah."
       },
+      "KonfirmasiCreate": {
+        "properties": {
+          "masalah_id": {
+            "type": "string",
+            "title": "Masalah Id",
+            "description": "ID masalah yang dibuka untuk sekolah pemanggil."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "masalah_id"
+        ],
+        "title": "KonfirmasiCreate",
+        "description": "Payload memulai draf konfirmasi untuk satu masalah."
+      },
+      "KonfirmasiDaftarRead": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id",
+            "description": "ID konfirmasi (UUID v4)."
+          },
+          "masalah_id": {
+            "type": "string",
+            "title": "Masalah Id"
+          },
+          "kode_orang": {
+            "type": "string",
+            "title": "Kode Orang",
+            "description": "Pseudonim pengisi.",
+            "examples": [
+              "O-0001"
+            ]
+          },
+          "sekolah_id": {
+            "type": "string",
+            "title": "Sekolah Id"
+          },
+          "sumber": {
+            "type": "string",
+            "enum": [
+              "daring",
+              "luring"
+            ],
+            "title": "Sumber"
+          },
+          "peran": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Peran"
+          },
+          "tanggal": {
+            "type": "string",
+            "format": "date",
+            "title": "Tanggal"
+          },
+          "cerita_sebelum": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cerita Sebelum"
+          },
+          "cerita_dikunci_pada": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cerita Dikunci Pada"
+          },
+          "dugaan_ditampilkan_pada": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Dugaan Ditampilkan Pada"
+          },
+          "dugaan_diperlihatkan": {
+            "type": "string",
+            "enum": [
+              "Ya",
+              "Belum"
+            ],
+            "title": "Dugaan Diperlihatkan",
+            "description": "`Ya` bila dugaan Tim sudah ditampilkan ke pengisi, selain itu `Belum`."
+          },
+          "dikirim_pada": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Dikirim Pada"
+          },
+          "kesesuaian": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "Ya",
+                  "Sebagian",
+                  "Tidak",
+                  "Belum bisa memastikan"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Kesesuaian"
+          },
+          "koreksi": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Koreksi"
+          },
+          "masalah_baru": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Masalah Baru"
+          },
+          "alasan_k": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Alasan K"
+          },
+          "bukti_dapat_diperiksa": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bukti Dapat Diperiksa"
+          },
+          "hal_belum_jelas": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Hal Belum Jelas"
+          },
+          "catatan_independensi": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Catatan Independensi"
+          },
+          "catatan_akses": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Catatan Akses"
+          },
+          "k1": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "Tinggi",
+                  "Sedang",
+                  "Rendah",
+                  "Belum tahu"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "K1"
+          },
+          "k2": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "Tinggi",
+                  "Sedang",
+                  "Rendah",
+                  "Belum tahu"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "K2"
+          },
+          "k3": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "Tinggi",
+                  "Sedang",
+                  "Rendah",
+                  "Belum tahu"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "K3"
+          },
+          "k4": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "Tinggi",
+                  "Sedang",
+                  "Rendah",
+                  "Belum tahu"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "K4"
+          },
+          "indikasi_risiko": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "Ada indikasi",
+                  "Tidak terlihat",
+                  "Belum tahu"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Indikasi Risiko"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "draf",
+              "terkirim"
+            ],
+            "title": "Status"
+          },
+          "menggantikan_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Menggantikan Id"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          },
+          "digantikan": {
+            "type": "boolean",
+            "title": "Digantikan",
+            "description": "True bila ada versi ralat yang menunjuk record ini (`menggantikan_id`)."
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "masalah_id",
+          "kode_orang",
+          "sekolah_id",
+          "sumber",
+          "peran",
+          "tanggal",
+          "cerita_sebelum",
+          "cerita_dikunci_pada",
+          "dugaan_ditampilkan_pada",
+          "dugaan_diperlihatkan",
+          "dikirim_pada",
+          "kesesuaian",
+          "koreksi",
+          "masalah_baru",
+          "alasan_k",
+          "bukti_dapat_diperiksa",
+          "hal_belum_jelas",
+          "catatan_independensi",
+          "catatan_akses",
+          "k1",
+          "k2",
+          "k3",
+          "k4",
+          "indikasi_risiko",
+          "status",
+          "menggantikan_id",
+          "created_at",
+          "updated_at",
+          "digantikan"
+        ],
+        "title": "KonfirmasiDaftarRead",
+        "description": "Konfirmasi pada daftar (`/saya`, daftar & search Tim): menambah penanda ralat."
+      },
+      "KonfirmasiLuringCreate": {
+        "properties": {
+          "masalah_id": {
+            "type": "string",
+            "title": "Masalah Id"
+          },
+          "kode_orang": {
+            "type": "string",
+            "maxLength": 20,
+            "title": "Kode Orang",
+            "description": "Kode pseudonim pemberi keterangan."
+          },
+          "sekolah_id": {
+            "type": "string",
+            "title": "Sekolah Id"
+          },
+          "peran": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Peran"
+          },
+          "tanggal": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tanggal",
+            "description": "Tanggal isian; default hari ini."
+          },
+          "cerita_sebelum": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cerita Sebelum"
+          },
+          "kesesuaian": {
+            "type": "string",
+            "enum": [
+              "Ya",
+              "Sebagian",
+              "Tidak",
+              "Belum bisa memastikan"
+            ],
+            "title": "Kesesuaian"
+          },
+          "koreksi": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Koreksi"
+          },
+          "masalah_baru": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Masalah Baru"
+          },
+          "alasan_k": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Alasan K"
+          },
+          "bukti_dapat_diperiksa": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bukti Dapat Diperiksa"
+          },
+          "hal_belum_jelas": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Hal Belum Jelas"
+          },
+          "catatan_independensi": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Catatan Independensi"
+          },
+          "catatan_akses": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Catatan Akses"
+          },
+          "k1": {
+            "type": "string",
+            "enum": [
+              "Tinggi",
+              "Sedang",
+              "Rendah",
+              "Belum tahu"
+            ],
+            "title": "K1"
+          },
+          "k2": {
+            "type": "string",
+            "enum": [
+              "Tinggi",
+              "Sedang",
+              "Rendah",
+              "Belum tahu"
+            ],
+            "title": "K2"
+          },
+          "k3": {
+            "type": "string",
+            "enum": [
+              "Tinggi",
+              "Sedang",
+              "Rendah",
+              "Belum tahu"
+            ],
+            "title": "K3"
+          },
+          "k4": {
+            "type": "string",
+            "enum": [
+              "Tinggi",
+              "Sedang",
+              "Rendah",
+              "Belum tahu"
+            ],
+            "title": "K4"
+          },
+          "indikasi_risiko": {
+            "type": "string",
+            "enum": [
+              "Ada indikasi",
+              "Tidak terlihat",
+              "Belum tahu"
+            ],
+            "title": "Indikasi Risiko"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "masalah_id",
+          "kode_orang",
+          "sekolah_id",
+          "peran",
+          "kesesuaian",
+          "k1",
+          "k2",
+          "k3",
+          "k4",
+          "indikasi_risiko"
+        ],
+        "title": "KonfirmasiLuringCreate",
+        "description": "Payload Tim memasukkan isian kertas atas nama pemberi keterangan (sumber `luring`).\n\nField wajib sama dengan aksi `kirim` (`FIELD_WAJIB_KIRIM`); konfirmasi langsung\nberstatus `terkirim` tanpa melewati urutan cerita-dugaan."
+      },
+      "KonfirmasiRead": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id",
+            "description": "ID konfirmasi (UUID v4)."
+          },
+          "masalah_id": {
+            "type": "string",
+            "title": "Masalah Id"
+          },
+          "kode_orang": {
+            "type": "string",
+            "title": "Kode Orang",
+            "description": "Pseudonim pengisi.",
+            "examples": [
+              "O-0001"
+            ]
+          },
+          "sekolah_id": {
+            "type": "string",
+            "title": "Sekolah Id"
+          },
+          "sumber": {
+            "type": "string",
+            "enum": [
+              "daring",
+              "luring"
+            ],
+            "title": "Sumber"
+          },
+          "peran": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Peran"
+          },
+          "tanggal": {
+            "type": "string",
+            "format": "date",
+            "title": "Tanggal"
+          },
+          "cerita_sebelum": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cerita Sebelum"
+          },
+          "cerita_dikunci_pada": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cerita Dikunci Pada"
+          },
+          "dugaan_ditampilkan_pada": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Dugaan Ditampilkan Pada"
+          },
+          "dugaan_diperlihatkan": {
+            "type": "string",
+            "enum": [
+              "Ya",
+              "Belum"
+            ],
+            "title": "Dugaan Diperlihatkan",
+            "description": "`Ya` bila dugaan Tim sudah ditampilkan ke pengisi, selain itu `Belum`."
+          },
+          "dikirim_pada": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Dikirim Pada"
+          },
+          "kesesuaian": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "Ya",
+                  "Sebagian",
+                  "Tidak",
+                  "Belum bisa memastikan"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Kesesuaian"
+          },
+          "koreksi": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Koreksi"
+          },
+          "masalah_baru": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Masalah Baru"
+          },
+          "alasan_k": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Alasan K"
+          },
+          "bukti_dapat_diperiksa": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bukti Dapat Diperiksa"
+          },
+          "hal_belum_jelas": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Hal Belum Jelas"
+          },
+          "catatan_independensi": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Catatan Independensi"
+          },
+          "catatan_akses": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Catatan Akses"
+          },
+          "k1": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "Tinggi",
+                  "Sedang",
+                  "Rendah",
+                  "Belum tahu"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "K1"
+          },
+          "k2": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "Tinggi",
+                  "Sedang",
+                  "Rendah",
+                  "Belum tahu"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "K2"
+          },
+          "k3": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "Tinggi",
+                  "Sedang",
+                  "Rendah",
+                  "Belum tahu"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "K3"
+          },
+          "k4": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "Tinggi",
+                  "Sedang",
+                  "Rendah",
+                  "Belum tahu"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "K4"
+          },
+          "indikasi_risiko": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "Ada indikasi",
+                  "Tidak terlihat",
+                  "Belum tahu"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Indikasi Risiko"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "draf",
+              "terkirim"
+            ],
+            "title": "Status"
+          },
+          "menggantikan_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Menggantikan Id"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "masalah_id",
+          "kode_orang",
+          "sekolah_id",
+          "sumber",
+          "peran",
+          "tanggal",
+          "cerita_sebelum",
+          "cerita_dikunci_pada",
+          "dugaan_ditampilkan_pada",
+          "dugaan_diperlihatkan",
+          "dikirim_pada",
+          "kesesuaian",
+          "koreksi",
+          "masalah_baru",
+          "alasan_k",
+          "bukti_dapat_diperiksa",
+          "hal_belum_jelas",
+          "catatan_independensi",
+          "catatan_akses",
+          "k1",
+          "k2",
+          "k3",
+          "k4",
+          "indikasi_risiko",
+          "status",
+          "menggantikan_id",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "KonfirmasiRead",
+        "description": "Representasi konfirmasi; tidak memuat rumusan hipotesis masalah."
+      },
+      "KonfirmasiUpdate": {
+        "properties": {
+          "peran": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Peran",
+            "description": "Peran/jabatan pengisi, bukan nama."
+          },
+          "tanggal": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tanggal",
+            "description": "Tanggal pengisian."
+          },
+          "cerita_sebelum": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cerita Sebelum",
+            "description": "Cerita bebas pengisi SEBELUM melihat dugaan Tim."
+          },
+          "kesesuaian": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "Ya",
+                  "Sebagian",
+                  "Tidak",
+                  "Belum bisa memastikan"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Kesesuaian"
+          },
+          "koreksi": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Koreksi"
+          },
+          "masalah_baru": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Masalah Baru"
+          },
+          "alasan_k": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Alasan K"
+          },
+          "bukti_dapat_diperiksa": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bukti Dapat Diperiksa"
+          },
+          "hal_belum_jelas": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Hal Belum Jelas"
+          },
+          "catatan_independensi": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Catatan Independensi"
+          },
+          "catatan_akses": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Catatan Akses"
+          },
+          "k1": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "Tinggi",
+                  "Sedang",
+                  "Rendah",
+                  "Belum tahu"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "K1"
+          },
+          "k2": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "Tinggi",
+                  "Sedang",
+                  "Rendah",
+                  "Belum tahu"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "K2"
+          },
+          "k3": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "Tinggi",
+                  "Sedang",
+                  "Rendah",
+                  "Belum tahu"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "K3"
+          },
+          "k4": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "Tinggi",
+                  "Sedang",
+                  "Rendah",
+                  "Belum tahu"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "K4"
+          },
+          "indikasi_risiko": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "Ada indikasi",
+                  "Tidak terlihat",
+                  "Belum tahu"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Indikasi Risiko",
+            "description": "Indikasi risiko (istilah Lembar Konfirmasi bagian E)."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "KonfirmasiUpdate",
+        "description": "Payload ubah parsial draf. Field yang tidak dikirim tidak berubah.\n\n`cerita_sebelum` hanya selama cerita belum dikunci; field bagian C–E\n(`FIELD_BAGIAN_C_E`) hanya setelah dugaan ditampilkan."
+      },
       "KonteksCreate": {
         "properties": {
           "kode": {
@@ -19279,6 +22053,175 @@
         "type": "object",
         "title": "KonteksUpdate",
         "description": "Payload ubah parsial konteks; `kode` tidak dapat diubah."
+      },
+      "KoreksiCreate": {
+        "properties": {
+          "isi": {
+            "type": "string",
+            "title": "Isi",
+            "description": "Isi koreksi / keterangan pemeriksa (tidak boleh kosong)."
+          },
+          "konfirmasi_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Konfirmasi Id",
+            "description": "ID konfirmasi pengisi."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "isi"
+        ],
+        "title": "KoreksiCreate",
+        "description": "Payload koreksi sebuah langkah.\n\n`konfirmasi_id` wajib bagi `sekolah-pengisi` (konfirmasi miliknya yang dugaannya\nsudah tampil); `tim-kajian` boleh tanpa dan nilainya diabaikan."
+      },
+      "KoreksiRead": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id",
+            "description": "ID koreksi (UUID v4)."
+          },
+          "langkah_id": {
+            "type": "string",
+            "title": "Langkah Id"
+          },
+          "konfirmasi_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Konfirmasi Id",
+            "description": "NULL bila ditulis Tim Kajian."
+          },
+          "kode_orang": {
+            "type": "string",
+            "title": "Kode Orang",
+            "description": "Kode pseudonim penulis.",
+            "examples": [
+              "O-0001"
+            ]
+          },
+          "isi": {
+            "type": "string",
+            "title": "Isi"
+          },
+          "waktu": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Waktu"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "langkah_id",
+          "konfirmasi_id",
+          "kode_orang",
+          "isi",
+          "waktu"
+        ],
+        "title": "KoreksiRead",
+        "description": "Satu koreksi langkah (baris append-only)."
+      },
+      "LangkahAlurRead": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "kode": {
+            "type": "string",
+            "title": "Kode",
+            "examples": [
+              "P-001-S01"
+            ]
+          },
+          "urutan": {
+            "type": "integer",
+            "title": "Urutan"
+          },
+          "tahap": {
+            "type": "string",
+            "title": "Tahap"
+          },
+          "pemicu_input": {
+            "type": "string",
+            "title": "Pemicu Input"
+          },
+          "pelaksana": {
+            "type": "string",
+            "title": "Pelaksana"
+          },
+          "pekerjaan_sistem": {
+            "type": "string",
+            "title": "Pekerjaan Sistem"
+          },
+          "keluaran_penerima": {
+            "type": "string",
+            "title": "Keluaran Penerima"
+          },
+          "pemeriksa_pemutus": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pemeriksa Pemutus"
+          },
+          "hambatan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Hambatan"
+          },
+          "status_langkah": {
+            "type": "string",
+            "enum": [
+              "Hipotesis",
+              "Keterangan kasus",
+              "Diperkuat untuk klaim",
+              "Diperselisihkan",
+              "Tidak berlaku"
+            ],
+            "title": "Status Langkah"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "kode",
+          "urutan",
+          "tahap",
+          "pemicu_input",
+          "pelaksana",
+          "pekerjaan_sistem",
+          "keluaran_penerima",
+          "pemeriksa_pemutus",
+          "hambatan",
+          "status_langkah"
+        ],
+        "title": "LangkahAlurRead",
+        "description": "Langkah proses sebagaimana tampil bagi sekolah (tanpa kolom audit)."
       },
       "LangkahCreate": {
         "properties": {
@@ -19862,6 +22805,31 @@
             "title": "Status Awal Dibekukan Pada",
             "description": "Saat status awal membeku (keterangan sekolah pertama); null = belum."
           },
+          "eskalasi_pada": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Eskalasi Pada",
+            "description": "Saat konfirmasi ber-indikasi risiko pertama terkirim; null = belum."
+          },
+          "sumber_konfirmasi_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sumber Konfirmasi Id",
+            "description": "ID konfirmasi asal bila masalah diangkat dari `masalah_baru`; null = bukan."
+          },
           "uraian_tugas_ids": {
             "items": {
               "type": "string"
@@ -19904,6 +22872,63 @@
         ],
         "title": "MasalahRead",
         "description": "Satu masalah redesain beserta tautan uraian tugasnya."
+      },
+      "MasalahSekolahRead": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id",
+            "description": "ID masalah (UUID v4)."
+          },
+          "kode": {
+            "type": "string",
+            "title": "Kode",
+            "examples": [
+              "M-K01-01"
+            ]
+          },
+          "konteks_kode": {
+            "type": "string",
+            "title": "Konteks Kode",
+            "examples": [
+              "K-01"
+            ]
+          },
+          "konteks_tema": {
+            "type": "string",
+            "title": "Konteks Tema"
+          },
+          "periode_acuan": {
+            "type": "string",
+            "title": "Periode Acuan"
+          },
+          "sumber_awal_keterbatasan": {
+            "type": "string",
+            "title": "Sumber Awal Keterbatasan"
+          },
+          "status_awal": {
+            "type": "string",
+            "enum": [
+              "Hipotesis",
+              "Keterangan kasus",
+              "Diperkuat untuk klaim",
+              "Diperselisihkan"
+            ],
+            "title": "Status Awal"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "kode",
+          "konteks_kode",
+          "konteks_tema",
+          "periode_acuan",
+          "sumber_awal_keterbatasan",
+          "status_awal"
+        ],
+        "title": "MasalahSekolahRead",
+        "description": "Bagian A Lembar Konfirmasi: masalah yang dibuka untuk sekolah pemanggil.\n\nSengaja TANPA `rumusan_hipotesis` — dugaan Tim baru boleh terlihat setelah cerita\npengisi dikunci."
       },
       "MasalahStatusKonfirmasi": {
         "properties": {
@@ -21545,6 +24570,50 @@
         ],
         "title": "Page[KodeOrangRead]"
       },
+      "Page_KonfirmasiDaftarRead_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/KonfirmasiDaftarRead"
+            },
+            "type": "array",
+            "title": "Items",
+            "description": "Item pada halaman ini."
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total",
+            "description": "Total item tersedia.",
+            "examples": [
+              42
+            ]
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit",
+            "description": "Maksimum item per halaman.",
+            "examples": [
+              20
+            ]
+          },
+          "offset": {
+            "type": "integer",
+            "title": "Offset",
+            "description": "Jumlah item yang dilewati.",
+            "examples": [
+              0
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
+        "title": "Page[KonfirmasiDaftarRead]"
+      },
       "Page_KonteksRead_": {
         "properties": {
           "items": {
@@ -21589,6 +24658,50 @@
         ],
         "title": "Page[KonteksRead]"
       },
+      "Page_KoreksiRead_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/KoreksiRead"
+            },
+            "type": "array",
+            "title": "Items",
+            "description": "Item pada halaman ini."
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total",
+            "description": "Total item tersedia.",
+            "examples": [
+              42
+            ]
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit",
+            "description": "Maksimum item per halaman.",
+            "examples": [
+              20
+            ]
+          },
+          "offset": {
+            "type": "integer",
+            "title": "Offset",
+            "description": "Jumlah item yang dilewati.",
+            "examples": [
+              0
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
+        "title": "Page[KoreksiRead]"
+      },
       "Page_MasalahRead_": {
         "properties": {
           "items": {
@@ -21632,6 +24745,50 @@
           "offset"
         ],
         "title": "Page[MasalahRead]"
+      },
+      "Page_MasalahSekolahRead_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/MasalahSekolahRead"
+            },
+            "type": "array",
+            "title": "Items",
+            "description": "Item pada halaman ini."
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total",
+            "description": "Total item tersedia.",
+            "examples": [
+              42
+            ]
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit",
+            "description": "Maksimum item per halaman.",
+            "examples": [
+              20
+            ]
+          },
+          "offset": {
+            "type": "integer",
+            "title": "Offset",
+            "description": "Jumlah item yang dilewati.",
+            "examples": [
+              0
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
+        "title": "Page[MasalahSekolahRead]"
       },
       "Page_MataPelajaranRead_": {
         "properties": {
@@ -22853,6 +26010,46 @@
         ],
         "title": "Principal",
         "description": "Identitas yang sudah terverifikasi dari token."
+      },
+      "ProsesAlurRead": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "kode": {
+            "type": "string",
+            "title": "Kode",
+            "examples": [
+              "P-001"
+            ]
+          },
+          "periode": {
+            "type": "string",
+            "title": "Periode"
+          },
+          "nama_proses": {
+            "type": "string",
+            "title": "Nama Proses"
+          },
+          "langkah": {
+            "items": {
+              "$ref": "#/components/schemas/LangkahAlurRead"
+            },
+            "type": "array",
+            "title": "Langkah"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "kode",
+          "periode",
+          "nama_proses",
+          "langkah"
+        ],
+        "title": "ProsesAlurRead",
+        "description": "Proses milik sekolah konfirmasi beserta langkahnya terurut `urutan`."
       },
       "ProsesCreate": {
         "properties": {
