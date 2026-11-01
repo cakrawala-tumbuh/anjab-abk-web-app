@@ -7,11 +7,25 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [4.18.0] - 2026-11-02
+
 ### Ditambahkan
 
 - **Tombol Petunjuk di enam halaman redesain** (issue #75) — Konteks, Masalah, Detail masalah,
   Agenda yayasan, Ringkasan yayasan (Tim Kajian, tidak terbuka sendiri) dan wizard Konfirmasi
   (sekolah, terbuka otomatis selama belum terkirim). Isi merujuk IK-10 / IK-11.
+
+### Diubah
+
+- **IK-10 dan IK-11 redesain diselaraskan dengan perilaku aplikasi** (issue #74) — detail
+  masalah, sebaran K1–K4 (jumlah konfirmasi, versi terkirim terakhir), Agenda Yayasan,
+  ringkasan konfirmasi, dan tabel Isian Saya di `docs-usage/ik/`.
+
+### Diperbaiki
+
+- **Detail masalah redesain tidak lagi jatuh ke halaman galat** (issue #72) — `LIMIT_MAKS`
+  `ambilSemuaHalaman` diturunkan dari 500 ke 100 (batas `POST …/search`), `MAKS_HALAMAN`
+  dinaikkan ke 250 sehingga plafon tetap 25.000 baris.
 
 ## [4.17.0] - 2026-11-01
 
