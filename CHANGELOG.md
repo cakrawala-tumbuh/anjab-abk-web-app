@@ -7,6 +7,8 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [4.18.1] - 2026-11-02
+
 ### Diperbaiki
 
 - **Pemilih Kode orang wajib tidak lagi menampilkan `O-0001` secara diam-diam** (issue #76) —
