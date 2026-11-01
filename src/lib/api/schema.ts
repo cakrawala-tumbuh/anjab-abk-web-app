@@ -2456,6 +2456,74 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/redesain/bukti": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Daftar bukti redesain (tim-kajian)
+         * @description Daftar bukti berurutan menurut kode.
+         */
+        get: operations["redesain_bukti_list"];
+        put?: never;
+        /**
+         * Tambah bukti redesain (tim-kajian)
+         * @description Buat bukti baru (kode `B-NNNN`); 422 bila masalah, langkah, atau kode orang tak valid.
+         */
+        post: operations["redesain_bukti_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/redesain/bukti/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Cari bukti (domain ala Odoo) (tim-kajian)
+         * @description Cari dengan domain ala Odoo; field di-whitelist, nilai bound parameter.
+         */
+        post: operations["redesain_bukti_search"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/redesain/bukti/{bukti_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Detail bukti redesain (tim-kajian)
+         * @description Ambil satu bukti.
+         */
+        get: operations["redesain_bukti_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Ubah bukti redesain (tim-kajian)
+         * @description Ubah parsial bukti (mis. status pemeriksaan); `kode` dan `masalah_id` tetap.
+         */
+        patch: operations["redesain_bukti_update"];
+        trace?: never;
+    };
     "/api/v1/redesain/proses": {
         parameters: {
             query?: never;
@@ -2915,6 +2983,171 @@ export interface components {
              * @description Nama basis data tujuan (dari `DATABASE_URL`) — harus diketik PERSIS sama untuk mengonfirmasi restore destruktif.
              */
             konfirmasi: string;
+        };
+        /**
+         * BuktiCreate
+         * @description Payload bukti baru; `kode` dibangkitkan sistem (`B-0001`, global).
+         */
+        BuktiCreate: {
+            /**
+             * Masalah Id
+             * @description ID masalah redesain yang dibuktikan.
+             */
+            masalah_id: string;
+            /**
+             * Langkah Id
+             * @description ID langkah ALUR bila bukti menunjuk satu langkah.
+             */
+            langkah_id?: string | null;
+            /**
+             * Unit Periode
+             * @example SD A, TA 2026/27
+             */
+            unit_periode: string;
+            /**
+             * Jenis
+             * @description Jenis sumber bukti.
+             * @enum {string}
+             */
+            jenis: "SK/aturan" | "Keterangan pemegang" | "Pihak serah terima" | "Jadwal" | "Jejak sistem" | "Keluaran/dokumen" | "Lainnya";
+            /**
+             * Pembuat Kode Orang
+             * @example O-0001
+             */
+            pembuat_kode_orang?: string | null;
+            /** Pembuat Peran */
+            pembuat_peran?: string | null;
+            /**
+             * Independen
+             * @description Apakah bukti independen dari pernyataan awal.
+             * @enum {string}
+             */
+            independen: "Ya" | "Tidak" | "Belum tahu";
+            /**
+             * Klaim Didukung
+             * @description Klaim yang didukung bukti ini.
+             */
+            klaim_didukung: string;
+            /**
+             * Klaim Tidak Didukung
+             * @description Klaim yang tidak didukung.
+             */
+            klaim_tidak_didukung?: string | null;
+            /**
+             * Tanggal Versi Lokasi
+             * @description Tanggal, versi, dan lokasi/nama dokumen (rujukan teks).
+             */
+            tanggal_versi_lokasi: string;
+            /**
+             * Status Pemeriksaan
+             * @default Belum diperiksa
+             * @enum {string}
+             */
+            status_pemeriksaan: "Belum diperiksa" | "Diperiksa terbatas" | "Diperiksa sesuai klaim" | "Diperselisihkan";
+            /** Pemeriksa Kode Orang */
+            pemeriksa_kode_orang?: string | null;
+            /** Alasan */
+            alasan?: string | null;
+            /** Catatan Privasi Gap */
+            catatan_privasi_gap?: string | null;
+        };
+        /**
+         * BuktiRead
+         * @description Satu bukti redesain.
+         */
+        BuktiRead: {
+            /**
+             * Id
+             * @description ID bukti (UUID v4).
+             */
+            id: string;
+            /**
+             * Kode
+             * @description Kode bukti.
+             * @example B-0001
+             */
+            kode: string;
+            /** Masalah Id */
+            masalah_id: string;
+            /** Langkah Id */
+            langkah_id: string | null;
+            /** Unit Periode */
+            unit_periode: string;
+            /**
+             * Jenis
+             * @enum {string}
+             */
+            jenis: "SK/aturan" | "Keterangan pemegang" | "Pihak serah terima" | "Jadwal" | "Jejak sistem" | "Keluaran/dokumen" | "Lainnya";
+            /** Pembuat Kode Orang */
+            pembuat_kode_orang: string | null;
+            /** Pembuat Peran */
+            pembuat_peran: string | null;
+            /**
+             * Independen
+             * @enum {string}
+             */
+            independen: "Ya" | "Tidak" | "Belum tahu";
+            /** Klaim Didukung */
+            klaim_didukung: string;
+            /** Klaim Tidak Didukung */
+            klaim_tidak_didukung: string | null;
+            /** Tanggal Versi Lokasi */
+            tanggal_versi_lokasi: string;
+            /**
+             * Status Pemeriksaan
+             * @enum {string}
+             */
+            status_pemeriksaan: "Belum diperiksa" | "Diperiksa terbatas" | "Diperiksa sesuai klaim" | "Diperselisihkan";
+            /** Pemeriksa Kode Orang */
+            pemeriksa_kode_orang: string | null;
+            /** Alasan */
+            alasan: string | null;
+            /** Catatan Privasi Gap */
+            catatan_privasi_gap: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+        };
+        /**
+         * BuktiUpdate
+         * @description Payload ubah parsial bukti. `kode` dan `masalah_id` tidak dapat diubah.
+         *
+         *     Field nullable boleh dikosongkan dengan `null`; field wajib yang dikirim `null` diabaikan.
+         */
+        BuktiUpdate: {
+            /** Langkah Id */
+            langkah_id?: string | null;
+            /** Unit Periode */
+            unit_periode?: string | null;
+            /** Jenis */
+            jenis?: ("SK/aturan" | "Keterangan pemegang" | "Pihak serah terima" | "Jadwal" | "Jejak sistem" | "Keluaran/dokumen" | "Lainnya") | null;
+            /** Pembuat Kode Orang */
+            pembuat_kode_orang?: string | null;
+            /** Pembuat Peran */
+            pembuat_peran?: string | null;
+            /** Independen */
+            independen?: ("Ya" | "Tidak" | "Belum tahu") | null;
+            /** Klaim Didukung */
+            klaim_didukung?: string | null;
+            /** Klaim Tidak Didukung */
+            klaim_tidak_didukung?: string | null;
+            /** Tanggal Versi Lokasi */
+            tanggal_versi_lokasi?: string | null;
+            /** Status Pemeriksaan */
+            status_pemeriksaan?: ("Belum diperiksa" | "Diperiksa terbatas" | "Diperiksa sesuai klaim" | "Diperselisihkan") | null;
+            /** Pemeriksa Kode Orang */
+            pemeriksa_kode_orang?: string | null;
+            /** Alasan */
+            alasan?: string | null;
+            /** Catatan Privasi Gap */
+            catatan_privasi_gap?: string | null;
         };
         /** BulkAssignResult[DcsRespondenRead] */
         BulkAssignResult_DcsRespondenRead_: {
@@ -5503,6 +5736,32 @@ export interface components {
              * @description Catatan baru.
              */
             catatan?: string | null;
+        };
+        /** Page[BuktiRead] */
+        Page_BuktiRead_: {
+            /**
+             * Items
+             * @description Item pada halaman ini.
+             */
+            items: components["schemas"]["BuktiRead"][];
+            /**
+             * Total
+             * @description Total item tersedia.
+             * @example 42
+             */
+            total: number;
+            /**
+             * Limit
+             * @description Maksimum item per halaman.
+             * @example 20
+             */
+            limit: number;
+            /**
+             * Offset
+             * @description Jumlah item yang dilewati.
+             * @example 0
+             */
+            offset: number;
         };
         /** Page[DcsRespondenRead] */
         Page_DcsRespondenRead_: {
@@ -21186,6 +21445,334 @@ export interface operations {
             };
         };
     };
+    redesain_bukti_list: {
+        parameters: {
+            query?: {
+                /** @description Maks item per halaman. */
+                limit?: number;
+                /** @description Jumlah item yang dilewati. */
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Page_BuktiRead_"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan anggota grup tim-kajian. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    redesain_bukti_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BuktiCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BuktiRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan anggota grup tim-kajian. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Kode bukti bentrok. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Payload tidak valid. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    redesain_bukti_search: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SearchRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Page_BuktiRead_"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan anggota grup tim-kajian. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Domain/field tidak valid. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    redesain_bukti_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                bukti_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BuktiRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan anggota grup tim-kajian. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukti tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    redesain_bukti_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                bukti_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BuktiUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BuktiRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan anggota grup tim-kajian. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukti tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
     redesain_proses_list: {
         parameters: {
             query?: {
@@ -22892,3 +23479,7 @@ export type KonfirmasiRead = components["schemas"]["KonfirmasiRead"];
 export type KonfirmasiDaftarRead = components["schemas"]["KonfirmasiDaftarRead"];
 export type KonfirmasiUpdate = components["schemas"]["KonfirmasiUpdate"];
 export type DugaanRead = components["schemas"]["DugaanRead"];
+export type AlurRead = components["schemas"]["AlurRead"];
+export type ProsesAlurRead = components["schemas"]["ProsesAlurRead"];
+export type LangkahAlurRead = components["schemas"]["LangkahAlurRead"];
+export type KoreksiCreate = components["schemas"]["KoreksiCreate"];

@@ -69,12 +69,22 @@ const NAV_REDESAIN_TIM: NavGroup = {
   items: REDESAIN_TIM_ITEMS,
 };
 
+/**
+ * Sub-item grup menu "Konfirmasi Redesain" (khusus grup `sekolah-pengisi`): daftar masalah
+ * untuk diisi dan riwayat isian milik sendiri.
+ */
+export const REDESAIN_SEKOLAH_ITEMS: ReadonlyArray<{ href: string; label: string }> = [
+  { href: "/redesain-sekolah", label: "Daftar Masalah" },
+  { href: "/redesain-sekolah/isian-saya", label: "Isian Saya" },
+];
+
 /** Entri menu "Konfirmasi Redesain" — hanya ditambahkan untuk pengguna grup `sekolah-pengisi`. */
-const NAV_REDESAIN_SEKOLAH: NavLink = {
-  kind: "link",
+const NAV_REDESAIN_SEKOLAH: NavGroup = {
+  kind: "group",
   href: "/redesain-sekolah",
   label: "Konfirmasi Redesain",
   icon: ClipboardCheck,
+  items: REDESAIN_SEKOLAH_ITEMS,
 };
 
 export const NAV_ADMIN: ReadonlyArray<NavEntry> = [
@@ -105,7 +115,7 @@ export const NAV_PARTISIPAN: ReadonlyArray<NavEntry> = [
  *
  * Menu dasar: `NAV_ADMIN` bila punya "admin", selain itu `NAV_PARTISIPAN`. Bila punya
  * "tim-kajian", grup menu "Redesain Pekerjaan" ditambahkan di akhir; bila punya
- * "sekolah-pengisi", tautan "Konfirmasi Redesain" ditambahkan. Grup "admin" saja
+ * "sekolah-pengisi", grup "Konfirmasi Redesain" (Daftar Masalah, Isian Saya) ditambahkan. Grup "admin" saja
  * TIDAK memunculkan menu redesain.
  *
  * @param groups - Klaim `groups` dari sesi.

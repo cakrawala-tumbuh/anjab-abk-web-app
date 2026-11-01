@@ -16590,6 +16590,448 @@
         }
       }
     },
+    "/api/v1/redesain/bukti": {
+      "get": {
+        "tags": [
+          "redesain"
+        ],
+        "summary": "Daftar bukti redesain (tim-kajian)",
+        "description": "Daftar bukti berurutan menurut kode.",
+        "operationId": "redesain_bukti_list",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 500,
+              "minimum": 1,
+              "description": "Maks item per halaman.",
+              "default": 20,
+              "title": "Limit"
+            },
+            "description": "Maks item per halaman."
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Jumlah item yang dilewati.",
+              "default": 0,
+              "title": "Offset"
+            },
+            "description": "Jumlah item yang dilewati."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_BuktiRead_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan anggota grup tim-kajian.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "redesain"
+        ],
+        "summary": "Tambah bukti redesain (tim-kajian)",
+        "description": "Buat bukti baru (kode `B-NNNN`); 422 bila masalah, langkah, atau kode orang tak valid.",
+        "operationId": "redesain_bukti_create",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BuktiCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BuktiRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan anggota grup tim-kajian.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Kode bukti bentrok.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Payload tidak valid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/redesain/bukti/search": {
+      "post": {
+        "tags": [
+          "redesain"
+        ],
+        "summary": "Cari bukti (domain ala Odoo) (tim-kajian)",
+        "description": "Cari dengan domain ala Odoo; field di-whitelist, nilai bound parameter.",
+        "operationId": "redesain_bukti_search",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_BuktiRead_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan anggota grup tim-kajian.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Domain/field tidak valid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/redesain/bukti/{bukti_id}": {
+      "get": {
+        "tags": [
+          "redesain"
+        ],
+        "summary": "Detail bukti redesain (tim-kajian)",
+        "description": "Ambil satu bukti.",
+        "operationId": "redesain_bukti_get",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "bukti_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Bukti Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BuktiRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan anggota grup tim-kajian.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Bukti tidak ditemukan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "redesain"
+        ],
+        "summary": "Ubah bukti redesain (tim-kajian)",
+        "description": "Ubah parsial bukti (mis. status pemeriksaan); `kode` dan `masalah_id` tetap.",
+        "operationId": "redesain_bukti_update",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "bukti_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Bukti Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BuktiUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BuktiRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan anggota grup tim-kajian.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Bukti tidak ditemukan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/redesain/proses": {
       "get": {
         "tags": [
@@ -18876,6 +19318,521 @@
           "konfirmasi"
         ],
         "title": "Body_system_restore"
+      },
+      "BuktiCreate": {
+        "properties": {
+          "masalah_id": {
+            "type": "string",
+            "title": "Masalah Id",
+            "description": "ID masalah redesain yang dibuktikan."
+          },
+          "langkah_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Langkah Id",
+            "description": "ID langkah ALUR bila bukti menunjuk satu langkah."
+          },
+          "unit_periode": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Unit Periode",
+            "examples": [
+              "SD A, TA 2026/27"
+            ]
+          },
+          "jenis": {
+            "type": "string",
+            "enum": [
+              "SK/aturan",
+              "Keterangan pemegang",
+              "Pihak serah terima",
+              "Jadwal",
+              "Jejak sistem",
+              "Keluaran/dokumen",
+              "Lainnya"
+            ],
+            "title": "Jenis",
+            "description": "Jenis sumber bukti."
+          },
+          "pembuat_kode_orang": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 20
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pembuat Kode Orang",
+            "examples": [
+              "O-0001"
+            ]
+          },
+          "pembuat_peran": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pembuat Peran"
+          },
+          "independen": {
+            "type": "string",
+            "enum": [
+              "Ya",
+              "Tidak",
+              "Belum tahu"
+            ],
+            "title": "Independen",
+            "description": "Apakah bukti independen dari pernyataan awal."
+          },
+          "klaim_didukung": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Klaim Didukung",
+            "description": "Klaim yang didukung bukti ini."
+          },
+          "klaim_tidak_didukung": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Klaim Tidak Didukung",
+            "description": "Klaim yang tidak didukung."
+          },
+          "tanggal_versi_lokasi": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Tanggal Versi Lokasi",
+            "description": "Tanggal, versi, dan lokasi/nama dokumen (rujukan teks)."
+          },
+          "status_pemeriksaan": {
+            "type": "string",
+            "enum": [
+              "Belum diperiksa",
+              "Diperiksa terbatas",
+              "Diperiksa sesuai klaim",
+              "Diperselisihkan"
+            ],
+            "title": "Status Pemeriksaan",
+            "default": "Belum diperiksa"
+          },
+          "pemeriksa_kode_orang": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 20
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pemeriksa Kode Orang"
+          },
+          "alasan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Alasan"
+          },
+          "catatan_privasi_gap": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Catatan Privasi Gap"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "masalah_id",
+          "unit_periode",
+          "jenis",
+          "independen",
+          "klaim_didukung",
+          "tanggal_versi_lokasi"
+        ],
+        "title": "BuktiCreate",
+        "description": "Payload bukti baru; `kode` dibangkitkan sistem (`B-0001`, global)."
+      },
+      "BuktiRead": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id",
+            "description": "ID bukti (UUID v4)."
+          },
+          "kode": {
+            "type": "string",
+            "title": "Kode",
+            "description": "Kode bukti.",
+            "examples": [
+              "B-0001"
+            ]
+          },
+          "masalah_id": {
+            "type": "string",
+            "title": "Masalah Id"
+          },
+          "langkah_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Langkah Id"
+          },
+          "unit_periode": {
+            "type": "string",
+            "title": "Unit Periode"
+          },
+          "jenis": {
+            "type": "string",
+            "enum": [
+              "SK/aturan",
+              "Keterangan pemegang",
+              "Pihak serah terima",
+              "Jadwal",
+              "Jejak sistem",
+              "Keluaran/dokumen",
+              "Lainnya"
+            ],
+            "title": "Jenis"
+          },
+          "pembuat_kode_orang": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pembuat Kode Orang"
+          },
+          "pembuat_peran": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pembuat Peran"
+          },
+          "independen": {
+            "type": "string",
+            "enum": [
+              "Ya",
+              "Tidak",
+              "Belum tahu"
+            ],
+            "title": "Independen"
+          },
+          "klaim_didukung": {
+            "type": "string",
+            "title": "Klaim Didukung"
+          },
+          "klaim_tidak_didukung": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Klaim Tidak Didukung"
+          },
+          "tanggal_versi_lokasi": {
+            "type": "string",
+            "title": "Tanggal Versi Lokasi"
+          },
+          "status_pemeriksaan": {
+            "type": "string",
+            "enum": [
+              "Belum diperiksa",
+              "Diperiksa terbatas",
+              "Diperiksa sesuai klaim",
+              "Diperselisihkan"
+            ],
+            "title": "Status Pemeriksaan"
+          },
+          "pemeriksa_kode_orang": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pemeriksa Kode Orang"
+          },
+          "alasan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Alasan"
+          },
+          "catatan_privasi_gap": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Catatan Privasi Gap"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "kode",
+          "masalah_id",
+          "langkah_id",
+          "unit_periode",
+          "jenis",
+          "pembuat_kode_orang",
+          "pembuat_peran",
+          "independen",
+          "klaim_didukung",
+          "klaim_tidak_didukung",
+          "tanggal_versi_lokasi",
+          "status_pemeriksaan",
+          "pemeriksa_kode_orang",
+          "alasan",
+          "catatan_privasi_gap",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "BuktiRead",
+        "description": "Satu bukti redesain."
+      },
+      "BuktiUpdate": {
+        "properties": {
+          "langkah_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Langkah Id"
+          },
+          "unit_periode": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unit Periode"
+          },
+          "jenis": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "SK/aturan",
+                  "Keterangan pemegang",
+                  "Pihak serah terima",
+                  "Jadwal",
+                  "Jejak sistem",
+                  "Keluaran/dokumen",
+                  "Lainnya"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Jenis"
+          },
+          "pembuat_kode_orang": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 20
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pembuat Kode Orang"
+          },
+          "pembuat_peran": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pembuat Peran"
+          },
+          "independen": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "Ya",
+                  "Tidak",
+                  "Belum tahu"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Independen"
+          },
+          "klaim_didukung": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Klaim Didukung"
+          },
+          "klaim_tidak_didukung": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Klaim Tidak Didukung"
+          },
+          "tanggal_versi_lokasi": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tanggal Versi Lokasi"
+          },
+          "status_pemeriksaan": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "Belum diperiksa",
+                  "Diperiksa terbatas",
+                  "Diperiksa sesuai klaim",
+                  "Diperselisihkan"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Status Pemeriksaan"
+          },
+          "pemeriksa_kode_orang": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 20
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pemeriksa Kode Orang"
+          },
+          "alasan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Alasan"
+          },
+          "catatan_privasi_gap": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Catatan Privasi Gap"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "BuktiUpdate",
+        "description": "Payload ubah parsial bukti. `kode` dan `masalah_id` tidak dapat diubah.\n\nField nullable boleh dikosongkan dengan `null`; field wajib yang dikirim `null` diabaikan."
       },
       "BulkAssignResult_DcsRespondenRead_": {
         "properties": {
@@ -24349,6 +25306,50 @@
         "type": "object",
         "title": "OpmSesiUpdate",
         "description": "Payload pembaruan sesi OPM (hanya saat DRAFT).\n\n`jabatan_id` dan `ti_sesi_id` tidak dapat diubah — ganti sumber berarti hapus\nsesi lalu buat ulang."
+      },
+      "Page_BuktiRead_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/BuktiRead"
+            },
+            "type": "array",
+            "title": "Items",
+            "description": "Item pada halaman ini."
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total",
+            "description": "Total item tersedia.",
+            "examples": [
+              42
+            ]
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit",
+            "description": "Maksimum item per halaman.",
+            "examples": [
+              20
+            ]
+          },
+          "offset": {
+            "type": "integer",
+            "title": "Offset",
+            "description": "Jumlah item yang dilewati.",
+            "examples": [
+              0
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
+        "title": "Page[BuktiRead]"
       },
       "Page_DcsRespondenRead_": {
         "properties": {

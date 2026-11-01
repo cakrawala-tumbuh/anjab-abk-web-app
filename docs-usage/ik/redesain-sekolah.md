@@ -50,6 +50,21 @@ ditampilkan di daftar ini.
 2. Pilih **kesesuaian**: _Ya_, _Sebagian_, _Tidak_, atau _Belum bisa memastikan_.
 3. Isi **Koreksi atau tambahan** bila ada. Klik **Simpan draf**.
 
+### Memeriksa alur & menulis koreksi
+
+Setelah dugaan tampil, di bawah isian koreksi muncul panel **Alur kerja menurut catatan Tim**:
+alur kerja sekolah Anda per proses, langkah demi langkah (kode, urutan, tahap, pemicu input,
+pelaksana, pekerjaan sistem, keluaran penerima, pemeriksa/pemutus, hambatan, status langkah).
+
+1. Periksa apakah tiap langkah sesuai dengan kenyataan di sekolah Anda.
+2. Bila ada yang keliru, klik **Tambah koreksi** pada langkah itu, tulis koreksi (tanpa nama
+   orang, identitas murid, atau isi konseling), lalu klik **Kirim koreksi**.
+3. Muncul pesan _Koreksi tercatat; Tim akan merekonsiliasi_. Tampilan langkah **tidak berubah**:
+   koreksi hanya dicatat, Tim Kajian yang merekonsiliasi.
+
+Bila sekolah Anda belum punya peta alur, panel menyatakan _Belum ada peta alur untuk sekolah
+ini_. Koreksi dapat ditambahkan baik pada isian draf maupun yang sudah terkirim.
+
 ## Langkah 3 — Jelaskan akibat
 
 Nilai **K1** sampai **K4** dengan _Tinggi_, _Sedang_, _Rendah_, atau _Belum tahu_. Setiap
@@ -83,12 +98,29 @@ Kajian akan segera menindaklanjuti tanpa menunggu penilaian.
 Wajib terisi sebelum kirim: jabatan/peran, kesesuaian, K1–K4 (boleh _Belum tahu_), dan
 indikasi risiko.
 
+## Isian Saya & Meralat Isian
+
+Menu **Konfirmasi Redesain → Isian Saya** menampilkan semua isian Anda: kode masalah, status
+(Draf/Terkirim), waktu dikirim, dan keterangan _Ralat dari versi sebelumnya_ bila isian itu
+adalah ralat.
+
+### Meralat isian
+
+1. Pada isian **Terkirim** yang belum diralat, klik **Ralat isian**.
+2. Sistem membuat **draf baru** berisi salinan cerita dan dugaan, dan membukanya langsung di
+   langkah 2. Isian lama **tidak berubah** dan tetap tersimpan.
+3. Perbaiki isian lalu **Kirim** seperti biasa.
+
+Isian yang sudah diralat (digantikan versi baru) tidak lagi punya tombol **Ralat isian**;
+ralat hanya bisa dilakukan pada versi terbaru yang sudah terkirim.
+
 ## Pesan yang Mungkin Muncul
 
 | Pesan                                       | Artinya                                                                    |
 | ------------------------------------------- | -------------------------------------------------------------------------- |
 | Cerita sudah dikunci dan tidak dapat diubah | Cerita tidak bisa diedit lagi                                              |
 | Selesaikan langkah sebelumnya dahulu        | Lengkapi langkah 1 (kunci cerita) atau langkah 2 (tampilkan dugaan) dahulu |
+| Isian ini sudah diralat atau masih draf     | Ralat hanya untuk isian terkirim yang belum diralat; muat ulang halaman    |
 
 Bila halaman menampilkan galat server, catat **ID permintaan** yang tertera dan sampaikan
 ke administrator. Daftar atau formulir kosong tidak pernah menandakan kegagalan.

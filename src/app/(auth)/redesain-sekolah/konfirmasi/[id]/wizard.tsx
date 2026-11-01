@@ -6,11 +6,13 @@ import { PeringatanPrivasi } from "@/components/peringatan-privasi";
 import { withServerAuth } from "@/lib/api/client";
 import { ApiError, apiErrorDari } from "@/lib/api/errors";
 import type {
+  AlurRead,
   DugaanRead,
   KonfirmasiRead,
   KonfirmasiUpdate,
   MasalahSekolahRead,
 } from "@/lib/api/schema";
+import { PanelAlur } from "./panel-alur";
 import { notifyGagal, notifySukses } from "@/lib/notify";
 import {
   OPSI_INDIKASI,
@@ -99,6 +101,8 @@ interface Props {
   konfirmasi: KonfirmasiRead;
   masalah: MasalahSekolahRead;
   dugaanAwal: DugaanRead | null;
+  /** Peta alur sekolah; `null` selama dugaan belum ditampilkan (endpoint tidak dipanggil). */
+  alur?: AlurRead | null;
   accessToken: string | undefined;
 }
 
@@ -114,9 +118,10 @@ interface Props {
  * @param props.konfirmasi - Konfirmasi dari server.
  * @param props.masalah - Baris `sekolah/masalah` untuk bagian A (identitas masalah).
  * @param props.dugaanAwal - Rumusan bila dugaan sudah pernah ditampilkan, selain itu `null`.
+ * @param props.alur - Peta alur untuk panel langkah 2; `null`/kosong bila dugaan belum tampil.
  * @param props.accessToken - Token akses dari Server Component induk.
  */
-export function WizardKonfirmasi({ konfirmasi, masalah, dugaanAwal, accessToken }: Props) {
+export function WizardKonfirmasi({ konfirmasi, masalah, dugaanAwal, alur, accessToken }: Props) {
   const router = useRouter();
   const [isian, setIsian] = useState<Isian>(() => isianAwal(konfirmasi));
   const [dilihat, setDilihat] = useState<Langkah | null>(null);
@@ -400,6 +405,9 @@ export function WizardKonfirmasi({ konfirmasi, masalah, dugaanAwal, accessToken 
                 )}
                 <PeringatanPrivasi />
                 {teks("koreksi", "Koreksi atau tambahan (bila ada)")}
+                {alur && (
+                  <PanelAlur alur={alur} konfirmasiId={konfirmasi.id} accessToken={accessToken} />
+                )}
               </>
             )}
           </>

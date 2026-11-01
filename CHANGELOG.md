@@ -9,6 +9,12 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ### Ditambahkan
 
+- **Alur, koreksi langkah, dan ralat isian sekolah** (issue #62, mengikuti backend #54/#55) — di
+  langkah 2 wizard (setelah dugaan tampil) sekolah melihat panel **Alur kerja menurut catatan
+  Tim** dan dapat menambah koreksi per langkah (append-only, Tim yang merekonsiliasi); halaman
+  baru **Isian Saya** (`/redesain-sekolah/isian-saya`) memuat semua isian dengan penanda ralat
+  dan tombol **Ralat isian** yang membuat draf baru tanpa menimpa versi lama. Menu **Konfirmasi
+  Redesain** kini grup (Daftar Masalah, Isian Saya). `openapi.json` disegarkan dari backend master.
 - **Wizard konfirmasi sekolah Redesain Pekerjaan** (issue #61, mengikuti backend #53/#55) — menu
   **Konfirmasi Redesain** untuk peran `sekolah-pengisi`: daftar masalah sekolah dengan status
   isian (Mulai isi / Lanjutkan / Lihat) dan wizard lima langkah (cerita → dugaan → akibat K1–K4 →

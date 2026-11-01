@@ -152,3 +152,26 @@ export function pesanGagalWizard(err: unknown): string {
   }
   return err instanceof Error ? err.message : "Terjadi kesalahan.";
 }
+
+/** Bagian baris `konfirmasi/saya` yang dibutuhkan untuk menentukan pergantian versi. */
+export interface PenentuGanti {
+  id: string;
+  menggantikan_id?: string | null;
+}
+
+/**
+ * Kumpulkan id record yang sudah DIGANTIKAN: ada record lain di daftar yang
+ * `menggantikan_id`-nya menunjuk record itu. Dihitung di web karena respons
+ * `konfirmasi/saya` tidak memuat `digantikan`.
+ *
+ * @param daftar - Seluruh isian milik pemanggil.
+ * @returns Himpunan id record yang telah digantikan.
+ */
+export function idDigantikan(daftar: ReadonlyArray<PenentuGanti>): Set<string> {
+  const hasil = new Set<string>();
+  for (const k of daftar) if (k.menggantikan_id) hasil.add(k.menggantikan_id);
+  return hasil;
+}
+
+/** Pesan layar untuk ralat yang dijawab 409. */
+export const PESAN_RALAT_409 = "Isian ini sudah diralat atau masih draf";

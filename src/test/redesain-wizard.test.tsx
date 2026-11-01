@@ -18,6 +18,7 @@ import KonfirmasiPage from "@/app/(auth)/redesain-sekolah/konfirmasi/[id]/page";
 
 const P_KUNCI = "/api/v1/redesain/konfirmasi/{konfirmasi_id}/kunci-cerita";
 const P_TAMPIL = "/api/v1/redesain/konfirmasi/{konfirmasi_id}/tampilkan-dugaan";
+const P_ALUR = "/api/v1/redesain/konfirmasi/{konfirmasi_id}/alur";
 const P_KIRIM = "/api/v1/redesain/konfirmasi/{konfirmasi_id}/kirim";
 
 const resp = (status = 200) => ({ status, headers: { get: () => "req-1" } });
@@ -65,11 +66,12 @@ function konfirmasi(over: Record<string, unknown> = {}) {
 }
 
 function siapkan(k: Record<string, unknown>) {
-  get.mockImplementation(async (path: string) =>
-    path === "/api/v1/redesain/sekolah/masalah"
-      ? ok({ total: 1, limit: 500, offset: 0, items: [masalahItem] })
-      : ok(k),
-  );
+  get.mockImplementation(async (path: string) => {
+    if (path === "/api/v1/redesain/sekolah/masalah")
+      return ok({ total: 1, limit: 500, offset: 0, items: [masalahItem] });
+    if (path === P_ALUR) return ok({ konfirmasi_id: "kf1", masalah_id: "m1", proses: [] });
+    return ok(k);
+  });
   post.mockImplementation(async (path: string) =>
     path === P_TAMPIL
       ? ok({

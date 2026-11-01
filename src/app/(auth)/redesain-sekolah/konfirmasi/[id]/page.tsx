@@ -3,7 +3,7 @@ import { withServerAuth } from "@/lib/api/client";
 import { ApiError, apiErrorDari, isTidakBerhak } from "@/lib/api/errors";
 import { ambilSemuaHalaman } from "@/lib/api/paginasi";
 import { auth } from "@/lib/auth/auth";
-import type { DugaanRead, MasalahSekolahRead } from "@/lib/api/schema";
+import type { AlurRead, DugaanRead, MasalahSekolahRead } from "@/lib/api/schema";
 import { WizardKonfirmasi } from "./wizard";
 
 export const metadata = { title: "Isi Konfirmasi — Redesain Sekolah" };
@@ -57,11 +57,23 @@ export default async function KonfirmasiPage({ params }: Props) {
       dugaan = dRes.data;
     }
 
+    // Panel alur hanya setelah dugaan tampil; sebelum itu /alur tidak pernah dipanggil.
+    // Daftar proses kosong = jawaban sah; kegagalan apa pun melempar.
+    let alur: AlurRead | null = null;
+    if (konfirmasi.dugaan_ditampilkan_pada) {
+      const aRes = await client.GET("/api/v1/redesain/konfirmasi/{konfirmasi_id}/alur", {
+        params: { path: { konfirmasi_id: id } },
+      });
+      if (!aRes.data) throw apiErrorDari(aRes);
+      alur = aRes.data;
+    }
+
     return (
       <WizardKonfirmasi
         konfirmasi={konfirmasi}
         masalah={masalah}
         dugaanAwal={dugaan}
+        alur={alur}
         accessToken={session?.accessToken}
       />
     );
