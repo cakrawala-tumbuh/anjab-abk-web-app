@@ -2,7 +2,7 @@
  * Logika murni bagian Alur pada detail masalah redesain: kosakata status langkah,
  * pengurutan langkah, dan penentuan asal koreksi.
  */
-import type { KoreksiRead, LangkahRead } from "@/lib/api/schema";
+import type { BuktiRead, KoreksiRead, LangkahRead } from "@/lib/api/schema";
 
 /** Nilai kosakata `status_langkah` (urutan sama dengan backend). */
 export const STATUS_LANGKAH = [
@@ -51,4 +51,53 @@ export function asalKoreksi(k: Pick<KoreksiRead, "konfirmasi_id">): AsalKoreksi 
  */
 export function formatWaktu(iso: string): string {
   return iso.replace("T", " ").slice(0, 16);
+}
+
+/** Nilai kosakata `jenis` bukti (urutan sama dengan backend). */
+export const JENIS_BUKTI = [
+  "SK/aturan",
+  "Keterangan pemegang",
+  "Pihak serah terima",
+  "Jadwal",
+  "Jejak sistem",
+  "Keluaran/dokumen",
+  "Lainnya",
+] as const;
+
+/** Nilai kosakata `independen` bukti. */
+export const INDEPENDEN_BUKTI = ["Ya", "Tidak", "Belum tahu"] as const;
+
+/** Nilai kosakata `status_pemeriksaan` bukti (istilah "Diperiksa sesuai klaim" dipertahankan). */
+export const STATUS_PEMERIKSAAN = [
+  "Belum diperiksa",
+  "Diperiksa terbatas",
+  "Diperiksa sesuai klaim",
+  "Diperselisihkan",
+] as const;
+
+/**
+ * Label langkah untuk tampilan: `kode — tahap` (bukan id).
+ *
+ * @param l - Langkah (hanya `kode` dan `tahap` dipakai).
+ */
+export function labelLangkah(l: Pick<LangkahRead, "kode" | "tahap">): string {
+  return `${l.kode} — ${l.tahap}`;
+}
+
+/**
+ * Kelompokkan kode bukti per `langkah_id` (bukti tanpa langkah dilewati), terurut kode.
+ *
+ * @param bukti - Bukti sebuah masalah.
+ * @returns Peta `langkah_id` → daftar `kode` bukti.
+ */
+export function kodeBuktiPerLangkah(
+  bukti: Pick<BuktiRead, "kode" | "langkah_id">[],
+): Map<string, string[]> {
+  const peta = new Map<string, string[]>();
+  for (const b of bukti) {
+    if (!b.langkah_id) continue;
+    peta.set(b.langkah_id, [...(peta.get(b.langkah_id) ?? []), b.kode]);
+  }
+  for (const [k, v] of peta) peta.set(k, v.sort());
+  return peta;
 }

@@ -230,6 +230,25 @@ Belum), **Kesesuaian**, **K1** sampai **K4**, dan **Indikasi risiko**.
    bukan nama orang), lalu klik **Angkat masalah**; Anda diarahkan ke detail masalah baru.
    Tombol ini tidak tampil untuk draf atau konfirmasi tanpa masalah baru.
 
+### Bukti per klaim
+
+Buka tab **Bukti** pada detail masalah. Bukti dicatat sebagai **rujukan teks** (tidak ada
+unggah berkas) dan boleh ditautkan ke satu langkah alur.
+
+1. Tabel memuat **Kode** (mis. B-0001), **Langkah** (ditulis `kode — tahap`), **Jenis**,
+   **Klaim didukung**, **Independen**, **Status pemeriksaan**, dan **Pemeriksa** (kode orang).
+2. Klik **+ Tambah bukti**, isi **Unit / periode**, pilih **Jenis**, **Independen**,
+   **Klaim didukung**, dan **Tanggal / versi / lokasi** (rujukan teks; jangan mencantumkan
+   identitas murid). **Langkah alur** boleh dikosongkan; pilihannya hanya langkah dari proses
+   masalah ini. Pilih **Pembuat** dan **Pemeriksa** sebagai kode orang, lalu klik
+   **Tambah bukti**.
+3. **Status pemeriksaan** punya empat pilihan: **Belum diperiksa**, **Diperiksa terbatas**,
+   **Diperiksa sesuai klaim**, dan **Diperselisihkan**.
+4. Untuk mengubah, klik **Ubah bukti** pada bukti terkait, sunting, lalu klik **Simpan bukti**.
+   Kode bukti dibuat sistem dan tidak dapat diubah. Bukti tidak dapat dihapus.
+5. Bila penyimpanan ditolak, muncul pemberitahuan gagal dan formulir tetap terbuka.
+6. Di tab **Alur**, tiap langkah menampilkan **Bukti**: kode bukti yang ditautkan ke langkah itu.
+
 ### Eskalasi
 
 Bila konfirmasi sekolah menyatakan **Ada indikasi** risiko serius, masalahnya otomatis

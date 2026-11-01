@@ -95,6 +95,7 @@ function siapkan(
     koreksi?: KoreksiRead[];
     prosesGet?: number;
     masalah?: MasalahRead;
+    bukti?: unknown[];
   } = {},
 ) {
   const ls = opts.langkah ?? [
@@ -121,6 +122,7 @@ function siapkan(
   });
   post.mockImplementation(async (path: string) => {
     if (path === "/api/v1/redesain/proses/search") return halaman([proses(ls)]);
+    if (path === "/api/v1/redesain/bukti/search") return halaman(opts.bukti ?? []);
     throw new Error(`POST tak terduga ${path}`);
   });
 }

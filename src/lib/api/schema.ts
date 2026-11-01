@@ -26458,6 +26458,9 @@ export type LangkahRead = components["schemas"]["LangkahRead"];
 export type LangkahCreate = components["schemas"]["LangkahCreate"];
 export type LangkahUpdate = components["schemas"]["LangkahUpdate"];
 export type KoreksiRead = components["schemas"]["KoreksiRead"];
+export type BuktiRead = components["schemas"]["BuktiRead"];
+export type BuktiCreate = components["schemas"]["BuktiCreate"];
+export type BuktiUpdate = components["schemas"]["BuktiUpdate"];
 
 export type PenilaianRead = components["schemas"]["PenilaianRead"];
 export type PenilaianCreate = components["schemas"]["PenilaianCreate"];

@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import type { MasalahRead, SekolahRead } from "@/lib/api/schema";
 import { BagianAlur } from "./bagian-alur";
+import { BagianBukti } from "./bagian-bukti";
 import { BagianKonfirmasi } from "./bagian-konfirmasi";
 import { BagianPenilaian } from "./bagian-penilaian";
 
@@ -46,6 +47,11 @@ export const BAGIAN_DETAIL_MASALAH: BagianDetailMasalah[] = [
     kunci: "konfirmasi",
     label: "Konfirmasi",
     render: (ctx) => BagianKonfirmasi(ctx),
+  },
+  {
+    kunci: "bukti",
+    label: "Bukti",
+    render: (ctx) => BagianBukti(ctx),
   },
 ];
 

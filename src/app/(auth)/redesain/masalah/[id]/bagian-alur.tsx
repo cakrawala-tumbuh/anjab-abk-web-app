@@ -1,6 +1,7 @@
 import type { MasalahRead, SekolahRead } from "@/lib/api/schema";
-import { asalKoreksi, formatWaktu } from "@/lib/redesain-alur";
+import { asalKoreksi, formatWaktu, kodeBuktiPerLangkah } from "@/lib/redesain-alur";
 import { fetchAlurMasalah } from "./data";
+import { fetchBuktiMasalah } from "./data-bukti";
 import { FormKoreksi } from "./form-koreksi";
 import { FormLangkah } from "./form-langkah";
 import { FormProses } from "./form-proses";
@@ -19,13 +20,18 @@ export interface BagianAlurProps {
  * Menampilkan proses beserta langkah terurut `urutan` dan koreksinya (kolom `waktu`,
  * `kode_orang`, `isi`, asal Konfirmasi/Tim) — orang hanya tampil sebagai kode, tidak ada
  * nama. Kegagalan backend dilempar ke `error.tsx`. Menyediakan form tambah/ubah proses
- * dan langkah serta tambah koreksi Tim. Proses sekolah berbeda tidak pernah digabung:
+ * dan langkah serta tambah koreksi Tim. Tiap langkah menampilkan kode bukti yang ditautkan
+ * (dari `POST /bukti/search` yang sama untuk satu halaman). Proses sekolah berbeda tidak pernah digabung:
  * tiap proses tampil dalam kartunya sendiri.
  *
  * @param props - Lihat {@link BagianAlurProps}.
  */
 export async function BagianAlur({ masalah, sekolah, accessToken }: BagianAlurProps) {
-  const alur = await fetchAlurMasalah(accessToken, masalah.id);
+  const [alur, bukti] = await Promise.all([
+    fetchAlurMasalah(accessToken, masalah.id),
+    fetchBuktiMasalah(accessToken, masalah.id),
+  ]);
+  const buktiPerLangkah = kodeBuktiPerLangkah(bukti);
   const petaSekolah = new Map(sekolah.map((s) => [s.id, s.nama]));
 
   return (
@@ -92,6 +98,10 @@ export async function BagianAlur({ masalah, sekolah, accessToken }: BagianAlurPr
                     <dd>{l.pemeriksa_pemutus ?? "—"}</dd>
                     <dt className="text-gray-500">Hambatan</dt>
                     <dd>{l.hambatan ?? "—"}</dd>
+                    <dt className="text-gray-500">Bukti</dt>
+                    <dd className="font-mono text-xs">
+                      {buktiPerLangkah.get(l.id)?.join(", ") ?? "—"}
+                    </dd>
                   </dl>
                   <details>
                     <summary className="cursor-pointer text-xs text-blue-600 dark:text-blue-400">
