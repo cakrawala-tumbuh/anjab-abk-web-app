@@ -127,7 +127,7 @@ Register masalah memuat hipotesis masalah per sekolah dan periode.
 Halaman detail memperlihatkan satu masalah dari berbagai sisi. Di bagian atas tampil
 identitas masalah: **Konteks**, **Sekolah**, **Periode acuan**, **Status awal**,
 **Gelombang**, dan status **Dibuka untuk konfirmasi**. Di bawahnya ada tab bagian; saat ini
-tersedia **Alur**, dan bagian lain (konfirmasi, bukti, penilaian, alternatif) akan
+tersedia **Alur** dan **Penilaian**, dan bagian lain (konfirmasi, bukti, alternatif) akan
 ditambahkan pada tab yang sama.
 
 Bagian **Alur** menampilkan proses beserta langkahnya. Proses milik sekolah berbeda tampil
@@ -152,6 +152,24 @@ catatan sekolah A.
    Tim, tulis di kotak **Isi koreksi** lalu klik **Tambah koreksi Tim**. Koreksi tidak dapat
    diubah atau dihapus; bila koreksi sekolah mengubah gambaran alur, ubah langkahnya secara
    manual.
+
+### Penilaian & saran triase
+
+Buka tab **Penilaian** pada detail masalah. Satu masalah punya satu penilaian, diisi Tim
+sesudah pemeriksaan.
+
+1. Bila masalah belum dinilai, klik **Mulai penilaian**. Penilaian dibuat dengan isian awal
+   netral (Hipotesis, Belum tahu); bila ternyata sudah dibuat orang lain, halaman cukup
+   dimuat ulang.
+2. Isi **Status bukti**, **Gap material**, dan **Indikasi kritis**, lalu **K1** sampai
+   **K4** (Tinggi, Sedang, Rendah, Belum tahu). Pilihan **— belum diisi —** berarti kosong
+   dan tidak sama dengan **Belum tahu** ataupun **Rendah**.
+3. Isi kolom teks (alasan rentang beda, diluruskan sekolah, pemeriksa sekolah / konteks,
+   tindak lanjut, catatan sumber / versi) dengan jabatan atau peran, bukan nama orang.
+4. Klik **Simpan penilaian**.
+5. Di sebelah kanan, panel **Saran sistem — bukan keputusan** menampilkan saran triase
+   beserta **versi aturan**-nya, dihitung oleh sistem dan diperbarui setelah Anda
+   menyimpan. Saran hanyalah masukan; Anda tidak dapat mengubahnya di sini.
 
 ### Membuka masalah untuk konfirmasi sekolah
 
