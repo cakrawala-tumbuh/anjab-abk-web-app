@@ -1,0 +1,179 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { PeringatanPrivasi } from "@/components/peringatan-privasi";
+import { withServerAuth } from "@/lib/api/client";
+import { apiErrorDari } from "@/lib/api/errors";
+import type { KonteksRead } from "@/lib/api/schema";
+import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
+import { GELOMBANG, PESAN_KODE_KONTEKS_DUPLIKAT } from "@/lib/redesain-register";
+
+const INPUT =
+  "w-full rounded-md border border-gray-300 px-2 py-1 text-sm dark:border-gray-600 dark:bg-gray-800";
+
+/**
+ * Form tambah (tanpa `awal`) atau ubah (dengan `awal`) satu konteks redesain.
+ *
+ * Tambah → `POST /api/v1/redesain/konteks` (kode `K-NN` wajib, hanya saat tambah); respons
+ * 409 menampilkan {@link PESAN_KODE_KONTEKS_DUPLIKAT} tanpa toast sukses. Ubah →
+ * `PATCH /api/v1/redesain/konteks/{id}` (kode tidak dikirim/diubah). Galat lain tampil
+ * inline dan lewat `notifyGagal`.
+ *
+ * @param props.awal - Konteks yang diubah; kosong = mode tambah.
+ * @param props.accessToken - Token akses dari Server Component induk.
+ */
+export function KonteksForm({
+  awal,
+  accessToken,
+}: {
+  awal?: KonteksRead;
+  accessToken: string | undefined;
+}) {
+  const router = useRouter();
+  const [kode, setKode] = useState("");
+  const [tema, setTema] = useState(awal?.tema ?? "");
+  const [gelombang, setGelombang] = useState<string>(awal?.gelombang ?? "Belum dijadwalkan");
+  const [ruang, setRuang] = useState(awal?.ruang_dugaan ?? "");
+  const [sumber, setSumber] = useState(awal?.sumber_draft ?? "");
+  const [batas, setBatas] = useState(awal?.batas_pemeriksaan ?? "");
+  const [aktif, setAktif] = useState(awal?.aktif ?? true);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function kirim(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+    const isi = {
+      tema: tema.trim(),
+      gelombang: gelombang as (typeof GELOMBANG)[number],
+      ruang_dugaan: ruang.trim(),
+      sumber_draft: sumber.trim(),
+      batas_pemeriksaan: batas.trim(),
+      aktif,
+    };
+    try {
+      const client = withServerAuth(accessToken);
+      if (awal) {
+        const res = await client.PATCH("/api/v1/redesain/konteks/{konteks_id}", {
+          params: { path: { konteks_id: awal.id } },
+          body: isi,
+        });
+        if (!res.data) throw apiErrorDari(res);
+        notifySukses(`Konteks ${res.data.kode} diperbarui.`);
+      } else {
+        const res = await client.POST("/api/v1/redesain/konteks", {
+          body: { kode: kode.trim(), ...isi },
+        });
+        if (res.response.status === 409) {
+          setError(PESAN_KODE_KONTEKS_DUPLIKAT);
+          return;
+        }
+        if (!res.data) throw apiErrorDari(res);
+        notifySukses(`Konteks ${res.data.kode} dibuat.`);
+        setKode("");
+        setTema("");
+        setRuang("");
+        setSumber("");
+        setBatas("");
+      }
+      router.refresh();
+    } catch (err) {
+      setError(pesanGagal(err));
+      notifyGagal(err);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <form onSubmit={kirim} className="space-y-3">
+      <PeringatanPrivasi />
+      <div className="grid gap-3 sm:grid-cols-2">
+        {!awal && (
+          <label className="text-sm">
+            <span className="block text-gray-600 dark:text-gray-400">Kode (K-NN)</span>
+            <input
+              value={kode}
+              onChange={(e) => setKode(e.target.value)}
+              required
+              pattern="K-\d{2}"
+              placeholder="K-15"
+              className={INPUT}
+            />
+          </label>
+        )}
+        <label className="text-sm">
+          <span className="block text-gray-600 dark:text-gray-400">Tema</span>
+          <input
+            value={tema}
+            onChange={(e) => setTema(e.target.value)}
+            required
+            className={INPUT}
+          />
+        </label>
+        <label className="text-sm">
+          <span className="block text-gray-600 dark:text-gray-400">Gelombang</span>
+          <select
+            value={gelombang}
+            onChange={(e) => setGelombang(e.target.value)}
+            className={INPUT}
+          >
+            {GELOMBANG.map((g) => (
+              <option key={g} value={g}>
+                {g}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label className="text-sm sm:col-span-2">
+          <span className="block text-gray-600 dark:text-gray-400">Ruang dugaan</span>
+          <textarea
+            value={ruang}
+            onChange={(e) => setRuang(e.target.value)}
+            required
+            rows={2}
+            className={INPUT}
+          />
+        </label>
+        <label className="text-sm sm:col-span-2">
+          <span className="block text-gray-600 dark:text-gray-400">Sumber draf</span>
+          <textarea
+            value={sumber}
+            onChange={(e) => setSumber(e.target.value)}
+            required
+            rows={2}
+            className={INPUT}
+          />
+        </label>
+        <label className="text-sm sm:col-span-2">
+          <span className="block text-gray-600 dark:text-gray-400">Batas pemeriksaan</span>
+          <textarea
+            value={batas}
+            onChange={(e) => setBatas(e.target.value)}
+            required
+            rows={2}
+            className={INPUT}
+          />
+        </label>
+        <label className="flex items-center gap-2 text-sm">
+          <input type="checkbox" checked={aktif} onChange={(e) => setAktif(e.target.checked)} />
+          Aktif
+        </label>
+      </div>
+      <button
+        type="submit"
+        disabled={loading}
+        className="rounded-md bg-blue-600 px-4 py-1.5 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
+      >
+        {loading ? "Menyimpan…" : awal ? "Simpan perubahan" : "Tambah konteks"}
+      </button>
+      {error && (
+        <p role="alert" className="form-error">
+          {error}
+        </p>
+      )}
+    </form>
+  );
+}

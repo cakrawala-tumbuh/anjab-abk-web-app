@@ -15,7 +15,8 @@ muncul di sidebar, dan mengetik alamat `/redesain` langsung menampilkan
 
 1. Masuk ke aplikasi, lihat sidebar kiri.
 2. Klik **Redesain Pekerjaan** — grup menu terbuka berisi **Beranda**,
-   **Kode Orang**, **Cakupan 19 Jabatan**, dan **Riwayat Perubahan**.
+   **Kode Orang**, **Cakupan 19 Jabatan**, **Konteks**, **Masalah**, dan
+   **Riwayat Perubahan**.
 
 ## Banner PROTOTIPE
 
@@ -83,3 +84,50 @@ galat — bukan daftar kosong.
 4. Bila jabatan yang dipilih ternyata sudah tidak ada, server menolak dan tampil pesan galat.
 
 Baris cakupan tidak dapat ditambah atau dihapus dari layar ini.
+
+---
+
+## Konteks
+
+Konteks adalah katalog tema yang menjadi dasar hipotesis masalah. Judul halaman memuat
+label tetap **BELUM MENJADI TEMUAN** — isi katalog bukan temuan resmi.
+
+1. **Redesain Pekerjaan → Konteks**. Tabel memuat **Kode**, **Tema**, **Gelombang**,
+   **Aktif**, dan **Aksi**.
+2. Untuk menambah konteks, buka **Tambah konteks**, isi **Kode (K-NN)** (mis. `K-15`),
+   **Tema**, **Gelombang**, **Ruang dugaan**, **Sumber draf**, dan **Batas pemeriksaan**,
+   lalu klik **Tambah konteks**. Bila kode sudah dipakai, tampil pesan
+   **Kode konteks sudah dipakai**.
+3. Untuk mengubah, klik **Ubah** pada baris konteks, sunting isinya, lalu klik
+   **Simpan perubahan**. Kode tidak dapat diubah.
+4. Untuk menonaktifkan konteks, hilangkan centang **Aktif**. Konteks tidak bisa dihapus.
+
+Jangan menulis nama orang atau data pribadi di isian teks; tulis jabatan atau peran.
+
+## Masalah
+
+Register masalah memuat hipotesis masalah per sekolah dan periode.
+
+1. **Redesain Pekerjaan → Masalah**. Tabel memuat **Kode**, **Konteks**, **Sekolah**,
+   **Periode acuan**, **Status awal**, **Gelombang**, dan **Dibuka**. Bila sekolah belum
+   ditetapkan, kolom Sekolah menampilkan keterangan sekolah atau **Belum ditetapkan**.
+2. Untuk menyaring, pilih **Konteks**, **Sekolah**, **Status awal**, **Gelombang**, atau
+   **Dibuka untuk konfirmasi**. Filter langsung berlaku dan tersimpan di alamat halaman.
+3. Klik **+ Tambah masalah**, isi formulir (konteks, sekolah atau keterangan sekolah,
+   periode acuan, rumusan hipotesis, sumber awal dan keterbatasan, status awal, gelombang,
+   penjelasan alternatif, penanggung jawab berupa kode orang, serta uraian tugas yang
+   tertaut), lalu klik **Tambah masalah**. Pilih **Belum ditetapkan** pada Sekolah bila
+   sekolahnya belum diketahui, lalu isi **Keterangan sekolah**.
+4. Untuk mengubah, klik kode masalah pada tabel (sementara halaman detail belum tersedia,
+   tautan ini membuka formulir ubah), lalu klik **Simpan perubahan**.
+
+### Membuka masalah untuk konfirmasi sekolah
+
+Pada kolom **Dibuka**, klik **Buka untuk konfirmasi sekolah** agar masalah muncul di daftar
+sekolah, atau **Tutup** untuk menyembunyikannya kembali. Perubahan langsung terlihat.
+
+### Status awal dibekukan
+
+Setelah konfirmasi pertama dari sekolah terkirim, **Status awal** dibekukan: pilihannya
+nonaktif dan tampil keterangan **Dibekukan sejak <tanggal> (konfirmasi pertama terkirim)**.
+Field lain tetap dapat diubah.

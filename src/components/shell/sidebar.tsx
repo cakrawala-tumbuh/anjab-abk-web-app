@@ -59,6 +59,8 @@ export const REDESAIN_TIM_ITEMS: ReadonlyArray<{ href: string; label: string }> 
   { href: "/redesain", label: "Beranda" },
   { href: "/redesain/kode-orang", label: "Kode Orang" },
   { href: "/redesain/cakupan-jabatan", label: "Cakupan 19 Jabatan" },
+  { href: "/redesain/konteks", label: "Konteks" },
+  { href: "/redesain/masalah", label: "Masalah" },
   { href: "/redesain/riwayat", label: "Riwayat Perubahan" },
 ];
 
