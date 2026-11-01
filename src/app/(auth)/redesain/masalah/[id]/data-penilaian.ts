@@ -6,7 +6,7 @@
  */
 import { withServerAuth } from "@/lib/api/client";
 import { apiErrorDari } from "@/lib/api/errors";
-import type { PenilaianRead } from "@/lib/api/schema";
+import type { PenilaianRead, SebaranK } from "@/lib/api/schema";
 
 /**
  * Ambil penilaian satu masalah (`POST /api/v1/redesain/penilaian/search`, `masalah_id`).
@@ -25,4 +25,25 @@ export async function fetchPenilaianMasalah(
   });
   if (!res.data) throw apiErrorDari(res);
   return res.data.items[0] ?? null;
+}
+
+/**
+ * Ambil sebaran K1–K4 konfirmasi sekolah satu masalah
+ * (`GET /api/v1/redesain/masalah/{id}/sebaran-k`).
+ *
+ * @param accessToken - Token akses sesi.
+ * @param masalahId - ID masalah.
+ * @returns Sebaran hitungan K1–K4.
+ * @throws ApiError bila gagal (termasuk 403).
+ */
+export async function fetchSebaranK(
+  accessToken: string | undefined,
+  masalahId: string,
+): Promise<SebaranK> {
+  const res = await withServerAuth(accessToken).GET(
+    "/api/v1/redesain/masalah/{masalah_id}/sebaran-k",
+    { params: { path: { masalah_id: masalahId } } },
+  );
+  if (!res.data) throw apiErrorDari(res);
+  return res.data;
 }

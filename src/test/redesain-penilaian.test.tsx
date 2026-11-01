@@ -1,4 +1,4 @@
-import { render, screen, waitFor, fireEvent } from "@testing-library/react";
+import { render, screen, waitFor, fireEvent, within } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
 const get = vi.fn();
@@ -61,7 +61,13 @@ async function renderBagian() {
   render(await BagianPenilaian({ masalah, accessToken: "tok" }));
 }
 
-beforeEach(() => vi.clearAllMocks());
+beforeEach(() => {
+  vi.clearAllMocks();
+  // Sebaran K1–K4 (GET) dipanggil bagian penilaian pada setiap render.
+  get.mockResolvedValue(
+    resp({ masalah_id: "m1", jumlah_konfirmasi: 0, k1: {}, k2: {}, k3: {}, k4: {} }),
+  );
+});
 
 describe("bagian penilaian", () => {
   it("terdaftar di registry", () => {
@@ -100,7 +106,8 @@ describe("bagian penilaian", () => {
   it("saran & versi aturan dirender apa adanya dari respons", async () => {
     post.mockResolvedValue(halaman([penilaian()]));
     await renderBagian();
-    expect(screen.getByText("K - Klarifikasi")).toBeInTheDocument();
+    const aside = within(screen.getByLabelText("Saran sistem"));
+    expect(aside.getByText("K - Klarifikasi")).toBeInTheDocument();
     expect(screen.getByText(/Versi aturan: v1\.3/)).toBeInTheDocument();
     expect(screen.getByText(/Saran sistem — bukan keputusan/)).toBeInTheDocument();
   });

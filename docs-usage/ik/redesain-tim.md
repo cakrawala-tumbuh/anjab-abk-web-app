@@ -171,6 +171,36 @@ sesudah pemeriksaan.
    beserta **versi aturan**-nya, dihitung oleh sistem dan diperbarui setelah Anda
    menyimpan. Saran hanyalah masukan; Anda tidak dapat mengubahnya di sini.
 
+### Mencatat prioritas final
+
+Pada tab **Penilaian** terdapat panel **Keputusan prioritas** yang menampilkan **Saran
+otomatis** berdampingan dengan **Prioritas final**. Prioritas final dicatat oleh Tim Kajian
+atas keputusan pemutus; yayasan tidak mengisi di aplikasi.
+
+1. Klik **Catat keputusan prioritas**.
+2. Pilih **Prioritas final** (P0 - Eskalasi, K - Klarifikasi, P1 - Utama, P2 - Berikutnya,
+   P3 - Pantau, atau Ditunda).
+3. Isi **Alasan keputusan** — selalu wajib, juga bila prioritasnya sama dengan saran.
+4. Pilih **Kode orang pemutus**, isi **Jabatan pemutus**, dan **Tanggal keputusan** (tidak
+   boleh di masa depan). Pemutus tampil sebagai kode dan jabatan, tidak pernah nama.
+5. Bila Anda memilih P1–P3 sedangkan status bukti belum **Diperkuat untuk klaim**, tampil
+   peringatan: alasan wajib menjelaskannya. Peringatan ini tidak memblokir simpan.
+6. Klik **Simpan keputusan**. Sesudah tersimpan, tampil alasan, pemutus, tanggal, dan saran
+   saat keputusan. Badge **Berbeda dari saran** muncul bila keputusan berbeda dari saran.
+
+Keputusan boleh dicatat ulang. Di bawahnya, pilihan **Status penilaian** (Belum ditelaah,
+Perlu klarifikasi, Siap untuk telaah yayasan, Ditunda) mengatur kesiapan penilaian; status
+**Telah diputuskan** hanya muncul lewat pencatatan keputusan, tidak ada di pilihan.
+
+Tabel **Sebaran K1–K4** menampilkan hitungan jawaban Tinggi, Sedang, Rendah, Belum tahu,
+dan kosong dari konfirmasi sekolah. Ini bahan pertimbangan, bukan rata-rata atau skor.
+
+### Agenda yayasan
+
+Menu **Agenda Yayasan** menampilkan penilaian berstatus **Siap untuk telaah yayasan**:
+kode masalah (klik untuk membuka detail), status bukti, saran otomatis, dan prioritas
+final. Halaman ini hanya dibaca; yayasan tidak mengisi apa pun di aplikasi.
+
 ### Membuka masalah untuk konfirmasi sekolah
 
 Pada kolom **Dibuka**, klik **Buka untuk konfirmasi sekolah** agar masalah muncul di daftar

@@ -26461,3 +26461,7 @@ export type KoreksiRead = components["schemas"]["KoreksiRead"];
 export type PenilaianRead = components["schemas"]["PenilaianRead"];
 export type PenilaianCreate = components["schemas"]["PenilaianCreate"];
 export type PenilaianUpdate = components["schemas"]["PenilaianUpdate"];
+export type PenilaianPutuskan = components["schemas"]["PenilaianPutuskan"];
+export type PenilaianStatus = components["schemas"]["PenilaianStatus"];
+export type SebaranK = components["schemas"]["SebaranK"];
+export type PeringatanPenilaian = components["schemas"]["Peringatan"];
