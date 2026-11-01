@@ -131,3 +131,32 @@ sekolah, atau **Tutup** untuk menyembunyikannya kembali. Perubahan langsung terl
 Setelah konfirmasi pertama dari sekolah terkirim, **Status awal** dibekukan: pilihannya
 nonaktif dan tampil keterangan **Dibekukan sejak <tanggal> (konfirmasi pertama terkirim)**.
 Field lain tetap dapat diubah.
+
+## Sesi partisipasi & rekap
+
+Halaman ini mencatat keterlibatan satu orang pada satu sesi kegiatan redesain. Catatan ini
+**BUKAN Time Study**. Orang tampil sebagai kode (mis. O-0001), bukan nama.
+
+1. **Redesain Pekerjaan → Sesi Partisipasi**. Tabel memuat **Kode sesi**, **Kode orang**,
+   **Sekolah**, **Peran**, **Jenis kegiatan**, **Menit rencana**, **Menit disepakati**, dan
+   **Status izin**. Menit yang belum diisi tampil **—**.
+2. Untuk menyaring, isi **Kode sesi** atau **Kode orang** (tekan Enter), atau pilih
+   **Jenis kegiatan** atau **Status izin**. Filter langsung berlaku dan tersimpan di alamat
+   halaman.
+3. Klik **+ Tambah sesi**, isi **Kode sesi** (dibagi semua peserta satu kegiatan),
+   **Kode orang**, **Peran**, **Jenis kegiatan**, serta menit, lalu klik **Catat sesi**.
+   Menit boleh dikosongkan, tetapi tidak boleh negatif. Pilih satu atau lebih **Masalah
+   tertaut** bila relevan.
+4. **Status izin** hanya informasi; tidak menghalangi pencatatan. Sesi dengan status
+   **Tidak diotorisasi** tetap dapat disimpan.
+5. Bila pasangan kode sesi dan kode orang sudah ada, tampil pesan **Orang ini sudah
+   tercatat di sesi tersebut**.
+6. Untuk mengubah, klik kode sesi pada tabel, sunting isinya, lalu klik **Simpan
+   perubahan**.
+
+### Rekap per orang
+
+Klik **Rekap per orang** untuk melihat, per kode orang, **Jumlah sesi**, **Total menit
+rencana**, dan **Total menit disepakati**. Total yang belum ada isinya tampil **—**, bukan 0.
+
+Jangan menulis nama orang atau data pribadi di isian teks; tulis jabatan atau peran.

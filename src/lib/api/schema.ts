@@ -26446,3 +26446,7 @@ export type KonteksUpdate = components["schemas"]["KonteksUpdate"];
 export type MasalahRead = components["schemas"]["MasalahRead"];
 export type MasalahCreate = components["schemas"]["MasalahCreate"];
 export type MasalahUpdate = components["schemas"]["MasalahUpdate"];
+export type SesiRead = components["schemas"]["SesiRead"];
+export type SesiCreate = components["schemas"]["SesiCreate"];
+export type SesiUpdate = components["schemas"]["SesiUpdate"];
+export type RekapOrangRead = components["schemas"]["RekapOrangRead"];
