@@ -7,6 +7,13 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+### Diperbaiki
+
+- **Pemilih Kode orang wajib tidak lagi menampilkan `O-0001` secara diam-diam** (issue #76) —
+  isian wajib kini menampilkan placeholder **— pilih —**; "Catat isian luring" menolak simpan
+  tanpa kode orang ("Kode orang wajib dipilih.") dan "Simpan keputusan" tetap nonaktif sampai
+  kode pemutus dipilih.
+
 ## [4.18.0] - 2026-11-02
 
 ### Ditambahkan

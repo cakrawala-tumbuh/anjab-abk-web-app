@@ -89,6 +89,28 @@ describe("PilihKodeOrang", () => {
   });
 });
 
+describe("PilihKodeOrang wajib", () => {
+  it("value kosong → opsi terpilih adalah placeholder '— pilih —' yang disabled, bukan O-0001", async () => {
+    get.mockResolvedValue(page([kode("a", "O-0001", "Wakasek"), kode("b", "O-0002", "Guru BK")]));
+    const onChange = vi.fn();
+    render(<PilihKodeOrang name="x" value="" onChange={onChange} wajib accessToken="tok" />);
+    await screen.findByRole("option", { name: "O-0001 — Wakasek" });
+    const select = screen.getByRole("combobox") as HTMLSelectElement;
+    expect(select.value).toBe("");
+    expect(select.selectedOptions[0]).toHaveTextContent("— pilih —");
+    expect(select.selectedOptions[0]).toBeDisabled();
+    fireEvent.change(select, { target: { value: "O-0001" } });
+    expect(onChange).toHaveBeenCalledWith("O-0001");
+  });
+
+  it("non-wajib → opsi kosong '— belum dipilih —' tetap bisa dipilih", async () => {
+    get.mockResolvedValue(page([kode("a", "O-0001", "Wakasek")]));
+    render(<PilihKodeOrang name="x" value="" onChange={() => {}} accessToken="tok" />);
+    const opsi = await screen.findByRole("option", { name: "— belum dipilih —" });
+    expect(opsi).not.toBeDisabled();
+  });
+});
+
 describe("halaman kode orang", () => {
   it("menampilkan nama partisipan untuk record ber-partisipan_id", async () => {
     get.mockImplementation(async (path: string) => {

@@ -87,6 +87,19 @@ describe("dialog putuskan", () => {
     expect(post).not.toHaveBeenCalled();
   });
 
+  it("kode pemutus kosong (field lain valid) → simpan nonaktif; setelah dipilih → aktif", () => {
+    bukaDialog();
+    fireEvent.change(screen.getByLabelText("Prioritas final"), {
+      target: { value: "P2 - Berikutnya" },
+    });
+    fireEvent.change(screen.getByLabelText("Alasan keputusan"), { target: { value: "Karena X" } });
+    fireEvent.change(screen.getByLabelText("Jabatan pemutus"), { target: { value: "Ketua" } });
+    const tombol = screen.getByRole("button", { name: "Simpan keputusan" });
+    expect(tombol).toBeDisabled();
+    fireEvent.change(screen.getByLabelText("Kode orang pemutus"), { target: { value: "O-0001" } });
+    expect(tombol).toBeEnabled();
+  });
+
   it("mengirim kelima field dengan kode orang terpilih", async () => {
     post.mockResolvedValue(resp(penilaian()));
     bukaDialog();

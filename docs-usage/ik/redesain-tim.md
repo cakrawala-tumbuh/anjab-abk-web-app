@@ -71,7 +71,9 @@ peta kode ↔ partisipan hanya untuk Tim Kajian.
 
 Kode orang tidak dapat dihapus. Di form lain, kode dipilih lewat daftar berlabel
 `kode — keterangan peran` (tanpa nama orang). Bila daftar gagal dimuat, tampil pesan
-galat — bukan daftar kosong.
+galat — bukan daftar kosong. Pada isian yang wajib (mis. **Catat isian luring**, **Catat
+keputusan prioritas**), daftar awalnya menampilkan **— pilih —**; kode harus dipilih sendiri
+sebelum bisa disimpan.
 
 ## Cakupan 19 Jabatan
 

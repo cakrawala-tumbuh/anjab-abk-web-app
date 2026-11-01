@@ -196,6 +196,7 @@ describe("bagian konfirmasi", () => {
     pasangPost([]);
     await renderBagian();
     fireEvent.click(screen.getByRole("button", { name: "Catat isian luring" }));
+    fireEvent.change(screen.getByLabelText("Kode orang"), { target: { value: "O-0007" } });
     post.mockResolvedValueOnce(
       resp(null, 422, {
         error: "VALIDATION_ERROR",
@@ -209,6 +210,19 @@ describe("bagian konfirmasi", () => {
     expect(screen.getByRole("dialog")).toBeInTheDocument();
     expect(refresh).not.toHaveBeenCalled();
     expect(notifyGagal).toHaveBeenCalled();
+  });
+});
+
+describe("form luring: kode orang wajib dipilih", () => {
+  it("Simpan tanpa memilih kode orang → tidak ada POST luring, galat inline tampil", async () => {
+    pasangPost([]);
+    await renderBagian();
+    fireEvent.click(screen.getByRole("button", { name: "Catat isian luring" }));
+    const sebelum = post.mock.calls.length;
+    fireEvent.click(screen.getByRole("button", { name: "Simpan isian luring" }));
+    expect(await screen.findByText("Kode orang wajib dipilih.")).toBeInTheDocument();
+    expect(post.mock.calls.length).toBe(sebelum);
+    expect(post.mock.calls.some((c) => c[0] === "/api/v1/redesain/konfirmasi/luring")).toBe(false);
   });
 });
 

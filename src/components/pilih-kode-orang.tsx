@@ -15,7 +15,10 @@ export interface PilihKodeOrangProps {
   value: string;
   /** Dipanggil dengan string `kode` terpilih (`""` bila dikosongkan). */
   onChange: (kode: string) => void;
-  /** Bila true, opsi kosong tidak disediakan dan field diwajibkan. */
+  /**
+   * Bila true, field diwajibkan: opsi kosong `— pilih —` tetap dirender sebagai
+   * placeholder tetapi `disabled` (tampil terpilih saat `value === ""`, tak bisa dipilih ulang).
+   */
   wajib?: boolean;
   /** Token akses dari Server Component induk. */
   accessToken: string | undefined;
@@ -28,6 +31,9 @@ export interface PilihKodeOrangProps {
  * label `kode — keterangan_peran`. Nama orang TIDAK PERNAH ditampilkan. Kegagalan
  * memuat dilaporkan lewat `notifyGagal` dan ditampilkan sebagai panel galat yang
  * terbedakan dari daftar kosong yang sah.
+ *
+ * Nilai yang tampil selalu sama dengan `value`: opsi kosong (`value=""`) selalu ada
+ * sehingga browser tidak memilih opsi pertama secara diam-diam saat `value` kosong.
  *
  * @param props - Lihat {@link PilihKodeOrangProps}.
  * @returns `<select>` berisi kode orang, atau panel galat bila gagal memuat.
@@ -76,8 +82,13 @@ export function PilihKodeOrang({ name, value, onChange, wajib, accessToken }: Pi
       onChange={(e) => onChange(e.target.value)}
       className="rounded-md border border-gray-300 px-2 py-1 text-sm dark:border-gray-600 dark:bg-gray-800"
     >
-      {!wajib && <option value="">{opsi === null ? "Memuat…" : "— belum dipilih —"}</option>}
-      {wajib && opsi === null && <option value="">Memuat…</option>}
+      {opsi === null ? (
+        <option value="">Memuat…</option>
+      ) : (
+        <option value="" disabled={wajib}>
+          {wajib ? "— pilih —" : "— belum dipilih —"}
+        </option>
+      )}
       {(opsi ?? []).map((k) => (
         <option key={k.id} value={k.kode}>
           {k.keterangan_peran ? `${k.kode} — ${k.keterangan_peran}` : k.kode}

@@ -31,7 +31,8 @@ export interface FormLuringProps {
  * keterangan (sumber `luring`).
  *
  * Mengirim `POST /api/v1/redesain/konfirmasi/luring` dengan `masalah_id` terisi dan
- * `kode_orang` hasil `PilihKodeOrang`. Kelengkapan field wajib diputuskan backend:
+ * `kode_orang` hasil `PilihKodeOrang`. Bila `kode_orang` kosong, tidak ada POST dan galat
+ * inline "Kode orang wajib dipilih." tampil (jsdom tidak menegakkan `required`). Kelengkapan field wajib diputuskan backend:
  * 422 menyebut field yang kurang (inline + toast) dan dialog TIDAK ditutup. Sukses →
  * tutup dan `router.refresh()`.
  *
@@ -49,8 +50,12 @@ export function FormLuring({ masalah, sekolah, accessToken }: FormLuringProps) {
 
   async function simpan(e: React.FormEvent) {
     e.preventDefault();
-    setLoading(true);
     setError(null);
+    if (isian.kode_orang === "") {
+      setError("Kode orang wajib dipilih.");
+      return;
+    }
+    setLoading(true);
     try {
       const res = await withServerAuth(accessToken).POST("/api/v1/redesain/konfirmasi/luring", {
         body: payloadLuring(masalah.id, isian),
