@@ -15,8 +15,8 @@ muncul di sidebar, dan mengetik alamat `/redesain` langsung menampilkan
 
 1. Masuk ke aplikasi, lihat sidebar kiri.
 2. Klik **Redesain Pekerjaan** — grup menu terbuka berisi **Beranda**,
-   **Kode Orang**, **Cakupan 19 Jabatan**, **Konteks**, **Masalah**, dan
-   **Riwayat Perubahan**.
+   **Kode Orang**, **Cakupan 19 Jabatan**, **Konteks**, **Masalah**, **Eskalasi**,
+   **Sesi Partisipasi**, **Agenda Yayasan**, dan **Riwayat Perubahan**.
 
 ## Banner PROTOTIPE
 
@@ -127,7 +127,7 @@ Register masalah memuat hipotesis masalah per sekolah dan periode.
 Halaman detail memperlihatkan satu masalah dari berbagai sisi. Di bagian atas tampil
 identitas masalah: **Konteks**, **Sekolah**, **Periode acuan**, **Status awal**,
 **Gelombang**, dan status **Dibuka untuk konfirmasi**. Di bawahnya ada tab bagian; saat ini
-tersedia **Alur** dan **Penilaian**, dan bagian lain (konfirmasi, bukti, alternatif) akan
+tersedia **Alur**, **Penilaian**, dan **Konfirmasi**; bagian lain (bukti, alternatif) akan
 ditambahkan pada tab yang sama.
 
 Bagian **Alur** menampilkan proses beserta langkahnya. Proses milik sekolah berbeda tampil
@@ -211,6 +211,49 @@ sekolah, atau **Tutup** untuk menyembunyikannya kembali. Perubahan langsung terl
 Setelah konfirmasi pertama dari sekolah terkirim, **Status awal** dibekukan: pilihannya
 nonaktif dan tampil keterangan **Dibekukan sejak <tanggal> (konfirmasi pertama terkirim)**.
 Field lain tetap dapat diubah.
+
+### Membaca konfirmasi sekolah
+
+Buka tab **Konfirmasi** pada detail masalah. Tabel menampilkan keterangan sekolah apa
+adanya (hanya dibaca; tidak ada tombol ubah atau hapus): **Kode orang**, **Peran**,
+**Sumber** (daring atau luring), **Status**, **Dikirim**, **Dugaan diperlihatkan** (Ya atau
+Belum), **Kesesuaian**, **K1** sampai **K4**, dan **Indikasi risiko**.
+
+1. Versi yang sudah **Digantikan** oleh ralat disembunyikan secara default. Centang
+   **Tampilkan versi digantikan** untuk melihat seluruh versi; versi lama bertanda
+   **Digantikan** dan tetap terbaca.
+2. Klik **Buka** pada sebuah baris untuk melihat seluruh isiannya (cerita, koreksi, masalah
+   baru, alasan K, bukti, hal belum jelas, catatan independensi, dan catatan akses). Klik
+   **Tutup** untuk menyembunyikannya.
+3. Bila konfirmasi sudah terkirim dan sekolah menyebut **masalah baru**, tampil tombol
+   **Angkat masalah**. Pilih **Konteks**, tulis **Rumusan hipotesis** (jabatan atau peran,
+   bukan nama orang), lalu klik **Angkat masalah**; Anda diarahkan ke detail masalah baru.
+   Tombol ini tidak tampil untuk draf atau konfirmasi tanpa masalah baru.
+
+### Eskalasi
+
+Bila konfirmasi sekolah menyatakan **Ada indikasi** risiko serius, masalahnya otomatis
+tereskalasi tanpa menunggu penilaian. Penandanya hanya tampil di layar (tidak ada
+pemberitahuan email atau Telegram):
+
+1. Badge **Eskalasi** muncul di samping kode masalah pada halaman detail dan pada kolom
+   **Eskalasi** di tabel Masalah.
+2. **Redesain Pekerjaan → Eskalasi** menampilkan semua masalah tereskalasi, yang terbaru
+   di atas. Klik kode masalah untuk membuka tab Konfirmasi.
+
+### Mencatat isian luring
+
+Bila pemberi keterangan mengisi lembar kertas, Tim mencatatnya atas nama mereka.
+
+1. Pada tab **Konfirmasi**, klik **Catat isian luring**.
+2. Pilih **Kode orang pemberi keterangan** dan **Sekolah**, isi **Tanggal isian** (kosong =
+   hari ini) dan **Jabatan/peran**. Jangan menulis nama orang di isian teks.
+3. Isi **Kesesuaian dugaan**, **K1** sampai **K4**, **Indikasi risiko**, serta kolom lain
+   sesuai lembar kertas.
+4. Klik **Simpan isian luring**. Konfirmasi tercatat dengan sumber **luring** dan langsung
+   berstatus terkirim. Bila ada isian wajib yang kurang, pesan menyebut nama fieldnya dan
+   formulir tetap terbuka. Pasangan masalah dan kode orang yang sudah punya konfirmasi
+   ditolak.
 
 ## Sesi partisipasi & rekap
 

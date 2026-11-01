@@ -26430,6 +26430,7 @@ export type MasalahSekolahRead = components["schemas"]["MasalahSekolahRead"];
 export type KonfirmasiRead = components["schemas"]["KonfirmasiRead"];
 export type KonfirmasiDaftarRead = components["schemas"]["KonfirmasiDaftarRead"];
 export type KonfirmasiUpdate = components["schemas"]["KonfirmasiUpdate"];
+export type KonfirmasiLuringCreate = components["schemas"]["KonfirmasiLuringCreate"];
 export type DugaanRead = components["schemas"]["DugaanRead"];
 export type AlurRead = components["schemas"]["AlurRead"];
 export type ProsesAlurRead = components["schemas"]["ProsesAlurRead"];

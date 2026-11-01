@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ApiError } from "@/lib/api/errors";
+import { BadgeEskalasi } from "@/components/badge-eskalasi";
 import { auth } from "@/lib/auth/auth";
 import { labelKonteks, labelSekolah } from "@/lib/redesain-register";
 import { fetchMasalah, semuaKonteks, semuaSekolah } from "../data";
@@ -44,7 +45,8 @@ export default async function DetailMasalahPage({ params, searchParams }: Props)
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <h1 className="page-heading">
-          Masalah <span className="font-mono">{masalah.kode}</span>
+          Masalah <span className="font-mono">{masalah.kode}</span>{" "}
+          <BadgeEskalasi eskalasiPada={masalah.eskalasi_pada} />
         </h1>
         <div className="flex gap-2">
           <Link

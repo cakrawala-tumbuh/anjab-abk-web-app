@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { BadgeEskalasi } from "@/components/badge-eskalasi";
 import { Pagination, UKURAN_HALAMAN, offsetHalaman } from "@/components/pagination";
 import { auth } from "@/lib/auth/auth";
 import {
@@ -82,6 +83,7 @@ export default async function MasalahPage({ searchParams }: Props) {
                     "Status awal",
                     "Gelombang",
                     "Dibuka",
+                    "Eskalasi",
                   ].map((h) => (
                     <th
                       key={h}
@@ -118,6 +120,9 @@ export default async function MasalahPage({ searchParams }: Props) {
                         dibuka={m.dibuka_untuk_konfirmasi}
                         accessToken={session?.accessToken}
                       />
+                    </td>
+                    <td className="px-4 py-3">
+                      <BadgeEskalasi eskalasiPada={m.eskalasi_pada} />
                     </td>
                   </tr>
                 ))}
