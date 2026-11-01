@@ -26461,6 +26461,9 @@ export type KoreksiRead = components["schemas"]["KoreksiRead"];
 export type BuktiRead = components["schemas"]["BuktiRead"];
 export type BuktiCreate = components["schemas"]["BuktiCreate"];
 export type BuktiUpdate = components["schemas"]["BuktiUpdate"];
+export type AlternatifRead = components["schemas"]["AlternatifRead"];
+export type AlternatifCreate = components["schemas"]["AlternatifCreate"];
+export type AlternatifUpdate = components["schemas"]["AlternatifUpdate"];
 
 export type PenilaianRead = components["schemas"]["PenilaianRead"];
 export type PenilaianCreate = components["schemas"]["PenilaianCreate"];

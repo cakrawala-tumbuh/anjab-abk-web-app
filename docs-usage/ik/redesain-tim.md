@@ -127,8 +127,7 @@ Register masalah memuat hipotesis masalah per sekolah dan periode.
 Halaman detail memperlihatkan satu masalah dari berbagai sisi. Di bagian atas tampil
 identitas masalah: **Konteks**, **Sekolah**, **Periode acuan**, **Status awal**,
 **Gelombang**, dan status **Dibuka untuk konfirmasi**. Di bawahnya ada tab bagian; saat ini
-tersedia **Alur**, **Penilaian**, dan **Konfirmasi**; bagian lain (bukti, alternatif) akan
-ditambahkan pada tab yang sama.
+tersedia **Alur**, **Penilaian**, **Konfirmasi**, **Bukti**, dan **Alternatif**.
 
 Bagian **Alur** menampilkan proses beserta langkahnya. Proses milik sekolah berbeda tampil
 terpisah dan tidak pernah digabung: jangan menuliskan proses sekolah B sebagai fakta dari
@@ -248,6 +247,28 @@ unggah berkas) dan boleh ditautkan ke satu langkah alur.
    Kode bukti dibuat sistem dan tidak dapat diubah. Bukti tidak dapat dihapus.
 5. Bila penyimpanan ditolak, muncul pemberitahuan gagal dan formulir tetap terbuka.
 6. Di tab **Alur**, tiap langkah menampilkan **Bukti**: kode bukti yang ditautkan ke langkah itu.
+
+### Alternatif redesain
+
+Buka tab **Alternatif** pada detail masalah. Judul bagian selalu memuat teks **BUKAN BAGIAN
+DARI SKOR K1–K4**: alternatif ditelaah terpisah dari skor, dan prioritas tinggi **bukan izin
+memindahkan tugas**.
+
+1. Tabel memuat **Kode** (mis. U-001), **Opsi**, **Asal → Penerima** (nama jabatan, bukan
+   kode atau id), **Gap penerima**, dan **Status telaah**.
+2. Klik **+ Tambah alternatif**, pilih **Opsi**, isi **Alur kini vs usulan**, pilih **Pihak
+   asal** dan **Pihak penerima** dari daftar jabatan, lalu isi kesiapan penerima (komitmen,
+   jadwal puncak, keterampilan/akses, tambahan bersih, risiko layanan) dan **Gap penerima**.
+   Tulis dengan jabatan atau peran, bukan nama orang.
+3. **Status telaah** tidak pernah berubah otomatis; hanya berubah bila Anda memilihnya:
+   **Belum ditelaah**, **Siap telaah**, **Bersyarat**, **Tunda gap material**, **Ditolak**,
+   atau **Uji disetujui terpisah**.
+4. Aturan wajib: status **Uji disetujui terpisah** menuntut **Keputusan** dan **Pemutus**
+   (kode orang); opsi **Alihkan tugas bersyarat** menuntut **Pihak penerima**. Bila belum
+   terpenuhi, muncul pesan merah dan data tidak disimpan.
+5. Untuk mengubah, klik **Ubah alternatif**, sunting, lalu klik **Simpan alternatif**. Kode
+   dibuat sistem dan tidak dapat diubah. Alternatif tidak dapat dihapus.
+6. Bila penyimpanan ditolak, muncul pemberitahuan gagal dan formulir tetap terbuka.
 
 ### Eskalasi
 
