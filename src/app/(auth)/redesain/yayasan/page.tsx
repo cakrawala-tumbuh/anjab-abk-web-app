@@ -13,6 +13,7 @@ import {
 import { BadgePeringatan } from "./badge-peringatan";
 import { fetchIndexYayasan } from "./data";
 import { FilterYayasanBar } from "./filter-yayasan";
+import { PetunjukRingkasanYayasan } from "./petunjuk-ringkasan-yayasan";
 
 export const metadata = { title: "Ringkasan Yayasan — Redesain Pekerjaan" };
 
@@ -59,6 +60,7 @@ export default async function RingkasanYayasanPage({ searchParams }: Props) {
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <h1 className="page-heading">Ringkasan Yayasan</h1>
+        <PetunjukRingkasanYayasan />
         <div className="flex flex-wrap gap-2">
           <UnduhDocx
             href={urlRegisterXlsx()}

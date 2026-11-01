@@ -7,6 +7,12 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+### Ditambahkan
+
+- **Tombol Petunjuk di enam halaman redesain** (issue #75) — Konteks, Masalah, Detail masalah,
+  Agenda yayasan, Ringkasan yayasan (Tim Kajian, tidak terbuka sendiri) dan wizard Konfirmasi
+  (sekolah, terbuka otomatis selama belum terkirim). Isi merujuk IK-10 / IK-11.
+
 ## [4.17.0] - 2026-11-01
 
 ### Ditambahkan

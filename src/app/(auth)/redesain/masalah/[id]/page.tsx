@@ -8,6 +8,7 @@ import { urlLembarKonfirmasi } from "@/lib/redesain-yayasan";
 import { labelKonteks, labelSekolah } from "@/lib/redesain-register";
 import { fetchMasalah, semuaKonteks, semuaSekolah } from "../data";
 import { withServerAuth } from "@/lib/api/client";
+import { PetunjukDetailMasalah } from "./petunjuk-detail-masalah";
 import { BAGIAN_DETAIL_MASALAH, pilihBagian } from "./registry";
 
 export const metadata = { title: "Detail Masalah — Redesain Pekerjaan" };
@@ -51,6 +52,7 @@ export default async function DetailMasalahPage({ params, searchParams }: Props)
           <BadgeEskalasi eskalasiPada={masalah.eskalasi_pada} />
         </h1>
         <div className="flex flex-wrap gap-2">
+          <PetunjukDetailMasalah />
           <UnduhDocx
             href={urlLembarKonfirmasi(masalah.id)}
             label="Unduh Lembar Konfirmasi"

@@ -13,6 +13,7 @@ import type {
   MasalahSekolahRead,
 } from "@/lib/api/schema";
 import { PanelAlur } from "./panel-alur";
+import { PetunjukKonfirmasi } from "./petunjuk-konfirmasi";
 import { notifyGagal, notifySukses } from "@/lib/notify";
 import {
   OPSI_INDIKASI,
@@ -273,11 +274,14 @@ export function WizardKonfirmasi({ konfirmasi, masalah, dugaanAwal, alur, access
 
   return (
     <div className="space-y-4">
-      <div>
-        <h1 className="page-heading">Konfirmasi {masalah.kode}</h1>
-        <p className="page-subtext">
-          {masalah.konteks_kode} — {masalah.konteks_tema} · Periode acuan {masalah.periode_acuan}
-        </p>
+      <div className="flex flex-wrap items-start justify-between gap-2">
+        <div>
+          <h1 className="page-heading">Konfirmasi {masalah.kode}</h1>
+          <p className="page-subtext">
+            {masalah.konteks_kode} — {masalah.konteks_tema} · Periode acuan {masalah.periode_acuan}
+          </p>
+        </div>
+        <PetunjukKonfirmasi defaultOpen={!terkirim} />
       </div>
 
       <section aria-label="Identitas masalah" className="page-card text-sm">

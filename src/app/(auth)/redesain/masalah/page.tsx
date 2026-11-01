@@ -10,6 +10,7 @@ import {
 } from "@/lib/redesain-register";
 import { fetchIndexMasalah } from "./data";
 import { FilterMasalahBar } from "./filter-masalah";
+import { PetunjukMasalah } from "./petunjuk-masalah";
 import { ToggleKonfirmasi } from "./toggle-konfirmasi";
 
 export const metadata = { title: "Masalah — Redesain Pekerjaan" };
@@ -47,6 +48,7 @@ export default async function MasalahPage({ searchParams }: Props) {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h1 className="page-heading">Masalah Redesain</h1>
+        <PetunjukMasalah />
         <Link
           href="/redesain/masalah/tambah"
           className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"

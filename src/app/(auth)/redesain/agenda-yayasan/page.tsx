@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Pagination, UKURAN_HALAMAN, offsetHalaman } from "@/components/pagination";
 import { auth } from "@/lib/auth/auth";
 import { fetchAgendaYayasan } from "./data";
+import { PetunjukAgendaYayasan } from "./petunjuk-agenda-yayasan";
 
 export const metadata = { title: "Agenda Yayasan — Redesain Pekerjaan" };
 
@@ -22,7 +23,10 @@ export default async function AgendaYayasanPage({ searchParams }: Props) {
 
   return (
     <div className="space-y-4">
-      <h1 className="page-heading">Agenda Yayasan</h1>
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <h1 className="page-heading">Agenda Yayasan</h1>
+        <PetunjukAgendaYayasan />
+      </div>
       <p className="text-sm text-gray-500 dark:text-gray-400">
         Penilaian berstatus &quot;Siap untuk telaah yayasan&quot;. Yayasan tidak mengisi di
         aplikasi.

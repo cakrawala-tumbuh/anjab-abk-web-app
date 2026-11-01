@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth/auth";
 import { LABEL_BELUM_TEMUAN } from "@/lib/redesain-register";
 import { fetchKonteks } from "./data";
 import { KonteksForm } from "./konteks-form";
+import { PetunjukKonteks } from "./petunjuk-konteks";
 
 export const metadata = { title: "Konteks — Redesain Pekerjaan" };
 
@@ -18,12 +19,15 @@ export default async function KonteksPage() {
 
   return (
     <div className="space-y-4">
-      <h1 className="page-heading">
-        Konteks Redesain{" "}
-        <span className="ml-2 rounded bg-amber-100 px-2 py-0.5 align-middle text-xs font-semibold text-amber-800 dark:bg-amber-900/40 dark:text-amber-200">
-          {LABEL_BELUM_TEMUAN}
-        </span>
-      </h1>
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <h1 className="page-heading">
+          Konteks Redesain{" "}
+          <span className="ml-2 rounded bg-amber-100 px-2 py-0.5 align-middle text-xs font-semibold text-amber-800 dark:bg-amber-900/40 dark:text-amber-200">
+            {LABEL_BELUM_TEMUAN}
+          </span>
+        </h1>
+        <PetunjukKonteks />
+      </div>
       <details className="rounded-lg border border-gray-200 p-4 dark:border-gray-700">
         <summary className="cursor-pointer font-medium">Tambah konteks</summary>
         <div className="mt-3">
