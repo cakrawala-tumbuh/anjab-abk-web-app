@@ -127,8 +127,10 @@ Register masalah memuat hipotesis masalah per sekolah dan periode.
 
 Halaman detail memperlihatkan satu masalah dari berbagai sisi. Di bagian atas tampil
 identitas masalah: **Konteks**, **Sekolah**, **Periode acuan**, **Status awal**,
-**Gelombang**, dan status **Dibuka untuk konfirmasi**. Di bawahnya ada tab bagian; saat ini
-tersedia **Alur**, **Penilaian**, **Konfirmasi**, **Bukti**, dan **Alternatif**.
+**Gelombang**, dan **Dibuka untuk konfirmasi** (bernilai **Dibuka** atau **Tertutup**). Di
+sebelah judul tersedia tombol **Petunjuk** (ringkasan cara memakai halaman), **Unduh Lembar
+Konfirmasi**, **Kembali ke daftar**, dan **Ubah masalah**. Di bawah identitas ada tab bagian:
+**Alur** (tampil lebih dulu), **Penilaian**, **Konfirmasi**, **Bukti**, dan **Alternatif**.
 
 Bagian **Alur** menampilkan proses beserta langkahnya. Proses milik sekolah berbeda tampil
 terpisah dan tidak pernah digabung: jangan menuliskan proses sekolah B sebagai fakta dari
@@ -193,13 +195,21 @@ Perlu klarifikasi, Siap untuk telaah yayasan, Ditunda) mengatur kesiapan penilai
 **Telah diputuskan** hanya muncul lewat pencatatan keputusan, tidak ada di pilihan.
 
 Tabel **Sebaran K1–K4** menampilkan hitungan jawaban Tinggi, Sedang, Rendah, Belum tahu,
-dan kosong dari konfirmasi sekolah. Ini bahan pertimbangan, bukan rata-rata atau skor.
+dan kosong dari konfirmasi sekolah, beserta **Jumlah konfirmasi**. Ini bahan pertimbangan,
+bukan rata-rata atau skor.
+
+Hitungan memakai **versi terkirim terakhir** dari setiap konfirmasi. Bila sekolah meralat
+isiannya, ralat yang masih **draf** tidak mengubah hitungan: versi terkirim sebelumnya tetap
+dihitung sampai ralat itu dikirim, lalu ralat yang terkirim menggantikannya.
 
 ### Agenda yayasan
 
-Menu **Agenda Yayasan** menampilkan penilaian berstatus **Siap untuk telaah yayasan**:
-kode masalah (klik untuk membuka detail), status bukti, saran otomatis, dan prioritas
-final. Halaman ini hanya dibaca; yayasan tidak mengisi apa pun di aplikasi.
+Menu **Redesain Pekerjaan → Agenda Yayasan** menampilkan penilaian berstatus **Siap untuk
+telaah yayasan** dalam tabel berkolom **Masalah** (kode masalah; klik untuk membuka
+detail), **Status bukti**, **Saran otomatis**, dan **Prioritas final**. Isian yang belum ada
+tampil **—**. Bila daftar panjang, gunakan kontrol halaman di bawah tabel. Bila belum ada
+penilaian yang siap, tampil pesan **Belum ada penilaian yang siap untuk telaah yayasan.**
+Halaman ini hanya dibaca; yayasan tidak mengisi apa pun di aplikasi.
 
 ### Membuka masalah untuk konfirmasi sekolah
 
@@ -220,7 +230,7 @@ adanya (hanya dibaca; tidak ada tombol ubah atau hapus): **Kode orang**, **Peran
 Belum), **Kesesuaian**, **K1** sampai **K4**, dan **Indikasi risiko**.
 
 1. Versi yang sudah **Digantikan** oleh ralat disembunyikan secara default. Centang
-   **Tampilkan versi digantikan** untuk melihat seluruh versi; versi lama bertanda
+   **Tampilkan versi digantikan** (diikuti jumlah versi digantikan) untuk melihat seluruh versi; versi lama bertanda
    **Digantikan** dan tetap terbaca.
 2. Klik **Buka** pada sebuah baris untuk melihat seluruh isiannya (cerita, koreksi, masalah
    baru, alasan K, bukti, hal belum jelas, catatan independensi, dan catatan akses). Klik
@@ -344,7 +354,7 @@ diunduh Tim Kajian. Halaman ini membantu Tim membaca ringkasan dan mengunduh ber
 5. Klik **Unduh DOCX** pada baris (atau di halaman detail) untuk mengunduh ringkasan satu
    masalah.
 6. Klik **Unduh agenda (DOCX)** di bagian atas untuk mengunduh ringkasan seluruh masalah
-   berstatus **Siap untuk telaah yayasan**. Bila belum ada satu pun, tampil pesan
+   berstatus **Siap untuk telaah yayasan**. Bila belum ada satu pun, muncul pemberitahuan
    **Tidak ada masalah di agenda**.
 7. Untuk **Lembar Konfirmasi** pra-isi (diserahkan ke yayasan atau sekolah), buka
    **Masalah**, klik kode masalah, lalu klik **Unduh Lembar Konfirmasi** di bagian atas

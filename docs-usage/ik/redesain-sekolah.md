@@ -100,9 +100,12 @@ indikasi risiko.
 
 ## Isian Saya & Meralat Isian
 
-Menu **Konfirmasi Redesain → Isian Saya** menampilkan semua isian Anda: kode masalah, status
-(Draf/Terkirim), waktu dikirim, dan keterangan _Ralat dari versi sebelumnya_ bila isian itu
-adalah ralat.
+Menu **Konfirmasi Redesain → Isian Saya** menampilkan semua isian Anda dalam tabel berkolom
+**Masalah**, **Status** (Draf/Terkirim), **Dikirim pada**, **Keterangan**, dan **Aksi**.
+Kolom Keterangan memuat _Ralat dari versi sebelumnya_ bila isian itu adalah ralat, dan _Sudah
+digantikan oleh ralat_ bila isian itu sudah punya versi pengganti. Kolom Aksi memuat
+**Lanjutkan** (draf) atau **Lihat** (terkirim). Bila belum ada isian, tampil **Belum ada
+isian.**
 
 ### Meralat isian
 
