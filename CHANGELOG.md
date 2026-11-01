@@ -7,6 +7,13 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+### Ditambahkan
+
+- **Fondasi Redesain Pekerjaan untuk Tim Kajian** (issue #58, mengikuti backend #48) — menu
+  **Redesain Pekerjaan** (Beranda, Riwayat Perubahan) hanya untuk peran `tim-kajian` (admin saja
+  tidak cukup), banner PROTOTIPE di semua layar redesain, dan halaman baca **Riwayat Perubahan**
+  (`/redesain/riwayat`) dengan filter entitas/ID entitas. Orang ditampilkan sebagai kode, bukan nama.
+
 ## [4.16.0] - 2026-09-09
 
 ### Ditambahkan

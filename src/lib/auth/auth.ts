@@ -8,6 +8,11 @@
  * Group yang dikenali:
  *   - "admin"      → akses penuh (kelola partisipan, laporan, dll.)
  *   - "partisipan" → akses terbatas (isi kuesioner, lihat hasil sendiri)
+ *   - "tim-kajian" → Tim Kajian modul Redesain Pekerjaan (BE-1, anjab-abk-backend#48)
+ *   - "sekolah-pengisi" → pengisi register Redesain di sisi sekolah
+ *
+ * Grup "admin" TIDAK otomatis berhak atas data redesain; hak itu hanya lewat
+ * grup "tim-kajian"/"sekolah-pengisi" (selaras backend).
  */
 
 import NextAuth, { type DefaultSession } from "next-auth";
@@ -90,4 +95,32 @@ export function isAdmin(session: { user?: { groups?: string[] } } | null): boole
 /** Kembalikan true bila sesi punya grup "partisipan". */
 export function isPartisipan(session: { user?: { groups?: string[] } } | null): boolean {
   return session?.user?.groups?.includes("partisipan") ?? false;
+}
+
+/** Nama grup Authentik untuk Tim Kajian modul Redesain Pekerjaan. */
+export const GRUP_TIM_KAJIAN = "tim-kajian";
+
+/** Nama grup Authentik untuk pengisi register Redesain di sisi sekolah. */
+export const GRUP_SEKOLAH_PENGISI = "sekolah-pengisi";
+
+/**
+ * Kembalikan true bila sesi punya grup "tim-kajian".
+ *
+ * Grup "admin" TIDAK memberi akses redesain: admin tanpa "tim-kajian" menghasilkan false.
+ *
+ * @param session - Sesi Auth.js (atau `null` bila belum masuk).
+ * @returns `true` hanya bila `session.user.groups` memuat {@link GRUP_TIM_KAJIAN}.
+ */
+export function isTimKajian(session: { user?: { groups?: string[] } } | null): boolean {
+  return session?.user?.groups?.includes(GRUP_TIM_KAJIAN) ?? false;
+}
+
+/**
+ * Kembalikan true bila sesi punya grup "sekolah-pengisi".
+ *
+ * @param session - Sesi Auth.js (atau `null` bila belum masuk).
+ * @returns `true` hanya bila `session.user.groups` memuat {@link GRUP_SEKOLAH_PENGISI}.
+ */
+export function isSekolahPengisi(session: { user?: { groups?: string[] } } | null): boolean {
+  return session?.user?.groups?.includes(GRUP_SEKOLAH_PENGISI) ?? false;
 }

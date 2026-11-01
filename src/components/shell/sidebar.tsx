@@ -5,6 +5,7 @@ import {
   BarChart3,
   ChevronDown,
   ClipboardList,
+  Compass,
   Clock,
   Database,
   DatabaseBackup,
@@ -17,6 +18,9 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
+
+/** Nama grup Tim Kajian (cermin `GRUP_TIM_KAJIAN` di auth.ts; tidak diimpor agar Client Component tidak menarik Auth.js). */
+const GRUP_TIM_KAJIAN = "tim-kajian";
 
 export type NavLink = { kind: "link"; href: string; label: string; icon: LucideIcon };
 export type NavGroup = {
@@ -43,6 +47,24 @@ export const MASTER_DATA_ITEMS: ReadonlyArray<{ href: string; label: string }> =
   { href: "/master-data/uraian-tugas", label: "Uraian Tugas" },
 ];
 
+/**
+ * Sub-item grup menu "Redesain Pekerjaan" (khusus grup `tim-kajian`). Diperluas oleh item
+ * WEB berikutnya; item WEB-1 mengisinya Beranda dan Riwayat Perubahan.
+ */
+export const REDESAIN_TIM_ITEMS: ReadonlyArray<{ href: string; label: string }> = [
+  { href: "/redesain", label: "Beranda" },
+  { href: "/redesain/riwayat", label: "Riwayat Perubahan" },
+];
+
+/** Entri menu "Redesain Pekerjaan" — hanya ditambahkan untuk pengguna grup `tim-kajian`. */
+const NAV_REDESAIN_TIM: NavGroup = {
+  kind: "group",
+  href: "/redesain",
+  label: "Redesain Pekerjaan",
+  icon: Compass,
+  items: REDESAIN_TIM_ITEMS,
+};
+
 export const NAV_ADMIN: ReadonlyArray<NavEntry> = [
   { kind: "link", href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { kind: "link", href: "/partisipan", label: "Partisipan", icon: Users },
@@ -66,9 +88,19 @@ export const NAV_PARTISIPAN: ReadonlyArray<NavEntry> = [
   { kind: "link", href: "/kuesioner", label: "Kuesioner Saya", icon: FileText },
 ];
 
-/** Pilih daftar menu sidebar sesuai grup Authentik pengguna ("admin" vs partisipan). */
+/**
+ * Pilih daftar menu sidebar sesuai grup Authentik pengguna.
+ *
+ * Menu dasar: `NAV_ADMIN` bila punya "admin", selain itu `NAV_PARTISIPAN`. Bila punya
+ * "tim-kajian", grup menu "Redesain Pekerjaan" ditambahkan di akhir. Grup "admin" saja
+ * TIDAK memunculkan menu redesain.
+ *
+ * @param groups - Klaim `groups` dari sesi.
+ * @returns Daftar entri menu untuk `Sidebar`.
+ */
 export function navForGroups(groups: ReadonlyArray<string>): ReadonlyArray<NavEntry> {
-  return groups.includes("admin") ? NAV_ADMIN : NAV_PARTISIPAN;
+  const dasar = groups.includes("admin") ? NAV_ADMIN : NAV_PARTISIPAN;
+  return groups.includes(GRUP_TIM_KAJIAN) ? [...dasar, NAV_REDESAIN_TIM] : dasar;
 }
 
 /** Item aktif = pathname persis sama, atau sub-route (`href` + `/...`). */
@@ -97,11 +129,16 @@ function NavList({
   pathname: string;
   onNavigate: () => void;
 }) {
-  const [masterDataOpen, setMasterDataOpen] = useState(false);
+  const [terbuka, setTerbuka] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
-    if (isActiveHref(pathname, "/master-data")) setMasterDataOpen(true);
-  }, [pathname]);
+    // Grup yang rutenya sedang aktif otomatis terbuka.
+    for (const entry of entries) {
+      if (entry.kind === "group" && isActiveHref(pathname, entry.href)) {
+        setTerbuka((prev) => (prev[entry.href] ? prev : { ...prev, [entry.href]: true }));
+      }
+    }
+  }, [pathname, entries]);
 
   return (
     <>
@@ -140,11 +177,12 @@ function NavList({
           );
         }
 
+        const masterDataOpen = terbuka[entry.href] ?? false;
         return (
           <div key={entry.href}>
             <button
               type="button"
-              onClick={() => setMasterDataOpen((prev) => !prev)}
+              onClick={() => setTerbuka((prev) => ({ ...prev, [entry.href]: !prev[entry.href] }))}
               aria-expanded={masterDataOpen}
               className={cn(linkClass(active, expanded), "w-full justify-between")}
             >

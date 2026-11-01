@@ -92,5 +92,6 @@ nav:
       - "IK-07 WCP": ik/wcp.md
       - "IK-08 OPM": ik/opm.md
       - "IK-09 Backup & Restore": ik/backup-restore.md
+      - "IK-10 Redesain Pekerjaan": ik/redesain-tim.md
   - Referensi:
       - FAQ: referensi/faq.md

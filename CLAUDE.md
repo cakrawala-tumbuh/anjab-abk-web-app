@@ -84,6 +84,19 @@ src/
 
 ## Revisi Desain
 
+### [2026-11-01] Fondasi redesain: peran `tim-kajian`, menu, banner PROTOTIPE, riwayat (WEB-1)
+
+Butir WEB-1 pelacak `cakrawala-tumbuh/ypii-support#424`; konsumen `anjab-abk-backend#48` (BE-1).
+
+- **Peran**: `auth.ts` menambah `GRUP_TIM_KAJIAN`/`GRUP_SEKOLAH_PENGISI` + `isTimKajian`/`isSekolahPengisi`. Grup `admin` **tidak** memberi akses redesain.
+- **Segmen `src/app/(auth)/redesain/`** (URL `/redesain/...`): `layout.tsx` membungkus anak dengan `WajibGrup` + `BannerPrototipe`. `WajibGrup` (`src/components/wajib-grup.tsx`, Server Component) menolak sesi tanpa grup tanpa memanggil backend; 403 dari backend tetap dilempar ke `error.tsx`. Segmen sekolah `/redesain-sekolah/` dibuat WEB-2a.
+- **Komponen bersama**: `BannerPrototipe` (selalu tampil), `PeringatanPrivasi` (wajib di atas setiap isian teks bebas redesain oleh item berikutnya).
+- **Menu**: `navForGroups` menambah grup `Redesain Pekerjaan` (`REDESAIN_TIM_ITEMS`, diekspor dari `sidebar.tsx`) hanya untuk `tim-kajian`. State buka-tutup grup sidebar digeneralisasi dari satu `masterDataOpen` menjadi `Record` per `href`.
+- **Identitas dikodekan**: orang tampil sebagai `kode_orang`, tidak pernah nama/email, kecuali halaman peta kode orang (WEB-3b).
+- **`/redesain/riwayat`**: `GET /api/v1/redesain/riwayat` (filter `entitas`, `entitas_id`, paginasi `hlm`), read-only; kegagalan dilempar, bukan tabel kosong.
+- `openapi/openapi.json` diregenerasi dari backend `66a5156` (v0.47.0) lewat image `Dockerfile.test` backend (stdout memuat log JSON `{"ts"...}` yang harus disaring); blok re-export `schema.ts` ditempel ulang.
+- Detail keputusan: issue `cakrawala-tumbuh/anjab-abk-web-app#58`.
+
 ### [2026-09-08] Cabang di form sekolah; kandidat koordinator TI dari daftar responden sesi
 
 Menyusul pemisahan cabang partisipan di backend (`anjab-abk-backend#40`/`#41`, konteks lengkap
