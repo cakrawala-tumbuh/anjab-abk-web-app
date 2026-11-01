@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState } from "react";
 import { useRouter } from "next/navigation";
 import { PeringatanPrivasi } from "@/components/peringatan-privasi";
 import { PilihKodeOrang } from "@/components/pilih-kode-orang";
+import { PESAN_KODE_ORANG_WAJIB } from "@/lib/redesain-kode-orang";
 import { withServerAuth } from "@/lib/api/client";
 import { apiErrorDari } from "@/lib/api/errors";
 import type { PenilaianRead } from "@/lib/api/schema";
@@ -34,8 +35,10 @@ export interface DialogPutuskanProps {
  *
  * Kelima field wajib (prioritas, alasan, kode orang pemutus, jabatan pemutus, tanggal ≤ hari
  * ini); tombol simpan nonaktif selama validasi klien gagal sehingga `putuskan` tidak
- * dipanggil. Pratinjau peringatan PT-2 tampil bila P1–P3 dipilih pada bukti yang belum
- * diperkuat, tanpa memblokir. Simpan → `POST /api/v1/redesain/penilaian/{id}/putuskan`;
+ * dipanggil. Bila kode orang pemutus satu-satunya yang kosong, pesan aplikasi
+ * `PESAN_KODE_ORANG_WAJIB` tampil di dekat field (`aria-invalid` + `aria-describedby`)
+ * menjelaskan mengapa simpan nonaktif; pesan bawaan browser tak pernah muncul.
+ * Pratinjau peringatan PT-2 tampil bila P1–P3 dipilih pada bukti yang belum diperkuat, tanpa memblokir. Simpan → `POST /api/v1/redesain/penilaian/{id}/putuskan`;
  * 422 backend ditampilkan utuh (inline + toast). Peringatan resmi datang dari respons
  * setelah `router.refresh()`.
  *
@@ -56,6 +59,11 @@ export function DialogPutuskan({ penilaian, accessToken }: DialogPutuskanProps) 
 
   const galat = validasiKeputusan(isian);
   const valid = Object.keys(galat).length === 0;
+  const idGalatKode = useId();
+  // Pesan kode orang tampil bila kode kosong dan itulah satu-satunya penghalang simpan
+  // (tombol nonaktif tanpa penjelasan membingungkan); selain itu field lain yang dikerjakan dulu.
+  const galatKode =
+    !isian.pemutus_kode_orang && Object.keys(galat).every((k) => k === "pemutus_kode_orang");
   const ubah = (k: keyof IsianKeputusan, v: string) => setIsian((s) => ({ ...s, [k]: v }));
 
   async function simpan(e: React.FormEvent) {
@@ -146,8 +154,15 @@ export function DialogPutuskan({ penilaian, accessToken }: DialogPutuskanProps) 
                   value={isian.pemutus_kode_orang}
                   onChange={(v) => ubah("pemutus_kode_orang", v)}
                   wajib
+                  invalid={galatKode}
+                  describedBy={idGalatKode}
                   accessToken={accessToken}
                 />
+                {galatKode && (
+                  <p id={idGalatKode} role="alert" className="form-error">
+                    {PESAN_KODE_ORANG_WAJIB}
+                  </p>
+                )}
               </div>
               <label className="block text-sm">
                 <span className="block text-gray-600 dark:text-gray-400">Jabatan pemutus</span>

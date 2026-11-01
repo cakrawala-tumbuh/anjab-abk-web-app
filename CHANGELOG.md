@@ -7,6 +7,14 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+### Diperbaiki
+
+- **Pesan "Kode orang wajib dipilih." kini benar-benar tampil** (issue #77) — validasi bawaan
+  browser ("Please select an item in the list.") tidak lagi menghadang. Form "Catat isian
+  luring" dan form sesi menampilkan pesan aplikasi di dekat kolom saat kode orang kosong
+  (tanpa mengirim data); dialog "Catat keputusan prioritas" menampilkan pesan yang sama
+  menjelaskan mengapa Simpan nonaktif. Pesan hilang setelah kode dipilih.
+
 ## [4.18.1] - 2026-11-02
 
 ### Diperbaiki

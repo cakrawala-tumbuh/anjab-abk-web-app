@@ -18,8 +18,15 @@ export interface PilihKodeOrangProps {
   /**
    * Bila true, field diwajibkan: opsi kosong `— pilih —` tetap dirender sebagai
    * placeholder tetapi `disabled` (tampil terpilih saat `value === ""`, tak bisa dipilih ulang).
+   * Kewajiban ditandai `aria-required`, BUKAN atribut `required` bawaan: validasi bawaan
+   * browser memblokir submit dengan pesan berbahasa browser sehingga pesan aplikasi tak
+   * pernah tampil. Penegakan ada di guard submit form pemakai (lihat `PESAN_KODE_ORANG_WAJIB`).
    */
   wajib?: boolean;
+  /** Bila true, `<select>` ditandai `aria-invalid="true"` (galat validasi sedang berlaku). */
+  invalid?: boolean;
+  /** `id` elemen pesan galat; dipasang sebagai `aria-describedby` selama `invalid`. */
+  describedBy?: string;
   /** Token akses dari Server Component induk. */
   accessToken: string | undefined;
 }
@@ -38,7 +45,15 @@ export interface PilihKodeOrangProps {
  * @param props - Lihat {@link PilihKodeOrangProps}.
  * @returns `<select>` berisi kode orang, atau panel galat bila gagal memuat.
  */
-export function PilihKodeOrang({ name, value, onChange, wajib, accessToken }: PilihKodeOrangProps) {
+export function PilihKodeOrang({
+  name,
+  value,
+  onChange,
+  wajib,
+  invalid,
+  describedBy,
+  accessToken,
+}: PilihKodeOrangProps) {
   const [opsi, setOpsi] = useState<KodeOrangRead[] | null>(null);
   const [gagal, setGagal] = useState<string | null>(null);
 
@@ -77,7 +92,9 @@ export function PilihKodeOrang({ name, value, onChange, wajib, accessToken }: Pi
     <select
       name={name}
       value={value}
-      required={wajib}
+      aria-required={wajib || undefined}
+      aria-invalid={invalid ? true : undefined}
+      aria-describedby={invalid ? describedBy : undefined}
       disabled={opsi === null}
       onChange={(e) => onChange(e.target.value)}
       className="rounded-md border border-gray-300 px-2 py-1 text-sm dark:border-gray-600 dark:bg-gray-800"

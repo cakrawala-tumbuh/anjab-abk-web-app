@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState } from "react";
 import { useRouter } from "next/navigation";
 import { DaftarPilihTerpaginasi } from "@/components/daftar-pilih-terpaginasi";
 import { PeringatanPrivasi } from "@/components/peringatan-privasi";
@@ -9,6 +9,7 @@ import { withServerAuth } from "@/lib/api/client";
 import { apiErrorDari } from "@/lib/api/errors";
 import type { KonteksRead, MasalahRead, SekolahRead, SesiCreate, SesiRead } from "@/lib/api/schema";
 import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
+import { PESAN_KODE_ORANG_WAJIB } from "@/lib/redesain-kode-orang";
 import {
   JENIS_KEGIATAN,
   PESAN_SESI_GANDA,
@@ -73,6 +74,8 @@ export function SesiForm({ awal, sekolah, masalah, konteks, accessToken }: SesiF
   const [masalahIds, setMasalahIds] = useState<Set<string>>(new Set(awal?.masalah_ids ?? []));
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [galatKode, setGalatKode] = useState(false);
+  const idGalatKode = useId();
 
   const petaKonteks = new Map(konteks.map((k) => [k.id, k]));
 
@@ -88,6 +91,10 @@ export function SesiForm({ awal, sekolah, masalah, konteks, accessToken }: SesiF
   async function kirim(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
+    if (kodeOrang === "") {
+      setGalatKode(true);
+      return;
+    }
     const mr = parseMenit(rencana);
     const md = parseMenit(disepakati);
     if (mr === undefined || md === undefined) {
@@ -158,10 +165,20 @@ export function SesiForm({ awal, sekolah, masalah, konteks, accessToken }: SesiF
           <PilihKodeOrang
             name="kode_orang"
             value={kodeOrang}
-            onChange={setKodeOrang}
+            onChange={(k) => {
+              if (k !== "") setGalatKode(false);
+              setKodeOrang(k);
+            }}
             wajib
+            invalid={galatKode}
+            describedBy={idGalatKode}
             accessToken={accessToken}
           />
+          {galatKode && (
+            <p id={idGalatKode} role="alert" className="form-error">
+              {PESAN_KODE_ORANG_WAJIB}
+            </p>
+          )}
         </div>
         <label className="text-sm">
           <span className="block text-gray-600 dark:text-gray-400">Sekolah</span>
