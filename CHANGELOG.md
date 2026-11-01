@@ -7,8 +7,44 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [4.17.0] - 2026-11-01
+
 ### Ditambahkan
 
+- **Unduhan register XLSX dan log Versi Metode** (issue #71, mengikuti backend #64/#65) — tombol
+  **Unduh register (XLSX)** di beranda redesain dan Ringkasan Yayasan (lewat route handler proxy;
+  token tidak sampai ke browser) serta halaman **Versi Metode** (`/redesain/versi-metode`):
+  daftar, tambah, ubah — tanpa hapus.
+- **Ringkasan Yayasan dan unduhan DOCX** (issue #70, mengikuti backend #62/#63) — halaman
+  `/redesain/yayasan` (tabel ringkasan per masalah berfilter, tanpa isi konfirmasi per orang)
+  beserta detailnya, tombol **Unduh DOCX** per masalah, **Unduh agenda (DOCX)**, dan **Unduh
+  Lembar Konfirmasi** di detail masalah — semuanya lewat route handler proxy.
+- **Sesi Partisipasi dan rekap menit per orang** (issue #69, mengikuti backend #60) — menu
+  **Sesi Partisipasi** (`/redesain/sesi`): daftar berfilter, tambah/ubah sesi, status izin
+  sebagai informasi (tidak memblokir), dan halaman rekap menit per kode orang ("—" bila kosong).
+- **Alternatif redesain di detail masalah** (issue #68, mengikuti backend #59) — tab
+  **Alternatif** berlabel "BUKAN BAGIAN DARI SKOR K1–K4": tabel, tambah/ubah, validasi klien
+  untuk status "Uji disetujui terpisah" dan opsi "Alihkan tugas bersyarat". Tanpa hapus.
+- **Prioritas final beralasan, status penilaian, dan Agenda Yayasan** (issue #67, mengikuti
+  backend #58) — panel **Keputusan prioritas** (saran vs final, alasan, pemutus berkode), dialog
+  **Catat keputusan prioritas**, pilihan status penilaian, tabel sebaran K1–K4 (hitungan, bukan
+  rata-rata), dan halaman **Agenda Yayasan** (`/redesain/agenda-yayasan`).
+- **Penilaian Tim dengan saran triase** (issue #66, mengikuti backend #57) — tab **Penilaian**
+  di detail masalah (mulai penilaian, form status bukti/gap/indikasi kritis/K1–K4) dengan panel
+  **Saran sistem — bukan keputusan** yang ditampilkan apa adanya dari backend.
+- **Bukti per klaim** (issue #65, mengikuti backend #56) — tab **Bukti** di detail masalah
+  (tabel, tambah/ubah, empat status pemeriksaan) dan daftar kode bukti per langkah di tab Alur.
+- **Konfirmasi sekolah, eskalasi, dan isian luring di detail masalah** (issue #64, mengikuti
+  backend #53/#55) — tab **Konfirmasi** (baca-saja, versi tergantikan tersembunyi), tombol
+  **Angkat masalah** dan **Catat isian luring**, badge **Eskalasi**, serta halaman **Eskalasi**
+  (`/redesain/eskalasi`).
+- **Detail masalah Tim dengan peta alur dan koreksi** (issue #63, mengikuti backend #52/#54) —
+  halaman `/redesain/masalah/[id]` bertab; bagian **Alur** memuat proses & langkah (tambah/ubah)
+  dan daftar koreksi berasal Konfirmasi/Tim. Kode masalah di daftar kini menaut ke detail.
+- **Register Konteks dan Masalah** (issue #60, mengikuti backend #50/#51) — halaman
+  `/redesain/konteks` (berlabel BELUM MENJADI TEMUAN; tambah/ubah, tanpa hapus) dan
+  `/redesain/masalah` (daftar berfilter, tambah/ubah, buka/tutup konfirmasi sekolah; status awal
+  dibekukan sejak konfirmasi pertama terkirim).
 - **Kode Orang dan Cakupan 19 Jabatan Redesain Pekerjaan** (issue #59, mengikuti backend #49/#61) —
   halaman `/redesain/kode-orang` (daftar, tambah narasumber, ubah keterangan peran; satu-satunya
   layar yang menampilkan nama partisipan), komponen publik `PilihKodeOrang` untuk field
