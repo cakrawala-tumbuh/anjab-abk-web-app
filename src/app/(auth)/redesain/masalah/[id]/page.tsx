@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import { ApiError } from "@/lib/api/errors";
 import { BadgeEskalasi } from "@/components/badge-eskalasi";
 import { auth } from "@/lib/auth/auth";
+import { UnduhDocx } from "@/components/unduh-docx";
+import { urlLembarKonfirmasi } from "@/lib/redesain-yayasan";
 import { labelKonteks, labelSekolah } from "@/lib/redesain-register";
 import { fetchMasalah, semuaKonteks, semuaSekolah } from "../data";
 import { withServerAuth } from "@/lib/api/client";
@@ -48,7 +50,12 @@ export default async function DetailMasalahPage({ params, searchParams }: Props)
           Masalah <span className="font-mono">{masalah.kode}</span>{" "}
           <BadgeEskalasi eskalasiPada={masalah.eskalasi_pada} />
         </h1>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
+          <UnduhDocx
+            href={urlLembarKonfirmasi(masalah.id)}
+            label="Unduh Lembar Konfirmasi"
+            namaCadangan={`lembar-konfirmasi-${masalah.kode}.docx`}
+          />
           <Link
             href="/redesain/masalah"
             className="rounded-md border border-gray-300 px-3 py-1.5 text-sm dark:border-gray-600"

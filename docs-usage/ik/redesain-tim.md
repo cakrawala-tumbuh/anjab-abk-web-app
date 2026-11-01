@@ -16,7 +16,8 @@ muncul di sidebar, dan mengetik alamat `/redesain` langsung menampilkan
 1. Masuk ke aplikasi, lihat sidebar kiri.
 2. Klik **Redesain Pekerjaan** — grup menu terbuka berisi **Beranda**,
    **Kode Orang**, **Cakupan 19 Jabatan**, **Konteks**, **Masalah**, **Eskalasi**,
-   **Sesi Partisipasi**, **Agenda Yayasan**, dan **Riwayat Perubahan**.
+   **Sesi Partisipasi**, **Agenda Yayasan**, **Ringkasan Yayasan**, dan
+   **Riwayat Perubahan**.
 
 ## Banner PROTOTIPE
 
@@ -323,3 +324,30 @@ Klik **Rekap per orang** untuk melihat, per kode orang, **Jumlah sesi**, **Total
 rencana**, dan **Total menit disepakati**. Total yang belum ada isinya tampil **—**, bukan 0.
 
 Jangan menulis nama orang atau data pribadi di isian teks; tulis jabatan atau peran.
+
+## Ringkasan yayasan & unduhan DOCX
+
+Yayasan **tidak punya peran input** di aplikasi; ia hanya menerima berkas ringkasan yang
+diunduh Tim Kajian. Halaman ini membantu Tim membaca ringkasan dan mengunduh berkasnya.
+
+1. Klik **Redesain Pekerjaan → Ringkasan Yayasan**. Tabel memuat satu baris per masalah:
+   kode masalah, konteks, sekolah, rumusan hipotesis, sumber awal dan keterbatasan, status
+   bukti, **K1** sampai **K4**, indikasi kritis, saran otomatis, prioritas final, alasan,
+   pemutus, dan tindak lanjut. Isian yang belum ada tampil **—**, bukan 0, Tidak, atau
+   Rendah. Pemutus tampil sebagai kode orang dan jabatan, bukan nama. Halaman ini tidak
+   memuat isi konfirmasi per orang.
+2. Bila ada **peringatan** atas prioritas final, ia tampil sebagai lencana kuning di kolom
+   **Peringatan**; arahkan kursor untuk membaca penjelasannya.
+3. Untuk menyaring, pilih **Konteks**, **Status bukti**, **Saran otomatis**,
+   **Prioritas final**, atau **Status penilaian**. Filter langsung berlaku.
+4. Klik kode masalah untuk membuka **detail ringkasan** satu masalah.
+5. Klik **Unduh DOCX** pada baris (atau di halaman detail) untuk mengunduh ringkasan satu
+   masalah.
+6. Klik **Unduh agenda (DOCX)** di bagian atas untuk mengunduh ringkasan seluruh masalah
+   berstatus **Siap untuk telaah yayasan**. Bila belum ada satu pun, tampil pesan
+   **Tidak ada masalah di agenda**.
+7. Untuk **Lembar Konfirmasi** pra-isi (diserahkan ke yayasan atau sekolah), buka
+   **Masalah**, klik kode masalah, lalu klik **Unduh Lembar Konfirmasi** di bagian atas
+   halaman detail.
+8. Bila unduhan gagal, pesan kesalahan tampil di pojok layar dan tidak hilang sendiri;
+   tutup dengan tombol silang.
