@@ -7,6 +7,7 @@ import {
   bacaFilterYayasan,
   tampilNilai,
   urlAgendaYayasan,
+  urlRegisterXlsx,
   urlRingkasanSatuan,
 } from "@/lib/redesain-yayasan";
 import { BadgePeringatan } from "./badge-peringatan";
@@ -58,12 +59,19 @@ export default async function RingkasanYayasanPage({ searchParams }: Props) {
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <h1 className="page-heading">Ringkasan Yayasan</h1>
-        <UnduhDocx
-          href={urlAgendaYayasan()}
-          label="Unduh agenda (DOCX)"
-          pesan404={PESAN_AGENDA_KOSONG}
-          namaCadangan="agenda-yayasan.docx"
-        />
+        <div className="flex flex-wrap gap-2">
+          <UnduhDocx
+            href={urlRegisterXlsx()}
+            label="Unduh register (XLSX)"
+            namaCadangan="register-redesain.xlsx"
+          />
+          <UnduhDocx
+            href={urlAgendaYayasan()}
+            label="Unduh agenda (DOCX)"
+            pesan404={PESAN_AGENDA_KOSONG}
+            namaCadangan="agenda-yayasan.docx"
+          />
+        </div>
       </div>
       <p className="text-sm text-gray-500 dark:text-gray-400">
         Ringkasan keputusan per masalah untuk diserahkan ke yayasan. Yayasan tidak mengisi di

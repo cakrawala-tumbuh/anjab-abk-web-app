@@ -3084,6 +3084,28 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/redesain/ekspor/register.xlsx": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Unduh register terintegrasi, XLSX 14 sheet (tim-kajian)
+         * @description Satu workbook XLSX 14 sheet bernilai (tanpa rumus), hanya kode orang, urut kode.
+         *
+         *     Seluruh data dibaca lewat seam service yang sama dengan endpoint masing-masing entitas.
+         */
+        get: operations["redesain_ekspor_register"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/redesain/proses": {
         parameters: {
             query?: never;
@@ -25925,6 +25947,53 @@ export interface operations {
             };
         };
     };
+    redesain_ekspor_register: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Berkas XLSX register 14 sheet. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": string;
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan anggota grup tim-kajian. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
     redesain_proses_list: {
         parameters: {
             query?: {
@@ -27674,3 +27743,7 @@ export type SebaranK = components["schemas"]["SebaranK"];
 export type PeringatanPenilaian = components["schemas"]["Peringatan"];
 
 export type RingkasanYayasanRow = components["schemas"]["RingkasanYayasanRow"];
+
+export type VersiMetodeRead = components["schemas"]["VersiMetodeRead"];
+export type VersiMetodeCreate = components["schemas"]["VersiMetodeCreate"];
+export type VersiMetodeUpdate = components["schemas"]["VersiMetodeUpdate"];

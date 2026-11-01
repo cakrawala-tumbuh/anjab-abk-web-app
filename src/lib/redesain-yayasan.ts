@@ -113,3 +113,8 @@ export function urlLembarKonfirmasi(masalahId: string): string {
 export function urlAgendaYayasan(): string {
   return `/api/redesain/ekspor/ringkasan-yayasan?status_penilaian=${encodeURIComponent(STATUS_AGENDA_YAYASAN)}`;
 }
+
+/** URL proxy unduh register terintegrasi (XLSX 14 sheet). */
+export function urlRegisterXlsx(): string {
+  return "/api/redesain/ekspor/register";
+}

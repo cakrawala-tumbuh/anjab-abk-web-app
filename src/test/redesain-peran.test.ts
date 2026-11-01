@@ -36,7 +36,7 @@ describe("navForGroups — menu Redesain Pekerjaan", () => {
     expect(href(navForGroups(["tim-kajian"]))).toContain("/redesain");
     expect(href(navForGroups(["admin", "tim-kajian"]))).toContain("/redesain");
   });
-  it("sub-item berisi Beranda, Kode Orang, Cakupan 19 Jabatan, Konteks, Masalah, Eskalasi, Sesi Partisipasi, Agenda Yayasan, Ringkasan Yayasan, dan Riwayat Perubahan", () => {
+  it("sub-item berisi Beranda, Kode Orang, Cakupan 19 Jabatan, Konteks, Masalah, Eskalasi, Sesi Partisipasi, Agenda Yayasan, Ringkasan Yayasan, Versi Metode, dan Riwayat Perubahan", () => {
     expect(REDESAIN_TIM_ITEMS.map((i) => i.href)).toEqual([
       "/redesain",
       "/redesain/kode-orang",
@@ -47,6 +47,7 @@ describe("navForGroups — menu Redesain Pekerjaan", () => {
       "/redesain/sesi",
       "/redesain/agenda-yayasan",
       "/redesain/yayasan",
+      "/redesain/versi-metode",
       "/redesain/riwayat",
     ]);
   });

@@ -20269,6 +20269,64 @@
         }
       }
     },
+    "/api/v1/redesain/ekspor/register.xlsx": {
+      "get": {
+        "tags": [
+          "redesain"
+        ],
+        "summary": "Unduh register terintegrasi, XLSX 14 sheet (tim-kajian)",
+        "description": "Satu workbook XLSX 14 sheet bernilai (tanpa rumus), hanya kode orang, urut kode.\n\nSeluruh data dibaca lewat seam service yang sama dengan endpoint masing-masing entitas.",
+        "operationId": "redesain_ekspor_register",
+        "responses": {
+          "200": {
+            "description": "Berkas XLSX register 14 sheet.",
+            "content": {
+              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan anggota grup tim-kajian.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
     "/api/v1/redesain/proses": {
       "get": {
         "tags": [

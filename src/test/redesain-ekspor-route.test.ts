@@ -5,6 +5,7 @@ vi.mock("@/lib/auth/auth", () => ({ auth: () => authMock() }));
 
 import { GET as GET_BATCH } from "@/app/api/redesain/ekspor/ringkasan-yayasan/route";
 import { GET as GET_SATUAN } from "@/app/api/redesain/ekspor/ringkasan-yayasan/[masalah_id]/route";
+import { GET as GET_REGISTER } from "@/app/api/redesain/ekspor/register/route";
 import { GET as GET_LEMBAR } from "@/app/api/redesain/ekspor/lembar-konfirmasi/[masalah_id]/route";
 
 const ctx = { params: Promise.resolve({ masalah_id: "m-1" }) };
@@ -90,5 +91,38 @@ describe("route ekspor redesain: dengan sesi", () => {
       const res = await GET_SATUAN(new Request("http://x/a"), ctx);
       expect(res.status).toBe(status);
     }
+  });
+});
+
+describe("route ekspor register XLSX", () => {
+  it("tanpa sesi → 401 dan fetch tidak terpanggil", async () => {
+    authMock.mockResolvedValue(null);
+    const fetchSpy = vi.fn();
+    vi.stubGlobal("fetch", fetchSpy);
+    const res = await GET_REGISTER();
+    expect(res.status).toBe(401);
+    expect(fetchSpy).not.toHaveBeenCalled();
+  });
+
+  it("meneruskan Bearer, path backend, Content-Type & Content-Disposition spreadsheet", async () => {
+    authMock.mockResolvedValue({ accessToken: "tok-x" });
+    const fetchSpy = vi.fn().mockResolvedValue(
+      new Response("xlsx", {
+        status: 200,
+        headers: {
+          "content-type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+          "content-disposition": 'attachment; filename="register-redesain-20261101.xlsx"',
+        },
+      }),
+    );
+    vi.stubGlobal("fetch", fetchSpy);
+    const res = await GET_REGISTER();
+    const [url, init] = fetchSpy.mock.calls[0];
+    expect(String(url)).toContain("/api/v1/redesain/ekspor/register.xlsx");
+    expect((init.headers as Record<string, string>).Authorization).toBe("Bearer tok-x");
+    expect(res.headers.get("content-type")).toContain("spreadsheetml");
+    expect(res.headers.get("content-disposition")).toBe(
+      'attachment; filename="register-redesain-20261101.xlsx"',
+    );
   });
 });

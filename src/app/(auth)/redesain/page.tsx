@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { UnduhDocx } from "@/components/unduh-docx";
+import { urlRegisterXlsx } from "@/lib/redesain-yayasan";
 
 export const metadata = { title: "Redesain Pekerjaan — Beranda" };
 
@@ -12,6 +14,13 @@ export default function RedesainBerandaPage() {
         ditampilkan sebagai kode (mis. <span className="font-mono">O-0001</span>), tidak pernah
         nama.
       </p>
+      <div>
+        <UnduhDocx
+          href={urlRegisterXlsx()}
+          label="Unduh register (XLSX)"
+          namaCadangan="register-redesain.xlsx"
+        />
+      </div>
       <ul className="list-disc space-y-1 pl-5 text-sm">
         <li>
           <Link
@@ -21,6 +30,15 @@ export default function RedesainBerandaPage() {
             Riwayat Perubahan
           </Link>{" "}
           — catatan append-only setiap perubahan data redesain.
+        </li>
+        <li>
+          <Link
+            href="/redesain/versi-metode"
+            className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
+          >
+            Versi Metode
+          </Link>{" "}
+          — log versi metode (sheet PERUBAHAN pada register).
         </li>
       </ul>
     </div>

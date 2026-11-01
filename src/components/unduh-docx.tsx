@@ -11,7 +11,7 @@ function namaBerkasDari(contentDisposition: string | null, fallback: string): st
 }
 
 /**
- * Tombol unduh DOCX lewat route handler proxy server (`/api/redesain/ekspor/*`) —
+ * Tombol unduh berkas biner (DOCX atau XLSX) lewat route handler proxy server (`/api/redesain/ekspor/*`) —
  * token akses TIDAK pernah ada di browser. Nama berkas diambil dari `Content-Disposition`
  * yang diteruskan proxy. Kegagalan dilaporkan lewat `notifyGagal`; status 404 memakai
  * `pesan404` bila diberikan (mis. agenda kosong), selain itu pesan dari backend.

@@ -16,7 +16,7 @@ muncul di sidebar, dan mengetik alamat `/redesain` langsung menampilkan
 1. Masuk ke aplikasi, lihat sidebar kiri.
 2. Klik **Redesain Pekerjaan** — grup menu terbuka berisi **Beranda**,
    **Kode Orang**, **Cakupan 19 Jabatan**, **Konteks**, **Masalah**, **Eskalasi**,
-   **Sesi Partisipasi**, **Agenda Yayasan**, **Ringkasan Yayasan**, dan
+   **Sesi Partisipasi**, **Agenda Yayasan**, **Ringkasan Yayasan**, **Versi Metode**, dan
    **Riwayat Perubahan**.
 
 ## Banner PROTOTIPE
@@ -351,3 +351,26 @@ diunduh Tim Kajian. Halaman ini membantu Tim membaca ringkasan dan mengunduh ber
    halaman detail.
 8. Bila unduhan gagal, pesan kesalahan tampil di pojok layar dan tidak hilang sendiri;
    tutup dengan tombol silang.
+
+## Register XLSX & versi metode
+
+### Mengunduh register (XLSX)
+
+1. Buka **Redesain Pekerjaan → Beranda** atau **Ringkasan Yayasan**.
+2. Klik **Unduh register (XLSX)**. Berkas `register-redesain-<tanggal>.xlsx` (14 sheet,
+   berisi nilai tanpa rumus) tersimpan di perangkat Anda.
+3. Berkas ini hanya arsip/QA untuk Tim Kajian. Sumber kebenaran tetap aplikasi — jangan
+   menggandakan jawaban sekolah ke berkas lain. Orang tampil sebagai kode, bukan nama.
+
+Bila gagal, muncul notifikasi galat; coba lagi atau masuk kembali bila sesi berakhir.
+
+### Mengelola log versi metode
+
+1. Buka **Redesain Pekerjaan → Versi Metode**. Daftar urut menurut tanggal, versi, bagian.
+2. Untuk menambah, isi **Versi**, **Tanggal**, **Bagian**, **Apa yang diperbarui**,
+   **Alasan / risiko**, **Status dan hasil uji**, **Pemeriksa / pemutus**, lalu **Tambah**.
+   Isi pemeriksa dengan jabatan/peran, **bukan nama orang**.
+3. Bila muncul **Versi dan bagian ini sudah tercatat**, pasangan versi + bagian sudah ada;
+   ubah catatan yang ada atau gunakan bagian lain.
+4. Untuk mengubah, klik **Ubah** pada baris, sunting, lalu **Simpan perubahan**.
+5. Catatan versi tidak dapat dihapus.
