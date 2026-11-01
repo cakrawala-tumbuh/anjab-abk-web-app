@@ -105,6 +105,7 @@ Butir WEB-1 pelacak `cakrawala-tumbuh/ypii-support#424`; konsumen `anjab-abk-bac
 - **Menu**: `navForGroups` menambah grup `Redesain Pekerjaan` (`REDESAIN_TIM_ITEMS`, diekspor dari `sidebar.tsx`) hanya untuk `tim-kajian`. State buka-tutup grup sidebar digeneralisasi dari satu `masterDataOpen` menjadi `Record` per `href`.
 - **Identitas dikodekan**: orang tampil sebagai `kode_orang`, tidak pernah nama/email, kecuali halaman peta kode orang (WEB-3b).
 - **`/redesain/riwayat`**: `GET /api/v1/redesain/riwayat` (filter `entitas`, `entitas_id`, paginasi `hlm`), read-only; kegagalan dilempar, bukan tabel kosong.
+- **`/redesain/kode-orang`** & **`/redesain/cakupan-jabatan`** (WEB-3b, #59): kode orang = satu-satunya layar yang boleh menampilkan nama partisipan; `PilihKodeOrang` (`src/components/pilih-kode-orang.tsx`) = pemilih standar field `*_kode_orang` (label `kode — keterangan`, nilai string `kode`, gagal muat = panel galat, bukan daftar kosong). Cakupan: baris disusun `susunBarisCakupan` (`src/lib/redesain-cakupan.ts`), sel `jabatan_id` null bertanda "Belum dipetakan ke master jabatan".
 - `openapi/openapi.json` diregenerasi dari backend `66a5156` (v0.47.0) lewat image `Dockerfile.test` backend (stdout memuat log JSON `{"ts"...}` yang harus disaring); blok re-export `schema.ts` ditempel ulang.
 - Detail keputusan: issue `cakrawala-tumbuh/anjab-abk-web-app#58`.
 

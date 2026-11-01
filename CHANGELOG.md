@@ -9,6 +9,11 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ### Ditambahkan
 
+- **Kode Orang dan Cakupan 19 Jabatan Redesain Pekerjaan** (issue #59, mengikuti backend #49/#61) —
+  halaman `/redesain/kode-orang` (daftar, tambah narasumber, ubah keterangan peran; satu-satunya
+  layar yang menampilkan nama partisipan), komponen publik `PilihKodeOrang` untuk field
+  `*_kode_orang`, dan `/redesain/cakupan-jabatan` (19 role × Bandung/Semarang, penanda
+  "Belum dipetakan ke master jabatan"). `openapi.json` disegarkan dari backend master.
 - **Alur, koreksi langkah, dan ralat isian sekolah** (issue #62, mengikuti backend #54/#55) — di
   langkah 2 wizard (setelah dugaan tampil) sekolah melihat panel **Alur kerja menurut catatan
   Tim** dan dapat menambah koreksi per langkah (append-only, Tim yang merekonsiliasi); halaman

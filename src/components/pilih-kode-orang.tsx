@@ -1,0 +1,88 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { withServerAuth } from "@/lib/api/client";
+import { apiErrorDari } from "@/lib/api/errors";
+import { ambilSemuaHalaman } from "@/lib/api/paginasi";
+import type { KodeOrangRead } from "@/lib/api/schema";
+import { notifyGagal, pesanGagal } from "@/lib/notify";
+
+/** Properti {@link PilihKodeOrang}. */
+export interface PilihKodeOrangProps {
+  /** Nama field `<select>` (dipakai form native). */
+  name: string;
+  /** Kode terpilih saat ini (string `kode`, mis. `O-0001`); `""` bila kosong. */
+  value: string;
+  /** Dipanggil dengan string `kode` terpilih (`""` bila dikosongkan). */
+  onChange: (kode: string) => void;
+  /** Bila true, opsi kosong tidak disediakan dan field diwajibkan. */
+  wajib?: boolean;
+  /** Token akses dari Server Component induk. */
+  accessToken: string | undefined;
+}
+
+/**
+ * Pemilih kode orang untuk field `*_kode_orang` di form redesain.
+ *
+ * Opsi dimuat dari `GET /api/v1/redesain/kode-orang` (seluruh halaman) dan diberi
+ * label `kode — keterangan_peran`. Nama orang TIDAK PERNAH ditampilkan. Kegagalan
+ * memuat dilaporkan lewat `notifyGagal` dan ditampilkan sebagai panel galat yang
+ * terbedakan dari daftar kosong yang sah.
+ *
+ * @param props - Lihat {@link PilihKodeOrangProps}.
+ * @returns `<select>` berisi kode orang, atau panel galat bila gagal memuat.
+ */
+export function PilihKodeOrang({ name, value, onChange, wajib, accessToken }: PilihKodeOrangProps) {
+  const [opsi, setOpsi] = useState<KodeOrangRead[] | null>(null);
+  const [gagal, setGagal] = useState<string | null>(null);
+
+  useEffect(() => {
+    let batal = false;
+    const client = withServerAuth(accessToken);
+    ambilSemuaHalaman<KodeOrangRead>(async (limit, offset) => {
+      const res = await client.GET("/api/v1/redesain/kode-orang", {
+        params: { query: { limit, offset } },
+      });
+      if (!res.data) throw apiErrorDari(res);
+      return { items: res.data.items, total: res.data.total };
+    })
+      .then((items) => {
+        if (!batal) setOpsi(items);
+      })
+      .catch((err: unknown) => {
+        if (batal) return;
+        setGagal(pesanGagal(err));
+        notifyGagal(err);
+      });
+    return () => {
+      batal = true;
+    };
+  }, [accessToken]);
+
+  if (gagal) {
+    return (
+      <p role="alert" className="form-error">
+        Gagal memuat daftar kode orang: {gagal}
+      </p>
+    );
+  }
+
+  return (
+    <select
+      name={name}
+      value={value}
+      required={wajib}
+      disabled={opsi === null}
+      onChange={(e) => onChange(e.target.value)}
+      className="rounded-md border border-gray-300 px-2 py-1 text-sm dark:border-gray-600 dark:bg-gray-800"
+    >
+      {!wajib && <option value="">{opsi === null ? "Memuat…" : "— belum dipilih —"}</option>}
+      {wajib && opsi === null && <option value="">Memuat…</option>}
+      {(opsi ?? []).map((k) => (
+        <option key={k.id} value={k.kode}>
+          {k.keterangan_peran ? `${k.kode} — ${k.keterangan_peran}` : k.kode}
+        </option>
+      ))}
+    </select>
+  );
+}

@@ -36,8 +36,13 @@ describe("navForGroups — menu Redesain Pekerjaan", () => {
     expect(href(navForGroups(["tim-kajian"]))).toContain("/redesain");
     expect(href(navForGroups(["admin", "tim-kajian"]))).toContain("/redesain");
   });
-  it("sub-item berisi Beranda dan Riwayat Perubahan", () => {
-    expect(REDESAIN_TIM_ITEMS.map((i) => i.href)).toEqual(["/redesain", "/redesain/riwayat"]);
+  it("sub-item berisi Beranda, Kode Orang, Cakupan 19 Jabatan, dan Riwayat Perubahan", () => {
+    expect(REDESAIN_TIM_ITEMS.map((i) => i.href)).toEqual([
+      "/redesain",
+      "/redesain/kode-orang",
+      "/redesain/cakupan-jabatan",
+      "/redesain/riwayat",
+    ]);
   });
   it("admin saja dan partisipan tidak punya href berawalan /redesain", () => {
     for (const g of [["admin"], ["partisipan"]]) {

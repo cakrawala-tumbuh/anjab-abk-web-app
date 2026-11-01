@@ -57,6 +57,8 @@ export const MASTER_DATA_ITEMS: ReadonlyArray<{ href: string; label: string }> =
  */
 export const REDESAIN_TIM_ITEMS: ReadonlyArray<{ href: string; label: string }> = [
   { href: "/redesain", label: "Beranda" },
+  { href: "/redesain/kode-orang", label: "Kode Orang" },
+  { href: "/redesain/cakupan-jabatan", label: "Cakupan 19 Jabatan" },
   { href: "/redesain/riwayat", label: "Riwayat Perubahan" },
 ];
 

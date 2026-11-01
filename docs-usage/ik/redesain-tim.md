@@ -14,8 +14,8 @@ muncul di sidebar, dan mengetik alamat `/redesain` langsung menampilkan
 ## Membuka Menu
 
 1. Masuk ke aplikasi, lihat sidebar kiri.
-2. Klik **Redesain Pekerjaan** — grup menu terbuka berisi **Beranda** dan
-   **Riwayat Perubahan**.
+2. Klik **Redesain Pekerjaan** — grup menu terbuka berisi **Beranda**,
+   **Kode Orang**, **Cakupan 19 Jabatan**, dan **Riwayat Perubahan**.
 
 ## Banner PROTOTIPE
 
@@ -50,3 +50,36 @@ catatan tambah-saja (tidak dapat diedit).
 Jika server menolak (misalnya 403) atau gagal (5xx), halaman menampilkan pesan error
 dengan tombol **Coba lagi** — bukan tabel kosong. Tabel kosong berarti memang belum ada
 riwayat (atau tidak ada yang cocok dengan filter).
+
+---
+
+## Kode Orang
+
+Kode orang (contoh `O-0001`) adalah identitas narasumber di seluruh register redesain.
+Halaman ini satu-satunya layar redesain yang menampilkan **nama** partisipan, karena
+peta kode ↔ partisipan hanya untuk Tim Kajian.
+
+1. **Redesain Pekerjaan → Kode Orang**. Tabel memuat **Kode**, **Keterangan peran**,
+   **Partisipan**, dan **Dibuat**.
+2. Untuk menambah narasumber, isi **Keterangan peran** (tulis jabatan/peran, bukan nama),
+   pilih **Partisipan** bila ada (boleh dikosongkan), lalu klik **Tambah**.
+3. Bila partisipan itu sudah punya kode, tampil pesan **Partisipan ini sudah punya kode**
+   dan tidak ada yang tersimpan.
+4. Untuk mengubah keterangan, edit kolom **Keterangan peran** lalu klik **Simpan**.
+
+Kode orang tidak dapat dihapus. Di form lain, kode dipilih lewat daftar berlabel
+`kode — keterangan peran` (tanpa nama orang). Bila daftar gagal dimuat, tampil pesan
+galat — bukan daftar kosong.
+
+## Cakupan 19 Jabatan
+
+1. **Redesain Pekerjaan → Cakupan 19 Jabatan**. Tabel menampilkan 19 role, masing-masing
+   dengan kolom **Bandung** dan **Semarang**.
+2. Sel bertanda **Belum dipetakan ke master jabatan** berarti role cabang itu belum
+   dihubungkan ke jabatan di master data — cakupan belum lengkap.
+3. Klik **Ubah Bandung** / **Ubah Semarang** pada sel untuk membuka form: **Jabatan master**,
+   **Status unit**, **Pemegang diperiksa**, **Inventori ditinjau**, **Peta diperkuat**,
+   **Gap / variasi** (jangan menulis nama orang), dan **PIC (kode orang)**. Klik **Simpan**.
+4. Bila jabatan yang dipilih ternyata sudah tidak ada, server menolak dan tampil pesan galat.
+
+Baris cakupan tidak dapat ditambah atau dihapus dari layar ini.
