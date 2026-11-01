@@ -118,8 +118,40 @@ Register masalah memuat hipotesis masalah per sekolah dan periode.
    penjelasan alternatif, penanggung jawab berupa kode orang, serta uraian tugas yang
    tertaut), lalu klik **Tambah masalah**. Pilih **Belum ditetapkan** pada Sekolah bila
    sekolahnya belum diketahui, lalu isi **Keterangan sekolah**.
-4. Untuk mengubah, klik kode masalah pada tabel (sementara halaman detail belum tersedia,
-   tautan ini membuka formulir ubah), lalu klik **Simpan perubahan**.
+4. Klik kode masalah pada tabel untuk membuka halaman detail (lihat bagian berikutnya).
+   Untuk mengubah isian masalah, klik **Ubah masalah** di halaman detail, lalu klik
+   **Simpan perubahan**.
+
+### Detail masalah & peta alur
+
+Halaman detail memperlihatkan satu masalah dari berbagai sisi. Di bagian atas tampil
+identitas masalah: **Konteks**, **Sekolah**, **Periode acuan**, **Status awal**,
+**Gelombang**, dan status **Dibuka untuk konfirmasi**. Di bawahnya ada tab bagian; saat ini
+tersedia **Alur**, dan bagian lain (konfirmasi, bukti, penilaian, alternatif) akan
+ditambahkan pada tab yang sama.
+
+Bagian **Alur** menampilkan proses beserta langkahnya. Proses milik sekolah berbeda tampil
+terpisah dan tidak pernah digabung: jangan menuliskan proses sekolah B sebagai fakta dari
+catatan sekolah A.
+
+1. **Menambah proses**: klik **+ Tambah proses**, isi **Periode** dan **Nama proses**, lalu
+   klik **Tambah proses**. Bila masalah sudah punya sekolah, pilihan **Sekolah** terkunci ke
+   sekolah itu; bila belum, pilih sekolahnya. Kode proses (mis. P-001) dibuat otomatis.
+   Untuk mengubah, klik **Ubah proses** pada proses yang dimaksud.
+2. **Menambah langkah**: klik **+ Tambah langkah** pada proses, isi **Tahap**, **Pemicu /
+   masukan**, **Pelaksana**, **Pekerjaan / sistem**, **Keluaran & penerima**, serta
+   (opsional) **Urutan**, **Pemeriksa / pemutus**, **Hambatan**, dan **Status langkah**
+   (Hipotesis, Keterangan kasus, Diperkuat untuk klaim, Diperselisihkan, Tidak berlaku).
+   Kosongkan **Urutan** agar langkah ditaruh di akhir. Langkah tampil terurut menurut
+   urutan. Klik **Ubah langkah** untuk mengubahnya; kode langkah tidak dapat diubah.
+3. Isi **Pelaksana** dan **Pemeriksa / pemutus** dengan jabatan atau peran, bukan nama
+   orang.
+4. **Koreksi**: di bawah tiap langkah tampil koreksi yang masuk, berurutan menurut waktu,
+   dengan **Kode orang** (mis. O-0001, tanpa nama) dan **Asal**: **Konfirmasi** bila datang
+   dari konfirmasi sekolah, atau **Tim** bila ditulis Tim Kajian. Untuk menambah koreksi
+   Tim, tulis di kotak **Isi koreksi** lalu klik **Tambah koreksi Tim**. Koreksi tidak dapat
+   diubah atau dihapus; bila koreksi sekolah mengubah gambaran alur, ubah langkahnya secara
+   manual.
 
 ### Membuka masalah untuk konfirmasi sekolah
 

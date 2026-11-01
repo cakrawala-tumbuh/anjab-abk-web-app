@@ -26,7 +26,7 @@ function adaFilter(f: FilterMasalah): boolean {
  *
  * Index ber-filter (filter di query string) lewat `POST .../masalah/search`. Kegagalan
  * backend dilempar ke `error.tsx`, tidak pernah tabel kosong. Kode masalah menaut ke
- * halaman ubah sampai halaman detail tersedia.
+ * halaman detail `/redesain/masalah/[id]`.
  */
 export default async function MasalahPage({ searchParams }: Props) {
   const session = await auth();
@@ -97,7 +97,7 @@ export default async function MasalahPage({ searchParams }: Props) {
                   <tr key={m.id} className="align-top">
                     <td className="px-4 py-3 font-mono text-xs">
                       <Link
-                        href={`/redesain/masalah/${m.id}/ubah`}
+                        href={`/redesain/masalah/${m.id}`}
                         className="text-blue-600 hover:text-blue-800 dark:text-blue-400"
                       >
                         {m.kode}

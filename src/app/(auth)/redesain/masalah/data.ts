@@ -14,7 +14,7 @@ import { domainMasalah, type FilterMasalah } from "@/lib/redesain-register";
 
 type Klien = ReturnType<typeof withServerAuth>;
 
-function semuaKonteks(client: Klien) {
+export function semuaKonteks(client: Klien) {
   return ambilSemuaHalaman<KonteksRead>(async (limit, offset) => {
     const res = await client.GET("/api/v1/redesain/konteks", {
       params: { query: { limit, offset } },
@@ -24,7 +24,7 @@ function semuaKonteks(client: Klien) {
   });
 }
 
-function semuaSekolah(client: Klien) {
+export function semuaSekolah(client: Klien) {
   return ambilSemuaHalaman<SekolahRead>(async (limit, offset) => {
     const res = await client.GET("/api/v1/sekolah", { params: { query: { limit, offset } } });
     if (!res.data) throw apiErrorDari(res);
