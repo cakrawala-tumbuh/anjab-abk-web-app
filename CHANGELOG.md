@@ -7,14 +7,16 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [4.18.3] - 2026-11-02
+
 ### Diperbaiki
 
 - **Service worker tidak lagi menyimpan atau menyajikan halaman HTML** (issue #73) — halaman
   yang dibuka setelah login selalu dimuat langsung dari server; salinan halaman yang dulu
   tersimpan di cache browser dihapus otomatis saat versi ini aktif (cache `anjab-abk-v3`).
-  Ini menutup risiko halaman milik user lain terlihat di perangkat bersama, dan menyingkirkan
-  kandidat utama peringatan hidrasi React #418 yang sesekali muncul setelah login. Ikon dan
-  berkas statis tetap di-cache; aplikasi tetap bisa dipasang sebagai PWA.
+  Ini menutup risiko halaman milik user lain terlihat di perangkat bersama. Peringatan hidrasi
+  React #418 yang sesekali muncul setelah login ternyata bukan disebabkan service worker dan
+  belum teratasi. Ikon dan berkas statis tetap di-cache; aplikasi tetap bisa dipasang sebagai PWA.
 - Pendaftaran service worker ditunda sampai halaman selesai dimuat, supaya tidak bersaing
   dengan pemuatan halaman pertama.
 
