@@ -84,6 +84,31 @@ src/
 
 ## Revisi Desain
 
+### [2026-11-02] Service worker: navigasi (HTML) tidak disentuh SW; registrasi setelah `load`
+
+Issue `#73` (ronde 4): React #418 sesekali muncul pada hidrasi halaman pertama setelah login di
+build produksi; uji SW diblokir vs diizinkan memberi 0/198 vs 2/198 (tidak signifikan, tapi SW
+satu-satunya pembeda). Perbaikan atas dugaan itu, sekaligus menutup masalah privasi.
+
+- **`public/sw.js` tidak pernah `respondWith`/`cache.put` untuk `request.mode === "navigate"`.**
+  HTML app ini selalu milik sesi user; menyimpannya di cache SW membocorkan halaman antar-user
+  di perangkat bersama. Fallback offline untuk navigasi ikut hilang — disengaja (app tak berguna
+  tanpa backend). `/` dikeluarkan dari precache. Cache naik ke `anjab-abk-v3`; `activate`
+  menghapus semua cache bernama lain (termasuk HTML di `anjab-abk-v2`). Aset statis tetap
+  cache-first; SW tetap terdaftar + punya handler `fetch`, jadi syarat install PWA tetap.
+- Pemilahan request diekstrak ke fungsi murni `pilahPermintaan(request, origin)` →
+  `"jaringan" | "statis"`. `src/test/sw.test.ts` memuat `public/sw.js` **apa adanya** lewat
+  `new Function` dengan `self`/`caches`/`fetch` palsu — jangan ubah sw.js menjadi modul ES
+  (SW klasik) tanpa menyesuaikan test itu. **Dilarang** mengembalikan penanganan navigasi.
+- **Registrasi SW setelah event `window` `load`** (`daftarkanSwSetelahLoad` di
+  `src/components/pwa-register.tsx`; langsung bila `readyState === "complete"`), supaya
+  instalasi tidak bersaing dengan hidrasi pertama.
+- **`onRecoverableError` sengaja TIDAK dipasang**: Next 15.5 memanggil `hydrateRoot` di
+  internalnya; callback-nya hanya meneruskan `error.cause` ke `window.reportError` tanpa
+  `componentStack`, dan `instrumentation-client` tak membuka opsi `hydrateRoot`. Jalur bersih
+  tidak ada tanpa menambal Next.
+- Detail keputusan: issue `cakrawala-tumbuh/anjab-abk-web-app#73`.
+
 ### [2026-11-01] Wizard konfirmasi sekolah (WEB-2a)
 
 Butir WEB-2a pelacak `cakrawala-tumbuh/ypii-support#424`; konsumen `anjab-abk-backend#53`/`#55`.
