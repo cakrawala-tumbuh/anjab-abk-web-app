@@ -7,6 +7,8 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [4.18.2] - 2026-11-02
+
 ### Diperbaiki
 
 - **Pesan "Kode orang wajib dipilih." kini benar-benar tampil** (issue #77) — validasi bawaan
