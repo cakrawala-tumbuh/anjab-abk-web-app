@@ -5,6 +5,7 @@ import { withServerAuth } from "@/lib/api/client";
 import { apiErrorDari } from "@/lib/api/errors";
 import type { KonfirmasiDaftarRead, KonfirmasiRead, KonteksRead } from "@/lib/api/schema";
 import { notifyGagal, pesanGagal } from "@/lib/notify";
+import { formatWaktu } from "@/lib/redesain-alur";
 import { bisaAngkatMasalah, saringKonfirmasi } from "@/lib/redesain-konfirmasi-tim";
 import { DialogAngkat } from "./dialog-angkat";
 
@@ -55,6 +56,7 @@ const v = (x: string | null | undefined) => (x && x.trim() ? x : "—");
  * Versi `digantikan` bertanda "Digantikan" dan tersembunyi sampai toggle dinyalakan.
  * Membuka baris memuat seluruh field dari `GET /api/v1/redesain/konfirmasi/{id}`;
  * kegagalan muat dilaporkan lewat `notifyGagal` dan panel galat (terbedakan dari kosong).
+ * Kolom "Dikirim" tampil `YYYY-MM-DD HH:MM` via `formatWaktu` (`—` bila kosong).
  * Tombol "Angkat masalah" hanya untuk konfirmasi `terkirim` ber-`masalah_baru`.
  *
  * @param props - Lihat {@link TabelKonfirmasiProps}.
@@ -128,7 +130,9 @@ export function TabelKonfirmasi({ konfirmasi, konteks, accessToken }: TabelKonfi
                     <td className="px-3 py-2 whitespace-normal break-words">{v(k.peran)}</td>
                     <td className="px-3 py-2">{k.sumber}</td>
                     <td className="px-3 py-2">{k.status}</td>
-                    <td className="px-3 py-2">{v(k.dikirim_pada)}</td>
+                    <td className="px-3 py-2">
+                      {k.dikirim_pada ? formatWaktu(k.dikirim_pada) : "—"}
+                    </td>
                     <td className="px-3 py-2">{k.dugaan_diperlihatkan}</td>
                     <td className="px-3 py-2">{v(k.kesesuaian)}</td>
                     <td className="px-3 py-2">{v(k.k1)}</td>

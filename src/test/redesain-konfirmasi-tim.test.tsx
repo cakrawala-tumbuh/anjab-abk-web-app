@@ -1,4 +1,5 @@
 import { render, screen, waitFor, fireEvent, within } from "@testing-library/react";
+import { readFileSync } from "node:fs";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
 const get = vi.fn();
@@ -250,5 +251,29 @@ describe("halaman eskalasi", () => {
     expect(c[1].body.order).toEqual([["eskalasi_pada", "desc"]]);
     expect(await screen.findByText("Eskalasi", { selector: "span" })).toBeInTheDocument();
     expect(screen.getByText("M-9")).toBeInTheDocument();
+  });
+});
+
+describe("tabel konfirmasi: format Dikirim dan geser horizontal", () => {
+  it("menampilkan Dikirim sebagai YYYY-MM-DD HH:MM, bukan ISO mentah", async () => {
+    pasangPost([konf({ dikirim_pada: "2026-11-02T17:37:34.248967+07:00" })]);
+    await renderBagian();
+    expect(screen.getByText("2026-11-02 17:37")).toBeInTheDocument();
+    expect(screen.queryByText(/248967/)).not.toBeInTheDocument();
+  });
+
+  it("menampilkan em-dash bila dikirim_pada null", async () => {
+    pasangPost([konf({ dikirim_pada: null })]);
+    await renderBagian();
+    const sel = screen.getAllByRole("cell").find((c) => c.textContent === "—");
+    expect(sel).toBeDefined();
+  });
+
+  it(".table-container memakai overflow-x-auto, bukan overflow-hidden", () => {
+    const css = readFileSync("src/app/globals.css", "utf8");
+    const aturan = /\.table-container\s*\{[^}]*\}/.exec(css)![0];
+    expect(aturan).toContain("overflow-x-auto");
+    expect(aturan).not.toContain("overflow-hidden");
+    expect(aturan).toContain("rounded-lg");
   });
 });
