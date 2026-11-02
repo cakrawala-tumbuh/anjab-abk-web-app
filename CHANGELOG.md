@@ -12,6 +12,8 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 - Semua tabel kini bisa digeser ke samping bila lebih lebar dari layar, sehingga tombol di
   kolom paling kanan (mis. "Buka" dan "Angkat masalah" di tab Konfirmasi) terjangkau di laptop
   (issue #78).
+- Tombol "Angkat masalah" tidak lagi hilang selama sekolah baru punya draf ralat: di tabel konfirmasi
+  Tim, versi terkirim baru dianggap "Digantikan" setelah ralatnya benar-benar terkirim (issue #79).
 - Kolom "Dikirim" di tabel konfirmasi tampil sebagai `YYYY-MM-DD HH:MM`, bukan teks mentah.
 
 ## [4.18.3] - 2026-11-02

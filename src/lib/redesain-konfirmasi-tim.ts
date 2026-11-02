@@ -21,16 +21,39 @@ export function domainKonfirmasiMasalah(masalahId: string): [string, "=", string
 }
 
 /**
- * Saring konfirmasi untuk tampilan: versi `digantikan` disembunyikan kecuali diminta.
+ * Himpunan id konfirmasi yang dianggap "digantikan" untuk tampilan Tim Kajian.
+ *
+ * Berbeda dengan field backend `digantikan` (yang sudah true begitu ada ralat draf),
+ * bagi Tim sebuah versi baru digantikan bila penggantinya sudah `terkirim`; selama
+ * ralat masih draf, versi terkirim tetap sah dan tetap bisa diangkat masalahnya.
+ *
+ * @param daftar - Seluruh konfirmasi satu masalah (bagian yang relevan).
+ * @returns Himpunan id yang `menggantikan_id`-nya dirujuk baris ber-status `terkirim`.
+ */
+export function idDigantikanTerkirim(
+  daftar: ReadonlyArray<Pick<KonfirmasiDaftarRead, "status" | "menggantikan_id">>,
+): Set<string> {
+  const hasil = new Set<string>();
+  for (const k of daftar) {
+    if (k.status === "terkirim" && k.menggantikan_id) hasil.add(k.menggantikan_id);
+  }
+  return hasil;
+}
+
+/**
+ * Saring konfirmasi untuk tampilan: versi yang sudah digantikan ralat terkirim
+ * disembunyikan kecuali diminta.
  *
  * @param daftar - Seluruh konfirmasi masalah.
+ * @param digantikan - Himpunan dari {@link idDigantikanTerkirim}.
  * @param tampilkanDigantikan - True bila toggle "tampilkan versi digantikan" menyala.
  */
-export function saringKonfirmasi<T extends { digantikan: boolean }>(
+export function saringKonfirmasi<T extends { id: string }>(
   daftar: ReadonlyArray<T>,
+  digantikan: ReadonlySet<string>,
   tampilkanDigantikan: boolean,
 ): T[] {
-  return daftar.filter((k) => tampilkanDigantikan || !k.digantikan);
+  return daftar.filter((k) => tampilkanDigantikan || !digantikan.has(k.id));
 }
 
 /**

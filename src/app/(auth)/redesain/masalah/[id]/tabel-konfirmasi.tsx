@@ -6,7 +6,11 @@ import { apiErrorDari } from "@/lib/api/errors";
 import type { KonfirmasiDaftarRead, KonfirmasiRead, KonteksRead } from "@/lib/api/schema";
 import { notifyGagal, pesanGagal } from "@/lib/notify";
 import { formatWaktu } from "@/lib/redesain-alur";
-import { bisaAngkatMasalah, saringKonfirmasi } from "@/lib/redesain-konfirmasi-tim";
+import {
+  bisaAngkatMasalah,
+  idDigantikanTerkirim,
+  saringKonfirmasi,
+} from "@/lib/redesain-konfirmasi-tim";
 import { DialogAngkat } from "./dialog-angkat";
 
 /** Properti {@link TabelKonfirmasi}. */
@@ -53,7 +57,9 @@ const v = (x: string | null | undefined) => (x && x.trim() ? x : "—");
 /**
  * Tabel READ-ONLY konfirmasi sekolah satu masalah (tanpa tombol ubah/hapus).
  *
- * Versi `digantikan` bertanda "Digantikan" dan tersembunyi sampai toggle dinyalakan.
+ * Versi digantikan bertanda "Digantikan" dan tersembunyi sampai toggle dinyalakan. Bagi
+ * Tim, "digantikan" berarti ralatnya sudah `terkirim` ({@link idDigantikanTerkirim});
+ * ralat yang masih draf tidak menyembunyikan versi terkirim (tombol angkat tetap ada).
  * Membuka baris memuat seluruh field dari `GET /api/v1/redesain/konfirmasi/{id}`;
  * kegagalan muat dilaporkan lewat `notifyGagal` dan panel galat (terbedakan dari kosong).
  * Kolom "Dikirim" tampil `YYYY-MM-DD HH:MM` via `formatWaktu` (`—` bila kosong).
@@ -66,8 +72,9 @@ export function TabelKonfirmasi({ konfirmasi, konteks, accessToken }: TabelKonfi
   const [terbuka, setTerbuka] = useState<string | null>(null);
   const [detail, setDetail] = useState<KonfirmasiRead | null>(null);
   const [gagal, setGagal] = useState<string | null>(null);
-  const tampil = saringKonfirmasi(konfirmasi, semua);
-  const jumlahDigantikan = konfirmasi.filter((k) => k.digantikan).length;
+  const digantikan = idDigantikanTerkirim(konfirmasi);
+  const tampil = saringKonfirmasi(konfirmasi, digantikan, semua);
+  const jumlahDigantikan = konfirmasi.filter((k) => digantikan.has(k.id)).length;
 
   async function toggleBaris(id: string) {
     if (terbuka === id) {
@@ -121,7 +128,7 @@ export function TabelKonfirmasi({ konfirmasi, konteks, accessToken }: TabelKonfi
                   <tr className="align-top">
                     <td className="px-3 py-2 font-mono text-xs">
                       {k.kode_orang}
-                      {k.digantikan && (
+                      {digantikan.has(k.id) && (
                         <span className="ml-2 rounded-full bg-gray-200 px-2 py-0.5 font-sans text-xs text-gray-700 dark:bg-gray-700 dark:text-gray-200">
                           Digantikan
                         </span>

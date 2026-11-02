@@ -34,7 +34,11 @@ import { fetchKonfirmasiMasalah } from "@/app/(auth)/redesain/masalah/[id]/data-
 import { BAGIAN_DETAIL_MASALAH } from "@/app/(auth)/redesain/masalah/[id]/registry";
 import { ApiError } from "@/lib/api/errors";
 import type { KonfirmasiDaftarRead, MasalahRead } from "@/lib/api/schema";
-import { bisaAngkatMasalah, saringKonfirmasi } from "@/lib/redesain-konfirmasi-tim";
+import {
+  bisaAngkatMasalah,
+  idDigantikanTerkirim,
+  saringKonfirmasi,
+} from "@/lib/redesain-konfirmasi-tim";
 
 vi.mock("@/lib/auth/auth", () => ({ auth: async () => ({ accessToken: "tok" }) }));
 
@@ -98,16 +102,54 @@ describe("bagian konfirmasi", () => {
   });
 
   it("fungsi murni: saring digantikan dan syarat angkat", () => {
-    const d = [{ digantikan: true }, { digantikan: false }];
-    expect(saringKonfirmasi(d, false)).toHaveLength(1);
-    expect(saringKonfirmasi(d, true)).toHaveLength(2);
+    const d = [{ id: "a" }, { id: "b" }];
+    const h = new Set(["a"]);
+    expect(saringKonfirmasi(d, h, false)).toHaveLength(1);
+    expect(saringKonfirmasi(d, h, true)).toHaveLength(2);
     expect(bisaAngkatMasalah({ status: "terkirim", masalah_baru: "x" })).toBe(true);
     expect(bisaAngkatMasalah({ status: "draf", masalah_baru: "x" })).toBe(false);
     expect(bisaAngkatMasalah({ status: "terkirim", masalah_baru: null })).toBe(false);
   });
 
+  it("idDigantikanTerkirim: hanya pengganti terkirim yang menghitung", () => {
+    const A = { id: "A", status: "terkirim", menggantikan_id: null } as const;
+    const bDraf = { id: "B", status: "draf", menggantikan_id: "A" } as const;
+    const bKirim = { id: "B", status: "terkirim", menggantikan_id: "A" } as const;
+    const cDraf = { id: "C", status: "draf", menggantikan_id: "B" } as const;
+    expect(idDigantikanTerkirim([A, bDraf]).size).toBe(0);
+    expect([...idDigantikanTerkirim([A, bKirim])]).toEqual(["A"]);
+    expect([...idDigantikanTerkirim([A, bKirim, cDraf])]).toEqual(["A"]);
+  });
+
+  it("ralat masih draf: versi terkirim tetap tampil dengan tombol Angkat masalah", async () => {
+    pasangPost([
+      konf({ id: "A", kode_orang: "O-A", masalah_baru: "Masalah X", digantikan: true }),
+      konf({ id: "B", kode_orang: "O-B", status: "draf", menggantikan_id: "A" }),
+    ]);
+    await renderBagian();
+    expect(screen.getByText("O-A")).toBeInTheDocument();
+    expect(screen.queryByText("Digantikan")).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Angkat masalah/ })).toBeInTheDocument();
+  });
+
+  it("ralat terkirim: versi lama tersembunyi, toggle menyebut (1)", async () => {
+    pasangPost([
+      konf({ id: "A", kode_orang: "O-A", masalah_baru: "Masalah X", digantikan: true }),
+      konf({ id: "B", kode_orang: "O-B", menggantikan_id: "A" }),
+    ]);
+    await renderBagian();
+    expect(screen.queryByText("O-A")).not.toBeInTheDocument();
+    expect(
+      screen.getByRole("checkbox", { name: /Tampilkan versi digantikan \(1\)/ }),
+    ).toBeInTheDocument();
+  });
+
   it("menyembunyikan record digantikan secara default; toggle menampilkan keduanya", async () => {
-    pasangPost([konf(), konf({ id: "f2", kode_orang: "O-0002", digantikan: true })]);
+    pasangPost([
+      konf(),
+      konf({ id: "f2", kode_orang: "O-0002", digantikan: true }),
+      konf({ id: "f3", kode_orang: "O-0003", menggantikan_id: "f2" }),
+    ]);
     await renderBagian();
     expect(
       post.mock.calls.find((c) => c[0].endsWith("/konfirmasi/search"))![1].body.domain,
