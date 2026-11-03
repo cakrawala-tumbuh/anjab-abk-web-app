@@ -68,9 +68,9 @@ dari total, dan Min. Responden. Jangan menutup pengisian sebelum jumlah pengisi 
 
 > Langkah teknis: [IK-06 bagian B & D](../ik/dcs.md#b-aksi-instrumen).
 
-!!! danger "Analisis tidak dapat dibatalkan"
-Setelah **Jalankan Analisis** berhasil (status Teranalisis), instrumen tidak dapat
-dibuka ulang lagi. Pastikan data lengkap sebelum menjalankan analisis.
+!!! note "Analisis dapat dibuka ulang"
+Setelah **Jalankan Analisis** berhasil (status Teranalisis), tombol **Buka Ulang**
+tersedia untuk membuka kembali pengisian tanpa menghapus jawaban.
 
 ---
 

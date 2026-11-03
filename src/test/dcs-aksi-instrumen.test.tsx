@@ -54,3 +54,20 @@ describe("AksiInstrumen (DCS) — konfirmasi sebelum Jalankan Analisis", () => {
     expect(push).toHaveBeenCalledWith("/dcs/hasil");
   });
 });
+
+describe("AksiInstrumen (DCS) — Buka Ulang dari ANALYZED", () => {
+  it("status ANALYZED menampilkan Buka Ulang; klik memanggil POST buka-ulang", async () => {
+    const analyzed = {
+      ...instrumenClosed,
+      status: "ANALYZED",
+    } as unknown as typeof instrumenClosed;
+    render(<AksiInstrumen instrumen={analyzed} jumlahSubmit={3} accessToken="tok" />);
+
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: /Buka Ulang/ }));
+    });
+
+    await waitFor(() => expect(post).toHaveBeenCalledWith("/api/v1/dcs/instrumen/buka-ulang", {}));
+    expect(refresh).toHaveBeenCalled();
+  });
+});

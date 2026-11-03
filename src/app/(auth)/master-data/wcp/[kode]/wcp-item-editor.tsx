@@ -4,7 +4,9 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
-import { notifyGagal, notifySukses } from "@/lib/notify";
+import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
+import { LencanaItemPaket } from "@/components/lencana-item-paket";
+import { petakanGuard409 } from "@/lib/pesan-guard-409";
 import type { WcpItemRead, WcpReverseType } from "@/lib/api/schema";
 
 interface Props {
@@ -59,6 +61,10 @@ export function WcpItemEditor({ items, accessToken }: Props) {
                 <td className="px-4 py-3">
                   <p className="text-gray-900">{item.pernyataan}</p>
                   <p className="mt-0.5 text-xs text-gray-400">{item.indikator_label}</p>
+                  <LencanaItemPaket
+                    statusPaket={item.status_paket}
+                    kembarDengan={item.kembar_dengan}
+                  />
                 </td>
                 <td className="px-4 py-3">
                   <span className="inline-flex rounded-full bg-gray-100 px-2 py-0.5 font-mono text-xs text-gray-600">
@@ -116,8 +122,9 @@ function WcpItemEditRow({ item, accessToken, onCancel, onSaved }: RowProps) {
       notifySukses("Item berhasil disimpan.");
       onSaved();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Gagal menyimpan.");
-      notifyGagal(err);
+      const galat = petakanGuard409(err);
+      setError(pesanGagal(galat));
+      notifyGagal(galat);
       setSaving(false);
     }
   }

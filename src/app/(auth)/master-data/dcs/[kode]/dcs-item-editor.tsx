@@ -4,7 +4,9 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
-import { notifyGagal, notifySukses } from "@/lib/notify";
+import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
+import { LencanaItemPaket } from "@/components/lencana-item-paket";
+import { petakanGuard409 } from "@/lib/pesan-guard-409";
 import type { DcsArahItem, DcsItemRead } from "@/lib/api/schema";
 
 interface Props {
@@ -54,7 +56,13 @@ export function DcsItemEditor({ items, accessToken }: Props) {
               <tr key={item.item_id} className="align-top hover:bg-gray-50">
                 <td className="px-4 py-3 text-gray-500 dark:text-gray-500">{item.urutan}</td>
                 <td className="px-4 py-3 font-mono text-gray-700">{item.item_id}</td>
-                <td className="px-4 py-3 text-gray-900">{item.pernyataan}</td>
+                <td className="px-4 py-3 text-gray-900">
+                  {item.pernyataan}
+                  <LencanaItemPaket
+                    statusPaket={item.status_paket}
+                    kembarDengan={item.kembar_dengan}
+                  />
+                </td>
                 <td className="px-4 py-3">
                   <span
                     className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${
@@ -115,8 +123,9 @@ function DcsItemEditRow({ item, accessToken, onCancel, onSaved }: RowProps) {
       notifySukses("Item berhasil disimpan.");
       onSaved();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Gagal menyimpan.");
-      notifyGagal(err);
+      const galat = petakanGuard409(err);
+      setError(pesanGagal(galat));
+      notifyGagal(galat);
       setSaving(false);
     }
   }

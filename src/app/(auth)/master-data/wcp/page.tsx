@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { auth, isAdmin } from "@/lib/auth/auth";
 import { withServerAuth } from "@/lib/api/client";
 import { apiErrorDari } from "@/lib/api/errors";
+import { RingkasanBankItem } from "@/components/ringkasan-bank-item";
 import type { WcpDimensiRead } from "@/lib/api/schema";
 
 export const metadata = { title: "Instrumen WCP — Master Data" };
@@ -14,11 +15,21 @@ async function fetchDimensi(accessToken: string | undefined): Promise<WcpDimensi
   return res.data;
 }
 
+async function fetchInstrumen(accessToken: string | undefined) {
+  const client = withServerAuth(accessToken);
+  const res = await client.GET("/api/v1/wcp/instrumen");
+  if (!res.data) throw apiErrorDari(res);
+  return res.data;
+}
+
 export default async function WcpMasterDataPage() {
   const session = await auth();
   if (!isAdmin(session)) notFound();
 
-  const dimensi = await fetchDimensi(session?.accessToken);
+  const [dimensi, instrumen] = await Promise.all([
+    fetchDimensi(session?.accessToken),
+    fetchInstrumen(session?.accessToken),
+  ]);
 
   return (
     <div className="space-y-4">
@@ -31,6 +42,13 @@ export default async function WcpMasterDataPage() {
           teks, tipe scoring, serta urutan item.
         </p>
       </div>
+
+      <RingkasanBankItem
+        itemBankHash={instrumen.item_bank_hash}
+        jumlahItem={instrumen.jumlah_item}
+        jumlahRedaksiBeda={instrumen.jumlah_redaksi_beda}
+        jumlahTidakDiPaket={instrumen.jumlah_tidak_di_paket}
+      />
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {dimensi.map((d) => (

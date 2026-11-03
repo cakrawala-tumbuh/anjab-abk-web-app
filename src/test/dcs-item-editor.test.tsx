@@ -1,5 +1,6 @@
 import { render, screen, fireEvent, act, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
+import { toast } from "sonner";
 import type { DcsItemRead } from "@/lib/api/schema";
 
 // ── Mock router & API client ────────────────────────────────────────────────
@@ -116,5 +117,48 @@ describe("DcsItemEditor — batal", () => {
     expect(patch).not.toHaveBeenCalled();
     expect(refresh).not.toHaveBeenCalled();
     expect(screen.queryByLabelText("Pernyataan")).toBeNull();
+  });
+});
+
+describe("DcsItemEditor — guard 409 instrument_has_responses", () => {
+  it("pesan tetap tampil, teks item di tabel tidak berubah, tanpa toast sukses", async () => {
+    vi.mocked(toast.error).mockReset();
+    vi.mocked(toast.success).mockReset();
+    patch.mockResolvedValue({
+      data: undefined,
+      error: { error: "instrument_has_responses", message: "pesan backend" },
+      response: { headers: { get: () => "req_409" } },
+    });
+
+    render(<DcsItemEditor items={items} accessToken="tok" />);
+    fireEvent.click(screen.getAllByRole("button", { name: "Ubah" })[0]);
+    fireEvent.change(screen.getByLabelText("Pernyataan"), { target: { value: "Diubah." } });
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: "Simpan" }));
+    });
+
+    const pesan = "Instrumen sudah berisi jawaban — ubah item ditolak untuk menjaga data.";
+    await waitFor(() => expect(toast.error).toHaveBeenCalledWith(pesan, expect.anything()));
+    expect(toast.success).not.toHaveBeenCalled();
+    expect(refresh).not.toHaveBeenCalled();
+    expect(screen.getByRole("alert")).toHaveTextContent(pesan);
+    expect(items[0].pernyataan).toBe("Pernyataan pertama.");
+  });
+});
+
+describe("DcsItemEditor — lencana status paket", () => {
+  it("REDAKSI_BEDA, TIDAK_ADA_DI_PAKET, dan kembar tampil; SAMA tanpa lencana", () => {
+    const daftar = [
+      { ...item("A1", "satu", 1), status_paket: "SAMA", kembar_dengan: null },
+      { ...item("C8a", "dua", 2), status_paket: "REDAKSI_BEDA", kembar_dengan: "WCP:WP1a" },
+      { ...item("A3", "tiga", 3), status_paket: "TIDAK_ADA_DI_PAKET", kembar_dengan: null },
+    ] as DcsItemRead[];
+    render(<DcsItemEditor items={daftar} accessToken="tok" />);
+
+    const rows = screen.getAllByRole("row").slice(1);
+    expect(rows[0]).not.toHaveTextContent(/Redaksi beda|Tidak ada di paket|Kembar/);
+    expect(rows[1]).toHaveTextContent("Redaksi beda paket");
+    expect(rows[1]).toHaveTextContent("Kembar: WCP:WP1a");
+    expect(rows[2]).toHaveTextContent("Tidak ada di paket");
   });
 });

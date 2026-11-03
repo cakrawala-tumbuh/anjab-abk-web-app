@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
 import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
+import { petakanGuard409 } from "@/lib/pesan-guard-409";
 import type { TiCatalogPurgeResult, TiCatalogReseedResult } from "@/lib/api/schema";
 
 interface Props {
@@ -68,8 +69,9 @@ export function ResetKatalogPanel({ accessToken, initialTotal }: Props) {
         setError(pesan);
         notifyGagal(new Error(pesan));
       } else {
-        setError(pesanGagal(err));
-        notifyGagal(err);
+        const galat = petakanGuard409(err);
+        setError(pesanGagal(galat));
+        notifyGagal(galat);
       }
     } finally {
       setLoading(false);

@@ -70,7 +70,7 @@ export function AksiInstrumen({ instrumen, jumlahSubmit, accessToken }: Props) {
   async function doAnalisis() {
     if (
       !confirm(
-        "Jalankan analisis DCS? Setelah analisis berhasil, instrumen TIDAK DAPAT dibuka ulang lagi.",
+        "Jalankan analisis DCS? Setelah analisis berhasil, instrumen dapat dibuka ulang untuk pengisian lanjutan tanpa menghapus jawaban.",
       )
     )
       return;
@@ -136,12 +136,21 @@ export function AksiInstrumen({ instrumen, jumlahSubmit, accessToken }: Props) {
       )}
 
       {instrumen.status === "ANALYZED" && (
-        <Link
-          href="/dcs/hasil"
-          className="rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700"
-        >
-          Lihat Hasil
-        </Link>
+        <>
+          <Link
+            href="/dcs/hasil"
+            className="rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700"
+          >
+            Lihat Hasil
+          </Link>
+          <button
+            onClick={doBukaUlang}
+            disabled={loading}
+            className="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 disabled:opacity-60 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-700"
+          >
+            Buka Ulang
+          </button>
+        </>
       )}
     </div>
   );

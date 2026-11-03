@@ -127,3 +127,21 @@ describe("ResetKatalogPanel — regresi: pesan pemulihan setelah purge sukses & 
     expect(toastError).not.toHaveBeenCalled();
   });
 });
+
+describe("ResetKatalogPanel — guard 409 catalog_in_use", () => {
+  it("purge ditolak 409: pesan tetap tampil, reseed tidak dicoba", async () => {
+    post.mockResolvedValueOnce({
+      error: { error: "catalog_in_use", message: "pesan backend" },
+      response: okResponse,
+    });
+    renderPanel();
+
+    await klikReset();
+
+    const pesan = "Katalog masih dipakai sesi TI atau OPM — purge ditolak.";
+    await waitFor(() => expect(toastError).toHaveBeenCalledWith(pesan, expect.anything()));
+    expect(screen.getByRole("alert")).toHaveTextContent(pesan);
+    expect(post).toHaveBeenCalledTimes(1);
+    expect(toastSukses).not.toHaveBeenCalled();
+  });
+});

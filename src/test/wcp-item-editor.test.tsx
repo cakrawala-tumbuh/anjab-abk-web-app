@@ -1,5 +1,6 @@
 import { render, screen, fireEvent, act, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
+import { toast } from "sonner";
 import type { WcpItemRead } from "@/lib/api/schema";
 
 // ── Mock router & API client ────────────────────────────────────────────────
@@ -117,5 +118,47 @@ describe("WcpItemEditor — batal", () => {
     expect(patch).not.toHaveBeenCalled();
     expect(refresh).not.toHaveBeenCalled();
     expect(screen.queryByLabelText("Pernyataan")).toBeNull();
+  });
+});
+
+describe("WcpItemEditor — guard 409 instrument_has_responses", () => {
+  it("toast gagal berpesan tetap, tanpa toast sukses, editor & refresh tidak berubah", async () => {
+    vi.mocked(toast.error).mockReset();
+    vi.mocked(toast.success).mockReset();
+    patch.mockResolvedValue({
+      data: undefined,
+      error: { error: "instrument_has_responses", message: "pesan backend" },
+      response: { headers: { get: () => "req_409" } },
+    });
+
+    render(<WcpItemEditor items={items} accessToken="tok" />);
+    fireEvent.click(screen.getAllByRole("button", { name: "Ubah" })[0]);
+    fireEvent.change(screen.getByLabelText("Pernyataan"), { target: { value: "Diubah." } });
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: "Simpan" }));
+    });
+
+    const pesan = "Instrumen sudah berisi jawaban — ubah item ditolak untuk menjaga data.";
+    await waitFor(() => expect(toast.error).toHaveBeenCalledWith(pesan, expect.anything()));
+    expect(toast.success).not.toHaveBeenCalled();
+    expect(refresh).not.toHaveBeenCalled();
+    expect(screen.getByRole("alert")).toHaveTextContent(pesan);
+  });
+});
+
+describe("WcpItemEditor — lencana status paket", () => {
+  it("REDAKSI_BEDA, TIDAK_ADA_DI_PAKET, dan kembar tampil; SAMA tanpa lencana", () => {
+    const daftar = [
+      { ...item("A1", "satu", 1), status_paket: "SAMA", kembar_dengan: null },
+      { ...item("A2", "dua", 2), status_paket: "REDAKSI_BEDA", kembar_dengan: "DCS:C8a" },
+      { ...item("A3", "tiga", 3), status_paket: "TIDAK_ADA_DI_PAKET", kembar_dengan: null },
+    ] as WcpItemRead[];
+    render(<WcpItemEditor items={daftar} accessToken="tok" />);
+
+    const rows = screen.getAllByRole("row").slice(1);
+    expect(rows[0]).not.toHaveTextContent(/Redaksi beda|Tidak ada di paket|Kembar/);
+    expect(rows[1]).toHaveTextContent("Redaksi beda paket");
+    expect(rows[1]).toHaveTextContent("Kembar: DCS:C8a");
+    expect(rows[2]).toHaveTextContent("Tidak ada di paket");
   });
 });

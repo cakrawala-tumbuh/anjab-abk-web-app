@@ -9,6 +9,11 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ### Ditambahkan
 
+- WCP/DCS: tombol **Buka Ulang** juga tersedia saat instrumen berstatus Teranalisis.
+- Master data WCP/DCS: lencana "Redaksi beda paket", "Tidak ada di paket", dan "Kembar: ..." pada
+  item, serta ringkasan bank item (12 karakter hash, jumlah item, redaksi beda, tidak di paket).
+- Penolakan 409 ubah item (`instrument_has_responses`) dan purge katalog TI (`catalog_in_use`)
+  kini tampil dengan pesan tetap.
 - OPM: lencana **"Belum terverifikasi (N pengecualian)"** di daftar sesi dan judul detail sesi,
   serta tabel **Register Pengecualian** TI–OPM di detail sesi (label alasan berbahasa Indonesia).
   Halaman hasil menampilkan "—" (bukan angka/"Tidak") untuk task tanpa rating dan lencana

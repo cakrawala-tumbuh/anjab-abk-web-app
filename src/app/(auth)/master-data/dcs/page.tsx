@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { auth, isAdmin } from "@/lib/auth/auth";
 import { withServerAuth } from "@/lib/api/client";
 import { apiErrorDari } from "@/lib/api/errors";
+import { RingkasanBankItem } from "@/components/ringkasan-bank-item";
 import type { DcsSubSkalaRead } from "@/lib/api/schema";
 
 export const metadata = { title: "Instrumen DCS — Master Data" };
@@ -14,11 +15,21 @@ async function fetchSubSkala(accessToken: string | undefined): Promise<DcsSubSka
   return res.data;
 }
 
+async function fetchInstrumen(accessToken: string | undefined) {
+  const client = withServerAuth(accessToken);
+  const res = await client.GET("/api/v1/dcs/instrumen");
+  if (!res.data) throw apiErrorDari(res);
+  return res.data;
+}
+
 export default async function DcsMasterDataPage() {
   const session = await auth();
   if (!isAdmin(session)) notFound();
 
-  const subSkala = await fetchSubSkala(session?.accessToken);
+  const [subSkala, instrumen] = await Promise.all([
+    fetchSubSkala(session?.accessToken),
+    fetchInstrumen(session?.accessToken),
+  ]);
 
   return (
     <div className="space-y-4">
@@ -31,6 +42,13 @@ export default async function DcsMasterDataPage() {
           mengubah teks, arah penilaian, serta urutan item.
         </p>
       </div>
+
+      <RingkasanBankItem
+        itemBankHash={instrumen.item_bank_hash}
+        jumlahItem={instrumen.jumlah_item}
+        jumlahRedaksiBeda={instrumen.jumlah_redaksi_beda}
+        jumlahTidakDiPaket={instrumen.jumlah_tidak_di_paket}
+      />
 
       <div className="grid gap-3 sm:grid-cols-3">
         {subSkala.map((s) => (
