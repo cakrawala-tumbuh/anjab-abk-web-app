@@ -92,6 +92,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/system/jobs/{job_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Status job asinkron
+         * @description Baca status sebuah job asinkron (admin saja).
+         */
+        get: operations["system_job_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/system/backup": {
         parameters: {
             query?: never;
@@ -1062,7 +1082,8 @@ export interface paths {
          *     bukan milik `dari_partisipan_id` saat ini → 422 (pesan menyebut pemilik
          *     aktual); partisipan tujuan tidak ada → 404; partisipan tujuan nonaktif →
          *     422; partisipan tujuan sudah jadi responden OPM di sesi yang sama → 409
-         *     (`OpmRespondenService.alihkan()`).
+         *     (`OpmRespondenService.alihkan()`). Idempotency-Key opsional: pengulangan dengan key
+         *     sama mengembalikan hasil pertama (200) tanpa mengalihkan lagi.
          */
         post: operations["opm_responden_alihkan"];
         delete?: never;
@@ -1630,6 +1651,9 @@ export interface paths {
          *         payload: Alasan pembatalan (`alasan`, wajib diisi, dicatat di audit log).
          *         service: Seam `TiSesiService` yang menjalankan efek balik status + link task.
          *         principal: Principal admin yang memanggil endpoint ini (dari `require_admin`).
+         *         idem: Dependency `idempotency`; pengulangan dengan `Idempotency-Key` sama
+         *             mengembalikan hasil pertama (200) tanpa membatalkan lagi.
+         *         response: Objek respons, dipakai menurunkan status ke 200 saat replay.
          *
          *     Returns:
          *         `TiSesiRead` sesi setelah `status` kembali ke `"TAHAP2"`.
@@ -1684,7 +1708,8 @@ export interface paths {
          *     Menolak `409` bila `payload.partisipan_id` non-null sudah terdaftar sebagai
          *     responden di sesi ini (`SqlTiRespondenService.create()`, backlog
          *     `anjab-abk-backend#29`) — `partisipan_id` kosong (responden manual tanpa
-         *     partisipan) boleh berulang.
+         *     partisipan) boleh berulang. `Idempotency-Key` opsional: pengulangan dengan key sama
+         *     mengembalikan hasil pertama (200) tanpa mendaftarkan lagi.
          */
         post: operations["taskinv_responden_create"];
         delete?: never;
@@ -1755,7 +1780,8 @@ export interface paths {
          *     bukan milik `dari_partisipan_id` saat ini → 422 (pesan menyebut pemilik
          *     aktual); partisipan tujuan tidak ada → 404; partisipan tujuan nonaktif →
          *     422; partisipan tujuan sudah jadi responden di sesi yang sama → 409
-         *     (`TiRespondenService.alihkan()`).
+         *     (`TiRespondenService.alihkan()`). `Idempotency-Key` opsional: pengulangan dengan key
+         *     sama mengembalikan hasil pertama (200) tanpa mengalihkan lagi.
          */
         post: operations["taskinv_responden_alihkan"];
         delete?: never;
@@ -1928,7 +1954,11 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /**
+         * Ambil satu usulan uraian tugas (admin atau pemilik); sumber ETag untuk DELETE
+         * @description Kembalikan satu usulan beserta header `ETag`-nya (otorisasi seperti `DELETE`).
+         */
+        get: operations["taskinv_usulan_get"];
         put?: never;
         post?: never;
         /** Hapus usulan uraian tugas milik sendiri (admin atau pemilik, sebelum submit) */
@@ -3773,6 +3803,54 @@ export interface components {
              */
             rumusan_hipotesis: string;
         };
+        /**
+         * AsyncJobRead
+         * @description Status sebuah job asinkron (tanpa `dibuat_oleh`).
+         */
+        AsyncJobRead: {
+            /**
+             * Id
+             * @description UUID v4 job.
+             */
+            id: string;
+            /** @description Fungsi (feature flag) pemilik job. */
+            fitur: components["schemas"]["FiturKode"];
+            /**
+             * Jenis
+             * @description Jenis job di dalam fitur.
+             * @example draf_narasi
+             */
+            jenis: string;
+            /** @description Status job saat ini. */
+            status: components["schemas"]["StatusJob"];
+            /**
+             * Ref Id
+             * @description Id objek sasaran job.
+             */
+            ref_id?: string | null;
+            /**
+             * Error Code
+             * @description Kode galat bila gagal.
+             */
+            error_code?: string | null;
+            /**
+             * Percobaan
+             * @description Jumlah retry (FAILED -> PENDING).
+             */
+            percobaan: number;
+            /**
+             * Created At
+             * Format: date-time
+             * @description Waktu job dibuat (UTC).
+             */
+            created_at: string;
+            /**
+             * Updated At
+             * Format: date-time
+             * @description Waktu perubahan terakhir (UTC).
+             */
+            updated_at: string;
+        };
         /** Body_system_restore */
         Body_system_restore: {
             /**
@@ -4174,10 +4252,36 @@ export interface components {
             pic_kode_orang?: string | null;
         };
         /**
+         * DcsHasilRawRead
+         * @description Hasil DCS mode `RAW_ONLY`: raw per item + statistik deskriptif raw, tanpa skor.
+         */
+        DcsHasilRawRead: {
+            /**
+             * @description Diskriminan: skoring dimatikan (flag mati). (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            mode: "RAW_ONLY";
+            /**
+             * N Responden
+             * @description Total responden yang submit.
+             */
+            n_responden: number;
+            /**
+             * Items
+             * @description Agregat raw per item.
+             */
+            items: components["schemas"]["HasilRawItemRead"][];
+        };
+        /**
          * DcsHasilRead
          * @description Hasil analisis lengkap instrumen DCS (seluruh sub-skala + risk flag + K-Index).
          */
         DcsHasilRead: {
+            /**
+             * @description Diskriminan: skor aktif (flag WCP_DCS_SCORING hidup). (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            mode: "SCORED";
             /**
              * N Responden
              * @description Total responden yang submit.
@@ -4876,6 +4980,71 @@ export interface components {
         HTTPValidationError: {
             /** Detail */
             detail?: components["schemas"]["ValidationError"][];
+        };
+        /**
+         * HasilRawItemRead
+         * @description Agregat deskriptif RAW satu item instrumen WCP/DCS (mode `RAW_ONLY`).
+         *
+         *     Nilai jawaban dipakai apa adanya: tanpa reverse scoring dan tanpa rata-rata per
+         *     dimensi/sub-skala.
+         */
+        HasilRawItemRead: {
+            /**
+             * Item Id
+             * @description Kode item.
+             * @example D1a
+             */
+            item_id: string;
+            /**
+             * Kelompok Kode
+             * @description Kode dimensi (WCP) atau sub-skala (DCS) pemilik item.
+             * @example DEMAND
+             */
+            kelompok_kode: string;
+            /**
+             * Urutan
+             * @description Urutan global item.
+             * @example 1
+             */
+            urutan: number;
+            /**
+             * N
+             * @description Jumlah responden yang menjawab item ini.
+             * @example 7
+             */
+            n: number;
+            /**
+             * N Kosong
+             * @description Jumlah responden ber-submit yang tidak menjawab item ini.
+             * @example 0
+             */
+            n_kosong: number;
+            /**
+             * Frekuensi
+             * @description Frekuensi jawaban raw, kunci "1".."5".
+             * @example {
+             *       "1": 0,
+             *       "2": 1,
+             *       "3": 2,
+             *       "4": 3,
+             *       "5": 1
+             *     }
+             */
+            frekuensi: {
+                [key: string]: number;
+            };
+            /**
+             * Mean Raw
+             * @description Rata-rata raw; null bila n < 1.
+             * @example 3.57
+             */
+            mean_raw?: number | null;
+            /**
+             * Sd Raw
+             * @description Simpangan baku sampel raw; null bila n < 2.
+             * @example 0.98
+             */
+            sd_raw?: number | null;
         };
         /** Health */
         Health: {
@@ -9105,6 +9274,14 @@ export interface components {
             masalah_ids?: string[] | null;
         };
         /**
+         * StatusJob
+         * @description Status siklus hidup job asinkron.
+         *
+         *     Untuk fitur `AI_*`, `PENDING` adalah padanan `AI_PENDING` pada paket kajian.
+         * @enum {string}
+         */
+        StatusJob: "PENDING" | "RUNNING" | "SUCCEEDED" | "FAILED" | "MANUAL_REVIEW";
+        /**
          * TiCatalogPurgeCounts
          * @description Jumlah baris yang dihapus per tabel katalog.
          */
@@ -11189,10 +11366,36 @@ export interface components {
             interpretasi: "BAIK" | "CUKUP" | "PERLU_PERHATIAN" | "AMAN" | "WASPADA" | "RISIKO_TINGGI";
         };
         /**
+         * WcpHasilRawRead
+         * @description Hasil WCP mode `RAW_ONLY`: raw per item + statistik deskriptif raw, tanpa skor.
+         */
+        WcpHasilRawRead: {
+            /**
+             * @description Diskriminan: skoring dimatikan (flag mati). (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            mode: "RAW_ONLY";
+            /**
+             * N Responden
+             * @description Total responden yang submit.
+             */
+            n_responden: number;
+            /**
+             * Items
+             * @description Agregat raw per item.
+             */
+            items: components["schemas"]["HasilRawItemRead"][];
+        };
+        /**
          * WcpHasilRead
          * @description Hasil analisis lengkap instrumen WCP (seluruh dimensi).
          */
         WcpHasilRead: {
+            /**
+             * @description Diskriminan: skor aktif (flag WCP_DCS_SCORING hidup). (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            mode: "SCORED";
             /**
              * N Responden
              * @description Total responden yang submit.
@@ -11663,7 +11866,10 @@ export interface operations {
     system_fitur_list: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -11685,6 +11891,73 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    system_job_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                job_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AsyncJobRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Job tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };
@@ -11814,7 +12087,10 @@ export interface operations {
                 /** @description Jumlah item yang dilewati. */
                 offset?: number;
             };
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -11924,7 +12200,10 @@ export interface operations {
     jenjang_pendidikan_search: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -11978,6 +12257,8 @@ export interface operations {
             header?: {
                 /** @description ETag klien untuk conditional GET. */
                 "If-None-Match"?: string | null;
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
             };
             path: {
                 /** @description ID jenjang pendidikan. */
@@ -12190,7 +12471,10 @@ export interface operations {
                 /** @description Jumlah item yang dilewati. */
                 offset?: number;
             };
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -12300,7 +12584,10 @@ export interface operations {
     sekolah_search: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -12354,6 +12641,8 @@ export interface operations {
             header?: {
                 /** @description ETag klien untuk conditional GET. */
                 "If-None-Match"?: string | null;
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
             };
             path: {
                 /** @description ID sekolah. */
@@ -12566,7 +12855,10 @@ export interface operations {
                 /** @description Jumlah item yang dilewati. */
                 offset?: number;
             };
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -12676,7 +12968,10 @@ export interface operations {
     mata_pelajaran_search: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -12730,6 +13025,8 @@ export interface operations {
             header?: {
                 /** @description ETag klien untuk conditional GET. */
                 "If-None-Match"?: string | null;
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
             };
             path: {
                 /** @description ID mata pelajaran. */
@@ -12942,7 +13239,10 @@ export interface operations {
                 /** @description Jumlah item yang dilewati. */
                 offset?: number;
             };
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -13043,7 +13343,10 @@ export interface operations {
     partisipan_search: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -13094,7 +13397,10 @@ export interface operations {
     partisipan_saya: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -13127,6 +13433,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
             /** @description Terlalu banyak permintaan. */
             429: {
                 headers: {
@@ -13144,6 +13459,8 @@ export interface operations {
             header?: {
                 /** @description ETag klien untuk conditional GET. */
                 "If-None-Match"?: string | null;
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
             };
             path: {
                 /** @description ID partisipan. */
@@ -13356,7 +13673,10 @@ export interface operations {
                 /** @description Jumlah item yang dilewati. */
                 offset?: number;
             };
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -13466,7 +13786,10 @@ export interface operations {
     jabatan_search: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -13520,6 +13843,8 @@ export interface operations {
             header?: {
                 /** @description ETag klien untuk conditional GET. */
                 "If-None-Match"?: string | null;
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
             };
             path: {
                 /** @description ID jabatan. */
@@ -13732,7 +14057,10 @@ export interface operations {
                 /** @description Jumlah item yang dilewati. */
                 offset?: number;
             };
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -13842,7 +14170,10 @@ export interface operations {
     sme_panel_search: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -13896,6 +14227,8 @@ export interface operations {
             header?: {
                 /** @description ETag klien untuk conditional GET. */
                 "If-None-Match"?: string | null;
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
             };
             path: {
                 /** @description ID SME panel. */
@@ -14236,7 +14569,10 @@ export interface operations {
     dcs_kuesioner_saya: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -14260,6 +14596,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
             /** @description Terlalu banyak permintaan. */
             429: {
                 headers: {
@@ -14274,7 +14619,10 @@ export interface operations {
     wcp_kuesioner_saya: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -14298,6 +14646,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
             /** @description Terlalu banyak permintaan. */
             429: {
                 headers: {
@@ -14312,7 +14669,10 @@ export interface operations {
     wcp_dimensi_list: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -14345,6 +14705,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
             /** @description Terlalu banyak permintaan. */
             429: {
                 headers: {
@@ -14359,7 +14728,10 @@ export interface operations {
     wcp_dimensi_get: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path: {
                 /** @description Kode dimensi (SC/TM/AS/RC/DA/WP/PC/SS/CH/SD/PI/RA). */
                 kode: string;
@@ -14427,7 +14799,10 @@ export interface operations {
     wcp_dimensi_items: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path: {
                 /** @description Kode dimensi. */
                 kode: string;
@@ -14495,7 +14870,10 @@ export interface operations {
     wcp_item_get: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path: {
                 /** @description Kode item orisinal. */
                 item_id: string;
@@ -14743,7 +15121,10 @@ export interface operations {
     wcp_instrumen_get: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -14765,6 +15146,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
             /** @description Terlalu banyak permintaan. */
@@ -15163,7 +15553,10 @@ export interface operations {
     wcp_responden_get: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path: {
                 /** @description ID responden. */
                 responden_id: string;
@@ -15318,7 +15711,10 @@ export interface operations {
     wcp_jawaban_list: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path: {
                 /** @description ID responden. */
                 responden_id: string;
@@ -15583,7 +15979,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["WcpHasilRead"];
+                    "application/json": components["schemas"]["WcpHasilRead"] | components["schemas"]["WcpHasilRawRead"];
                 };
             };
             /** @description Token tidak ada/invalid. */
@@ -15627,7 +16023,10 @@ export interface operations {
     wcp_hasil: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -15639,7 +16038,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["WcpHasilRead"];
+                    "application/json": components["schemas"]["WcpHasilRead"] | components["schemas"]["WcpHasilRawRead"];
                 };
             };
             /** @description Token tidak ada/invalid. */
@@ -15649,6 +16048,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
             /** @description Terlalu banyak permintaan. */
@@ -15665,7 +16073,10 @@ export interface operations {
     wcp_hasil_responden_get: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path: {
                 /** @description ID responden. */
                 responden_id: string;
@@ -15710,6 +16121,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Skor belum disahkan (flag WCP_DCS_SCORING mati): scoring_key_not_approved. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Validation Error */
             422: {
                 headers: {
@@ -15733,7 +16153,10 @@ export interface operations {
     opm_kuesioner_saya: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -15755,6 +16178,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
             /** @description Terlalu banyak permintaan. */
@@ -16035,7 +16467,10 @@ export interface operations {
                 /** @description Paksa hapus sesi non-DRAFT beserta SELURUH responden & jawabannya (permanen). */
                 paksa?: boolean;
             };
-            header?: never;
+            header?: {
+                /** @description ETag untuk concurrency control. */
+                "If-Match"?: string | null;
+            };
             path: {
                 /** @description ID sesi OPM. */
                 sesi_id: string;
@@ -16078,8 +16513,26 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description If-Match tidak cocok. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Sesi bukan DRAFT dan paksa tidak di-set. */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description If-Match wajib (REQUIRE_IF_MATCH=true). */
+            428: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -16101,7 +16554,10 @@ export interface operations {
     opm_sesi_update: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description ETag untuk concurrency control. */
+                "If-Match"?: string | null;
+            };
             path: {
                 /** @description ID sesi OPM. */
                 sesi_id: string;
@@ -16150,6 +16606,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description If-Match tidak cocok. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Validation Error */
             422: {
                 headers: {
@@ -16157,6 +16622,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description If-Match wajib (REQUIRE_IF_MATCH=true). */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
             /** @description Terlalu banyak permintaan. */
@@ -16173,7 +16647,10 @@ export interface operations {
     opm_sesi_buka: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
             path: {
                 /** @description ID sesi OPM. */
                 sesi_id: string;
@@ -16211,6 +16688,15 @@ export interface operations {
             };
             /** @description Sesi OPM tidak ditemukan. */
             404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Idempotency-Key ini sedang diproses (atau konflik state). */
+            409: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -16241,7 +16727,10 @@ export interface operations {
     opm_sesi_tutup: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
             path: {
                 /** @description ID sesi OPM. */
                 sesi_id: string;
@@ -16279,6 +16768,15 @@ export interface operations {
             };
             /** @description Sesi OPM tidak ditemukan. */
             404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Idempotency-Key ini sedang diproses (atau konflik state). */
+            409: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -16314,7 +16812,10 @@ export interface operations {
                 /** @description Jumlah item yang dilewati. */
                 offset?: number;
             };
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path: {
                 /** @description ID sesi OPM. */
                 sesi_id: string;
@@ -16519,7 +17020,10 @@ export interface operations {
     opm_responden_create: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
             path: {
                 /** @description ID sesi OPM. */
                 sesi_id: string;
@@ -16568,7 +17072,7 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
-            /** @description Partisipan sudah terdaftar sebagai responden OPM di sesi ini. */
+            /** @description Partisipan sudah terdaftar sebagai responden OPM di sesi ini, atau Idempotency-Key sedang diproses. */
             409: {
                 headers: {
                     [name: string]: unknown;
@@ -16600,7 +17104,10 @@ export interface operations {
     opm_responden_create_banyak: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
             path: {
                 /** @description ID sesi OPM. */
                 sesi_id: string;
@@ -16649,6 +17156,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Idempotency-Key ini sedang diproses (atau konflik state). */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Sesi bukan DRAFT/OPEN. */
             422: {
                 headers: {
@@ -16672,7 +17188,10 @@ export interface operations {
     opm_responden_get: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path: {
                 /** @description ID responden. */
                 responden_id: string;
@@ -16740,7 +17259,10 @@ export interface operations {
     opm_responden_delete: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description ETag untuk concurrency control. */
+                "If-Match"?: string | null;
+            };
             path: {
                 /** @description ID responden. */
                 responden_id: string;
@@ -16783,6 +17305,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description If-Match tidak cocok. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Validation Error */
             422: {
                 headers: {
@@ -16790,6 +17321,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description If-Match wajib (REQUIRE_IF_MATCH=true). */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
             /** @description Terlalu banyak permintaan. */
@@ -16806,7 +17346,10 @@ export interface operations {
     opm_responden_alihkan: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
             path: {
                 /** @description ID responden. */
                 responden_id: string;
@@ -16855,7 +17398,7 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
-            /** @description Partisipan tujuan sudah terdaftar sebagai responden OPM pada sesi ini. */
+            /** @description Partisipan tujuan sudah terdaftar sebagai responden OPM pada sesi ini, atau Idempotency-Key sedang diproses. */
             409: {
                 headers: {
                     [name: string]: unknown;
@@ -16887,7 +17430,10 @@ export interface operations {
     opm_jawaban_list: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path: {
                 /** @description ID responden. */
                 responden_id: string;
@@ -16955,7 +17501,10 @@ export interface operations {
     opm_jawaban_save_draft: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description ETag untuk concurrency control. */
+                "If-Match"?: string | null;
+            };
             path: {
                 /** @description ID responden. */
                 responden_id: string;
@@ -17004,8 +17553,26 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description If-Match tidak cocok. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Sesi bukan OPEN, responden sudah submit, atau kode task tidak dikenal. */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description If-Match wajib (REQUIRE_IF_MATCH=true). */
+            428: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -17027,7 +17594,10 @@ export interface operations {
     opm_jawaban_submit: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
             path: {
                 /** @description ID responden. */
                 responden_id: string;
@@ -17072,6 +17642,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Idempotency-Key ini sedang diproses (atau konflik state). */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Sesi bukan OPEN, responden sudah submit, atau set task tidak lengkap. */
             422: {
                 headers: {
@@ -17095,7 +17674,10 @@ export interface operations {
     opm_analisis_run: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
             path: {
                 /** @description ID sesi OPM. */
                 sesi_id: string;
@@ -17133,6 +17715,15 @@ export interface operations {
             };
             /** @description Sesi OPM tidak ditemukan. */
             404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Idempotency-Key ini sedang diproses (atau konflik state). */
+            409: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -17231,7 +17822,10 @@ export interface operations {
     dcs_subskala_list: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -17264,6 +17858,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
             /** @description Terlalu banyak permintaan. */
             429: {
                 headers: {
@@ -17278,7 +17881,10 @@ export interface operations {
     dcs_subskala_get: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path: {
                 /** @description Kode sub-skala (DEMAND/CONTROL/SUPPORT). */
                 kode: string;
@@ -17346,7 +17952,10 @@ export interface operations {
     dcs_subskala_items: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path: {
                 /** @description Kode sub-skala. */
                 kode: string;
@@ -17414,7 +18023,10 @@ export interface operations {
     dcs_item_get: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path: {
                 /** @description Kode item orisinal. */
                 item_id: string;
@@ -17662,7 +18274,10 @@ export interface operations {
     dcs_instrumen_get: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -17684,6 +18299,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
             /** @description Terlalu banyak permintaan. */
@@ -18082,7 +18706,10 @@ export interface operations {
     dcs_responden_get: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path: {
                 /** @description ID responden. */
                 responden_id: string;
@@ -18237,7 +18864,10 @@ export interface operations {
     dcs_jawaban_list: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path: {
                 /** @description ID responden. */
                 responden_id: string;
@@ -18502,7 +19132,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["DcsHasilRead"];
+                    "application/json": components["schemas"]["DcsHasilRead"] | components["schemas"]["DcsHasilRawRead"];
                 };
             };
             /** @description Token tidak ada/invalid. */
@@ -18546,7 +19176,10 @@ export interface operations {
     dcs_hasil: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -18558,7 +19191,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["DcsHasilRead"];
+                    "application/json": components["schemas"]["DcsHasilRead"] | components["schemas"]["DcsHasilRawRead"];
                 };
             };
             /** @description Token tidak ada/invalid. */
@@ -18568,6 +19201,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
             /** @description Terlalu banyak permintaan. */
@@ -18584,7 +19226,10 @@ export interface operations {
     dcs_hasil_responden_get: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path: {
                 /** @description ID responden. */
                 responden_id: string;
@@ -18629,6 +19274,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Skor belum disahkan (flag WCP_DCS_SCORING mati): scoring_key_not_approved. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Validation Error */
             422: {
                 headers: {
@@ -18652,7 +19306,10 @@ export interface operations {
     taskinv_kuesioner_saya: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -18676,6 +19333,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
             /** @description Terlalu banyak permintaan. */
             429: {
                 headers: {
@@ -18690,7 +19356,10 @@ export interface operations {
     taskinv_catalog_kombinasi: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -18712,6 +19381,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
             /** @description Terlalu banyak permintaan. */
@@ -18737,7 +19415,10 @@ export interface operations {
                 /** @description Jumlah item yang dilewati. */
                 offset?: number;
             };
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -18784,7 +19465,10 @@ export interface operations {
     taskinv_catalog_purge: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -18817,13 +19501,22 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
-            /** @description Katalog masih dipakai sesi TI/OPM (`catalog_in_use`). */
+            /** @description Katalog masih dipakai sesi TI/OPM (`catalog_in_use`), atau Idempotency-Key sedang diproses. */
             409: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
             /** @description Terlalu banyak permintaan. */
@@ -18840,7 +19533,10 @@ export interface operations {
     taskinv_catalog_reseed: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -18871,6 +19567,24 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Idempotency-Key ini sedang diproses (atau konflik state). */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
             /** @description Terlalu banyak permintaan. */
@@ -19080,7 +19794,10 @@ export interface operations {
     taskinv_sesi_get: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path: {
                 /** @description ID sesi. */
                 sesi_id: string;
@@ -19151,7 +19868,10 @@ export interface operations {
                 /** @description Paksa hapus sesi non-DRAFT beserta SELURUH responden & jawabannya (permanen). */
                 paksa?: boolean;
             };
-            header?: never;
+            header?: {
+                /** @description ETag untuk concurrency control. */
+                "If-Match"?: string | null;
+            };
             path: {
                 /** @description ID sesi. */
                 sesi_id: string;
@@ -19194,8 +19914,26 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description If-Match tidak cocok. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Sesi bukan DRAFT dan paksa tidak di-set. */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description If-Match wajib (REQUIRE_IF_MATCH=true). */
+            428: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -19217,7 +19955,10 @@ export interface operations {
     taskinv_sesi_update: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description ETag untuk concurrency control. */
+                "If-Match"?: string | null;
+            };
             path: {
                 /** @description ID sesi. */
                 sesi_id: string;
@@ -19266,8 +20007,26 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description If-Match tidak cocok. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Sesi bukan DRAFT dengan perubahan selain koordinator, atau koordinator bercabang berbeda dari cabang sesi. */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description If-Match wajib (REQUIRE_IF_MATCH=true). */
+            428: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -19289,7 +20048,10 @@ export interface operations {
     taskinv_sesi_mulai_tahap1: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
             path: {
                 /** @description ID sesi. */
                 sesi_id: string;
@@ -19327,6 +20089,15 @@ export interface operations {
             };
             /** @description Sesi Task Inventory tidak ditemukan. */
             404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Idempotency-Key ini sedang diproses (atau konflik state). */
+            409: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -19360,7 +20131,10 @@ export interface operations {
                 /** @description Paksa lanjut walau belum semua partisipan submit Tahap 1. */
                 paksa?: boolean;
             };
-            header?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
             path: {
                 /** @description ID sesi. */
                 sesi_id: string;
@@ -19398,6 +20172,15 @@ export interface operations {
             };
             /** @description Sesi Task Inventory tidak ditemukan. */
             404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Idempotency-Key ini sedang diproses (atau konflik state). */
+            409: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -19431,7 +20214,10 @@ export interface operations {
                 /** @description Paksa lanjut walau masih ada task partial yang belum diputuskan koordinator. */
                 paksa?: boolean;
             };
-            header?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
             path: {
                 /** @description ID sesi. */
                 sesi_id: string;
@@ -19476,6 +20262,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Idempotency-Key ini sedang diproses (atau konflik state). */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Belum semua task diputuskan koordinator / tidak ada task relevan. */
             422: {
                 headers: {
@@ -19499,7 +20294,10 @@ export interface operations {
     taskinv_sesi_batalkan_tahap3: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
             path: {
                 /** @description ID sesi. */
                 sesi_id: string;
@@ -19548,6 +20346,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Idempotency-Key ini sedang diproses (atau konflik state). */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Sesi tidak berstatus TAHAP3, atau alasan kosong. */
             422: {
                 headers: {
@@ -19571,7 +20378,10 @@ export interface operations {
     taskinv_sesi_tutup: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
             path: {
                 /** @description ID sesi. */
                 sesi_id: string;
@@ -19616,6 +20426,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Idempotency-Key ini sedang diproses (atau konflik state). */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Validation Error */
             422: {
                 headers: {
@@ -19644,7 +20463,10 @@ export interface operations {
                 /** @description Jumlah item yang dilewati. */
                 offset?: number;
             };
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path: {
                 /** @description ID sesi. */
                 sesi_id: string;
@@ -19712,7 +20534,10 @@ export interface operations {
     taskinv_responden_create: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
             path: {
                 /** @description ID sesi. */
                 sesi_id: string;
@@ -19761,7 +20586,7 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
-            /** @description Partisipan ini sudah terdaftar sebagai responden pada sesi ini. */
+            /** @description Partisipan ini sudah terdaftar sebagai responden pada sesi ini, atau Idempotency-Key sedang diproses. */
             409: {
                 headers: {
                     [name: string]: unknown;
@@ -19793,7 +20618,10 @@ export interface operations {
     taskinv_responden_create_banyak: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
             path: {
                 /** @description ID sesi. */
                 sesi_id: string;
@@ -19842,6 +20670,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Idempotency-Key ini sedang diproses (atau konflik state). */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Sesi bukan DRAFT/TAHAP1. */
             422: {
                 headers: {
@@ -19865,7 +20702,10 @@ export interface operations {
     taskinv_responden_get: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path: {
                 /** @description ID responden. */
                 responden_id: string;
@@ -19933,7 +20773,10 @@ export interface operations {
     taskinv_responden_delete: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description ETag untuk concurrency control. */
+                "If-Match"?: string | null;
+            };
             path: {
                 /** @description ID responden. */
                 responden_id: string;
@@ -19976,6 +20819,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description If-Match tidak cocok. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Validation Error */
             422: {
                 headers: {
@@ -19983,6 +20835,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description If-Match wajib (REQUIRE_IF_MATCH=true). */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
             /** @description Terlalu banyak permintaan. */
@@ -19999,7 +20860,10 @@ export interface operations {
     taskinv_responden_alihkan: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
             path: {
                 /** @description ID responden. */
                 responden_id: string;
@@ -20048,7 +20912,7 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
-            /** @description Partisipan tujuan sudah terdaftar sebagai responden pada sesi ini. */
+            /** @description Partisipan tujuan sudah terdaftar sebagai responden pada sesi ini, atau Idempotency-Key sedang diproses. */
             409: {
                 headers: {
                     [name: string]: unknown;
@@ -20080,7 +20944,10 @@ export interface operations {
     taskinv_seleksi_get: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path: {
                 /** @description ID responden. */
                 responden_id: string;
@@ -20148,7 +21015,10 @@ export interface operations {
     taskinv_seleksi_save_draft: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description ETag untuk concurrency control. */
+                "If-Match"?: string | null;
+            };
             path: {
                 /** @description ID responden. */
                 responden_id: string;
@@ -20197,8 +21067,26 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description If-Match tidak cocok. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Kode task tidak valid, sesi bukan TAHAP1, atau responden sudah submit. */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description If-Match wajib (REQUIRE_IF_MATCH=true). */
+            428: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -20220,7 +21108,10 @@ export interface operations {
     taskinv_seleksi_submit: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
             path: {
                 /** @description ID responden. */
                 responden_id: string;
@@ -20265,6 +21156,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Idempotency-Key ini sedang diproses (atau konflik state). */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Sesi bukan TAHAP1, responden sudah submit, atau belum ada task terpilih. */
             422: {
                 headers: {
@@ -20293,7 +21193,10 @@ export interface operations {
                 /** @description Jumlah item yang dilewati. */
                 offset?: number;
             };
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path: {
                 /** @description ID responden. */
                 responden_id: string;
@@ -20361,7 +21264,10 @@ export interface operations {
     taskinv_detail_save_draft: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description ETag untuk concurrency control. */
+                "If-Match"?: string | null;
+            };
             path: {
                 /** @description ID responden. */
                 responden_id: string;
@@ -20410,8 +21316,26 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description If-Match tidak cocok. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description task_kode di luar himpunan terpilih, sesi bukan TAHAP3, atau responden sudah submit. */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description If-Match wajib (REQUIRE_IF_MATCH=true). */
+            428: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -20433,7 +21357,10 @@ export interface operations {
     taskinv_detail_submit: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
             path: {
                 /** @description ID responden. */
                 responden_id: string;
@@ -20478,6 +21405,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Idempotency-Key ini sedang diproses (atau konflik state). */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Sesi bukan TAHAP3, responden sudah submit, belum ada entri detail, ada entri belum lengkap kelima field CalHR-nya, atau masih ada entri ber-va_type "Context-Dependent" yang belum difinalisasi. */
             422: {
                 headers: {
@@ -20501,7 +21437,10 @@ export interface operations {
     taskinv_tahap2_get: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path: {
                 /** @description ID sesi. */
                 sesi_id: string;
@@ -20569,7 +21508,10 @@ export interface operations {
     taskinv_tahap2_submit: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
             path: {
                 /** @description ID sesi. */
                 sesi_id: string;
@@ -20618,6 +21560,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Idempotency-Key ini sedang diproses (atau konflik state). */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Sesi bukan TAHAP2 / kode task tidak valid. */
             422: {
                 headers: {
@@ -20646,7 +21597,10 @@ export interface operations {
                 /** @description Jumlah item yang dilewati. */
                 offset?: number;
             };
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path: {
                 /** @description ID sesi. */
                 sesi_id: string;
@@ -20714,7 +21668,10 @@ export interface operations {
     taskinv_analisis_run: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
             path: {
                 /** @description ID sesi. */
                 sesi_id: string;
@@ -20752,6 +21709,15 @@ export interface operations {
             };
             /** @description Sesi tidak ditemukan. */
             404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Idempotency-Key ini sedang diproses (atau konflik state). */
+            409: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -20850,7 +21816,10 @@ export interface operations {
     taskinv_usulan_list: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path: {
                 /** @description ID responden. */
                 responden_id: string;
@@ -20918,7 +21887,10 @@ export interface operations {
     taskinv_usulan_create: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
             path: {
                 /** @description ID responden. */
                 responden_id: string;
@@ -20967,6 +21939,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Idempotency-Key ini sedang diproses (atau konflik state). */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Sesi bukan TAHAP1, responden sudah submit Tahap 1, tugas_pokok_id tidak terkait jabatan sesi, atau detil_tugas_id bukan turunan tugas_pokok_id. */
             422: {
                 headers: {
@@ -20987,10 +21968,84 @@ export interface operations {
             };
         };
     };
+    taskinv_usulan_get: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
+            path: {
+                /** @description ID usulan. */
+                usulan_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TiUsulanRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin atau bukan pemilik responden. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Usulan tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
     taskinv_usulan_delete: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description ETag untuk concurrency control. */
+                "If-Match"?: string | null;
+            };
             path: {
                 /** @description ID usulan. */
                 usulan_id: string;
@@ -21033,8 +22088,26 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description If-Match tidak cocok. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Sesi bukan TAHAP1, responden sudah submit Tahap 1, tugas_pokok_id tidak terkait jabatan sesi, atau detil_tugas_id bukan turunan tugas_pokok_id. */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description If-Match wajib (REQUIRE_IF_MATCH=true). */
+            428: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -21056,7 +22129,10 @@ export interface operations {
     ts_kuesioner_saya: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -21078,6 +22154,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
             /** @description Terlalu banyak permintaan. */
@@ -21275,7 +22360,10 @@ export interface operations {
     ts_penugasan_get: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path: {
                 /** @description ID penugasan Time Study. */
                 penugasan_id: string;
@@ -21486,7 +22574,10 @@ export interface operations {
                 /** @description Jumlah item yang dilewati. */
                 offset?: number;
             };
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path: {
                 /** @description ID penugasan Time Study. */
                 penugasan_id: string;
@@ -21635,7 +22726,10 @@ export interface operations {
     ts_log_get: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path: {
                 /** @description ID penugasan Time Study. */
                 penugasan_id: string;
@@ -21784,7 +22878,10 @@ export interface operations {
                 /** @description Jumlah item yang dilewati. */
                 offset?: number;
             };
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -21894,7 +22991,10 @@ export interface operations {
     tugas_pokok_search: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -21948,6 +23048,8 @@ export interface operations {
             header?: {
                 /** @description ETag klien untuk conditional GET. */
                 "If-None-Match"?: string | null;
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
             };
             path: {
                 /** @description ID tugas pokok. */
@@ -22160,7 +23262,10 @@ export interface operations {
                 /** @description Jumlah item yang dilewati. */
                 offset?: number;
             };
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -22270,7 +23375,10 @@ export interface operations {
     detil_tugas_search: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -22324,6 +23432,8 @@ export interface operations {
             header?: {
                 /** @description ETag klien untuk conditional GET. */
                 "If-None-Match"?: string | null;
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
             };
             path: {
                 /** @description ID detil tugas. */
@@ -22536,7 +23646,10 @@ export interface operations {
                 /** @description Jumlah item yang dilewati. */
                 offset?: number;
             };
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -22646,7 +23759,10 @@ export interface operations {
     uraian_tugas_search: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -22700,6 +23816,8 @@ export interface operations {
             header?: {
                 /** @description ETag klien untuk conditional GET. */
                 "If-None-Match"?: string | null;
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
             };
             path: {
                 /** @description ID uraian tugas. */
@@ -22916,7 +24034,10 @@ export interface operations {
                 /** @description Jumlah item yang dilewati. */
                 offset?: number;
             };
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -22972,7 +24093,10 @@ export interface operations {
     redesain_riwayat_search: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -23032,7 +24156,10 @@ export interface operations {
     redesain_kode_orang_saya: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -23065,6 +24192,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
             /** @description Terlalu banyak permintaan. */
             429: {
                 headers: {
@@ -23084,7 +24220,10 @@ export interface operations {
                 /** @description Jumlah item yang dilewati. */
                 offset?: number;
             };
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -23218,7 +24357,10 @@ export interface operations {
     redesain_kode_orang_search: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -23278,7 +24420,10 @@ export interface operations {
     redesain_kode_orang_get: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path: {
                 kode_orang_id: string;
             };
@@ -23421,7 +24566,10 @@ export interface operations {
                 /** @description Jumlah item yang dilewati. */
                 offset?: number;
             };
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -23546,7 +24694,10 @@ export interface operations {
     redesain_konteks_search: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -23606,7 +24757,10 @@ export interface operations {
     redesain_konteks_get: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path: {
                 konteks_id: string;
             };
@@ -23749,7 +24903,10 @@ export interface operations {
                 /** @description Jumlah item yang dilewati. */
                 offset?: number;
             };
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -23874,7 +25031,10 @@ export interface operations {
     redesain_masalah_search: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -23934,7 +25094,10 @@ export interface operations {
     redesain_masalah_get: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path: {
                 masalah_id: string;
             };
@@ -24152,7 +25315,10 @@ export interface operations {
     redesain_masalah_sebaran_k: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path: {
                 masalah_id: string;
             };
@@ -24224,7 +25390,10 @@ export interface operations {
                 /** @description Jumlah item yang dilewati. */
                 offset?: number;
             };
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -24349,7 +25518,10 @@ export interface operations {
     redesain_alternatif_search: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -24409,7 +25581,10 @@ export interface operations {
     redesain_alternatif_get: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path: {
                 alternatif_id: string;
             };
@@ -24552,7 +25727,10 @@ export interface operations {
                 /** @description Jumlah item yang dilewati. */
                 offset?: number;
             };
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -24677,7 +25855,10 @@ export interface operations {
     redesain_cakupan_jabatan_search: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -24737,7 +25918,10 @@ export interface operations {
     redesain_cakupan_jabatan_get: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path: {
                 cakupan_id: string;
             };
@@ -24880,7 +26064,10 @@ export interface operations {
                 /** @description Jumlah item yang dilewati. */
                 offset?: number;
             };
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -25005,7 +26192,10 @@ export interface operations {
     redesain_versi_metode_search: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -25065,7 +26255,10 @@ export interface operations {
     redesain_versi_metode_get: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path: {
                 versi_id: string;
             };
@@ -25217,7 +26410,10 @@ export interface operations {
                 /** @description Jumlah item yang dilewati. */
                 offset?: number;
             };
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -25342,7 +26538,10 @@ export interface operations {
     redesain_sesi_search: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -25407,7 +26606,10 @@ export interface operations {
                 /** @description Jumlah item yang dilewati. */
                 offset?: number;
             };
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -25463,7 +26665,10 @@ export interface operations {
     redesain_sesi_get: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path: {
                 sesi_id: string;
             };
@@ -25615,7 +26820,10 @@ export interface operations {
                 /** @description Jumlah item yang dilewati. */
                 offset?: number;
             };
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -25740,7 +26948,10 @@ export interface operations {
     redesain_bukti_search: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -25800,7 +27011,10 @@ export interface operations {
     redesain_bukti_get: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path: {
                 bukti_id: string;
             };
@@ -25943,7 +27157,10 @@ export interface operations {
                 /** @description Jumlah item yang dilewati. */
                 offset?: number;
             };
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -26068,7 +27285,10 @@ export interface operations {
     redesain_penilaian_search: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -26133,7 +27353,10 @@ export interface operations {
                 /** @description Jumlah item yang dilewati. */
                 offset?: number;
             };
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -26189,7 +27412,10 @@ export interface operations {
     redesain_penilaian_get: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path: {
                 penilaian_id: string;
             };
@@ -26474,7 +27700,10 @@ export interface operations {
                 /** @description Jumlah item yang dilewati. */
                 offset?: number;
             };
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -26530,7 +27759,10 @@ export interface operations {
     redesain_yayasan_search: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -26590,7 +27822,10 @@ export interface operations {
     redesain_yayasan_get: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path: {
                 masalah_id: string;
             };
@@ -26660,7 +27895,10 @@ export interface operations {
                 /** @description Status penilaian yang diekspor. */
                 status_penilaian?: string;
             };
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -26725,7 +27963,10 @@ export interface operations {
     redesain_ekspor_ringkasan: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path: {
                 masalah_id: string;
             };
@@ -26792,7 +28033,10 @@ export interface operations {
     redesain_ekspor_lembar_konfirmasi: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path: {
                 masalah_id: string;
             };
@@ -26859,7 +28103,10 @@ export interface operations {
     redesain_ekspor_register: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -26892,6 +28139,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
             /** @description Terlalu banyak permintaan. */
             429: {
                 headers: {
@@ -26911,7 +28167,10 @@ export interface operations {
                 /** @description Jumlah item yang dilewati. */
                 offset?: number;
             };
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -27036,7 +28295,10 @@ export interface operations {
     redesain_proses_search: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -27096,7 +28358,10 @@ export interface operations {
     redesain_proses_get: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path: {
                 proses_id: string;
             };
@@ -27390,7 +28655,10 @@ export interface operations {
                 /** @description Jumlah item yang dilewati. */
                 offset?: number;
             };
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path: {
                 langkah_id: string;
             };
@@ -27542,7 +28810,10 @@ export interface operations {
                 /** @description Jumlah item yang dilewati. */
                 offset?: number;
             };
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -27603,7 +28874,10 @@ export interface operations {
                 /** @description Jumlah item yang dilewati. */
                 offset?: number;
             };
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -27742,7 +29016,10 @@ export interface operations {
                 /** @description Jumlah item yang dilewati. */
                 offset?: number;
             };
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -27798,7 +29075,10 @@ export interface operations {
     redesain_konfirmasi_search: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -27927,7 +29207,10 @@ export interface operations {
     redesain_konfirmasi_get: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path: {
                 konfirmasi_id: string;
             };
@@ -28302,7 +29585,10 @@ export interface operations {
     redesain_konfirmasi_alur: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
             path: {
                 konfirmasi_id: string;
             };
@@ -28657,3 +29943,8 @@ export type VersiMetodeRead = components["schemas"]["VersiMetodeRead"];
 export type VersiMetodeCreate = components["schemas"]["VersiMetodeCreate"];
 export type VersiMetodeUpdate = components["schemas"]["VersiMetodeUpdate"];
 export type OpmPengecualianRead = components["schemas"]["OpmPengecualianRead"];
+
+export type FiturKode = components["schemas"]["FiturKode"];
+export type HasilRawItemRead = components["schemas"]["HasilRawItemRead"];
+export type DcsHasilRawRead = components["schemas"]["DcsHasilRawRead"];
+export type WcpHasilRawRead = components["schemas"]["WcpHasilRawRead"];

@@ -3,7 +3,14 @@ import { notFound, redirect } from "next/navigation";
 import { auth, isAdmin } from "@/lib/auth/auth";
 import { withServerAuth } from "@/lib/api/client";
 import { apiErrorDari } from "@/lib/api/errors";
-import type { WcpHasilDimensiRead, WcpHasilRead, WcpInstrumenRead } from "@/lib/api/schema";
+import type {
+  WcpHasilDimensiRead,
+  WcpHasilRawRead,
+  WcpHasilRead,
+  WcpInstrumenRead,
+} from "@/lib/api/schema";
+import { BannerSkorBelumSah } from "@/components/banner-skor-belum-sah";
+import { TabelHasilRaw } from "@/components/tabel-hasil-raw";
 
 export const metadata = { title: "Hasil WCP" };
 
@@ -29,7 +36,7 @@ async function fetchPageData(accessToken: string | undefined) {
   const hasilRes = await client.GET("/api/v1/wcp/hasil");
   if (!hasilRes.data) throw apiErrorDari(hasilRes);
 
-  return { instrumen, hasil: hasilRes.data as WcpHasilRead };
+  return { instrumen, hasil: hasilRes.data as WcpHasilRead | WcpHasilRawRead };
 }
 
 export default async function WcpHasilPage() {
@@ -38,6 +45,34 @@ export default async function WcpHasilPage() {
 
   const { instrumen, hasil } = await fetchPageData(session?.accessToken);
   if (!hasil) redirect("/wcp");
+
+  if (hasil.mode === "RAW_ONLY") {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center gap-2 text-sm text-gray-500">
+          <Link href="/wcp" className="hover:text-gray-700">
+            WCP
+          </Link>
+          <span>/</span>
+          <span className="text-gray-900">Hasil</span>
+        </div>
+        <div>
+          <h1 className="page-heading">Hasil WCP</h1>
+          <p className="page-subtext">
+            {hasil.n_responden} responden dianalisis
+            {instrumen.catatan && (
+              <>
+                {" "}
+                · <span className="italic">{instrumen.catatan}</span>
+              </>
+            )}
+          </p>
+        </div>
+        <BannerSkorBelumSah />
+        <TabelHasilRaw items={hasil.items} />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

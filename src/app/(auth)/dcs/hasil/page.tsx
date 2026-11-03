@@ -3,7 +3,14 @@ import { notFound, redirect } from "next/navigation";
 import { auth, isAdmin } from "@/lib/auth/auth";
 import { withServerAuth } from "@/lib/api/client";
 import { apiErrorDari } from "@/lib/api/errors";
-import type { DcsHasilRead, DcsHasilSubSkalaRead, DcsInstrumenRead } from "@/lib/api/schema";
+import type {
+  DcsHasilRawRead,
+  DcsHasilRead,
+  DcsHasilSubSkalaRead,
+  DcsInstrumenRead,
+} from "@/lib/api/schema";
+import { BannerSkorBelumSah } from "@/components/banner-skor-belum-sah";
+import { TabelHasilRaw } from "@/components/tabel-hasil-raw";
 
 export const metadata = { title: "Hasil DCS" };
 
@@ -26,7 +33,7 @@ async function fetchPageData(accessToken: string | undefined) {
   const hasilRes = await client.GET("/api/v1/dcs/hasil");
   if (!hasilRes.data) throw apiErrorDari(hasilRes);
 
-  return { instrumen, hasil: hasilRes.data as DcsHasilRead };
+  return { instrumen, hasil: hasilRes.data as DcsHasilRead | DcsHasilRawRead };
 }
 
 export default async function DcsHasilPage() {
@@ -35,6 +42,34 @@ export default async function DcsHasilPage() {
 
   const { instrumen, hasil } = await fetchPageData(session?.accessToken);
   if (!hasil) redirect("/dcs");
+
+  if (hasil.mode === "RAW_ONLY") {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center gap-2 text-sm text-gray-500">
+          <Link href="/dcs" className="hover:text-gray-700">
+            DCS
+          </Link>
+          <span>/</span>
+          <span className="text-gray-900">Hasil</span>
+        </div>
+        <div>
+          <h1 className="page-heading">Hasil DCS</h1>
+          <p className="page-subtext">
+            {hasil.n_responden} responden dianalisis
+            {instrumen.catatan && (
+              <>
+                {" "}
+                · <span className="italic">{instrumen.catatan}</span>
+              </>
+            )}
+          </p>
+        </div>
+        <BannerSkorBelumSah />
+        <TabelHasilRaw items={hasil.items} />
+      </div>
+    );
+  }
 
   const risk = RISK_LABEL[hasil.risk_flag] ?? {
     label: hasil.risk_flag,

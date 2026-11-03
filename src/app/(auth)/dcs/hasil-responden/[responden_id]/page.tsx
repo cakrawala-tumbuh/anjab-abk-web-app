@@ -8,6 +8,8 @@ import type {
   DcsHasilSubSkalaRespondenRead,
   DcsRespondenRead,
 } from "@/lib/api/schema";
+import { BannerSkorBelumSah } from "@/components/banner-skor-belum-sah";
+import { fiturAktif } from "@/lib/fitur";
 import { labelResponden } from "@/lib/format/label-responden";
 
 export const metadata = { title: "Hasil DCS Responden" };
@@ -46,6 +48,26 @@ export default async function DcsHasilRespondenPage({ params }: Props) {
   if (!isAdmin(session)) notFound();
 
   const { responden_id } = await params;
+
+  // Skoring dimatikan: backend menjawab 409 pada hasil-responden. Baca flag lebih dulu dan
+  // jangan memanggil endpoint itu sama sekali (tanpa perlu pengecualian jalur baca).
+  const skorAktif = await fiturAktif(withServerAuth(session?.accessToken), "WCP_DCS_SCORING");
+  if (!skorAktif) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center gap-2 text-sm text-gray-500">
+          <Link href="/dcs" className="hover:text-gray-700">
+            DCS
+          </Link>
+          <span>/</span>
+          <span className="text-gray-900">Hasil responden</span>
+        </div>
+        <h1 className="page-heading">Hasil DCS per responden</h1>
+        <BannerSkorBelumSah />
+      </div>
+    );
+  }
+
   const { responden, hasil } = await fetchPageData(session?.accessToken, responden_id);
 
   const namaResponden = labelResponden(responden);

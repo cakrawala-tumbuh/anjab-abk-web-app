@@ -9,6 +9,10 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ### Ditambahkan
 
+- Hasil WCP/DCS mode **RAW_ONLY** (flag `WCP_DCS_SCORING` mati): halaman hasil menampilkan banner
+  "Skor belum disahkan" dan tabel raw per item (frekuensi 1-5, mean, SD) tanpa skor, label risiko,
+  alpha, maupun K-Index. Tautan "Lihat Hasil" per responden disembunyikan dan halamannya
+  menampilkan state informasi tanpa memanggil backend hasil-responden (issue #80).
 - WCP/DCS: tombol **Buka Ulang** juga tersedia saat instrumen berstatus Teranalisis.
 - Master data WCP/DCS: lencana "Redaksi beda paket", "Tidak ada di paket", dan "Kembar: ..." pada
   item, serta ringkasan bank item (12 karakter hash, jumlah item, redaksi beda, tidak di paket).

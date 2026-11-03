@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { auth, isAdmin } from "@/lib/auth/auth";
 import { withServerAuth } from "@/lib/api/client";
 import { apiErrorDari } from "@/lib/api/errors";
+import { fiturAktif } from "@/lib/fitur";
 import { Pagination, UKURAN_HALAMAN, offsetHalaman } from "@/components/pagination";
 import type {
   JabatanRead,
@@ -61,7 +62,10 @@ async function fetchPageData(accessToken: string | undefined, offsetResponden: n
   // "semua partisipan sudah ditugaskan" — padahal daftarnya gagal diambil.
   if (!jabatanRes.data) throw apiErrorDari(jabatanRes);
   if (!partisipanRes.data) throw apiErrorDari(partisipanRes);
+  // Skor dimatikan (RAW_ONLY) → hasil per responden ditutup backend; jangan tawarkan tautannya.
+  const skorAktif = await fiturAktif(client, "WCP_DCS_SCORING");
   return {
+    skorAktif,
     instrumen: instrumenRes.data as WcpInstrumenRead,
     responden: (respondenRes.data.items ?? []) as WcpRespondenRead[],
     totalResponden: respondenRes.data.total,
@@ -81,7 +85,7 @@ export default async function WcpInstrumenPage({ searchParams }: Props) {
 
   const sp = await searchParams;
   const offsetResponden = offsetHalaman(sp, "hlm_responden");
-  const { instrumen, responden, totalResponden, respondenAll, jabatan, partisipan } =
+  const { skorAktif, instrumen, responden, totalResponden, respondenAll, jabatan, partisipan } =
     await fetchPageData(session?.accessToken, offsetResponden);
 
   const st = STATUS_LABEL[instrumen.status] ?? {
@@ -222,7 +226,7 @@ export default async function WcpInstrumenPage({ searchParams }: Props) {
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex flex-wrap items-center gap-3">
-                        {r.sudah_submit && (
+                        {r.sudah_submit && skorAktif && (
                           <Link
                             href={`/wcp/hasil-responden/${r.id}`}
                             className="text-xs font-medium text-blue-600 hover:text-blue-800"
