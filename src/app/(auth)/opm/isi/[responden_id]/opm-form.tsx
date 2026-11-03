@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
 import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
+import { useIdempotencyKey } from "@/lib/use-idempotency-key";
+import { bacaEtag, headerIdempotencyKey, headerIfMatch, petakanKonkurensi } from "@/lib/konkurensi";
 import type { OpmJawabanRead, OpmSesiTaskRead } from "@/lib/api/schema";
 
 type Dimensi = "importance" | "frequency" | "criticality";
@@ -123,6 +125,8 @@ interface Props {
   jawabanAwal: OpmJawabanRead[];
   sudahSubmit: boolean;
   accessToken: string | undefined;
+  /** ETag jawaban tersimpan (header `ETag` dari `GET .../jawaban`); dikirim sebagai `If-Match`. */
+  etag?: string | null;
 }
 
 /**
@@ -147,7 +151,14 @@ interface Props {
  * @param accessToken - Bearer token untuk `withServerAuth`; `undefined` bila
  *   sesi tidak terautentikasi (permintaan akan ditolak backend).
  */
-export function OpmForm({ respondenId, task, jawabanAwal, sudahSubmit, accessToken }: Props) {
+export function OpmForm({
+  respondenId,
+  task,
+  jawabanAwal,
+  sudahSubmit,
+  accessToken,
+  etag: etagAwal = null,
+}: Props) {
   const router = useRouter();
 
   const jawabanTersimpan: Record<string, RatingState> = Object.fromEntries(
@@ -180,6 +191,8 @@ export function OpmForm({ respondenId, task, jawabanAwal, sudahSubmit, accessTok
   const [error, setError] = useState<string | null>(null);
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
   const [sukses, setSukses] = useState(false);
+  const [etag, setEtag] = useState<string | null>(etagAwal);
+  const idem = useIdempotencyKey();
 
   const sortedTask = task.slice().sort((a, b) => a.urutan - b.urutan);
   const jumlahLengkap = sortedTask.filter((t) => isTaskLengkap(rating[t.task_kode])).length;
@@ -284,18 +297,21 @@ export function OpmForm({ respondenId, task, jawabanAwal, sudahSubmit, accessTok
         "/api/v1/opm/sesi/responden/{responden_id}/jawaban",
         {
           params: { path: { responden_id: respondenId } },
+          headers: headerIfMatch(etag),
           body: { jawaban },
         },
       );
       const reqId = response.headers.get("x-request-id");
-      if (apiError) throw toApiError(apiError, reqId);
+      if (apiError) throw toApiError(apiError, reqId, response.status);
+      setEtag(bacaEtag(response));
 
       const pesan = "Draft tersimpan.";
       setSaveMessage(pesan);
       notifySukses(pesan);
     } catch (err) {
-      setError(pesanGagal(err));
-      notifyGagal(err);
+      const galat = petakanKonkurensi(err);
+      setError(pesanGagal(galat));
+      notifyGagal(galat);
     } finally {
       setSaving(false);
     }
@@ -319,30 +335,39 @@ export function OpmForm({ respondenId, task, jawabanAwal, sudahSubmit, accessTok
     setError(null);
     setSaveMessage(null);
     setSubmitting(true);
+    let idempoten = false;
     try {
       const client = withServerAuth(accessToken);
       const { error: saveError, response: saveResponse } = await client.PUT(
         "/api/v1/opm/sesi/responden/{responden_id}/jawaban",
         {
           params: { path: { responden_id: respondenId } },
+          headers: headerIfMatch(etag),
           body: { jawaban: buildSubmitPayload() },
         },
       );
       const saveReqId = saveResponse.headers.get("x-request-id");
-      if (saveError) throw toApiError(saveError, saveReqId);
+      if (saveError) throw toApiError(saveError, saveReqId, saveResponse.status);
+      setEtag(bacaEtag(saveResponse));
+      idempoten = true;
 
       const { error: apiError, response } = await client.POST(
         "/api/v1/opm/sesi/responden/{responden_id}/jawaban/submit",
-        { params: { path: { responden_id: respondenId } } },
+        {
+          params: { path: { responden_id: respondenId } },
+          headers: headerIdempotencyKey(idem.key),
+        },
       );
       const reqId = response.headers.get("x-request-id");
-      if (apiError) throw toApiError(apiError, reqId);
+      if (apiError) throw toApiError(apiError, reqId, response.status);
+      idem.perbarui();
       setSukses(true);
       notifySukses("Jawaban berhasil dikirim.");
       router.refresh();
     } catch (err) {
-      setError(pesanGagal(err));
-      notifyGagal(err);
+      const galat = petakanKonkurensi(err, idempoten);
+      setError(pesanGagal(galat));
+      notifyGagal(galat);
     } finally {
       setSubmitting(false);
     }

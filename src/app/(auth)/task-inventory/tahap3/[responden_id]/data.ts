@@ -23,6 +23,8 @@ export interface Tahap3PageData {
   sesi: TiSesiRead;
   terpilih: TiTaskTerpilihRead[];
   detail: TiDetailRead[];
+  /** Header `ETag` dari `GET .../detail` (halaman pertama); dikirim sebagai `If-Match` saat simpan. */
+  etag: string | null;
 }
 
 export async function fetchTahap3Data(
@@ -65,17 +67,19 @@ export async function fetchTahap3Data(
 
   // Responden yang belum mengisi tetap dapat 200 + halaman kosong — kosong yang
   // SAH tetap terbedakan dari kegagalan, jadi gagal harus melempar.
+  let etag: string | null = null;
   const detail = await ambilSemuaHalaman<TiDetailRead>(async (limit, offset) => {
     const detailRes = await client.GET(
       "/api/v1/task-inventory/sesi/responden/{responden_id}/detail",
       { params: { path: { responden_id: respondenId }, query: { limit, offset } } },
     );
     if (!detailRes.data) throw apiErrorDari(detailRes);
+    if (offset === 0) etag = detailRes.response.headers.get("etag");
     return {
       items: (detailRes.data.items ?? []) as TiDetailRead[],
       total: detailRes.data.total,
     };
   });
 
-  return { responden, sesi, terpilih, detail };
+  return { responden, sesi, terpilih, detail, etag };
 }

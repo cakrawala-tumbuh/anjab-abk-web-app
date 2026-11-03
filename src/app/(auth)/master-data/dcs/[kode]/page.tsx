@@ -24,12 +24,38 @@ async function fetchSubSkala(
   return res.data;
 }
 
+/**
+ * Ambil ETag tiap item dari `GET /api/v1/dcs/sub-skala/items/{item_id}` untuk dipakai sebagai `If-Match` oleh editor.
+ *
+ * @param items - Item yang ditampilkan editor.
+ * @param accessToken - Bearer token sesi.
+ * @returns Peta `item_id` → ETag (`null` bila backend tidak mengirim header).
+ * @throws ApiError bila salah satu GET gagal (jalur baca tidak boleh menelan kegagalan).
+ */
+async function fetchEtagItem(
+  items: { item_id: string }[],
+  accessToken: string | undefined,
+): Promise<Record<string, string | null>> {
+  const client = withServerAuth(accessToken);
+  const hasil = await Promise.all(
+    items.map(async (it) => {
+      const res = await client.GET("/api/v1/dcs/sub-skala/items/{item_id}", {
+        params: { path: { item_id: it.item_id } },
+      });
+      if (!res.data) throw apiErrorDari(res);
+      return [it.item_id, res.response.headers.get("etag")] as const;
+    }),
+  );
+  return Object.fromEntries(hasil);
+}
+
 export default async function DcsSubSkalaDetailPage({ params }: PageProps) {
   const session = await auth();
   if (!isAdmin(session)) notFound();
 
   const { kode } = await params;
   const subSkala = await fetchSubSkala(kode, session?.accessToken);
+  const etags = await fetchEtagItem(subSkala.items, session?.accessToken);
 
   return (
     <div className="space-y-4">
@@ -49,7 +75,7 @@ export default async function DcsSubSkalaDetailPage({ params }: PageProps) {
         </p>
       </div>
 
-      <DcsItemEditor items={subSkala.items} accessToken={session?.accessToken} />
+      <DcsItemEditor items={subSkala.items} accessToken={session?.accessToken} etags={etags} />
     </div>
   );
 }

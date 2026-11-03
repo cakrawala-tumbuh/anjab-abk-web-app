@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
 import { notifyGagal, notifySukses } from "@/lib/notify";
+import { useIdempotencyKey } from "@/lib/use-idempotency-key";
+import { bacaEtag, headerIdempotencyKey, headerIfMatch, petakanKonkurensi } from "@/lib/konkurensi";
 import type { DcsSubSkalaWithItemsRead, DcsJawabanRead } from "@/lib/api/schema";
 
 const SKOR_LABEL: Record<number, string> = {
@@ -22,6 +24,11 @@ interface Props {
   sudahSubmit: boolean;
   accessToken: string | undefined;
   /**
+   * ETag jawaban tersimpan (header `ETag` dari `GET .../jawaban`, dibaca Server Component).
+   * Dikirim sebagai `If-Match` pada simpan draft; diperbarui dari header respons sukses.
+   */
+  etag?: string | null;
+  /**
    * Mode demo (peragaan admin). Bila true, "Simpan" dan "Kirim Jawaban" TIDAK
    * memanggil backend sama sekali — tidak ada draft, tidak ada submit, tidak
    * ada responden yang tersentuh. Dipakai halaman `/dcs/demo` agar admin bisa
@@ -36,6 +43,7 @@ export function DcsForm({
   jawabanAwal,
   sudahSubmit,
   accessToken,
+  etag: etagAwal = null,
   demo = false,
 }: Props) {
   const router = useRouter();
@@ -48,6 +56,8 @@ export function DcsForm({
   const [error, setError] = useState<string | null>(null);
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
   const [sukses, setSukses] = useState(false);
+  const [etag, setEtag] = useState<string | null>(etagAwal);
+  const idem = useIdempotencyKey();
 
   const allItems = subskala.flatMap((sk) => sk.items ?? []);
   const allFilled = allItems.length > 0 && allItems.every((item) => skor[item.item_id] != null);
@@ -72,16 +82,19 @@ export function DcsForm({
         "/api/v1/dcs/responden/{responden_id}/jawaban",
         {
           params: { path: { responden_id: respondenId } },
+          headers: headerIfMatch(etag),
           body: { jawaban: buildJawabanPayload() },
         },
       );
       const reqId = response.headers.get("x-request-id");
-      if (apiError) throw toApiError(apiError, reqId);
+      if (apiError) throw toApiError(apiError, reqId, response.status);
+      setEtag(bacaEtag(response));
       notifySukses("Draft tersimpan.");
       setSaveMessage("Draft tersimpan.");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Terjadi kesalahan saat menyimpan draft.");
-      notifyGagal(err);
+      const galat = petakanKonkurensi(err);
+      setError(galat instanceof Error ? galat.message : "Terjadi kesalahan saat menyimpan draft.");
+      notifyGagal(galat);
     } finally {
       setSaving(false);
     }
@@ -102,30 +115,39 @@ export function DcsForm({
       return;
     }
     setSubmitting(true);
+    let idempoten = false;
     try {
       const client = withServerAuth(accessToken);
       const { error: saveError, response: saveResponse } = await client.PUT(
         "/api/v1/dcs/responden/{responden_id}/jawaban",
         {
           params: { path: { responden_id: respondenId } },
+          headers: headerIfMatch(etag),
           body: { jawaban: buildJawabanPayload() },
         },
       );
       const saveReqId = saveResponse.headers.get("x-request-id");
-      if (saveError) throw toApiError(saveError, saveReqId);
+      if (saveError) throw toApiError(saveError, saveReqId, saveResponse.status);
+      setEtag(bacaEtag(saveResponse));
+      idempoten = true;
 
       const { error: apiError, response } = await client.POST(
         "/api/v1/dcs/responden/{responden_id}/jawaban/submit",
-        { params: { path: { responden_id: respondenId } } },
+        {
+          params: { path: { responden_id: respondenId } },
+          headers: headerIdempotencyKey(idem.key),
+        },
       );
       const reqId = response.headers.get("x-request-id");
-      if (apiError) throw toApiError(apiError, reqId);
+      if (apiError) throw toApiError(apiError, reqId, response.status);
+      idem.perbarui();
       notifySukses("Jawaban berhasil dikirim.");
       setSukses(true);
       router.refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Terjadi kesalahan saat mengirim jawaban.");
-      notifyGagal(err);
+      const galat = petakanKonkurensi(err, idempoten);
+      setError(galat instanceof Error ? galat.message : "Terjadi kesalahan saat mengirim jawaban.");
+      notifyGagal(galat);
     } finally {
       setSubmitting(false);
     }

@@ -7,11 +7,17 @@ import { toApiError } from "@/lib/api/errors";
 import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
 import { LencanaItemPaket } from "@/components/lencana-item-paket";
 import { petakanGuard409 } from "@/lib/pesan-guard-409";
+import { bacaEtag, headerIfMatch, petakanKonkurensi } from "@/lib/konkurensi";
 import type { WcpItemRead, WcpReverseType } from "@/lib/api/schema";
 
 interface Props {
   items: WcpItemRead[];
   accessToken: string | undefined;
+  /**
+   * ETag per item (kunci `item_id`), dibaca Server Component dari `GET .../items/{item_id}`.
+   * Dikirim sebagai `If-Match` pada `PATCH`; item tanpa ETag disimpan tanpa kunci optimistik.
+   */
+  etags?: Record<string, string | null>;
 }
 
 const REVERSE_LABEL: Record<WcpReverseType, string> = {
@@ -21,7 +27,7 @@ const REVERSE_LABEL: Record<WcpReverseType, string> = {
   R_STAR: "R_STAR — reverse khusus",
 };
 
-export function WcpItemEditor({ items, accessToken }: Props) {
+export function WcpItemEditor({ items, accessToken, etags = {} }: Props) {
   const router = useRouter();
   const [editingId, setEditingId] = useState<string | null>(null);
 
@@ -51,6 +57,7 @@ export function WcpItemEditor({ items, accessToken }: Props) {
                 key={item.item_id}
                 item={item}
                 accessToken={accessToken}
+                etag={etags[item.item_id] ?? null}
                 onCancel={() => setEditingId(null)}
                 onSaved={handleSaved}
               />
@@ -91,11 +98,12 @@ export function WcpItemEditor({ items, accessToken }: Props) {
 interface RowProps {
   item: WcpItemRead;
   accessToken: string | undefined;
+  etag: string | null;
   onCancel: () => void;
   onSaved: () => void;
 }
 
-function WcpItemEditRow({ item, accessToken, onCancel, onSaved }: RowProps) {
+function WcpItemEditRow({ item, accessToken, etag, onCancel, onSaved }: RowProps) {
   const [pernyataan, setPernyataan] = useState(item.pernyataan);
   const [reverseType, setReverseType] = useState<WcpReverseType>(
     item.reverse_type as WcpReverseType,
@@ -115,14 +123,16 @@ function WcpItemEditRow({ item, accessToken, onCancel, onSaved }: RowProps) {
         response,
       } = await client.PATCH("/api/v1/wcp/dimensi/items/{item_id}", {
         params: { path: { item_id: item.item_id } },
+        headers: headerIfMatch(etag),
         body: { pernyataan, reverse_type: reverseType, urutan },
       });
       const requestId = response.headers.get("x-request-id");
-      if (apiError || !data) throw toApiError(apiError, requestId);
+      if (apiError || !data) throw toApiError(apiError, requestId, response.status);
+      bacaEtag(response); // ETag baru dipasok ulang oleh Server Component lewat router.refresh()
       notifySukses("Item berhasil disimpan.");
       onSaved();
     } catch (err) {
-      const galat = petakanGuard409(err);
+      const galat = petakanKonkurensi(petakanGuard409(err));
       setError(pesanGagal(galat));
       notifyGagal(galat);
       setSaving(false);

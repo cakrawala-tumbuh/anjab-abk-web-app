@@ -7,6 +7,8 @@ import { toApiError } from "@/lib/api/errors";
 import { DaftarPilihTerpaginasi } from "@/components/daftar-pilih-terpaginasi";
 import { formatAlasanSkip } from "@/lib/format/bulk-skip-alasan";
 import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
+import { useIdempotencyKey } from "@/lib/use-idempotency-key";
+import { headerIdempotencyKey, petakanKonkurensi } from "@/lib/konkurensi";
 import type { JabatanRead, PartisipanRead, DcsRespondenBulkResult } from "@/lib/api/schema";
 
 interface Props {
@@ -29,6 +31,9 @@ interface Props {
 export function AssignResponden({ partisipan, jabatan, accessToken }: Props) {
   const router = useRouter();
   const [selected, setSelected] = useState<Set<string>>(new Set());
+  // Satu key per upaya penugasan: diperbarui saat pilihan berubah (body beda = aksi beda,
+  // jangan di-replay dari hasil tersimpan) dan setelah sukses.
+  const idem = useIdempotencyKey();
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<DcsRespondenBulkResult | null>(null);
@@ -37,6 +42,7 @@ export function AssignResponden({ partisipan, jabatan, accessToken }: Props) {
   const partisipanMap = Object.fromEntries(partisipan.map((p) => [p.id, p.nama]));
 
   function toggle(id: string) {
+    idem.perbarui();
     setSelected((prev) => {
       const next = new Set(prev);
       if (next.has(id)) next.delete(id);
@@ -47,6 +53,7 @@ export function AssignResponden({ partisipan, jabatan, accessToken }: Props) {
 
   /** Tambahkan `ids` ke pilihan tanpa menghapus centangan halaman lain. */
   function pilihSemua(ids: string[]) {
+    idem.perbarui();
     setSelected((prev) => {
       const next = new Set(prev);
       for (const id of ids) next.add(id);
@@ -55,6 +62,7 @@ export function AssignResponden({ partisipan, jabatan, accessToken }: Props) {
   }
 
   function clearAll() {
+    idem.perbarui();
     setSelected(new Set());
   }
 
@@ -70,10 +78,12 @@ export function AssignResponden({ partisipan, jabatan, accessToken }: Props) {
         error: apiError,
         response,
       } = await client.POST("/api/v1/dcs/responden", {
+        headers: headerIdempotencyKey(idem.key),
         body: { partisipan_ids: Array.from(selected) },
       });
       const reqId = response.headers.get("x-request-id");
-      if (apiError) throw toApiError(apiError, reqId);
+      if (apiError) throw toApiError(apiError, reqId, response.status);
+      idem.perbarui();
       setResult(data ?? null);
       const createdIds = (data?.created ?? [])
         .map((r) => r.partisipan_id)
@@ -88,8 +98,9 @@ export function AssignResponden({ partisipan, jabatan, accessToken }: Props) {
       notifySukses(`${data?.created.length ?? 0} responden berhasil ditambahkan.`);
       router.refresh();
     } catch (err) {
-      setError(pesanGagal(err));
-      notifyGagal(err);
+      const galat = petakanKonkurensi(err, true);
+      setError(pesanGagal(galat));
+      notifyGagal(galat);
     } finally {
       setSubmitting(false);
     }

@@ -35,7 +35,7 @@ export default async function Tahap3Page({ params }: Props) {
     throw err;
   }
 
-  const { responden, sesi, terpilih, detail } = data;
+  const { responden, sesi, terpilih, detail, etag } = data;
   const admin = isAdmin(session);
 
   return (
@@ -76,6 +76,7 @@ export default async function Tahap3Page({ params }: Props) {
           respondenId={responden_id}
           tasks={urutkanTaskTahap3(terpilih)}
           detailAwal={detail}
+          etag={etag}
           accessToken={session?.accessToken}
         />
       )}

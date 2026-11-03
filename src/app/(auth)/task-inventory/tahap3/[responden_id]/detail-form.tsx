@@ -6,6 +6,8 @@ import { z } from "zod";
 import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
 import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
+import { useIdempotencyKey } from "@/lib/use-idempotency-key";
+import { bacaEtag, headerIdempotencyKey, headerIfMatch, petakanKonkurensi } from "@/lib/konkurensi";
 import {
   FREKUENSI,
   KONDISI,
@@ -162,10 +164,20 @@ interface Props {
   tasks: TiTaskTerpilihRead[];
   detailAwal: TiDetailRead[];
   accessToken: string | undefined;
+  /** ETag detail tersimpan (header `ETag` dari `GET .../detail`); dikirim sebagai `If-Match`. */
+  etag?: string | null;
 }
 
-export function DetailForm({ respondenId, tasks, detailAwal, accessToken }: Props) {
+export function DetailForm({
+  respondenId,
+  tasks,
+  detailAwal,
+  accessToken,
+  etag: etagAwal = null,
+}: Props) {
   const router = useRouter();
+  const [etag, setEtag] = useState<string | null>(etagAwal);
+  const idem = useIdempotencyKey();
   const [rows, setRows] = useState<Record<string, RowState>>(() =>
     Object.fromEntries(
       tasks.map((t) => {
@@ -364,15 +376,21 @@ export function DetailForm({ respondenId, tasks, detailAwal, accessToken }: Prop
       const client = withServerAuth(accessToken);
       const { error: apiError, response } = await client.PUT(
         "/api/v1/task-inventory/sesi/responden/{responden_id}/detail",
-        { params: { path: { responden_id: respondenId } }, body: payload },
+        {
+          params: { path: { responden_id: respondenId } },
+          headers: headerIfMatch(etag),
+          body: payload,
+        },
       );
       const reqId = response.headers.get("x-request-id");
-      if (apiError) throw toApiError(apiError, reqId);
+      if (apiError) throw toApiError(apiError, reqId, response.status);
+      setEtag(bacaEtag(response));
       setSaveMessage("Draft tersimpan.");
       notifySukses("Draft tersimpan.");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Terjadi kesalahan saat menyimpan draft.");
-      notifyGagal(err);
+      const galat = petakanKonkurensi(err);
+      setError(galat instanceof Error ? galat.message : "Terjadi kesalahan saat menyimpan draft.");
+      notifyGagal(galat);
     } finally {
       setSaving(false);
     }
@@ -388,27 +406,39 @@ export function DetailForm({ respondenId, tasks, detailAwal, accessToken }: Prop
       return;
     }
     setSubmitting(true);
+    let idempoten = false;
     try {
       const client = withServerAuth(accessToken);
       const { error: saveError, response: saveResponse } = await client.PUT(
         "/api/v1/task-inventory/sesi/responden/{responden_id}/detail",
-        { params: { path: { responden_id: respondenId } }, body: payload },
+        {
+          params: { path: { responden_id: respondenId } },
+          headers: headerIfMatch(etag),
+          body: payload,
+        },
       );
       const saveReqId = saveResponse.headers.get("x-request-id");
-      if (saveError) throw toApiError(saveError, saveReqId);
+      if (saveError) throw toApiError(saveError, saveReqId, saveResponse.status);
+      setEtag(bacaEtag(saveResponse));
+      idempoten = true;
 
       const { error: apiError, response } = await client.POST(
         "/api/v1/task-inventory/sesi/responden/{responden_id}/detail/submit",
-        { params: { path: { responden_id: respondenId } } },
+        {
+          params: { path: { responden_id: respondenId } },
+          headers: headerIdempotencyKey(idem.key),
+        },
       );
       const reqId = response.headers.get("x-request-id");
-      if (apiError) throw toApiError(apiError, reqId);
+      if (apiError) throw toApiError(apiError, reqId, response.status);
+      idem.perbarui();
       notifySukses("Jawaban berhasil dikirim.");
       router.push("/kuesioner");
       router.refresh();
     } catch (err) {
-      setError(pesanGagal(err));
-      notifyGagal(err);
+      const galat = petakanKonkurensi(err, idempoten);
+      setError(pesanGagal(galat));
+      notifyGagal(galat);
       setSubmitting(false);
     }
   }

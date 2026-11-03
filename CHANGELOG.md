@@ -9,6 +9,10 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ### Ditambahkan
 
+- Formulir isian WCP/DCS/OPM/TI Tahap 3, editor item master WCP/DCS, edit instrumen WCP/DCS, dan
+  penugasan responden WCP/DCS kini mengirim `If-Match` (operasi timpa) dan `Idempotency-Key`
+  (submit/penugasan). Bila data sudah diubah pihak lain, pengguna melihat toast "Data telah berubah
+  oleh pengguna lain. Muat ulang halaman sebelum menyimpan." tanpa kehilangan isian.
 - Hasil WCP/DCS mode **RAW_ONLY** (flag `WCP_DCS_SCORING` mati): halaman hasil menampilkan banner
   "Skor belum disahkan" dan tabel raw per item (frekuensi 1-5, mean, SD) tanpa skor, label risiko,
   alpha, maupun K-Index. Tautan "Lihat Hasil" per responden disembunyikan dan halamannya

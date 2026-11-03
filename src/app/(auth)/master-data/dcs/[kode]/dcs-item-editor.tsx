@@ -7,11 +7,17 @@ import { toApiError } from "@/lib/api/errors";
 import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
 import { LencanaItemPaket } from "@/components/lencana-item-paket";
 import { petakanGuard409 } from "@/lib/pesan-guard-409";
+import { bacaEtag, headerIfMatch, petakanKonkurensi } from "@/lib/konkurensi";
 import type { DcsArahItem, DcsItemRead } from "@/lib/api/schema";
 
 interface Props {
   items: DcsItemRead[];
   accessToken: string | undefined;
+  /**
+   * ETag per item (kunci `item_id`), dibaca Server Component dari `GET .../items/{item_id}`.
+   * Dikirim sebagai `If-Match` pada `PATCH`; item tanpa ETag disimpan tanpa kunci optimistik.
+   */
+  etags?: Record<string, string | null>;
 }
 
 const ARAH_LABEL: Record<DcsArahItem, string> = {
@@ -19,7 +25,7 @@ const ARAH_LABEL: Record<DcsArahItem, string> = {
   UF: "UF — Unfavorable (reverse)",
 };
 
-export function DcsItemEditor({ items, accessToken }: Props) {
+export function DcsItemEditor({ items, accessToken, etags = {} }: Props) {
   const router = useRouter();
   const [editingId, setEditingId] = useState<string | null>(null);
 
@@ -49,6 +55,7 @@ export function DcsItemEditor({ items, accessToken }: Props) {
                 key={item.item_id}
                 item={item}
                 accessToken={accessToken}
+                etag={etags[item.item_id] ?? null}
                 onCancel={() => setEditingId(null)}
                 onSaved={handleSaved}
               />
@@ -94,11 +101,12 @@ export function DcsItemEditor({ items, accessToken }: Props) {
 interface RowProps {
   item: DcsItemRead;
   accessToken: string | undefined;
+  etag: string | null;
   onCancel: () => void;
   onSaved: () => void;
 }
 
-function DcsItemEditRow({ item, accessToken, onCancel, onSaved }: RowProps) {
+function DcsItemEditRow({ item, accessToken, etag, onCancel, onSaved }: RowProps) {
   const [pernyataan, setPernyataan] = useState(item.pernyataan);
   const [arah, setArah] = useState<DcsArahItem>(item.arah);
   const [urutan, setUrutan] = useState(item.urutan);
@@ -116,14 +124,16 @@ function DcsItemEditRow({ item, accessToken, onCancel, onSaved }: RowProps) {
         response,
       } = await client.PATCH("/api/v1/dcs/sub-skala/items/{item_id}", {
         params: { path: { item_id: item.item_id } },
+        headers: headerIfMatch(etag),
         body: { pernyataan, arah, urutan },
       });
       const requestId = response.headers.get("x-request-id");
-      if (apiError || !data) throw toApiError(apiError, requestId);
+      if (apiError || !data) throw toApiError(apiError, requestId, response.status);
+      bacaEtag(response); // ETag baru dipasok ulang oleh Server Component lewat router.refresh()
       notifySukses("Item berhasil disimpan.");
       onSaved();
     } catch (err) {
-      const galat = petakanGuard409(err);
+      const galat = petakanKonkurensi(petakanGuard409(err));
       setError(pesanGagal(galat));
       notifyGagal(galat);
       setSaving(false);

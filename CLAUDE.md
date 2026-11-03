@@ -84,6 +84,25 @@ src/
 
 ## Revisi Desain
 
+### [2026-11-04] Kunci optimistik (`If-Match`) dan `Idempotency-Key` di formulir tulis
+
+Issue `#84`, konsumen `anjab-abk-backend#73` (WCP/DCS) dan `#76` (OPM/TI). `schema.ts` sudah memuat
+kontraknya (header opsional, 412/428/409); tidak ada regenerasi.
+
+- **`useIdempotencyKey()`** (`src/lib/use-idempotency-key.ts`): satu key per **upaya aksi**, stabil
+  antar render, `perbarui()` hanya setelah sukses (dan, di form penugasan, saat pilihan berubah —
+  body beda = aksi beda, jangan di-replay). Dikirim lewat opsi `headers` per panggilan, **bukan**
+  middleware global.
+- **ETag**: Server Component membaca header `ETag` GET sumber (`.../jawaban`, `.../detail`,
+  `.../instrumen`, `.../items/{item_id}`) dan meneruskannya sebagai prop `etag`/`etags`; Client
+  Component menyimpannya di state dan memperbarui dari header respons PUT/PATCH sukses.
+- **`src/lib/konkurensi.ts`**: `headerIfMatch`, `headerIdempotencyKey`, `bacaEtag`, konstanta
+  pesan tetap, dan `petakanKonkurensi(err, idempoten)` (412 → `PESAN_DATA_BERUBAH`; 409 `conflict`
+  → `PESAN_MASIH_DIPROSES` hanya untuk rute POST ber-key). Isian lokal tidak disentuh saat 412.
+- Di luar lingkup: formulir redesain, aksi-instrumen (tutup/buka-ulang/reset/analisis), hapus,
+  `REQUIRE_IF_MATCH`, retry otomatis.
+- Detail keputusan: issue `cakrawala-tumbuh/anjab-abk-web-app#84`.
+
 ### [2026-11-02] Service worker: navigasi (HTML) tidak disentuh SW; registrasi setelah `load`
 
 Issue `#73` (ronde 4): React #418 sesekali muncul pada hidrasi halaman pertama setelah login di

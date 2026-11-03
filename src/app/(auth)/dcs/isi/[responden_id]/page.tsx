@@ -40,8 +40,9 @@ async function fetchPageData(accessToken: string | undefined, respondenId: strin
   });
   if (!jRes.data) throw apiErrorDari(jRes);
   const jawaban = jRes.data as DcsJawabanRead[];
+  const etag = jRes.response.headers.get("etag");
 
-  return { responden, subskala, jawaban };
+  return { responden, subskala, jawaban, etag };
 }
 
 export default async function DcsIsiPage({ params }: Props) {
@@ -49,7 +50,10 @@ export default async function DcsIsiPage({ params }: Props) {
   if (!isPartisipan(session)) notFound();
 
   const { responden_id } = await params;
-  const { responden, subskala, jawaban } = await fetchPageData(session?.accessToken, responden_id);
+  const { responden, subskala, jawaban, etag } = await fetchPageData(
+    session?.accessToken,
+    responden_id,
+  );
 
   return (
     <div className="space-y-6">
@@ -89,6 +93,7 @@ export default async function DcsIsiPage({ params }: Props) {
         jawabanAwal={jawaban}
         sudahSubmit={responden.sudah_submit}
         accessToken={session?.accessToken}
+        etag={etag}
       />
     </div>
   );

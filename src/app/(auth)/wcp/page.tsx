@@ -67,6 +67,7 @@ async function fetchPageData(accessToken: string | undefined, offsetResponden: n
   return {
     skorAktif,
     instrumen: instrumenRes.data as WcpInstrumenRead,
+    instrumenEtag: instrumenRes.response.headers.get("etag"),
     responden: (respondenRes.data.items ?? []) as WcpRespondenRead[],
     totalResponden: respondenRes.data.total,
     respondenAll: (respondenAllRes.data.items ?? []) as WcpRespondenRead[],
@@ -85,8 +86,16 @@ export default async function WcpInstrumenPage({ searchParams }: Props) {
 
   const sp = await searchParams;
   const offsetResponden = offsetHalaman(sp, "hlm_responden");
-  const { skorAktif, instrumen, responden, totalResponden, respondenAll, jabatan, partisipan } =
-    await fetchPageData(session?.accessToken, offsetResponden);
+  const {
+    skorAktif,
+    instrumen,
+    instrumenEtag,
+    responden,
+    totalResponden,
+    respondenAll,
+    jabatan,
+    partisipan,
+  } = await fetchPageData(session?.accessToken, offsetResponden);
 
   const st = STATUS_LABEL[instrumen.status] ?? {
     label: instrumen.status,
@@ -143,7 +152,11 @@ export default async function WcpInstrumenPage({ searchParams }: Props) {
         </div>
 
         <div className="mt-4 border-t border-gray-100 pt-4 dark:border-gray-700">
-          <EditInstrumen instrumen={instrumen} accessToken={session?.accessToken} />
+          <EditInstrumen
+            instrumen={instrumen}
+            accessToken={session?.accessToken}
+            etag={instrumenEtag}
+          />
         </div>
       </div>
 

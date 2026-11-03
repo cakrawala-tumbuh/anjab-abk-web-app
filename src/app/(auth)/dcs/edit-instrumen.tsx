@@ -8,6 +8,7 @@ import { z } from "zod";
 import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
 import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
+import { headerIfMatch, petakanKonkurensi } from "@/lib/konkurensi";
 import type { DcsInstrumenRead } from "@/lib/api/schema";
 
 export const schema = z.object({
@@ -20,10 +21,12 @@ type FormValues = z.infer<typeof schema>;
 interface Props {
   instrumen: DcsInstrumenRead;
   accessToken: string | undefined;
+  /** ETag instrumen (header `ETag` dari `GET .../instrumen`); dikirim sebagai `If-Match`. */
+  etag?: string | null;
 }
 
 /** Form inline pembaruan pengaturan instrumen DCS (min_responden/catatan). */
-export function EditInstrumen({ instrumen, accessToken }: Props) {
+export function EditInstrumen({ instrumen, accessToken, etag = null }: Props) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
@@ -45,19 +48,21 @@ export function EditInstrumen({ instrumen, accessToken }: Props) {
     try {
       const client = withServerAuth(accessToken);
       const { error, response } = await client.PATCH("/api/v1/dcs/instrumen", {
+        headers: headerIfMatch(etag),
         body: {
           min_responden: values.min_responden,
           catatan: values.catatan || null,
         },
       });
       const reqId = response.headers.get("x-request-id");
-      if (error) throw toApiError(error, reqId);
+      if (error) throw toApiError(error, reqId, response.status);
       notifySukses("Instrumen berhasil disimpan.");
       setOpen(false);
       router.refresh();
     } catch (err) {
-      setServerError(pesanGagal(err));
-      notifyGagal(err);
+      const galat = petakanKonkurensi(err);
+      setServerError(pesanGagal(galat));
+      notifyGagal(galat);
     }
   }
 

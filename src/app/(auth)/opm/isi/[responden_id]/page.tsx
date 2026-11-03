@@ -45,8 +45,9 @@ async function fetchPageData(accessToken: string | undefined, respondenId: strin
   });
   if (!jRes.data) throw apiErrorDari(jRes);
   const jawaban = jRes.data as OpmJawabanRead[];
+  const etag = jRes.response.headers.get("etag");
 
-  return { responden, task, jawaban };
+  return { responden, task, jawaban, etag };
 }
 
 export default async function OpmIsiPage({ params }: Props) {
@@ -67,7 +68,7 @@ export default async function OpmIsiPage({ params }: Props) {
     }
     throw err;
   }
-  const { responden, task, jawaban } = data;
+  const { responden, task, jawaban, etag } = data;
 
   return (
     <div className="space-y-6">
@@ -107,6 +108,7 @@ export default async function OpmIsiPage({ params }: Props) {
         jawabanAwal={jawaban}
         sudahSubmit={responden.sudah_submit}
         accessToken={session?.accessToken}
+        etag={etag}
       />
     </div>
   );
