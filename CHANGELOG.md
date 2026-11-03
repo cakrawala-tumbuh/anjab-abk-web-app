@@ -7,6 +7,13 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+### Ditambahkan
+
+- OPM: lencana **"Belum terverifikasi (N pengecualian)"** di daftar sesi dan judul detail sesi,
+  serta tabel **Register Pengecualian** TI–OPM di detail sesi (label alasan berbahasa Indonesia).
+  Halaman hasil menampilkan "—" (bukan angka/"Tidak") untuk task tanpa rating dan lencana
+  "Orphan" untuk task orphan (issue #83).
+
 ### Diubah
 
 - Daftar dan detail responden WCP, DCS, OPM, dan Task Inventory (serta panel review usulan Tahap 2)

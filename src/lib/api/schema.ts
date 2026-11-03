@@ -28656,3 +28656,4 @@ export type RingkasanYayasanRow = components["schemas"]["RingkasanYayasanRow"];
 export type VersiMetodeRead = components["schemas"]["VersiMetodeRead"];
 export type VersiMetodeCreate = components["schemas"]["VersiMetodeCreate"];
 export type VersiMetodeUpdate = components["schemas"]["VersiMetodeUpdate"];
+export type OpmPengecualianRead = components["schemas"]["OpmPengecualianRead"];

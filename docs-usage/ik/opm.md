@@ -175,6 +175,18 @@ simpangan baku (SD) tiap dimensi, badge **Selection Essential** dan **Workload
 Essential**, serta proporsi responden yang menandai task tersebut esensial secara
 individual.
 
+Task yang **tidak punya rating** ditampilkan dengan tanda **"—"** pada kolom rata-rata,
+simpangan baku, dan badge esensial (bukan angka 0 atau "Tidak"). Task yang tercatat di
+register pengecualian diberi lencana **Orphan**.
+
+### F.1 Status Verifikasi & Register Pengecualian
+
+Analisis yang memiliki pengecualian TI–OPM (mis. tugas TI yang tidak ditemukan di katalog,
+nilai standar kosong, atau belum ada rating) diberi lencana kuning **"Belum terverifikasi
+(N pengecualian)"** di daftar analisis dan di judul halaman detail. Detail analisis memuat
+tabel **Register Pengecualian** (kode task, alasan, keterangan, status, waktu dicatat);
+bila tidak ada, tampil "Tidak ada pengecualian."
+
 ---
 
 <!-- Screenshot: form kuesioner OPM per task dengan 3 dimensi rating -->

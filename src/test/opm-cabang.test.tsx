@@ -138,7 +138,8 @@ describe("Detail sesi OPM (/opm/[sesi_id]) — baris Cabang", () => {
       .mockResolvedValueOnce(ok({ items: [], total: 0 })) // respondenRes
       .mockResolvedValueOnce(ok({ items: [], total: 0 })) // respondenAllRes
       .mockResolvedValueOnce(ok({ items: [], total: 0 })) // panelRes
-      .mockResolvedValueOnce(ok({ items: [], total: 0 })); // partisipanRes
+      .mockResolvedValueOnce(ok({ items: [], total: 0 })) // partisipanRes
+      .mockResolvedValueOnce(ok({ items: [], total: 0, limit: 100, offset: 0 })); // pengecualian (#83)
   }
 
   it("cabang terisi ditampilkan", async () => {

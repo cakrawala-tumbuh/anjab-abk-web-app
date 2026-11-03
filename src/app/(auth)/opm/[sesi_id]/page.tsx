@@ -5,6 +5,7 @@ import { withServerAuth } from "@/lib/api/client";
 import { apiErrorDari } from "@/lib/api/errors";
 import { Pagination, UKURAN_HALAMAN, offsetHalaman } from "@/components/pagination";
 import type {
+  OpmPengecualianRead,
   OpmRespondenRead,
   OpmSesiRead,
   OpmSesiTaskRead,
@@ -15,6 +16,9 @@ import { TransisiSesi } from "./transisi-sesi";
 import { TambahResponden } from "./tambah-responden";
 import { AssignRespondenBanyak } from "./assign-responden-banyak";
 import { HapusResponden } from "./hapus-responden";
+import { LencanaVerifikasiOpm } from "@/components/lencana-verifikasi-opm";
+import { RegisterPengecualian } from "./register-pengecualian";
+import { ambilSemuaHalaman } from "@/lib/api/paginasi";
 import { labelResponden } from "@/lib/format/label-responden";
 
 export const metadata = { title: "Detail Analisis Jabatan — OPM" };
@@ -87,6 +91,15 @@ async function fetchPageData(
   if (!panelRes.data) throw apiErrorDari(panelRes);
   if (!partisipanRes.data) throw apiErrorDari(partisipanRes);
 
+  // Register pengecualian = data inti (admin harus melihat sesi tak terverifikasi); gagal → lempar.
+  const pengecualian = await ambilSemuaHalaman<OpmPengecualianRead>(async (limit, offset) => {
+    const res = await client.GET("/api/v1/opm/sesi/{sesi_id}/pengecualian", {
+      params: { path: { sesi_id: sesiId }, query: { limit, offset } },
+    });
+    if (!res.data) throw apiErrorDari(res);
+    return { items: res.data.items ?? [], total: res.data.total };
+  });
+
   const sesi = sesiRes.data as OpmSesiRead;
   const panel = (panelRes.data.items ?? []) as SMEPanelRead[];
   const partisipan = (partisipanRes.data.items ?? []) as PartisipanRead[];
@@ -97,6 +110,7 @@ async function fetchPageData(
 
   return {
     sesi,
+    pengecualian,
     task: (taskRes.data.items ?? []) as OpmSesiTaskRead[],
     totalTask: taskRes.data.total,
     responden: (respondenRes.data.items ?? []) as OpmRespondenRead[],
@@ -116,8 +130,16 @@ export default async function OpmSesiDetailPage({ params, searchParams }: Props)
   const sp = await searchParams;
   const offsetTask = offsetHalaman(sp, "hlm_task");
   const offsetResponden = offsetHalaman(sp, "hlm_responden");
-  const { sesi, task, totalTask, responden, totalResponden, respondenAll, partisipanAnggotaPanel } =
-    await fetchPageData(session?.accessToken, sesi_id, offsetTask, offsetResponden);
+  const {
+    sesi,
+    pengecualian,
+    task,
+    totalTask,
+    responden,
+    totalResponden,
+    respondenAll,
+    partisipanAnggotaPanel,
+  } = await fetchPageData(session?.accessToken, sesi_id, offsetTask, offsetResponden);
 
   const sesiLabel = sesi.catatan ?? sesi.periode;
   const st = STATUS_LABEL[sesi.status] ?? {
@@ -148,7 +170,13 @@ export default async function OpmSesiDetailPage({ params, searchParams }: Props)
       {/* Header */}
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h1 className="page-heading">{sesiLabel}</h1>
+          <h1 className="page-heading">
+            {sesiLabel}{" "}
+            <LencanaVerifikasiOpm
+              status={sesi.status_verifikasi}
+              jumlah={sesi.jumlah_pengecualian}
+            />
+          </h1>
           <p className="mt-1 text-sm text-gray-500">
             Jabatan: <span className="font-medium">{sesi.jabatan_nama ?? sesi.jabatan_id}</span>
           </p>
@@ -224,6 +252,14 @@ export default async function OpmSesiDetailPage({ params, searchParams }: Props)
           </div>
         </div>
       )}
+
+      {/* Register pengecualian TI–OPM */}
+      <div>
+        <h2 className="mb-4 text-lg font-medium text-gray-900">
+          Register Pengecualian ({pengecualian.length})
+        </h2>
+        <RegisterPengecualian items={pengecualian} />
+      </div>
 
       {/* Snapshot task */}
       <div>

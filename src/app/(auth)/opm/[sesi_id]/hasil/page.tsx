@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { auth, isAdmin } from "@/lib/auth/auth";
 import { withServerAuth } from "@/lib/api/client";
 import { apiErrorDari } from "@/lib/api/errors";
+import { NILAI_KOSONG, formatAngkaOpm } from "@/lib/opm-pengecualian";
 import type { OpmHasilSesiRead, OpmHasilTaskRead, OpmSesiRead } from "@/lib/api/schema";
 
 export const metadata = { title: "Hasil OPM" };
@@ -26,7 +27,18 @@ async function fetchPageData(accessToken: string | undefined, sesiId: string) {
   };
 }
 
-function Badge({ ya, label }: { ya: boolean; label: string }) {
+/**
+ * Lencana flag esensial. `ya === null/undefined` (task tanpa rating) tampil "—",
+ * BUKAN "Tidak" — kosong harus terbedakan dari jawaban negatif.
+ */
+function Badge({ ya, label }: { ya: boolean | null | undefined; label: string }) {
+  if (ya == null) {
+    return (
+      <span className="inline-flex rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-400">
+        {label}: {NILAI_KOSONG}
+      </span>
+    );
+  }
   return (
     <span
       className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${
@@ -103,7 +115,14 @@ export default async function OpmHasilPage({ params }: Props) {
             {hasil.tasks.map((t: OpmHasilTaskRead) => (
               <tr key={t.task_kode} className="hover:bg-gray-50 dark:hover:bg-gray-800/50">
                 <td className="px-4 py-3">
-                  <p className="font-mono text-xs text-gray-400">{t.task_kode}</p>
+                  <p className="font-mono text-xs text-gray-400">
+                    {t.task_kode}
+                    {t.orphan && (
+                      <span className="ml-2 inline-flex rounded-full bg-amber-100 px-2 py-0.5 font-sans font-medium text-amber-800">
+                        Orphan
+                      </span>
+                    )}
+                  </p>
                   <p className="text-gray-900">{t.uraian_tugas}</p>
                   <p className="text-xs text-gray-500 dark:text-gray-400">
                     {t.tugas_pokok}
@@ -111,22 +130,22 @@ export default async function OpmHasilPage({ params }: Props) {
                   </p>
                 </td>
                 <td className="px-4 py-3 text-right font-medium text-gray-700">
-                  {t.mean_importance?.toFixed(2) ?? "—"}
+                  {formatAngkaOpm(t.mean_importance)}
                 </td>
                 <td className="px-4 py-3 text-right font-medium text-gray-700">
-                  {t.mean_frequency?.toFixed(2) ?? "—"}
+                  {formatAngkaOpm(t.mean_frequency)}
                 </td>
                 <td className="px-4 py-3 text-right font-medium text-gray-700">
-                  {t.mean_criticality?.toFixed(2) ?? "—"}
+                  {formatAngkaOpm(t.mean_criticality)}
                 </td>
                 <td className="px-4 py-3 text-right text-xs text-gray-500 dark:text-gray-400">
-                  {(t.sd_importance ?? 0).toFixed(2)} / {(t.sd_frequency ?? 0).toFixed(2)} /{" "}
-                  {(t.sd_criticality ?? 0).toFixed(2)}
+                  {formatAngkaOpm(t.sd_importance)} / {formatAngkaOpm(t.sd_frequency)} /{" "}
+                  {formatAngkaOpm(t.sd_criticality)}
                 </td>
                 <td className="px-4 py-3">
                   <div className="flex flex-col gap-1">
-                    <Badge ya={t.selection_essential ?? false} label="Selection Essential" />
-                    <Badge ya={t.workload_essential ?? false} label="Workload Essential" />
+                    <Badge ya={t.selection_essential} label="Selection Essential" />
+                    <Badge ya={t.workload_essential} label="Workload Essential" />
                   </div>
                 </td>
                 <td className="px-4 py-3 text-right text-xs text-gray-500 dark:text-gray-400">

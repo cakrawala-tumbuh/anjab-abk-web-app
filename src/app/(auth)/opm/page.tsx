@@ -5,6 +5,7 @@ import { withServerAuth } from "@/lib/api/client";
 import { apiErrorDari } from "@/lib/api/errors";
 import { Pagination, UKURAN_HALAMAN, offsetHalaman } from "@/components/pagination";
 import type { OpmSesiRead } from "@/lib/api/schema";
+import { LencanaVerifikasiOpm } from "@/components/lencana-verifikasi-opm";
 
 export const metadata = { title: "Analisis Jabatan — OPM" };
 
@@ -114,7 +115,11 @@ export default async function OpmSesiPage({ searchParams }: Props) {
                           className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${st.cls}`}
                         >
                           {st.label}
-                        </span>
+                        </span>{" "}
+                        <LencanaVerifikasiOpm
+                          status={s.status_verifikasi}
+                          jumlah={s.jumlah_pengecualian}
+                        />
                       </td>
                       <td className="px-4 py-3 text-gray-500 dark:text-gray-500">
                         {s.jumlah_task}
