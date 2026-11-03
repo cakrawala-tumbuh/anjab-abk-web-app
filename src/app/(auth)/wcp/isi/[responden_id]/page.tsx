@@ -6,6 +6,7 @@ import { apiErrorDari, toApiError } from "@/lib/api/errors";
 import type { WcpRespondenRead, WcpDimensiWithItemsRead, WcpJawabanRead } from "@/lib/api/schema";
 import { WcpForm } from "./wcp-form";
 import { PetunjukWcp } from "./petunjuk-wcp";
+import { labelResponden } from "@/lib/format/label-responden";
 
 export const metadata = { title: "Isi Kuesioner WCP" };
 
@@ -78,7 +79,7 @@ export default async function WcpIsiPage({ params }: Props) {
       <div className="flex items-start justify-between gap-4">
         <div>
           <h1 className="page-heading">Kuesioner WCP</h1>
-          <p className="page-subtext">{responden.nama ?? "Anonim"}</p>
+          <p className="page-subtext">{labelResponden(responden)}</p>
         </div>
         <PetunjukWcp defaultOpen={!responden.sudah_submit} />
       </div>

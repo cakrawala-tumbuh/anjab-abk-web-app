@@ -6,6 +6,7 @@ import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
 import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
 import type { TiRespondenRead } from "@/lib/api/schema";
+import { labelResponden } from "@/lib/format/label-responden";
 
 /** Kandidat koordinator: nama untuk ditampilkan, `partisipanId` untuk submit. */
 interface KandidatKoordinator {
@@ -51,7 +52,7 @@ export function AturKoordinator({ sesiId, koordinatorId, responden, accessToken 
   for (const r of responden) {
     if (!r.partisipan_id || dilihat.has(r.partisipan_id)) continue;
     dilihat.add(r.partisipan_id);
-    kandidat.push({ partisipanId: r.partisipan_id, nama: r.nama ?? r.partisipan_id });
+    kandidat.push({ partisipanId: r.partisipan_id, nama: labelResponden(r) });
   }
 
   const koordinatorSekarang = kandidat.find((k) => k.partisipanId === koordinatorId) ?? null;

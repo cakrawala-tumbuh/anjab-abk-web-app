@@ -12,7 +12,7 @@
       "name": "MIT",
       "identifier": "MIT"
     },
-    "version": "0.47.0"
+    "version": "0.48.1"
   },
   "paths": {
     "/api/v1/health": {
@@ -106,6 +106,44 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Principal"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/system/fitur": {
+      "get": {
+        "tags": [
+          "system",
+          "system"
+        ],
+        "summary": "Status feature flag",
+        "description": "Daftar lima feature flag fungsional beserta statusnya (selalu lima entri).",
+        "operationId": "system_fitur_list",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FiturListRead"
                 }
               }
             }
@@ -4196,6 +4234,93 @@
       }
     },
     "/api/v1/wcp/dimensi/items/{item_id}": {
+      "get": {
+        "tags": [
+          "wcp.dimensi"
+        ],
+        "summary": "Ambil satu item Wcp (membawa header ETag)",
+        "operationId": "wcp_item_get",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "item_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Kode item orisinal.",
+              "title": "Item Id"
+            },
+            "description": "Kode item orisinal."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WcpItemRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Hanya admin yang diizinkan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Item tidak ditemukan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
       "patch": {
         "tags": [
           "wcp.dimensi"
@@ -4218,6 +4343,24 @@
               "title": "Item Id"
             },
             "description": "Kode item orisinal, mis. SC1a."
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "ETag untuk concurrency control.",
+              "title": "If-Match"
+            },
+            "description": "ETag untuk concurrency control."
           }
         ],
         "requestBody": {
@@ -4271,6 +4414,36 @@
               }
             }
           },
+          "412": {
+            "description": "If-Match tidak cocok.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "If-Match wajib (REQUIRE_IF_MATCH=true).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Instrumen sudah berisi jawaban (`instrument_has_responses`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "422": {
             "description": "Validation Error",
             "content": {
@@ -4305,6 +4478,24 @@
               "title": "Item Id"
             },
             "description": "Kode item orisinal, mis. SC1a."
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "ETag untuk concurrency control.",
+              "title": "If-Match"
+            },
+            "description": "ETag untuk concurrency control."
           }
         ],
         "responses": {
@@ -4341,6 +4532,36 @@
               }
             }
           },
+          "412": {
+            "description": "If-Match tidak cocok.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "If-Match wajib (REQUIRE_IF_MATCH=true).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Instrumen sudah berisi jawaban (`instrument_has_responses`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "422": {
             "description": "Instrumen tidak OPEN, atau item terakhir dimensi.",
             "content": {
@@ -4359,8 +4580,13 @@
         "tags": [
           "wcp.instrumen"
         ],
-        "summary": "Ambil instrumen WCP (singleton)",
+        "summary": "Ambil instrumen Wcp (singleton)",
         "operationId": "wcp_instrumen_get",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -4392,28 +4618,48 @@
               }
             }
           }
-        },
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ]
+        }
       },
       "patch": {
         "tags": [
           "wcp.instrumen"
         ],
-        "summary": "Perbarui instrumen WCP (min_responden/catatan)",
+        "summary": "Perbarui instrumen Wcp (min_responden/catatan)",
         "operationId": "wcp_instrumen_update",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "ETag untuk concurrency control.",
+              "title": "If-Match"
+            },
+            "description": "ETag untuk concurrency control."
+          }
+        ],
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/WcpInstrumenUpdate"
               }
             }
-          },
-          "required": true
+          }
         },
         "responses": {
           "200": {
@@ -4438,6 +4684,26 @@
           },
           "429": {
             "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "If-Match tidak cocok.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "If-Match wajib (REQUIRE_IF_MATCH=true).",
             "content": {
               "application/json": {
                 "schema": {
@@ -4456,12 +4722,7 @@
               }
             }
           }
-        },
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ]
+        }
       }
     },
     "/api/v1/wcp/instrumen/tutup": {
@@ -4469,8 +4730,33 @@
         "tags": [
           "wcp.instrumen"
         ],
-        "summary": "Tutup instrumen WCP (OPEN → CLOSED)",
+        "summary": "Tutup instrumen Wcp (OPEN → CLOSED)",
         "operationId": "wcp_instrumen_tutup",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Kunci idempotency opsional.",
+              "title": "Idempotency-Key"
+            },
+            "description": "Kunci idempotency opsional."
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -4511,13 +4797,18 @@
                 }
               }
             }
+          },
+          "409": {
+            "description": "Idempotency-Key ini sedang diproses (atau konflik state).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
           }
-        },
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ]
+        }
       }
     },
     "/api/v1/wcp/instrumen/buka-ulang": {
@@ -4525,8 +4816,33 @@
         "tags": [
           "wcp.instrumen"
         ],
-        "summary": "Buka ulang instrumen WCP (CLOSED → OPEN)",
+        "summary": "Buka ulang instrumen Wcp (CLOSED/ANALYZED → OPEN)",
         "operationId": "wcp_instrumen_buka_ulang",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Kunci idempotency opsional.",
+              "title": "Idempotency-Key"
+            },
+            "description": "Kunci idempotency opsional."
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -4567,13 +4883,18 @@
                 }
               }
             }
+          },
+          "409": {
+            "description": "Idempotency-Key ini sedang diproses (atau konflik state).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
           }
-        },
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ]
+        }
       }
     },
     "/api/v1/wcp/instrumen/reset": {
@@ -4581,9 +4902,34 @@
         "tags": [
           "wcp.instrumen"
         ],
-        "summary": "Reset instrumen WCP (admin): hapus SEMUA responden & jawaban, buka kembali (OPEN)",
-        "description": "DESTRUKTIF: menghapus seluruh responden WCP (jawaban ikut lewat CASCADE) dan\nmengembalikan instrumen ke OPEN — sah dipanggil dari status APA PUN (idempoten),\nbeda dari `/buka-ulang` yang hanya sah dari CLOSED dan tidak menghapus data.",
+        "summary": "Reset instrumen Wcp (admin): hanya bila belum ada jawaban",
+        "description": "Hapus responden Wcp dan kembalikan instrumen ke OPEN, HANYA bila instrumen belum\nberisi jawaban sama sekali; bila sudah ada jawaban (draft/submit) → 409\n`instrument_has_responses`. Untuk membuka instrumen ANALYZED tanpa menghapus data,\npakai `/buka-ulang`. Mendukung `Idempotency-Key` (ulangan → 200 hasil tersimpan,\ntanpa reset kedua).",
         "operationId": "wcp_instrumen_reset",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Kunci idempotency opsional.",
+              "title": "Idempotency-Key"
+            },
+            "description": "Kunci idempotency opsional."
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -4624,13 +4970,28 @@
                 }
               }
             }
+          },
+          "409": {
+            "description": "Instrumen sudah berisi jawaban (`instrument_has_responses`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
           }
-        },
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ]
+        }
       }
     },
     "/api/v1/wcp/responden": {
@@ -4728,6 +5089,26 @@
             "BearerAuth": []
           }
         ],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Kunci idempotency opsional.",
+              "title": "Idempotency-Key"
+            },
+            "description": "Kunci idempotency opsional."
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -4780,7 +5161,7 @@
             }
           },
           "409": {
-            "description": "Instrumen WCP tidak OPEN.",
+            "description": "Instrumen WCP tidak OPEN, atau Idempotency-Key sedang diproses.",
             "content": {
               "application/json": {
                 "schema": {
@@ -4912,6 +5293,24 @@
               "title": "Responden Id"
             },
             "description": "ID responden."
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "ETag untuk concurrency control.",
+              "title": "If-Match"
+            },
+            "description": "ETag untuk concurrency control."
           }
         ],
         "responses": {
@@ -4958,6 +5357,26 @@
               }
             }
           },
+          "412": {
+            "description": "If-Match tidak cocok.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "If-Match wajib (REQUIRE_IF_MATCH=true).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "422": {
             "description": "Validation Error",
             "content": {
@@ -4994,6 +5413,24 @@
               "title": "Responden Id"
             },
             "description": "ID responden."
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "ETag untuk concurrency control.",
+              "title": "If-Match"
+            },
+            "description": "ETag untuk concurrency control."
           }
         ],
         "requestBody": {
@@ -5053,6 +5490,26 @@
           },
           "404": {
             "description": "Responden tidak ditemukan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "If-Match tidak cocok.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "If-Match wajib (REQUIRE_IF_MATCH=true).",
             "content": {
               "application/json": {
                 "schema": {
@@ -5198,6 +5655,24 @@
               "title": "Responden Id"
             },
             "description": "ID responden."
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Kunci idempotency opsional.",
+              "title": "Idempotency-Key"
+            },
+            "description": "Kunci idempotency opsional."
           }
         ],
         "responses": {
@@ -5255,6 +5730,16 @@
               }
             }
           },
+          "409": {
+            "description": "Idempotency-Key ini sedang diproses (atau konflik state).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "422": {
             "description": "Responden sudah submit, jawaban tersimpan belum lengkap, atau instrumen tidak OPEN.",
             "content": {
@@ -5275,6 +5760,31 @@
         ],
         "summary": "Jalankan analisis WCP (CLOSED → ANALYZED)",
         "operationId": "wcp_analisis",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Kunci idempotency opsional.",
+              "title": "Idempotency-Key"
+            },
+            "description": "Kunci idempotency opsional."
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -5305,13 +5815,28 @@
                 }
               }
             }
+          },
+          "409": {
+            "description": "Idempotency-Key ini sedang diproses (atau konflik state).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
           }
-        },
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ]
+        }
       }
     },
     "/api/v1/wcp/hasil": {
@@ -6328,6 +6853,123 @@
           },
           "403": {
             "description": "Bukan admin atau responden sesi OPM ini.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sesi OPM tidak ditemukan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/opm/sesi/{sesi_id}/pengecualian": {
+      "get": {
+        "tags": [
+          "opm.sesi"
+        ],
+        "summary": "Register pengecualian TI-OPM sesi OPM (admin)",
+        "description": "Daftar ketidakcocokan TI-OPM sesi ini beserta kode alasannya.\n\nRegister hanya mencatat; tidak ada nilai standar/rating yang diisi otomatis.",
+        "operationId": "opm_pengecualian_list",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "sesi_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID sesi OPM.",
+              "title": "Sesi Id"
+            },
+            "description": "ID sesi OPM."
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 500,
+              "minimum": 1,
+              "description": "Maks item per halaman.",
+              "default": 20,
+              "title": "Limit"
+            },
+            "description": "Maks item per halaman."
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Jumlah item yang dilewati.",
+              "default": 0,
+              "title": "Offset"
+            },
+            "description": "Jumlah item yang dilewati."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_OpmPengecualianRead_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan admin.",
             "content": {
               "application/json": {
                 "schema": {
@@ -7658,6 +8300,93 @@
       }
     },
     "/api/v1/dcs/sub-skala/items/{item_id}": {
+      "get": {
+        "tags": [
+          "dcs.sub-skala"
+        ],
+        "summary": "Ambil satu item Dcs (membawa header ETag)",
+        "operationId": "dcs_item_get",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "item_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Kode item orisinal.",
+              "title": "Item Id"
+            },
+            "description": "Kode item orisinal."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DcsItemRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Hanya admin yang diizinkan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Item tidak ditemukan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
       "patch": {
         "tags": [
           "dcs.sub-skala"
@@ -7680,6 +8409,24 @@
               "title": "Item Id"
             },
             "description": "Kode item orisinal, mis. D1a."
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "ETag untuk concurrency control.",
+              "title": "If-Match"
+            },
+            "description": "ETag untuk concurrency control."
           }
         ],
         "requestBody": {
@@ -7733,6 +8480,36 @@
               }
             }
           },
+          "412": {
+            "description": "If-Match tidak cocok.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "If-Match wajib (REQUIRE_IF_MATCH=true).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Instrumen sudah berisi jawaban (`instrument_has_responses`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "422": {
             "description": "Validation Error",
             "content": {
@@ -7767,6 +8544,24 @@
               "title": "Item Id"
             },
             "description": "Kode item orisinal, mis. D1a."
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "ETag untuk concurrency control.",
+              "title": "If-Match"
+            },
+            "description": "ETag untuk concurrency control."
           }
         ],
         "responses": {
@@ -7803,6 +8598,36 @@
               }
             }
           },
+          "412": {
+            "description": "If-Match tidak cocok.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "If-Match wajib (REQUIRE_IF_MATCH=true).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Instrumen sudah berisi jawaban (`instrument_has_responses`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "422": {
             "description": "Instrumen tidak OPEN, atau item terakhir sub-skala.",
             "content": {
@@ -7821,8 +8646,13 @@
         "tags": [
           "dcs.instrumen"
         ],
-        "summary": "Ambil instrumen DCS (singleton)",
+        "summary": "Ambil instrumen Dcs (singleton)",
         "operationId": "dcs_instrumen_get",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -7854,28 +8684,48 @@
               }
             }
           }
-        },
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ]
+        }
       },
       "patch": {
         "tags": [
           "dcs.instrumen"
         ],
-        "summary": "Perbarui instrumen DCS (min_responden/catatan)",
+        "summary": "Perbarui instrumen Dcs (min_responden/catatan)",
         "operationId": "dcs_instrumen_update",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "ETag untuk concurrency control.",
+              "title": "If-Match"
+            },
+            "description": "ETag untuk concurrency control."
+          }
+        ],
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/DcsInstrumenUpdate"
               }
             }
-          },
-          "required": true
+          }
         },
         "responses": {
           "200": {
@@ -7900,6 +8750,26 @@
           },
           "429": {
             "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "If-Match tidak cocok.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "If-Match wajib (REQUIRE_IF_MATCH=true).",
             "content": {
               "application/json": {
                 "schema": {
@@ -7918,12 +8788,7 @@
               }
             }
           }
-        },
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ]
+        }
       }
     },
     "/api/v1/dcs/instrumen/tutup": {
@@ -7931,8 +8796,33 @@
         "tags": [
           "dcs.instrumen"
         ],
-        "summary": "Tutup instrumen DCS (OPEN → CLOSED)",
+        "summary": "Tutup instrumen Dcs (OPEN → CLOSED)",
         "operationId": "dcs_instrumen_tutup",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Kunci idempotency opsional.",
+              "title": "Idempotency-Key"
+            },
+            "description": "Kunci idempotency opsional."
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -7973,13 +8863,18 @@
                 }
               }
             }
+          },
+          "409": {
+            "description": "Idempotency-Key ini sedang diproses (atau konflik state).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
           }
-        },
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ]
+        }
       }
     },
     "/api/v1/dcs/instrumen/buka-ulang": {
@@ -7987,8 +8882,33 @@
         "tags": [
           "dcs.instrumen"
         ],
-        "summary": "Buka ulang instrumen DCS (CLOSED → OPEN)",
+        "summary": "Buka ulang instrumen Dcs (CLOSED/ANALYZED → OPEN)",
         "operationId": "dcs_instrumen_buka_ulang",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Kunci idempotency opsional.",
+              "title": "Idempotency-Key"
+            },
+            "description": "Kunci idempotency opsional."
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -8029,13 +8949,18 @@
                 }
               }
             }
+          },
+          "409": {
+            "description": "Idempotency-Key ini sedang diproses (atau konflik state).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
           }
-        },
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ]
+        }
       }
     },
     "/api/v1/dcs/instrumen/reset": {
@@ -8043,9 +8968,34 @@
         "tags": [
           "dcs.instrumen"
         ],
-        "summary": "Reset instrumen DCS (admin): hapus SEMUA responden & jawaban, buka kembali (OPEN)",
-        "description": "DESTRUKTIF: menghapus seluruh responden DCS (jawaban ikut lewat CASCADE) dan\nmengembalikan instrumen ke OPEN — sah dipanggil dari status APA PUN (idempoten),\nbeda dari `/buka-ulang` yang hanya sah dari CLOSED dan tidak menghapus data.",
+        "summary": "Reset instrumen Dcs (admin): hanya bila belum ada jawaban",
+        "description": "Hapus responden Dcs dan kembalikan instrumen ke OPEN, HANYA bila instrumen belum\nberisi jawaban sama sekali; bila sudah ada jawaban (draft/submit) → 409\n`instrument_has_responses`. Untuk membuka instrumen ANALYZED tanpa menghapus data,\npakai `/buka-ulang`. Mendukung `Idempotency-Key` (ulangan → 200 hasil tersimpan,\ntanpa reset kedua).",
         "operationId": "dcs_instrumen_reset",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Kunci idempotency opsional.",
+              "title": "Idempotency-Key"
+            },
+            "description": "Kunci idempotency opsional."
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -8086,13 +9036,28 @@
                 }
               }
             }
+          },
+          "409": {
+            "description": "Instrumen sudah berisi jawaban (`instrument_has_responses`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
           }
-        },
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ]
+        }
       }
     },
     "/api/v1/dcs/responden": {
@@ -8190,6 +9155,26 @@
             "BearerAuth": []
           }
         ],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Kunci idempotency opsional.",
+              "title": "Idempotency-Key"
+            },
+            "description": "Kunci idempotency opsional."
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -8242,7 +9227,7 @@
             }
           },
           "409": {
-            "description": "Instrumen DCS tidak OPEN.",
+            "description": "Instrumen DCS tidak OPEN, atau Idempotency-Key sedang diproses.",
             "content": {
               "application/json": {
                 "schema": {
@@ -8374,6 +9359,24 @@
               "title": "Responden Id"
             },
             "description": "ID responden."
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "ETag untuk concurrency control.",
+              "title": "If-Match"
+            },
+            "description": "ETag untuk concurrency control."
           }
         ],
         "responses": {
@@ -8420,6 +9423,26 @@
               }
             }
           },
+          "412": {
+            "description": "If-Match tidak cocok.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "If-Match wajib (REQUIRE_IF_MATCH=true).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "422": {
             "description": "Validation Error",
             "content": {
@@ -8456,6 +9479,24 @@
               "title": "Responden Id"
             },
             "description": "ID responden."
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "ETag untuk concurrency control.",
+              "title": "If-Match"
+            },
+            "description": "ETag untuk concurrency control."
           }
         ],
         "requestBody": {
@@ -8515,6 +9556,26 @@
           },
           "404": {
             "description": "Responden tidak ditemukan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "If-Match tidak cocok.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "If-Match wajib (REQUIRE_IF_MATCH=true).",
             "content": {
               "application/json": {
                 "schema": {
@@ -8660,6 +9721,24 @@
               "title": "Responden Id"
             },
             "description": "ID responden."
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Kunci idempotency opsional.",
+              "title": "Idempotency-Key"
+            },
+            "description": "Kunci idempotency opsional."
           }
         ],
         "responses": {
@@ -8717,6 +9796,16 @@
               }
             }
           },
+          "409": {
+            "description": "Idempotency-Key ini sedang diproses (atau konflik state).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "422": {
             "description": "Responden sudah submit, jawaban tersimpan belum lengkap, atau instrumen tidak OPEN.",
             "content": {
@@ -8737,6 +9826,31 @@
         ],
         "summary": "Jalankan analisis DCS (CLOSED → ANALYZED)",
         "operationId": "dcs_analisis",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Kunci idempotency opsional.",
+              "title": "Idempotency-Key"
+            },
+            "description": "Kunci idempotency opsional."
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -8767,13 +9881,28 @@
                 }
               }
             }
+          },
+          "409": {
+            "description": "Idempotency-Key ini sedang diproses (atau konflik state).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
           }
-        },
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ]
+        }
       }
     },
     "/api/v1/dcs/hasil": {
@@ -9175,7 +10304,7 @@
             }
           },
           "409": {
-            "description": "Masih ada sesi Task Inventory aktif.",
+            "description": "Katalog masih dipakai sesi TI/OPM (`catalog_in_use`).",
             "content": {
               "application/json": {
                 "schema": {
@@ -16227,7 +17356,7 @@
           "redesain"
         ],
         "summary": "Cari masalah (domain ala Odoo) (tim-kajian)",
-        "description": "Cari dengan domain ala Odoo; field: kode, konteks_id, sekolah_id, status_awal, eskalasi_pada,\ngelombang, dibuka_untuk_konfirmasi.",
+        "description": "Cari dengan domain ala Odoo; field: id, kode, konteks_id, sekolah_id, status_awal,\neskalasi_pada, gelombang, dibuka_untuk_konfirmasi.",
         "operationId": "redesain_masalah_search",
         "requestBody": {
           "content": {
@@ -24534,6 +25663,32 @@
             "format": "date-time",
             "title": "Created At",
             "description": "Waktu baris instrumen dibuat (oleh migrasi)."
+          },
+          "item_bank_hash": {
+            "type": "string",
+            "title": "Item Bank Hash",
+            "description": "sha256 hex (64 karakter) bank item aktif saat ini.",
+            "examples": [
+              "<64 hex>"
+            ]
+          },
+          "jumlah_item": {
+            "type": "integer",
+            "title": "Jumlah Item",
+            "description": "Jumlah item aktif di bank.",
+            "examples": [
+              42
+            ]
+          },
+          "jumlah_redaksi_beda": {
+            "type": "integer",
+            "title": "Jumlah Redaksi Beda",
+            "description": "Jumlah item aktif berstatus `REDAKSI_BEDA` terhadap CSV paket R1.1."
+          },
+          "jumlah_tidak_di_paket": {
+            "type": "integer",
+            "title": "Jumlah Tidak Di Paket",
+            "description": "Jumlah item aktif berstatus `TIDAK_ADA_DI_PAKET` (kode tak ada di CSV paket)."
           }
         },
         "type": "object",
@@ -24541,7 +25696,11 @@
           "id",
           "status",
           "min_responden",
-          "created_at"
+          "created_at",
+          "item_bank_hash",
+          "jumlah_item",
+          "jumlah_redaksi_beda",
+          "jumlah_tidak_di_paket"
         ],
         "title": "DcsInstrumenRead",
         "description": "Representasi instrumen DCS (satu baris tetap, `id='dcs'`)."
@@ -24641,6 +25800,34 @@
             "examples": [
               1
             ]
+          },
+          "status_paket": {
+            "type": "string",
+            "enum": [
+              "SAMA",
+              "REDAKSI_BEDA",
+              "TIDAK_ADA_DI_PAKET"
+            ],
+            "title": "Status Paket",
+            "description": "Status redaksi item terhadap CSV paket R1.1 (normalisasi: trim + rapatkan spasi; tanda baca dan huruf besar dihitung beda). Hanya penanda: teks item tidak diubah.",
+            "examples": [
+              "SAMA"
+            ]
+          },
+          "kembar_dengan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Kembar Dengan",
+            "description": "Item kembar lintas instrumen menurut paket R1.1, berbentuk `\"<INSTRUMEN>:<item_id>\"`; null bila tidak punya kembar.",
+            "examples": [
+              "WCP:WP1a"
+            ]
           }
         },
         "type": "object",
@@ -24651,7 +25838,8 @@
           "sub_dimensi",
           "pernyataan",
           "arah",
-          "urutan"
+          "urutan",
+          "status_paket"
         ],
         "title": "DcsItemRead",
         "description": "Representasi satu item pernyataan DCS."
@@ -24703,9 +25891,10 @@
             "description": "Urutan global item (1–42)."
           }
         },
+        "additionalProperties": false,
         "type": "object",
         "title": "DcsItemUpdate",
-        "description": "Field item DCS yang dapat diubah admin (partial; field kosong diabaikan)."
+        "description": "Field item DCS yang dapat diubah admin (partial; field kosong diabaikan).\n\nField asing ditolak (`extra=\"forbid\"` → 422 `validation_error`) agar salah ketik tidak\ndiabaikan diam-diam."
       },
       "DcsJawabanItem": {
         "properties": {
@@ -24900,7 +26089,7 @@
               "drsp_a1b2c3d4"
             ]
           },
-          "nama": {
+          "kode_orang": {
             "anyOf": [
               {
                 "type": "string"
@@ -24909,8 +26098,11 @@
                 "type": "null"
               }
             ],
-            "title": "Nama",
-            "description": "Nama responden."
+            "title": "Kode Orang",
+            "description": "Kode orang pseudonim responden (`O-nnnn`, sama dengan register redesain); null bila responden tidak terhubung ke partisipan.",
+            "examples": [
+              "O-0012"
+            ]
           },
           "jabatan_label": {
             "type": "string",
@@ -24952,6 +26144,18 @@
             "format": "date-time",
             "title": "Created At",
             "description": "Waktu pendaftaran (UTC, ISO-8601)."
+          },
+          "item_bank_hash": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Item Bank Hash",
+            "description": "Hash bank item yang berlaku saat responden submit final; null untuk draft dan responden lama (sebelum fitur ini)."
           }
         },
         "type": "object",
@@ -25337,6 +26541,63 @@
           "message"
         ],
         "title": "ErrorResponse"
+      },
+      "FiturKode": {
+        "type": "string",
+        "enum": [
+          "AI_NARRATIVE_DRAFT",
+          "PARTICIPANT_VALIDATION",
+          "WCP_DCS_SCORING",
+          "RESEARCH_EXPORT",
+          "CHANGE_AUTHORIZATION"
+        ],
+        "title": "FiturKode",
+        "description": "Kode lima fungsi yang dapat dimatikan secara independen (feature flag).\n\nNilai literal mengikuti paket kajian; urutan anggota = urutan di respons\n`GET /api/v1/system/fitur`."
+      },
+      "FiturListRead": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/FiturRead"
+            },
+            "type": "array",
+            "title": "Items",
+            "description": "Selalu lima entri, urutan sesuai enum."
+          }
+        },
+        "type": "object",
+        "required": [
+          "items"
+        ],
+        "title": "FiturListRead"
+      },
+      "FiturRead": {
+        "properties": {
+          "kode": {
+            "$ref": "#/components/schemas/FiturKode",
+            "description": "Kode fungsi.",
+            "examples": [
+              "WCP_DCS_SCORING"
+            ]
+          },
+          "aktif": {
+            "type": "boolean",
+            "title": "Aktif",
+            "description": "True bila fungsi diaktifkan lewat environment."
+          },
+          "keterangan": {
+            "type": "string",
+            "title": "Keterangan",
+            "description": "Penjelasan singkat fungsi yang digerbang flag ini."
+          }
+        },
+        "type": "object",
+        "required": [
+          "kode",
+          "aktif",
+          "keterangan"
+        ],
+        "title": "FiturRead"
       },
       "HTTPValidationError": {
         "properties": {
@@ -28667,25 +29928,46 @@
             ]
           },
           "mean_importance": {
-            "type": "number",
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
             "title": "Mean Importance",
-            "description": "Rata-rata importance.",
+            "description": "Rata-rata importance (null bila n == 0).",
             "examples": [
               4.0
             ]
           },
           "mean_frequency": {
-            "type": "number",
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
             "title": "Mean Frequency",
-            "description": "Rata-rata frequency.",
+            "description": "Rata-rata frequency (null bila n == 0).",
             "examples": [
               3.0
             ]
           },
           "mean_criticality": {
-            "type": "number",
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
             "title": "Mean Criticality",
-            "description": "Rata-rata criticality.",
+            "description": "Rata-rata criticality (null bila n == 0).",
             "examples": [
               5.0
             ]
@@ -28727,14 +30009,28 @@
             "description": "Standar deviasi criticality (None bila n < 2)."
           },
           "selection_essential": {
-            "type": "boolean",
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
             "title": "Selection Essential",
-            "description": "True bila mean_importance >= 4 atau mean_criticality >= 4."
+            "description": "True bila mean_importance >= 4 atau mean_criticality >= 4 (null bila n == 0)."
           },
           "workload_essential": {
-            "type": "boolean",
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
             "title": "Workload Essential",
-            "description": "True bila (mean_importance >= 3 dan mean_frequency >= 3) atau mean_criticality >= 4."
+            "description": "True bila (mean_importance >= 3 dan mean_frequency >= 3) atau mean_criticality >= 4 (null bila n == 0)."
           },
           "prop_selection_essential": {
             "type": "number",
@@ -28745,6 +30041,12 @@
             "type": "number",
             "title": "Prop Workload Essential",
             "description": "Proporsi responden yang menandai task ini workload-essential secara individual."
+          },
+          "orphan": {
+            "type": "boolean",
+            "title": "Orphan",
+            "description": "True bila task ini punya baris di register pengecualian sesi.",
+            "default": false
           }
         },
         "type": "object",
@@ -28753,11 +30055,6 @@
           "uraian_tugas",
           "tugas_pokok",
           "n",
-          "mean_importance",
-          "mean_frequency",
-          "mean_criticality",
-          "selection_essential",
-          "workload_essential",
           "prop_selection_essential",
           "prop_workload_essential"
         ],
@@ -29049,6 +30346,72 @@
         "title": "OpmKuesionerItemRead",
         "description": "Responden OPM diperkaya info sesi — dipakai endpoint /kuesioner/saya."
       },
+      "OpmPengecualianRead": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id",
+            "description": "ID baris register (UUID v4)."
+          },
+          "sesi_id": {
+            "type": "string",
+            "title": "Sesi Id",
+            "description": "ID sesi OPM pemilik pengecualian."
+          },
+          "task_kode": {
+            "type": "string",
+            "title": "Task Kode",
+            "description": "Kode task yang bermasalah.",
+            "examples": [
+              "T-012"
+            ]
+          },
+          "alasan": {
+            "type": "string",
+            "enum": [
+              "TI_DETAIL_UNMATCHED",
+              "OPM_STD_MISSING",
+              "OPM_RATING_MISSING"
+            ],
+            "title": "Alasan",
+            "description": "Kode alasan: `TI_DETAIL_UNMATCHED` (kode terpilih TI tak ada di katalog saat snapshot), `OPM_STD_MISSING` (task tanpa ketiga nilai standar), `OPM_RATING_MISSING` (task tanpa satu pun rating saat analisis)."
+          },
+          "keterangan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Keterangan",
+            "description": "Keterangan bebas, bila ada."
+          },
+          "status": {
+            "type": "string",
+            "title": "Status",
+            "description": "Status pengecualian (saat ini selalu `OPEN`)."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At",
+            "description": "Waktu pencatatan (UTC, ISO-8601)."
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "sesi_id",
+          "task_kode",
+          "alasan",
+          "status",
+          "created_at"
+        ],
+        "title": "OpmPengecualianRead",
+        "description": "Satu baris register pengecualian sesi OPM."
+      },
       "OpmRespondenAlihkan": {
         "properties": {
           "dari_partisipan_id": {
@@ -29170,7 +30533,7 @@
               "opses_a1b2c3d4"
             ]
           },
-          "nama": {
+          "kode_orang": {
             "anyOf": [
               {
                 "type": "string"
@@ -29179,8 +30542,11 @@
                 "type": "null"
               }
             ],
-            "title": "Nama",
-            "description": "Nama responden."
+            "title": "Kode Orang",
+            "description": "Kode orang pseudonim responden (`O-nnnn`, sama dengan register redesain); null bila responden tidak terhubung ke partisipan.",
+            "examples": [
+              "O-0012"
+            ]
           },
           "jabatan_label": {
             "type": "string",
@@ -29418,6 +30784,22 @@
             "format": "date-time",
             "title": "Created At",
             "description": "Waktu pembuatan (UTC, ISO-8601)."
+          },
+          "status_verifikasi": {
+            "type": "string",
+            "enum": [
+              "VERIFIED",
+              "UNVERIFIED"
+            ],
+            "title": "Status Verifikasi",
+            "description": "Turunan dari register pengecualian: `UNVERIFIED` bila ada >= 1 pengecualian berstatus `OPEN`, selain itu `VERIFIED`.",
+            "default": "VERIFIED"
+          },
+          "jumlah_pengecualian": {
+            "type": "integer",
+            "title": "Jumlah Pengecualian",
+            "description": "Jumlah baris register pengecualian sesi ini.",
+            "default": 0
           }
         },
         "type": "object",
@@ -30199,6 +31581,50 @@
           "offset"
         ],
         "title": "Page[MataPelajaranRead]"
+      },
+      "Page_OpmPengecualianRead_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/OpmPengecualianRead"
+            },
+            "type": "array",
+            "title": "Items",
+            "description": "Item pada halaman ini."
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total",
+            "description": "Total item tersedia.",
+            "examples": [
+              42
+            ]
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit",
+            "description": "Maksimum item per halaman.",
+            "examples": [
+              20
+            ]
+          },
+          "offset": {
+            "type": "integer",
+            "title": "Offset",
+            "description": "Jumlah item yang dilewati.",
+            "examples": [
+              0
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
+        "title": "Page[OpmPengecualianRead]"
       },
       "Page_OpmRespondenRead_": {
         "properties": {
@@ -35233,7 +36659,7 @@
               "tises_a1b2c3d4"
             ]
           },
-          "nama": {
+          "kode_orang": {
             "anyOf": [
               {
                 "type": "string"
@@ -35242,8 +36668,11 @@
                 "type": "null"
               }
             ],
-            "title": "Nama",
-            "description": "Nama responden."
+            "title": "Kode Orang",
+            "description": "Kode orang pseudonim responden (`O-nnnn`, sama dengan register redesain); null bila responden tidak terhubung ke partisipan.",
+            "examples": [
+              "O-0012"
+            ]
           },
           "partisipan_id": {
             "anyOf": [
@@ -36157,7 +37586,7 @@
               "trsp_a1b2c3d4"
             ]
           },
-          "responden_nama": {
+          "responden_kode_orang": {
             "anyOf": [
               {
                 "type": "string"
@@ -36166,8 +37595,11 @@
                 "type": "null"
               }
             ],
-            "title": "Responden Nama",
-            "description": "Nama responden pengusul."
+            "title": "Responden Kode Orang",
+            "description": "Kode orang pseudonim (`O-nnnn`) responden pengusul; null bila tanpa partisipan.",
+            "examples": [
+              "O-0012"
+            ]
           },
           "tugas_pokok": {
             "type": "string",
@@ -36212,7 +37644,7 @@
           "uraian"
         ],
         "title": "TiUsulanReviewRead",
-        "description": "Satu usulan uraian tugas Tahap 1 yang perlu diputuskan koordinator di Tahap 2.\n\nProyeksi ringkas dari `TiUsulanRead` (`taskinv/schemas/usulan.py`) khusus untuk\nlayar review koordinator — menambah `responden_nama` (bukan sekadar id) dan\nmembuang `sesi_id`/`task_kode`/`created_at` yang tidak relevan di layar ini."
+        "description": "Satu usulan uraian tugas Tahap 1 yang perlu diputuskan koordinator di Tahap 2.\n\nProyeksi ringkas dari `TiUsulanRead` (`taskinv/schemas/usulan.py`) khusus untuk\nlayar review koordinator — menambah `responden_kode_orang` (pseudonim, bukan nama) dan\nmembuang `sesi_id`/`task_kode`/`created_at` yang tidak relevan di layar ini."
       },
       "TsKuesionerItemRead": {
         "properties": {
@@ -38283,6 +39715,32 @@
             "format": "date-time",
             "title": "Created At",
             "description": "Waktu baris instrumen dibuat (oleh migrasi)."
+          },
+          "item_bank_hash": {
+            "type": "string",
+            "title": "Item Bank Hash",
+            "description": "sha256 hex (64 karakter) bank item aktif saat ini.",
+            "examples": [
+              "<64 hex>"
+            ]
+          },
+          "jumlah_item": {
+            "type": "integer",
+            "title": "Jumlah Item",
+            "description": "Jumlah item aktif di bank.",
+            "examples": [
+              72
+            ]
+          },
+          "jumlah_redaksi_beda": {
+            "type": "integer",
+            "title": "Jumlah Redaksi Beda",
+            "description": "Jumlah item aktif berstatus `REDAKSI_BEDA` terhadap CSV paket R1.1."
+          },
+          "jumlah_tidak_di_paket": {
+            "type": "integer",
+            "title": "Jumlah Tidak Di Paket",
+            "description": "Jumlah item aktif berstatus `TIDAK_ADA_DI_PAKET` (kode tak ada di CSV paket)."
           }
         },
         "type": "object",
@@ -38290,7 +39748,11 @@
           "id",
           "status",
           "min_responden",
-          "created_at"
+          "created_at",
+          "item_bank_hash",
+          "jumlah_item",
+          "jumlah_redaksi_beda",
+          "jumlah_tidak_di_paket"
         ],
         "title": "WcpInstrumenRead",
         "description": "Representasi instrumen WCP (satu baris tetap, `id='wcp'`)."
@@ -38394,6 +39856,34 @@
             "examples": [
               1
             ]
+          },
+          "status_paket": {
+            "type": "string",
+            "enum": [
+              "SAMA",
+              "REDAKSI_BEDA",
+              "TIDAK_ADA_DI_PAKET"
+            ],
+            "title": "Status Paket",
+            "description": "Status redaksi item terhadap CSV paket R1.1 (normalisasi: trim + rapatkan spasi; tanda baca dan huruf besar dihitung beda). Hanya penanda: teks item tidak diubah.",
+            "examples": [
+              "SAMA"
+            ]
+          },
+          "kembar_dengan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Kembar Dengan",
+            "description": "Item kembar lintas instrumen menurut paket R1.1, berbentuk `\"<INSTRUMEN>:<item_id>\"`; null bila tidak punya kembar.",
+            "examples": [
+              "DCS:C8a"
+            ]
           }
         },
         "type": "object",
@@ -38405,7 +39895,8 @@
           "indikator_label",
           "pernyataan",
           "reverse_type",
-          "urutan"
+          "urutan",
+          "status_paket"
         ],
         "title": "WcpItemRead",
         "description": "Representasi satu item pernyataan WCP."
@@ -38459,9 +39950,10 @@
             "description": "Urutan global item (1–72)."
           }
         },
+        "additionalProperties": false,
         "type": "object",
         "title": "WcpItemUpdate",
-        "description": "Field item WCP yang dapat diubah admin (partial; field kosong diabaikan)."
+        "description": "Field item WCP yang dapat diubah admin (partial; field kosong diabaikan).\n\nField asing ditolak (`extra=\"forbid\"` → 422 `validation_error`) agar salah ketik tidak\ndiabaikan diam-diam."
       },
       "WcpJawabanItem": {
         "properties": {
@@ -38656,7 +40148,7 @@
               "wrsp_a1b2c3d4"
             ]
           },
-          "nama": {
+          "kode_orang": {
             "anyOf": [
               {
                 "type": "string"
@@ -38665,8 +40157,11 @@
                 "type": "null"
               }
             ],
-            "title": "Nama",
-            "description": "Nama responden."
+            "title": "Kode Orang",
+            "description": "Kode orang pseudonim responden (`O-nnnn`, sama dengan register redesain); null bila responden tidak terhubung ke partisipan.",
+            "examples": [
+              "O-0012"
+            ]
           },
           "jabatan_label": {
             "type": "string",
@@ -38708,6 +40203,18 @@
             "format": "date-time",
             "title": "Created At",
             "description": "Waktu pendaftaran (UTC, ISO-8601)."
+          },
+          "item_bank_hash": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Item Bank Hash",
+            "description": "Hash bank item yang berlaku saat responden submit final; null untuk draft dan responden lama (sebelum fitur ini)."
           }
         },
         "type": "object",

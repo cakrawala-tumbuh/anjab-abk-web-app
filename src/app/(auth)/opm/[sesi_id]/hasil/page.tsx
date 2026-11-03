@@ -111,13 +111,13 @@ export default async function OpmHasilPage({ params }: Props) {
                   </p>
                 </td>
                 <td className="px-4 py-3 text-right font-medium text-gray-700">
-                  {t.mean_importance.toFixed(2)}
+                  {t.mean_importance?.toFixed(2) ?? "—"}
                 </td>
                 <td className="px-4 py-3 text-right font-medium text-gray-700">
-                  {t.mean_frequency.toFixed(2)}
+                  {t.mean_frequency?.toFixed(2) ?? "—"}
                 </td>
                 <td className="px-4 py-3 text-right font-medium text-gray-700">
-                  {t.mean_criticality.toFixed(2)}
+                  {t.mean_criticality?.toFixed(2) ?? "—"}
                 </td>
                 <td className="px-4 py-3 text-right text-xs text-gray-500 dark:text-gray-400">
                   {(t.sd_importance ?? 0).toFixed(2)} / {(t.sd_frequency ?? 0).toFixed(2)} /{" "}
@@ -125,8 +125,8 @@ export default async function OpmHasilPage({ params }: Props) {
                 </td>
                 <td className="px-4 py-3">
                   <div className="flex flex-col gap-1">
-                    <Badge ya={t.selection_essential} label="Selection Essential" />
-                    <Badge ya={t.workload_essential} label="Workload Essential" />
+                    <Badge ya={t.selection_essential ?? false} label="Selection Essential" />
+                    <Badge ya={t.workload_essential ?? false} label="Workload Essential" />
                   </div>
                 </td>
                 <td className="px-4 py-3 text-right text-xs text-gray-500 dark:text-gray-400">

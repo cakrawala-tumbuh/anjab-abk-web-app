@@ -7,6 +7,7 @@ import { urutkanTaskTahap3 } from "@/lib/task-inventory-tahap3-urutan";
 import { fetchTahap3Data, type Tahap3PageData } from "./data";
 import { DetailForm } from "./detail-form";
 import { PetunjukTahap3 } from "./petunjuk-tahap3";
+import { labelResponden } from "@/lib/format/label-responden";
 
 export const metadata = { title: "Tahap 3 — Detailing" };
 
@@ -55,7 +56,7 @@ export default async function Tahap3Page({ params }: Props) {
         <div>
           <h1 className="page-heading">{JUDUL}</h1>
           <p className="page-subtext">
-            {responden.nama ?? "Anonim"} · isi rincian beban kerja (CalHR) untuk tugas yang Anda
+            {labelResponden(responden)} · isi rincian beban kerja (CalHR) untuk tugas yang Anda
             kerjakan.
           </p>
         </div>

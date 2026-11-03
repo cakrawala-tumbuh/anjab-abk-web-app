@@ -259,7 +259,7 @@ describe("ReviewForm — usulan tugas tambahan Tahap 1 (issue #45)", () => {
     {
       usulan_id: "tius_1",
       responden_id: "trsp_1",
-      responden_nama: "Budi",
+      responden_kode_orang: "O-0007",
       tugas_pokok: "Pengelolaan SDM",
       detil_tugas: "Evaluasi Kinerja",
       uraian: "Menyusun ulang jadwal piket.",
@@ -285,11 +285,11 @@ describe("ReviewForm — usulan tugas tambahan Tahap 1 (issue #45)", () => {
     );
   }
 
-  it("menampilkan blok 'Usulan tugas tambahan dari peserta' dengan nama pengusul & hierarki induk", () => {
+  it("menampilkan blok 'Usulan tugas tambahan dari peserta' dengan kode orang pengusul & hierarki induk", () => {
     renderWithUsulan(false);
     expect(screen.getByText("Usulan tugas tambahan dari peserta")).toBeInTheDocument();
     expect(screen.getByText("Menyusun ulang jadwal piket.")).toBeInTheDocument();
-    expect(screen.getByText("Budi")).toBeInTheDocument();
+    expect(screen.getByText("O-0007")).toBeInTheDocument();
     expect(screen.getByText("Pengelolaan SDM · Evaluasi Kinerja")).toBeInTheDocument();
   });
 
@@ -345,7 +345,7 @@ describe("ReviewForm — urutan render tabel task partial vs blok usulan (issue 
     {
       usulan_id: "tius_1",
       responden_id: "trsp_1",
-      responden_nama: "Budi",
+      responden_kode_orang: "O-0007",
       tugas_pokok: "Pengelolaan SDM",
       detil_tugas: "Evaluasi Kinerja",
       uraian: "Menyusun ulang jadwal piket.",

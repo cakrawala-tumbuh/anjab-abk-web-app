@@ -8,6 +8,7 @@ import type {
   WcpHasilRespondenRead,
   WcpRespondenRead,
 } from "@/lib/api/schema";
+import { labelResponden } from "@/lib/format/label-responden";
 
 export const metadata = { title: "Hasil WCP Responden" };
 
@@ -53,7 +54,7 @@ export default async function WcpHasilRespondenPage({ params }: Props) {
   const { responden_id } = await params;
   const { responden, hasil } = await fetchPageData(session?.accessToken, responden_id);
 
-  const namaResponden = responden.nama ?? "Anonim";
+  const namaResponden = labelResponden(responden);
 
   return (
     <div className="space-y-6">

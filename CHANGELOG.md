@@ -7,6 +7,12 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+### Diubah
+
+- Daftar dan detail responden WCP, DCS, OPM, dan Task Inventory (serta panel review usulan Tahap 2)
+  kini menampilkan **kode orang** (`O-nnnn`), bukan nama responden; responden eksternal TI tampil
+  "Responden eksternal" + 8 karakter awal ID. Kolom "Nama" menjadi "Kode Orang" (issue #81).
+
 ### Diperbaiki
 
 - Semua tabel kini bisa digeser ke samping bila lebih lebar dari layar, sehingga tombol di

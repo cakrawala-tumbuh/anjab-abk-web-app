@@ -14,6 +14,7 @@ import { AssignResponden } from "./assign-responden";
 import { AksiInstrumen } from "./aksi-instrumen";
 import { HapusResponden } from "./hapus-responden";
 import { EditInstrumen } from "./edit-instrumen";
+import { labelResponden } from "@/lib/format/label-responden";
 
 export const metadata = { title: "WCP" };
 
@@ -185,7 +186,7 @@ export default async function WcpInstrumenPage({ searchParams }: Props) {
                     #
                   </th>
                   <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
-                    Nama
+                    Kode Orang
                   </th>
                   <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
                     Jabatan
@@ -203,7 +204,7 @@ export default async function WcpInstrumenPage({ searchParams }: Props) {
                   <tr key={r.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50">
                     <td className="px-4 py-3 text-gray-400">{offsetResponden + idx + 1}</td>
                     <td className="px-4 py-3 text-gray-900 dark:text-gray-100">
-                      {r.nama ?? <span className="italic text-gray-400">Anonim</span>}
+                      {labelResponden(r)}
                     </td>
                     <td className="px-4 py-3 text-gray-600 dark:text-gray-400">
                       {r.jabatan_label}
@@ -232,7 +233,7 @@ export default async function WcpInstrumenPage({ searchParams }: Props) {
                         {!r.sudah_submit && (
                           <HapusResponden
                             respondenId={r.id}
-                            nama={r.nama ?? "Anonim"}
+                            nama={labelResponden(r)}
                             accessToken={session?.accessToken}
                           />
                         )}

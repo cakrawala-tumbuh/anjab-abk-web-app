@@ -269,7 +269,7 @@ export function ReviewForm({ sesiId, review, accessToken, readOnly, kodeToUraian
                         <div className="text-xs text-gray-400">{hierarki}</div>
                       </td>
                       <td className="px-4 py-3 text-gray-600 dark:text-gray-400">
-                        {u.responden_nama ?? "—"}
+                        {u.responden_kode_orang ?? "—"}
                       </td>
                       <td className="px-4 py-3 text-center">
                         {readOnly ? (

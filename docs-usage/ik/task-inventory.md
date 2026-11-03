@@ -52,11 +52,13 @@ mencapai status **TAHAP2** — lihat [bagian D. Review Koordinator (Tahap 2)](#d
 
 1. Di detail analisis, bagian **Tambah Responden**:
    - **Pilih Partisipan (opsional)** — pilih dari daftar, atau
-   - **Nama (opsional)** — ketik manual (mis. `Budi Santoso, S.Pd.`).
+   - **Nama (opsional)** — ketik manual (mis. `Budi Santoso, S.Pd.`). Nama ini tidak ditampilkan
+     kembali di daftar responden; responden tampil dengan **kode orang** (`O-nnnn`), atau
+     "Responden eksternal" + 8 karakter awal ID bila tanpa kode.
 2. Klik **+ Daftarkan**. Responden muncul di tabel **Daftar Responden** dengan status
    **Tahap 1** dan **Tahap 3** = **Belum**.
 3. Untuk menghapus responden yang belum mengisi, klik **Hapus** pada kolom **Aksi**
-   (konfirmasi _Hapus responden "{nama}" dari analisis ini?_).
+   (konfirmasi _Hapus responden "{kode orang}" dari analisis ini?_).
 
 > Dropdown **Pilih Partisipan** hanya memuat anggota SME panel yang **belum** menjadi
 > responden analisis ini — partisipan yang sudah terdaftar tidak ditawarkan lagi, sehingga
@@ -124,7 +126,7 @@ Saat status **TAHAP2**, muncul kotak _Tahap 2 — Review Koordinator_ dengan tom
    karyawan"_) dengan kode task kecil di sampingnya sebagai keterangan.
 4. Bila ada peserta yang menuliskan **usulan tugas tambahan** di Tahap 1 (lihat bagian E),
    blok **Usulan tugas tambahan dari peserta** tampil **di bawah** tabel task partial —
-   menampilkan teks usulan, hierarki induknya (tugas pokok · detil tugas), dan nama pengusul.
+   menampilkan teks usulan, hierarki induknya (tugas pokok · detil tugas), dan kode orang pengusul (bukan nama).
    Kontrol **Ya/Tidak** untuk tiap usulan bekerja persis seperti task partial di atasnya.
 5. Untuk tiap task maupun usulan, klik **Ya** (setujui) atau **Tidak** (tolak). Tersedia
    pintasan **Setujui Semua** dan **Tolak Semua** yang berlaku ke keduanya sekaligus.

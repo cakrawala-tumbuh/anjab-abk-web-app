@@ -22,6 +22,7 @@ import { AturKoordinator } from "./atur-koordinator";
 import { TambahResponden } from "./tambah-responden";
 import { AssignRespondenBanyak } from "./assign-responden-banyak";
 import { HapusResponden } from "./hapus-responden";
+import { labelResponden } from "@/lib/format/label-responden";
 
 export const metadata = { title: "Detail Analisis Jabatan — Task Inventory" };
 
@@ -352,7 +353,7 @@ export default async function TiSesiDetailPage({ params, searchParams }: Props) 
                     #
                   </th>
                   <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
-                    Nama
+                    Kode Orang
                   </th>
                   <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
                     Tahap 1
@@ -369,9 +370,7 @@ export default async function TiSesiDetailPage({ params, searchParams }: Props) 
                 {responden.map((r, idx) => (
                   <tr key={r.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50">
                     <td className="px-4 py-3 text-gray-400">{offsetResponden + idx + 1}</td>
-                    <td className="px-4 py-3 text-gray-900">
-                      {r.nama ?? <span className="italic text-gray-400">Anonim</span>}
-                    </td>
+                    <td className="px-4 py-3 text-gray-900">{labelResponden(r)}</td>
                     <td className="px-4 py-3">
                       {r.tahap1_submit ? (
                         <span className="inline-flex rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700">
@@ -416,7 +415,7 @@ export default async function TiSesiDetailPage({ params, searchParams }: Props) 
                           !r.tahap1_submit && (
                             <HapusResponden
                               respondenId={r.id}
-                              nama={r.nama ?? "Anonim"}
+                              nama={labelResponden(r)}
                               accessToken={session?.accessToken}
                             />
                           )}

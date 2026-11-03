@@ -8,6 +8,7 @@ import type {
   DcsHasilSubSkalaRespondenRead,
   DcsRespondenRead,
 } from "@/lib/api/schema";
+import { labelResponden } from "@/lib/format/label-responden";
 
 export const metadata = { title: "Hasil DCS Responden" };
 
@@ -47,7 +48,7 @@ export default async function DcsHasilRespondenPage({ params }: Props) {
   const { responden_id } = await params;
   const { responden, hasil } = await fetchPageData(session?.accessToken, responden_id);
 
-  const namaResponden = responden.nama ?? "Anonim";
+  const namaResponden = labelResponden(responden);
   const risk = RISK_LABEL[hasil.risk_flag] ?? {
     label: hasil.risk_flag,
     cls: "bg-gray-100 text-gray-600",

@@ -6,6 +6,7 @@ import { GagalMuat, TidakBerhak } from "@/components/gagal-muat";
 import { fetchTahap1Data, type Tahap1PageData } from "./data";
 import { SeleksiForm } from "./seleksi-form";
 import { PetunjukTahap1 } from "./petunjuk-tahap1";
+import { labelResponden } from "@/lib/format/label-responden";
 
 export const metadata = { title: "Tahap 1 — Seleksi Relevansi" };
 
@@ -54,7 +55,7 @@ export default async function Tahap1Page({ params }: Props) {
         <div>
           <h1 className="page-heading">{JUDUL}</h1>
           <p className="page-subtext">
-            {responden.nama ?? "Anonim"} · pilih task yang relevan untuk jabatan Anda.
+            {labelResponden(responden)} · pilih task yang relevan untuk jabatan Anda.
           </p>
         </div>
         <PetunjukTahap1 defaultOpen={!responden.tahap1_submit && sesi.status === "TAHAP1"} />

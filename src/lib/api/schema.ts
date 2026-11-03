@@ -72,6 +72,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/system/fitur": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Status feature flag
+         * @description Daftar lima feature flag fungsional beserta statusnya (selalu lima entri).
+         */
+        get: operations["system_fitur_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/system/backup": {
         parameters: {
             query?: never;
@@ -601,7 +621,8 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /** Ambil satu item Wcp (membawa header ETag) */
+        get: operations["wcp_item_get"];
         put?: never;
         post?: never;
         /** Hapus satu item WCP dari master instrumen (admin) */
@@ -619,14 +640,14 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Ambil instrumen WCP (singleton) */
+        /** Ambil instrumen Wcp (singleton) */
         get: operations["wcp_instrumen_get"];
         put?: never;
         post?: never;
         delete?: never;
         options?: never;
         head?: never;
-        /** Perbarui instrumen WCP (min_responden/catatan) */
+        /** Perbarui instrumen Wcp (min_responden/catatan) */
         patch: operations["wcp_instrumen_update"];
         trace?: never;
     };
@@ -639,7 +660,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Tutup instrumen WCP (OPEN → CLOSED) */
+        /** Tutup instrumen Wcp (OPEN → CLOSED) */
         post: operations["wcp_instrumen_tutup"];
         delete?: never;
         options?: never;
@@ -656,7 +677,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Buka ulang instrumen WCP (CLOSED → OPEN) */
+        /** Buka ulang instrumen Wcp (CLOSED/ANALYZED → OPEN) */
         post: operations["wcp_instrumen_buka_ulang"];
         delete?: never;
         options?: never;
@@ -674,10 +695,12 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * Reset instrumen WCP (admin): hapus SEMUA responden & jawaban, buka kembali (OPEN)
-         * @description DESTRUKTIF: menghapus seluruh responden WCP (jawaban ikut lewat CASCADE) dan
-         *     mengembalikan instrumen ke OPEN — sah dipanggil dari status APA PUN (idempoten),
-         *     beda dari `/buka-ulang` yang hanya sah dari CLOSED dan tidak menghapus data.
+         * Reset instrumen Wcp (admin): hanya bila belum ada jawaban
+         * @description Hapus responden Wcp dan kembalikan instrumen ke OPEN, HANYA bila instrumen belum
+         *     berisi jawaban sama sekali; bila sudah ada jawaban (draft/submit) → 409
+         *     `instrument_has_responses`. Untuk membuka instrumen ANALYZED tanpa menghapus data,
+         *     pakai `/buka-ulang`. Mendukung `Idempotency-Key` (ulangan → 200 hasil tersimpan,
+         *     tanpa reset kedua).
          */
         post: operations["wcp_instrumen_reset"];
         delete?: never;
@@ -937,6 +960,28 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/opm/sesi/{sesi_id}/pengecualian": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Register pengecualian TI-OPM sesi OPM (admin)
+         * @description Daftar ketidakcocokan TI-OPM sesi ini beserta kode alasannya.
+         *
+         *     Register hanya mencatat; tidak ada nilai standar/rating yang diisi otomatis.
+         */
+        get: operations["opm_pengecualian_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/opm/sesi/{sesi_id}/responden": {
         parameters: {
             query?: never;
@@ -1153,7 +1198,8 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /** Ambil satu item Dcs (membawa header ETag) */
+        get: operations["dcs_item_get"];
         put?: never;
         post?: never;
         /** Hapus satu item DCS dari master instrumen (admin) */
@@ -1171,14 +1217,14 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Ambil instrumen DCS (singleton) */
+        /** Ambil instrumen Dcs (singleton) */
         get: operations["dcs_instrumen_get"];
         put?: never;
         post?: never;
         delete?: never;
         options?: never;
         head?: never;
-        /** Perbarui instrumen DCS (min_responden/catatan) */
+        /** Perbarui instrumen Dcs (min_responden/catatan) */
         patch: operations["dcs_instrumen_update"];
         trace?: never;
     };
@@ -1191,7 +1237,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Tutup instrumen DCS (OPEN → CLOSED) */
+        /** Tutup instrumen Dcs (OPEN → CLOSED) */
         post: operations["dcs_instrumen_tutup"];
         delete?: never;
         options?: never;
@@ -1208,7 +1254,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Buka ulang instrumen DCS (CLOSED → OPEN) */
+        /** Buka ulang instrumen Dcs (CLOSED/ANALYZED → OPEN) */
         post: operations["dcs_instrumen_buka_ulang"];
         delete?: never;
         options?: never;
@@ -1226,10 +1272,12 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * Reset instrumen DCS (admin): hapus SEMUA responden & jawaban, buka kembali (OPEN)
-         * @description DESTRUKTIF: menghapus seluruh responden DCS (jawaban ikut lewat CASCADE) dan
-         *     mengembalikan instrumen ke OPEN — sah dipanggil dari status APA PUN (idempoten),
-         *     beda dari `/buka-ulang` yang hanya sah dari CLOSED dan tidak menghapus data.
+         * Reset instrumen Dcs (admin): hanya bila belum ada jawaban
+         * @description Hapus responden Dcs dan kembalikan instrumen ke OPEN, HANYA bila instrumen belum
+         *     berisi jawaban sama sekali; bila sudah ada jawaban (draft/submit) → 409
+         *     `instrument_has_responses`. Untuk membuka instrumen ANALYZED tanpa menghapus data,
+         *     pakai `/buka-ulang`. Mendukung `Idempotency-Key` (ulangan → 200 hasil tersimpan,
+         *     tanpa reset kedua).
          */
         post: operations["dcs_instrumen_reset"];
         delete?: never;
@@ -2399,8 +2447,8 @@ export interface paths {
         put?: never;
         /**
          * Cari masalah (domain ala Odoo) (tim-kajian)
-         * @description Cari dengan domain ala Odoo; field: kode, konteks_id, sekolah_id, status_awal, eskalasi_pada,
-         *     gelombang, dibuka_untuk_konfirmasi.
+         * @description Cari dengan domain ala Odoo; field: id, kode, konteks_id, sekolah_id, status_awal,
+         *     eskalasi_pada, gelombang, dibuka_untuk_konfirmasi.
          */
         post: operations["redesain_masalah_search"];
         delete?: never;
@@ -4288,6 +4336,28 @@ export interface components {
              * @description Waktu baris instrumen dibuat (oleh migrasi).
              */
             created_at: string;
+            /**
+             * Item Bank Hash
+             * @description sha256 hex (64 karakter) bank item aktif saat ini.
+             * @example <64 hex>
+             */
+            item_bank_hash: string;
+            /**
+             * Jumlah Item
+             * @description Jumlah item aktif di bank.
+             * @example 42
+             */
+            jumlah_item: number;
+            /**
+             * Jumlah Redaksi Beda
+             * @description Jumlah item aktif berstatus `REDAKSI_BEDA` terhadap CSV paket R1.1.
+             */
+            jumlah_redaksi_beda: number;
+            /**
+             * Jumlah Tidak Di Paket
+             * @description Jumlah item aktif berstatus `TIDAK_ADA_DI_PAKET` (kode tak ada di CSV paket).
+             */
+            jumlah_tidak_di_paket: number;
         };
         /**
          * DcsInstrumenUpdate
@@ -4353,10 +4423,26 @@ export interface components {
              * @example 1
              */
             urutan: number;
+            /**
+             * Status Paket
+             * @description Status redaksi item terhadap CSV paket R1.1 (normalisasi: trim + rapatkan spasi; tanda baca dan huruf besar dihitung beda). Hanya penanda: teks item tidak diubah.
+             * @example SAMA
+             * @enum {string}
+             */
+            status_paket: "SAMA" | "REDAKSI_BEDA" | "TIDAK_ADA_DI_PAKET";
+            /**
+             * Kembar Dengan
+             * @description Item kembar lintas instrumen menurut paket R1.1, berbentuk `"<INSTRUMEN>:<item_id>"`; null bila tidak punya kembar.
+             * @example WCP:WP1a
+             */
+            kembar_dengan?: string | null;
         };
         /**
          * DcsItemUpdate
          * @description Field item DCS yang dapat diubah admin (partial; field kosong diabaikan).
+         *
+         *     Field asing ditolak (`extra="forbid"` → 422 `validation_error`) agar salah ketik tidak
+         *     diabaikan diam-diam.
          */
         DcsItemUpdate: {
             /**
@@ -4502,10 +4588,11 @@ export interface components {
              */
             id: string;
             /**
-             * Nama
-             * @description Nama responden.
+             * Kode Orang
+             * @description Kode orang pseudonim responden (`O-nnnn`, sama dengan register redesain); null bila responden tidak terhubung ke partisipan.
+             * @example O-0012
              */
-            nama?: string | null;
+            kode_orang?: string | null;
             /**
              * Jabatan Label
              * @description Label jabatan responden.
@@ -4532,6 +4619,11 @@ export interface components {
              * @description Waktu pendaftaran (UTC, ISO-8601).
              */
             created_at: string;
+            /**
+             * Item Bank Hash
+             * @description Hash bank item yang berlaku saat responden submit final; null untuk draft dan responden lama (sebelum fitur ini).
+             */
+            item_bank_hash?: string | null;
         };
         /**
          * DcsSubSkalaRead
@@ -4744,6 +4836,41 @@ export interface components {
              * @description Rincian validasi.
              */
             details?: components["schemas"]["ErrorDetail"][] | null;
+        };
+        /**
+         * FiturKode
+         * @description Kode lima fungsi yang dapat dimatikan secara independen (feature flag).
+         *
+         *     Nilai literal mengikuti paket kajian; urutan anggota = urutan di respons
+         *     `GET /api/v1/system/fitur`.
+         * @enum {string}
+         */
+        FiturKode: "AI_NARRATIVE_DRAFT" | "PARTICIPANT_VALIDATION" | "WCP_DCS_SCORING" | "RESEARCH_EXPORT" | "CHANGE_AUTHORIZATION";
+        /** FiturListRead */
+        FiturListRead: {
+            /**
+             * Items
+             * @description Selalu lima entri, urutan sesuai enum.
+             */
+            items: components["schemas"]["FiturRead"][];
+        };
+        /** FiturRead */
+        FiturRead: {
+            /**
+             * @description Kode fungsi.
+             * @example WCP_DCS_SCORING
+             */
+            kode: components["schemas"]["FiturKode"];
+            /**
+             * Aktif
+             * @description True bila fungsi diaktifkan lewat environment.
+             */
+            aktif: boolean;
+            /**
+             * Keterangan
+             * @description Penjelasan singkat fungsi yang digerbang flag ini.
+             */
+            keterangan: string;
         };
         /** HTTPValidationError */
         HTTPValidationError: {
@@ -6109,22 +6236,22 @@ export interface components {
             n: number;
             /**
              * Mean Importance
-             * @description Rata-rata importance.
+             * @description Rata-rata importance (null bila n == 0).
              * @example 4
              */
-            mean_importance: number;
+            mean_importance?: number | null;
             /**
              * Mean Frequency
-             * @description Rata-rata frequency.
+             * @description Rata-rata frequency (null bila n == 0).
              * @example 3
              */
-            mean_frequency: number;
+            mean_frequency?: number | null;
             /**
              * Mean Criticality
-             * @description Rata-rata criticality.
+             * @description Rata-rata criticality (null bila n == 0).
              * @example 5
              */
-            mean_criticality: number;
+            mean_criticality?: number | null;
             /**
              * Sd Importance
              * @description Standar deviasi importance (None bila n < 2).
@@ -6142,14 +6269,14 @@ export interface components {
             sd_criticality?: number | null;
             /**
              * Selection Essential
-             * @description True bila mean_importance >= 4 atau mean_criticality >= 4.
+             * @description True bila mean_importance >= 4 atau mean_criticality >= 4 (null bila n == 0).
              */
-            selection_essential: boolean;
+            selection_essential?: boolean | null;
             /**
              * Workload Essential
-             * @description True bila (mean_importance >= 3 dan mean_frequency >= 3) atau mean_criticality >= 4.
+             * @description True bila (mean_importance >= 3 dan mean_frequency >= 3) atau mean_criticality >= 4 (null bila n == 0).
              */
-            workload_essential: boolean;
+            workload_essential?: boolean | null;
             /**
              * Prop Selection Essential
              * @description Proporsi responden yang menandai task ini selection-essential secara individual.
@@ -6160,6 +6287,12 @@ export interface components {
              * @description Proporsi responden yang menandai task ini workload-essential secara individual.
              */
             prop_workload_essential: number;
+            /**
+             * Orphan
+             * @description True bila task ini punya baris di register pengecualian sesi.
+             * @default false
+             */
+            orphan: boolean;
         };
         /**
          * OpmJawabanItem
@@ -6320,6 +6453,50 @@ export interface components {
             sesi_periode: string;
         };
         /**
+         * OpmPengecualianRead
+         * @description Satu baris register pengecualian sesi OPM.
+         */
+        OpmPengecualianRead: {
+            /**
+             * Id
+             * @description ID baris register (UUID v4).
+             */
+            id: string;
+            /**
+             * Sesi Id
+             * @description ID sesi OPM pemilik pengecualian.
+             */
+            sesi_id: string;
+            /**
+             * Task Kode
+             * @description Kode task yang bermasalah.
+             * @example T-012
+             */
+            task_kode: string;
+            /**
+             * Alasan
+             * @description Kode alasan: `TI_DETAIL_UNMATCHED` (kode terpilih TI tak ada di katalog saat snapshot), `OPM_STD_MISSING` (task tanpa ketiga nilai standar), `OPM_RATING_MISSING` (task tanpa satu pun rating saat analisis).
+             * @enum {string}
+             */
+            alasan: "TI_DETAIL_UNMATCHED" | "OPM_STD_MISSING" | "OPM_RATING_MISSING";
+            /**
+             * Keterangan
+             * @description Keterangan bebas, bila ada.
+             */
+            keterangan?: string | null;
+            /**
+             * Status
+             * @description Status pengecualian (saat ini selalu `OPEN`).
+             */
+            status: string;
+            /**
+             * Created At
+             * Format: date-time
+             * @description Waktu pencatatan (UTC, ISO-8601).
+             */
+            created_at: string;
+        };
+        /**
          * OpmRespondenAlihkan
          * @description Payload pengalihan kepemilikan responden OPM ke partisipan lain (admin).
          *
@@ -6406,10 +6583,11 @@ export interface components {
              */
             sesi_id: string;
             /**
-             * Nama
-             * @description Nama responden.
+             * Kode Orang
+             * @description Kode orang pseudonim responden (`O-nnnn`, sama dengan register redesain); null bila responden tidak terhubung ke partisipan.
+             * @example O-0012
              */
-            nama?: string | null;
+            kode_orang?: string | null;
             /**
              * Jabatan Label
              * @description Label jabatan responden.
@@ -6558,6 +6736,19 @@ export interface components {
              * @description Waktu pembuatan (UTC, ISO-8601).
              */
             created_at: string;
+            /**
+             * Status Verifikasi
+             * @description Turunan dari register pengecualian: `UNVERIFIED` bila ada >= 1 pengecualian berstatus `OPEN`, selain itu `VERIFIED`.
+             * @default VERIFIED
+             * @enum {string}
+             */
+            status_verifikasi: "VERIFIED" | "UNVERIFIED";
+            /**
+             * Jumlah Pengecualian
+             * @description Jumlah baris register pengecualian sesi ini.
+             * @default 0
+             */
+            jumlah_pengecualian: number;
         };
         /**
          * OpmSesiTaskRead
@@ -6979,6 +7170,32 @@ export interface components {
              * @description Item pada halaman ini.
              */
             items: components["schemas"]["MataPelajaranRead"][];
+            /**
+             * Total
+             * @description Total item tersedia.
+             * @example 42
+             */
+            total: number;
+            /**
+             * Limit
+             * @description Maksimum item per halaman.
+             * @example 20
+             */
+            limit: number;
+            /**
+             * Offset
+             * @description Jumlah item yang dilewati.
+             * @example 0
+             */
+            offset: number;
+        };
+        /** Page[OpmPengecualianRead] */
+        Page_OpmPengecualianRead_: {
+            /**
+             * Items
+             * @description Item pada halaman ini.
+             */
+            items: components["schemas"]["OpmPengecualianRead"][];
             /**
              * Total
              * @description Total item tersedia.
@@ -9454,10 +9671,11 @@ export interface components {
              */
             sesi_id: string;
             /**
-             * Nama
-             * @description Nama responden.
+             * Kode Orang
+             * @description Kode orang pseudonim responden (`O-nnnn`, sama dengan register redesain); null bila responden tidak terhubung ke partisipan.
+             * @example O-0012
              */
-            nama?: string | null;
+            kode_orang?: string | null;
             /**
              * Partisipan Id
              * @description ID partisipan terhubung.
@@ -9937,7 +10155,7 @@ export interface components {
          * @description Satu usulan uraian tugas Tahap 1 yang perlu diputuskan koordinator di Tahap 2.
          *
          *     Proyeksi ringkas dari `TiUsulanRead` (`taskinv/schemas/usulan.py`) khusus untuk
-         *     layar review koordinator — menambah `responden_nama` (bukan sekadar id) dan
+         *     layar review koordinator — menambah `responden_kode_orang` (pseudonim, bukan nama) dan
          *     membuang `sesi_id`/`task_kode`/`created_at` yang tidak relevan di layar ini.
          */
         TiUsulanReviewRead: {
@@ -9954,10 +10172,11 @@ export interface components {
              */
             responden_id: string;
             /**
-             * Responden Nama
-             * @description Nama responden pengusul.
+             * Responden Kode Orang
+             * @description Kode orang pseudonim (`O-nnnn`) responden pengusul; null bila tanpa partisipan.
+             * @example O-0012
              */
-            responden_nama?: string | null;
+            responden_kode_orang?: string | null;
             /**
              * Tugas Pokok
              * @description Nama tugas pokok induk usulan (ter-resolve).
@@ -11040,6 +11259,28 @@ export interface components {
              * @description Waktu baris instrumen dibuat (oleh migrasi).
              */
             created_at: string;
+            /**
+             * Item Bank Hash
+             * @description sha256 hex (64 karakter) bank item aktif saat ini.
+             * @example <64 hex>
+             */
+            item_bank_hash: string;
+            /**
+             * Jumlah Item
+             * @description Jumlah item aktif di bank.
+             * @example 72
+             */
+            jumlah_item: number;
+            /**
+             * Jumlah Redaksi Beda
+             * @description Jumlah item aktif berstatus `REDAKSI_BEDA` terhadap CSV paket R1.1.
+             */
+            jumlah_redaksi_beda: number;
+            /**
+             * Jumlah Tidak Di Paket
+             * @description Jumlah item aktif berstatus `TIDAK_ADA_DI_PAKET` (kode tak ada di CSV paket).
+             */
+            jumlah_tidak_di_paket: number;
         };
         /**
          * WcpInstrumenUpdate
@@ -11110,10 +11351,26 @@ export interface components {
              * @example 1
              */
             urutan: number;
+            /**
+             * Status Paket
+             * @description Status redaksi item terhadap CSV paket R1.1 (normalisasi: trim + rapatkan spasi; tanda baca dan huruf besar dihitung beda). Hanya penanda: teks item tidak diubah.
+             * @example SAMA
+             * @enum {string}
+             */
+            status_paket: "SAMA" | "REDAKSI_BEDA" | "TIDAK_ADA_DI_PAKET";
+            /**
+             * Kembar Dengan
+             * @description Item kembar lintas instrumen menurut paket R1.1, berbentuk `"<INSTRUMEN>:<item_id>"`; null bila tidak punya kembar.
+             * @example DCS:C8a
+             */
+            kembar_dengan?: string | null;
         };
         /**
          * WcpItemUpdate
          * @description Field item WCP yang dapat diubah admin (partial; field kosong diabaikan).
+         *
+         *     Field asing ditolak (`extra="forbid"` → 422 `validation_error`) agar salah ketik tidak
+         *     diabaikan diam-diam.
          */
         WcpItemUpdate: {
             /**
@@ -11259,10 +11516,11 @@ export interface components {
              */
             id: string;
             /**
-             * Nama
-             * @description Nama responden.
+             * Kode Orang
+             * @description Kode orang pseudonim responden (`O-nnnn`, sama dengan register redesain); null bila responden tidak terhubung ke partisipan.
+             * @example O-0012
              */
-            nama?: string | null;
+            kode_orang?: string | null;
             /**
              * Jabatan Label
              * @description Label jabatan responden.
@@ -11289,6 +11547,11 @@ export interface components {
              * @description Waktu pendaftaran (UTC, ISO-8601).
              */
             created_at: string;
+            /**
+             * Item Bank Hash
+             * @description Hash bank item yang berlaku saat responden submit final; null untuk draft dan responden lama (sebelum fitur ini).
+             */
+            item_bank_hash?: string | null;
         };
     };
     responses: never;
@@ -11384,6 +11647,35 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Principal"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    system_fitur_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FiturListRead"];
                 };
             };
             /** @description Token tidak ada/invalid. */
@@ -14200,10 +14492,81 @@ export interface operations {
             };
         };
     };
-    wcp_item_delete: {
+    wcp_item_get: {
         parameters: {
             query?: never;
             header?: never;
+            path: {
+                /** @description Kode item orisinal. */
+                item_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WcpItemRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Hanya admin yang diizinkan. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Item tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    wcp_item_delete: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description ETag untuk concurrency control. */
+                "If-Match"?: string | null;
+            };
             path: {
                 /** @description Kode item orisinal, mis. SC1a. */
                 item_id: string;
@@ -14246,8 +14609,35 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Instrumen sudah berisi jawaban (`instrument_has_responses`). */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description If-Match tidak cocok. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Instrumen tidak OPEN, atau item terakhir dimensi. */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description If-Match wajib (REQUIRE_IF_MATCH=true). */
+            428: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -14260,7 +14650,10 @@ export interface operations {
     wcp_item_update: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description ETag untuk concurrency control. */
+                "If-Match"?: string | null;
+            };
             path: {
                 /** @description Kode item orisinal, mis. SC1a. */
                 item_id: string;
@@ -14309,6 +14702,24 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Instrumen sudah berisi jawaban (`instrument_has_responses`). */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description If-Match tidak cocok. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Validation Error */
             422: {
                 headers: {
@@ -14316,6 +14727,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description If-Match wajib (REQUIRE_IF_MATCH=true). */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
         };
@@ -14361,7 +14781,10 @@ export interface operations {
     wcp_instrumen_update: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description ETag untuk concurrency control. */
+                "If-Match"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -14389,6 +14812,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description If-Match tidak cocok. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Validation Error */
             422: {
                 headers: {
@@ -14396,6 +14828,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description If-Match wajib (REQUIRE_IF_MATCH=true). */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
             /** @description Terlalu banyak permintaan. */
@@ -14412,7 +14853,10 @@ export interface operations {
     wcp_instrumen_tutup: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -14429,6 +14873,15 @@ export interface operations {
             };
             /** @description Token tidak ada/invalid. */
             401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Idempotency-Key ini sedang diproses (atau konflik state). */
+            409: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -14459,7 +14912,10 @@ export interface operations {
     wcp_instrumen_buka_ulang: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -14476,6 +14932,15 @@ export interface operations {
             };
             /** @description Token tidak ada/invalid. */
             401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Idempotency-Key ini sedang diproses (atau konflik state). */
+            409: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -14506,7 +14971,10 @@ export interface operations {
     wcp_instrumen_reset: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -14537,6 +15005,24 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Instrumen sudah berisi jawaban (`instrument_has_responses`). */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
             /** @description Terlalu banyak permintaan. */
@@ -14605,7 +15091,10 @@ export interface operations {
     wcp_responden_create: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -14642,7 +15131,7 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
-            /** @description Instrumen WCP tidak OPEN. */
+            /** @description Instrumen WCP tidak OPEN, atau Idempotency-Key sedang diproses. */
             409: {
                 headers: {
                     [name: string]: unknown;
@@ -14742,7 +15231,10 @@ export interface operations {
     wcp_responden_delete: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description ETag untuk concurrency control. */
+                "If-Match"?: string | null;
+            };
             path: {
                 /** @description ID responden. */
                 responden_id: string;
@@ -14785,6 +15277,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description If-Match tidak cocok. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Validation Error */
             422: {
                 headers: {
@@ -14792,6 +15293,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description If-Match wajib (REQUIRE_IF_MATCH=true). */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
             /** @description Terlalu banyak permintaan. */
@@ -14876,7 +15386,10 @@ export interface operations {
     wcp_jawaban_save_draft: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description ETag untuk concurrency control. */
+                "If-Match"?: string | null;
+            };
             path: {
                 /** @description ID responden. */
                 responden_id: string;
@@ -14934,8 +15447,26 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description If-Match tidak cocok. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Responden sudah submit final, atau instrumen tidak OPEN. */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description If-Match wajib (REQUIRE_IF_MATCH=true). */
+            428: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -14957,7 +15488,10 @@ export interface operations {
     wcp_jawaban_submit: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
             path: {
                 /** @description ID responden. */
                 responden_id: string;
@@ -15002,6 +15536,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Idempotency-Key ini sedang diproses (atau konflik state). */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Responden sudah submit, jawaban tersimpan belum lengkap, atau instrumen tidak OPEN. */
             422: {
                 headers: {
@@ -15025,7 +15568,10 @@ export interface operations {
     wcp_analisis: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -15047,6 +15593,24 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Idempotency-Key ini sedang diproses (atau konflik state). */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
             /** @description Terlalu banyak permintaan. */
@@ -15778,6 +16342,79 @@ export interface operations {
                 };
             };
             /** @description Bukan admin atau responden sesi OPM ini. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Sesi OPM tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    opm_pengecualian_list: {
+        parameters: {
+            query?: {
+                /** @description Maks item per halaman. */
+                limit?: number;
+                /** @description Jumlah item yang dilewati. */
+                offset?: number;
+            };
+            header?: never;
+            path: {
+                /** @description ID sesi OPM. */
+                sesi_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Page_OpmPengecualianRead_"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin. */
             403: {
                 headers: {
                     [name: string]: unknown;
@@ -16774,10 +17411,81 @@ export interface operations {
             };
         };
     };
-    dcs_item_delete: {
+    dcs_item_get: {
         parameters: {
             query?: never;
             header?: never;
+            path: {
+                /** @description Kode item orisinal. */
+                item_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DcsItemRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Hanya admin yang diizinkan. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Item tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    dcs_item_delete: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description ETag untuk concurrency control. */
+                "If-Match"?: string | null;
+            };
             path: {
                 /** @description Kode item orisinal, mis. D1a. */
                 item_id: string;
@@ -16820,8 +17528,35 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Instrumen sudah berisi jawaban (`instrument_has_responses`). */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description If-Match tidak cocok. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Instrumen tidak OPEN, atau item terakhir sub-skala. */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description If-Match wajib (REQUIRE_IF_MATCH=true). */
+            428: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -16834,7 +17569,10 @@ export interface operations {
     dcs_item_update: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description ETag untuk concurrency control. */
+                "If-Match"?: string | null;
+            };
             path: {
                 /** @description Kode item orisinal, mis. D1a. */
                 item_id: string;
@@ -16883,6 +17621,24 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Instrumen sudah berisi jawaban (`instrument_has_responses`). */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description If-Match tidak cocok. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Validation Error */
             422: {
                 headers: {
@@ -16890,6 +17646,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description If-Match wajib (REQUIRE_IF_MATCH=true). */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
         };
@@ -16935,7 +17700,10 @@ export interface operations {
     dcs_instrumen_update: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description ETag untuk concurrency control. */
+                "If-Match"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -16963,6 +17731,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description If-Match tidak cocok. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Validation Error */
             422: {
                 headers: {
@@ -16970,6 +17747,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description If-Match wajib (REQUIRE_IF_MATCH=true). */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
             /** @description Terlalu banyak permintaan. */
@@ -16986,7 +17772,10 @@ export interface operations {
     dcs_instrumen_tutup: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -17003,6 +17792,15 @@ export interface operations {
             };
             /** @description Token tidak ada/invalid. */
             401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Idempotency-Key ini sedang diproses (atau konflik state). */
+            409: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -17033,7 +17831,10 @@ export interface operations {
     dcs_instrumen_buka_ulang: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -17050,6 +17851,15 @@ export interface operations {
             };
             /** @description Token tidak ada/invalid. */
             401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Idempotency-Key ini sedang diproses (atau konflik state). */
+            409: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -17080,7 +17890,10 @@ export interface operations {
     dcs_instrumen_reset: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -17111,6 +17924,24 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Instrumen sudah berisi jawaban (`instrument_has_responses`). */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
             /** @description Terlalu banyak permintaan. */
@@ -17179,7 +18010,10 @@ export interface operations {
     dcs_responden_create: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -17216,7 +18050,7 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
-            /** @description Instrumen DCS tidak OPEN. */
+            /** @description Instrumen DCS tidak OPEN, atau Idempotency-Key sedang diproses. */
             409: {
                 headers: {
                     [name: string]: unknown;
@@ -17316,7 +18150,10 @@ export interface operations {
     dcs_responden_delete: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description ETag untuk concurrency control. */
+                "If-Match"?: string | null;
+            };
             path: {
                 /** @description ID responden. */
                 responden_id: string;
@@ -17359,6 +18196,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description If-Match tidak cocok. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Validation Error */
             422: {
                 headers: {
@@ -17366,6 +18212,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description If-Match wajib (REQUIRE_IF_MATCH=true). */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
             /** @description Terlalu banyak permintaan. */
@@ -17450,7 +18305,10 @@ export interface operations {
     dcs_jawaban_save_draft: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description ETag untuk concurrency control. */
+                "If-Match"?: string | null;
+            };
             path: {
                 /** @description ID responden. */
                 responden_id: string;
@@ -17508,8 +18366,26 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description If-Match tidak cocok. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Responden sudah submit final, atau instrumen tidak OPEN. */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description If-Match wajib (REQUIRE_IF_MATCH=true). */
+            428: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -17531,7 +18407,10 @@ export interface operations {
     dcs_jawaban_submit: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
             path: {
                 /** @description ID responden. */
                 responden_id: string;
@@ -17576,6 +18455,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Idempotency-Key ini sedang diproses (atau konflik state). */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Responden sudah submit, jawaban tersimpan belum lengkap, atau instrumen tidak OPEN. */
             422: {
                 headers: {
@@ -17599,7 +18487,10 @@ export interface operations {
     dcs_analisis: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -17621,6 +18512,24 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Idempotency-Key ini sedang diproses (atau konflik state). */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
             /** @description Terlalu banyak permintaan. */
@@ -17908,7 +18817,7 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
-            /** @description Masih ada sesi Task Inventory aktif. */
+            /** @description Katalog masih dipakai sesi TI/OPM (`catalog_in_use`). */
             409: {
                 headers: {
                     [name: string]: unknown;

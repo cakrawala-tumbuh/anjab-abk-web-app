@@ -19,14 +19,14 @@ import { AturKoordinator } from "@/app/(auth)/task-inventory/[sesi_id]/atur-koor
 // ── Fixtures ────────────────────────────────────────────────────────────────
 function resp(
   id: string,
-  nama: string,
+  kode: string,
   partisipanId: string | null,
   over: Partial<TiRespondenRead> = {},
 ): TiRespondenRead {
   return {
     id,
     sesi_id: "sesi_1",
-    nama,
+    kode_orang: kode,
     partisipan_id: partisipanId,
     tahap1_submit: false,
     tahap1_submitted_at: null,
@@ -36,12 +36,9 @@ function resp(
     ...over,
   };
 }
-const responden = [
-  resp("trsp_a", "Agustinus Widjianta", "par_a"),
-  resp("trsp_b", "Susana", "par_b"),
-];
+const responden = [resp("trsp_a", "O-0001", "par_a"), resp("trsp_b", "O-0002", "par_b")];
 // Responden manual (tanpa partisipan_id) tidak boleh muncul sebagai kandidat.
-const respondenManual = resp("trsp_x", "Orang Manual", null);
+const respondenManual = resp("trsp_x", "O-0099", null);
 
 function renderCmp(over: Partial<Parameters<typeof AturKoordinator>[0]> = {}) {
   return render(
@@ -67,20 +64,20 @@ beforeEach(() => {
 });
 
 describe("AturKoordinator — hanya responden sesi yang dapat dipilih", () => {
-  it("opsi select = responden sesi (bernama) + opsi kosong; responden manual tidak muncul", () => {
+  it("opsi select = responden sesi (berkode orang) + opsi kosong; responden manual tidak muncul", () => {
     renderCmp({ responden: [...responden, respondenManual] });
-    expect(screen.getByRole("option", { name: "Agustinus Widjianta" })).toBeInTheDocument();
-    expect(screen.getByRole("option", { name: "Susana" })).toBeInTheDocument();
+    expect(screen.getByRole("option", { name: "O-0001" })).toBeInTheDocument();
+    expect(screen.getByRole("option", { name: "O-0002" })).toBeInTheDocument();
     expect(screen.getByRole("option", { name: "— Tidak ada koordinator —" })).toBeInTheDocument();
-    expect(screen.queryByRole("option", { name: "Orang Manual" })).toBeNull();
+    expect(screen.queryByRole("option", { name: "O-0099" })).toBeNull();
     // total opsi = 2 responden bertaut partisipan + 1 kosong
     expect(screen.getAllByRole("option")).toHaveLength(3);
   });
 
-  it("menampilkan koordinator saat ini berdasarkan nama, bukan id", () => {
+  it("menampilkan koordinator saat ini berdasarkan kode orang, bukan id", () => {
     renderCmp({ koordinatorId: "par_b" });
-    // "Susana" juga muncul sebagai opsi; batasi ke baris "Saat ini:"
-    expect(screen.getByText(/Saat ini:/)).toHaveTextContent("Susana");
+    // "O-0002" juga muncul sebagai opsi; batasi ke baris "Saat ini:"
+    expect(screen.getByText(/Saat ini:/)).toHaveTextContent("O-0002");
   });
 
   it("tombol Simpan nonaktif sampai pilihan berubah", () => {
