@@ -12,7 +12,7 @@ DOCKERFILE ?= Dockerfile.test
 DOCKER_RUN  = docker run --rm $(IMAGE_NAME)
 
 .DEFAULT_GOAL := test
-.PHONY: build lint unit test clean shell help \
+.PHONY: build lint unit test test-arm64 clean shell help \
         e2e e2e-build e2e-up e2e-down e2e-reset e2e-logs \
         backup-config restore-config backup-list
 
@@ -34,6 +34,10 @@ unit: build
 
 ## test: gate lengkap = lint + unit. Dipakai LOKAL dan CI (identik).
 test: lint unit
+
+## test-arm64: uji asap image runtime linux/arm64 (uname -m = aarch64, GET /api/version 200); terpisah dari `make test`
+test-arm64:
+	./scripts/smoke-arm64.sh
 
 ## clean: hapus image test
 clean:

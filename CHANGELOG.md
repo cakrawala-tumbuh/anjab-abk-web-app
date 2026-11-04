@@ -9,6 +9,10 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ### Ditambahkan
 
+- Image Docker web kini diterbitkan multi-arsitektur `linux/amd64` dan `linux/arm64` pada rilis berikutnya
+  (`platforms` di `release.yml`). Target baru `make test-arm64` dan job CI `arm64` (runner
+  `ubuntu-24.04-arm`) membangun image runtime arm64, memastikan `uname -m` = `aarch64`, dan
+  `GET /api/version` menjawab 200 (issue #95).
 - Halaman hasil OPM menampilkan sebaran rating (min / median / maks) untuk Importance, Frequency,
   dan Criticality, serta penanda amber "Perlu telaah" bila `rating_spread` benar. Nilai kosong tampil
   "—" (issue #91).
