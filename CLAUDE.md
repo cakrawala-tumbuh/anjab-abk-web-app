@@ -105,7 +105,7 @@ mengirim header itu, sehingga `REQUIRE_IF_MATCH` bisa dihidupkan.
   `AnggotaSection.panelEtag`; disegarkan `router.refresh()`).
 - Jaring pengaman: `src/test/ifmatch-tulis-master.test.tsx` memindai SEMUA operasi ber-header `If-Match`
   di `schema.ts` dan memastikan tiap pemanggilannya ada di berkas yang memakai `headerIfMatch`/`hapusBerEtag`.
-  Detail keputusan: issue `cakrawala-tumbuh/anjab-abk-web-app#88`.
+  Detail keputusan: issue #88 repo ini.
 
 ### [2026-11-04] `If-Match` di 12 PATCH redesain: hook `useRekamanBerEtag`, GET saat panel dibuka
 
