@@ -171,6 +171,7 @@ describe("koreksi langkah", () => {
     expect(post).toHaveBeenCalledWith(P_KOREKSI, {
       params: { path: { langkah_id: "l1" } },
       body: { isi: "Seharusnya oleh kepala TU", konfirmasi_id: "kf1" },
+      headers: { "Idempotency-Key": expect.any(String) },
     });
   });
 
@@ -228,7 +229,10 @@ describe("Isian Saya", () => {
     render(await IsianSayaPage());
     fireEvent.click(screen.getByRole("button", { name: "Ralat isian" }));
     await waitFor(() => expect(push).toHaveBeenCalledWith("/redesain-sekolah/konfirmasi/baru1"));
-    expect(post).toHaveBeenCalledWith(P_RALAT, { params: { path: { konfirmasi_id: "a" } } });
+    expect(post).toHaveBeenCalledWith(P_RALAT, {
+      params: { path: { konfirmasi_id: "a" } },
+      headers: { "Idempotency-Key": expect.any(String) },
+    });
   });
 
   it("ralat 409 → pesan 'sudah diralat atau masih draf'", async () => {

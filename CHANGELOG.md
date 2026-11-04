@@ -9,6 +9,11 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ### Ditambahkan
 
+- Aksi POST di portal sekolah modul redesain (mulai isi, kunci cerita, tampilkan dugaan, kirim
+  konfirmasi, ralat isian, tambah koreksi) kini mengirim `Idempotency-Key` per upaya: klik ganda
+  atau kirim ulang setelah gagal memakai key yang sama, key diganti hanya setelah sukses. 409
+  `conflict` tampil sebagai "Permintaan sebelumnya masih diproses."
+
 - 14 operasi ber-`If-Match` lainnya kini mengirim header itu: ubah partisipan, anggota/koordinator
   panel SME, tugas pokok, detil tugas, uraian tugas, koordinator sesi Task Inventory (PATCH);
   hapus responden WCP/DCS/OPM/Task Inventory, hapus sesi OPM/Task Inventory, hapus usulan (DELETE);

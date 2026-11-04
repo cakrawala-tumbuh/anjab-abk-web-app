@@ -5,7 +5,9 @@ import { PeringatanPrivasi } from "@/components/peringatan-privasi";
 import { withServerAuth } from "@/lib/api/client";
 import { apiErrorDari } from "@/lib/api/errors";
 import type { AlurRead, LangkahAlurRead } from "@/lib/api/schema";
+import { headerIdempotencyKey, petakanKonkurensi } from "@/lib/konkurensi";
 import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
+import { useIdempotencyKey } from "@/lib/use-idempotency-key";
 
 /** Pesan toast sukses setelah koreksi langkah tercatat. */
 export const PESAN_KOREKSI_TERCATAT = "Koreksi tercatat; Tim akan merekonsiliasi";
@@ -25,7 +27,8 @@ export function urutkanLangkah(langkah: ReadonlyArray<LangkahAlurRead>): Langkah
  *
  * Mengirim `POST /api/v1/redesain/langkah/{id}/koreksi` `{isi, konfirmasi_id}`. Koreksi
  * append-only dan TIDAK mengubah tampilan langkah; setelah 201 hanya toast sukses dan
- * formulir ditutup. Kegagalan (mis. 422 isi kosong) ditampilkan inline dan lewat toast.
+ * formulir ditutup. POST membawa `Idempotency-Key` per upaya (diganti hanya setelah sukses,
+ * sehingga kirim ulang setelah gagal memakai key yang sama). Kegagalan (mis. 422 isi kosong) ditampilkan inline dan lewat toast.
  *
  * @param props.langkahId - ID langkah yang dikoreksi.
  * @param props.konfirmasiId - ID konfirmasi pengisi (wajib bagi sekolah-pengisi).
@@ -44,6 +47,7 @@ export function KoreksiLangkah({
   const [isi, setIsi] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const idem = useIdempotencyKey();
 
   async function kirim() {
     setLoading(true);
@@ -54,13 +58,16 @@ export function KoreksiLangkah({
         {
           params: { path: { langkah_id: langkahId } },
           body: { isi, konfirmasi_id: konfirmasiId },
+          headers: headerIdempotencyKey(idem.key),
         },
       );
       if (!res.data) throw apiErrorDari(res);
+      idem.perbarui();
       notifySukses(PESAN_KOREKSI_TERCATAT);
       setIsi("");
       setTerbuka(false);
-    } catch (err) {
+    } catch (galatMentah) {
+      const err = petakanKonkurensi(galatMentah, true);
       setError(pesanGagal(err));
       notifyGagal(err);
     } finally {

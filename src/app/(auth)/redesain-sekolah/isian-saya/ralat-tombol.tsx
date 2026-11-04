@@ -6,12 +6,16 @@ import { withServerAuth } from "@/lib/api/client";
 import { ApiError, apiErrorDari } from "@/lib/api/errors";
 import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
 import { PESAN_RALAT_409 } from "@/lib/redesain-konfirmasi";
+import { headerIdempotencyKey, petakanKonkurensi } from "@/lib/konkurensi";
+import { useIdempotencyKey } from "@/lib/use-idempotency-key";
 
 /**
  * Tombol "Ralat isian": membuat draf ralat dari isian terkirim lalu membuka wizard
  * record BARU (cerita & dugaan sudah tersalin backend, sehingga wizard langsung di langkah 2).
  *
  * Versi lama tidak pernah ditimpa. 409 → "Isian ini sudah diralat atau masih draf".
+ * POST membawa `Idempotency-Key` per upaya; key diganti hanya setelah respons sukses, dan
+ * 409 `conflict` (masih diproses) dipetakan ke pesan baku, bukan pesan 409 guard ralat.
  *
  * @param props.konfirmasiId - ID isian terkirim yang diralat.
  * @param props.accessToken - Token akses dari Server Component induk.
@@ -26,6 +30,7 @@ export function RalatTombol({
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const idem = useIdempotencyKey();
 
   async function ralat() {
     setLoading(true);
@@ -33,13 +38,18 @@ export function RalatTombol({
     try {
       const res = await withServerAuth(accessToken).POST(
         "/api/v1/redesain/konfirmasi/{konfirmasi_id}/ralat",
-        { params: { path: { konfirmasi_id: konfirmasiId } } },
+        {
+          params: { path: { konfirmasi_id: konfirmasiId } },
+          headers: headerIdempotencyKey(idem.key),
+        },
       );
       if (!res.data) throw apiErrorDari(res);
+      idem.perbarui();
       notifySukses("Draf ralat dibuat.");
       router.push(`/redesain-sekolah/konfirmasi/${res.data.id}`);
-    } catch (err) {
-      if (err instanceof ApiError && err.status === 409) {
+    } catch (galatMentah) {
+      const err = petakanKonkurensi(galatMentah, true);
+      if (err instanceof ApiError && err.status === 409 && err.code !== "conflict") {
         setError(PESAN_RALAT_409);
         notifyGagal(
           new ApiError(

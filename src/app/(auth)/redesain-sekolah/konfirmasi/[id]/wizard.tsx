@@ -14,7 +14,8 @@ import type {
 } from "@/lib/api/schema";
 import { PanelAlur } from "./panel-alur";
 import { PetunjukKonfirmasi } from "./petunjuk-konfirmasi";
-import { bacaEtag, headerIfMatch, petakanKonkurensi } from "@/lib/konkurensi";
+import { bacaEtag, headerIdempotencyKey, headerIfMatch, petakanKonkurensi } from "@/lib/konkurensi";
+import { useIdempotencyKey } from "@/lib/use-idempotency-key";
 import { notifyGagal, notifySukses } from "@/lib/notify";
 import {
   OPSI_INDIKASI,
@@ -152,6 +153,10 @@ export function WizardKonfirmasi({
   const [dugaanLokal, setDugaanLokal] = useState<DugaanRead | null>(dugaanAwal);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // Satu key per aksi POST berbeda agar key tidak dipakai lintas rute.
+  const idemKunci = useIdempotencyKey();
+  const idemDugaan = useIdempotencyKey();
+  const idemKirim = useIdempotencyKey();
 
   const terkirim = konfirmasi.status === "terkirim";
   const maks = langkahMaks(konfirmasi);
@@ -166,8 +171,19 @@ export function WizardKonfirmasi({
     setIsian((prev) => ({ ...prev, [k]: v }));
   }
 
-  /** Jalankan satu aksi API dengan penanganan loading/galat/notifikasi seragam. */
-  async function jalankan(aksi: () => Promise<void>, sukses: string | null): Promise<boolean> {
+  /**
+   * Jalankan satu aksi API dengan penanganan loading/galat/notifikasi seragam.
+   *
+   * @param aksi - Aksi yang dijalankan; melempar bila gagal.
+   * @param sukses - Pesan toast sukses, atau `null` tanpa toast.
+   * @param idempoten - `true` bila aksi berisi POST ber-`Idempotency-Key`, sehingga 409
+   *   `conflict` dipetakan ke pesan "masih diproses".
+   */
+  async function jalankan(
+    aksi: () => Promise<void>,
+    sukses: string | null,
+    idempoten = false,
+  ): Promise<boolean> {
     setLoading(true);
     setError(null);
     try {
@@ -175,7 +191,7 @@ export function WizardKonfirmasi({
       if (sukses) notifySukses(sukses);
       return true;
     } catch (galatMentah) {
-      const err = petakanKonkurensi(galatMentah);
+      const err = petakanKonkurensi(galatMentah, idempoten);
       const pesan = pesanGagalWizard(err);
       setError(pesan);
       notifyGagal(
@@ -215,14 +231,23 @@ export function WizardKonfirmasi({
 
   async function kunciCerita() {
     if (!confirm("Cerita tidak dapat diubah lagi")) return;
-    const ok = await jalankan(async () => {
-      await patch(payloadDari(isian, ["cerita_sebelum"]));
-      const res = await client().POST("/api/v1/redesain/konfirmasi/{konfirmasi_id}/kunci-cerita", {
-        params: { path: { konfirmasi_id: id } },
-      });
-      if (res.error) throw apiErrorDari(res);
-      perbaruiEtag(res.response);
-    }, "Cerita dikunci.");
+    const ok = await jalankan(
+      async () => {
+        await patch(payloadDari(isian, ["cerita_sebelum"]));
+        const res = await client().POST(
+          "/api/v1/redesain/konfirmasi/{konfirmasi_id}/kunci-cerita",
+          {
+            params: { path: { konfirmasi_id: id } },
+            headers: headerIdempotencyKey(idemKunci.key),
+          },
+        );
+        if (res.error) throw apiErrorDari(res);
+        idemKunci.perbarui();
+        perbaruiEtag(res.response);
+      },
+      "Cerita dikunci.",
+      true,
+    );
     if (ok) {
       setDilihat(null);
       router.refresh();
@@ -230,14 +255,22 @@ export function WizardKonfirmasi({
   }
 
   async function tampilkanDugaan() {
-    const ok = await jalankan(async () => {
-      const res = await client().POST(
-        "/api/v1/redesain/konfirmasi/{konfirmasi_id}/tampilkan-dugaan",
-        { params: { path: { konfirmasi_id: id } } },
-      );
-      if (!res.data) throw apiErrorDari(res);
-      setDugaanLokal(res.data);
-    }, null);
+    const ok = await jalankan(
+      async () => {
+        const res = await client().POST(
+          "/api/v1/redesain/konfirmasi/{konfirmasi_id}/tampilkan-dugaan",
+          {
+            params: { path: { konfirmasi_id: id } },
+            headers: headerIdempotencyKey(idemDugaan.key),
+          },
+        );
+        if (!res.data) throw apiErrorDari(res);
+        idemDugaan.perbarui();
+        setDugaanLokal(res.data);
+      },
+      null,
+      true,
+    );
     if (ok) {
       setDilihat(null);
       router.refresh();
@@ -251,13 +284,19 @@ export function WizardKonfirmasi({
 
   async function kirim() {
     if (!confirm("Kirim konfirmasi? Setelah dikirim, isian tidak dapat diubah lagi.")) return;
-    const ok = await jalankan(async () => {
-      await patch(payloadDari(isian, FIELD_C_E));
-      const res = await client().POST("/api/v1/redesain/konfirmasi/{konfirmasi_id}/kirim", {
-        params: { path: { konfirmasi_id: id } },
-      });
-      if (res.error) throw apiErrorDari(res);
-    }, "Konfirmasi terkirim.");
+    const ok = await jalankan(
+      async () => {
+        await patch(payloadDari(isian, FIELD_C_E));
+        const res = await client().POST("/api/v1/redesain/konfirmasi/{konfirmasi_id}/kirim", {
+          params: { path: { konfirmasi_id: id } },
+          headers: headerIdempotencyKey(idemKirim.key),
+        });
+        if (res.error) throw apiErrorDari(res);
+        idemKirim.perbarui();
+      },
+      "Konfirmasi terkirim.",
+      true,
+    );
     if (ok) router.refresh();
   }
 
