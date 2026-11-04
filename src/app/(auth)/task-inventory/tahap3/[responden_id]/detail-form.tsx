@@ -426,7 +426,7 @@ export function DetailForm({
         "/api/v1/task-inventory/sesi/responden/{responden_id}/detail/submit",
         {
           params: { path: { responden_id: respondenId } },
-          headers: headerIdempotencyKey(idem.key),
+          headers: headerIdempotencyKey(idem.keyUntuk(payload)),
         },
       );
       const reqId = response.headers.get("x-request-id");

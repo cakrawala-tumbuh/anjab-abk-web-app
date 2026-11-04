@@ -338,12 +338,13 @@ export function OpmForm({
     let idempoten = false;
     try {
       const client = withServerAuth(accessToken);
+      const jawabanBody = { jawaban: buildSubmitPayload() };
       const { error: saveError, response: saveResponse } = await client.PUT(
         "/api/v1/opm/sesi/responden/{responden_id}/jawaban",
         {
           params: { path: { responden_id: respondenId } },
           headers: headerIfMatch(etag),
-          body: { jawaban: buildSubmitPayload() },
+          body: jawabanBody,
         },
       );
       const saveReqId = saveResponse.headers.get("x-request-id");
@@ -355,7 +356,7 @@ export function OpmForm({
         "/api/v1/opm/sesi/responden/{responden_id}/jawaban/submit",
         {
           params: { path: { responden_id: respondenId } },
-          headers: headerIdempotencyKey(idem.key),
+          headers: headerIdempotencyKey(idem.keyUntuk(jawabanBody)),
         },
       );
       const reqId = response.headers.get("x-request-id");

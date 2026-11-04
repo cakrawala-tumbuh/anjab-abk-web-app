@@ -233,12 +233,13 @@ export function WizardKonfirmasi({
     if (!confirm("Cerita tidak dapat diubah lagi")) return;
     const ok = await jalankan(
       async () => {
-        await patch(payloadDari(isian, ["cerita_sebelum"]));
+        const isiKunci = payloadDari(isian, ["cerita_sebelum"]);
+        await patch(isiKunci);
         const res = await client().POST(
           "/api/v1/redesain/konfirmasi/{konfirmasi_id}/kunci-cerita",
           {
             params: { path: { konfirmasi_id: id } },
-            headers: headerIdempotencyKey(idemKunci.key),
+            headers: headerIdempotencyKey(idemKunci.keyUntuk(isiKunci)),
           },
         );
         if (res.error) throw apiErrorDari(res);
@@ -286,10 +287,11 @@ export function WizardKonfirmasi({
     if (!confirm("Kirim konfirmasi? Setelah dikirim, isian tidak dapat diubah lagi.")) return;
     const ok = await jalankan(
       async () => {
-        await patch(payloadDari(isian, FIELD_C_E));
+        const isiKirim = payloadDari(isian, FIELD_C_E);
+        await patch(isiKirim);
         const res = await client().POST("/api/v1/redesain/konfirmasi/{konfirmasi_id}/kirim", {
           params: { path: { konfirmasi_id: id } },
-          headers: headerIdempotencyKey(idemKirim.key),
+          headers: headerIdempotencyKey(idemKirim.keyUntuk(isiKirim)),
         });
         if (res.error) throw apiErrorDari(res);
         idemKirim.perbarui();

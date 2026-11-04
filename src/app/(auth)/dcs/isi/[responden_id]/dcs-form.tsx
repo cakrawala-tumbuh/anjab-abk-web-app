@@ -118,12 +118,13 @@ export function DcsForm({
     let idempoten = false;
     try {
       const client = withServerAuth(accessToken);
+      const jawabanBody = { jawaban: buildJawabanPayload() };
       const { error: saveError, response: saveResponse } = await client.PUT(
         "/api/v1/dcs/responden/{responden_id}/jawaban",
         {
           params: { path: { responden_id: respondenId } },
           headers: headerIfMatch(etag),
-          body: { jawaban: buildJawabanPayload() },
+          body: jawabanBody,
         },
       );
       const saveReqId = saveResponse.headers.get("x-request-id");
@@ -135,7 +136,7 @@ export function DcsForm({
         "/api/v1/dcs/responden/{responden_id}/jawaban/submit",
         {
           params: { path: { responden_id: respondenId } },
-          headers: headerIdempotencyKey(idem.key),
+          headers: headerIdempotencyKey(idem.keyUntuk(jawabanBody)),
         },
       );
       const reqId = response.headers.get("x-request-id");

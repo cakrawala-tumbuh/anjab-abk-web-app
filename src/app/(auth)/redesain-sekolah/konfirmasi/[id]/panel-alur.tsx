@@ -53,12 +53,13 @@ export function KoreksiLangkah({
     setLoading(true);
     setError(null);
     try {
+      const body = { isi, konfirmasi_id: konfirmasiId };
       const res = await withServerAuth(accessToken).POST(
         "/api/v1/redesain/langkah/{langkah_id}/koreksi",
         {
           params: { path: { langkah_id: langkahId } },
-          body: { isi, konfirmasi_id: konfirmasiId },
-          headers: headerIdempotencyKey(idem.key),
+          body,
+          headers: headerIdempotencyKey(idem.keyUntuk(body)),
         },
       );
       if (!res.data) throw apiErrorDari(res);
