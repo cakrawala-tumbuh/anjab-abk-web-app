@@ -19113,6 +19113,26 @@
             "BearerAuth": []
           }
         ],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Kunci idempotency opsional.",
+              "title": "Idempotency-Key"
+            },
+            "description": "Kunci idempotency opsional."
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -19130,6 +19150,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/KodeOrangRead"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Partisipan sudah memiliki kode.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -19166,16 +19196,6 @@
           },
           "404": {
             "description": "partisipan_id tidak ditemukan.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Partisipan sudah memiliki kode.",
             "content": {
               "application/json": {
                 "schema": {
@@ -19420,6 +19440,24 @@
               "type": "string",
               "title": "Kode Orang Id"
             }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "ETag untuk concurrency control.",
+              "title": "If-Match"
+            },
+            "description": "ETag untuk concurrency control."
           }
         ],
         "requestBody": {
@@ -19439,6 +19477,26 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/KodeOrangRead"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "If-Match tidak cocok.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "If-Match wajib (REQUIRE_IF_MATCH=true).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -19621,6 +19679,26 @@
             "BearerAuth": []
           }
         ],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Kunci idempotency opsional.",
+              "title": "Idempotency-Key"
+            },
+            "description": "Kunci idempotency opsional."
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -19638,6 +19716,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/KonteksRead"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Kode konteks sudah ada.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -19664,16 +19752,6 @@
           },
           "403": {
             "description": "Bukan anggota grup tim-kajian.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Kode konteks sudah ada.",
             "content": {
               "application/json": {
                 "schema": {
@@ -19918,6 +19996,24 @@
               "type": "string",
               "title": "Konteks Id"
             }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "ETag untuk concurrency control.",
+              "title": "If-Match"
+            },
+            "description": "ETag untuk concurrency control."
           }
         ],
         "requestBody": {
@@ -19937,6 +20033,26 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/KonteksRead"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "If-Match tidak cocok.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "If-Match wajib (REQUIRE_IF_MATCH=true).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -20119,6 +20235,26 @@
             "BearerAuth": []
           }
         ],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Kunci idempotency opsional.",
+              "title": "Idempotency-Key"
+            },
+            "description": "Kunci idempotency opsional."
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -20136,6 +20272,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/MasalahRead"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Kode masalah bentrok.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -20172,16 +20318,6 @@
           },
           "422": {
             "description": "Payload tidak valid / konteks, sekolah, atau uraian tugas tak dikenal.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Kode masalah bentrok.",
             "content": {
               "application/json": {
                 "schema": {
@@ -20416,6 +20552,24 @@
               "type": "string",
               "title": "Masalah Id"
             }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "ETag untuk concurrency control.",
+              "title": "If-Match"
+            },
+            "description": "ETag untuk concurrency control."
           }
         ],
         "requestBody": {
@@ -20435,6 +20589,26 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/MasalahRead"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "If-Match tidak cocok.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "If-Match wajib (REQUIRE_IF_MATCH=true).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -20524,6 +20698,24 @@
               "type": "string",
               "title": "Masalah Id"
             }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Kunci idempotency opsional.",
+              "title": "Idempotency-Key"
+            },
+            "description": "Kunci idempotency opsional."
           }
         ],
         "requestBody": {
@@ -20543,6 +20735,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/MasalahRead"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Idempotency-Key ini sedang diproses (atau konflik state).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -20831,6 +21033,26 @@
             "BearerAuth": []
           }
         ],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Kunci idempotency opsional.",
+              "title": "Idempotency-Key"
+            },
+            "description": "Kunci idempotency opsional."
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -20848,6 +21070,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/AlternatifRead"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Kode alternatif bentrok.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -20874,16 +21106,6 @@
           },
           "403": {
             "description": "Bukan anggota grup tim-kajian.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Kode alternatif bentrok.",
             "content": {
               "application/json": {
                 "schema": {
@@ -21128,6 +21350,24 @@
               "type": "string",
               "title": "Alternatif Id"
             }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "ETag untuk concurrency control.",
+              "title": "If-Match"
+            },
+            "description": "ETag untuk concurrency control."
           }
         ],
         "requestBody": {
@@ -21147,6 +21387,26 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/AlternatifRead"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "If-Match tidak cocok.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "If-Match wajib (REQUIRE_IF_MATCH=true).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -21329,6 +21589,26 @@
             "BearerAuth": []
           }
         ],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Kunci idempotency opsional.",
+              "title": "Idempotency-Key"
+            },
+            "description": "Kunci idempotency opsional."
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -21346,6 +21626,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/CakupanJabatanRead"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Pasangan role_kode dan cabang sudah ada.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -21372,16 +21662,6 @@
           },
           "403": {
             "description": "Bukan anggota grup tim-kajian.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Pasangan role_kode dan cabang sudah ada.",
             "content": {
               "application/json": {
                 "schema": {
@@ -21626,6 +21906,24 @@
               "type": "string",
               "title": "Cakupan Id"
             }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "ETag untuk concurrency control.",
+              "title": "If-Match"
+            },
+            "description": "ETag untuk concurrency control."
           }
         ],
         "requestBody": {
@@ -21645,6 +21943,26 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/CakupanJabatanRead"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "If-Match tidak cocok.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "If-Match wajib (REQUIRE_IF_MATCH=true).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -21827,6 +22145,26 @@
             "BearerAuth": []
           }
         ],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Kunci idempotency opsional.",
+              "title": "Idempotency-Key"
+            },
+            "description": "Kunci idempotency opsional."
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -21844,6 +22182,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/VersiMetodeRead"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Pasangan versi dan bagian sudah ada.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -21870,16 +22218,6 @@
           },
           "403": {
             "description": "Bukan anggota grup tim-kajian.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Pasangan versi dan bagian sudah ada.",
             "content": {
               "application/json": {
                 "schema": {
@@ -22124,6 +22462,24 @@
               "type": "string",
               "title": "Versi Id"
             }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "ETag untuk concurrency control.",
+              "title": "If-Match"
+            },
+            "description": "ETag untuk concurrency control."
           }
         ],
         "requestBody": {
@@ -22143,6 +22499,26 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/VersiMetodeRead"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "If-Match tidak cocok.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "If-Match wajib (REQUIRE_IF_MATCH=true).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -22335,6 +22711,26 @@
             "BearerAuth": []
           }
         ],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Kunci idempotency opsional.",
+              "title": "Idempotency-Key"
+            },
+            "description": "Kunci idempotency opsional."
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -22352,6 +22748,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/SesiRead"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Pasangan kode sesi + orang ganda.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -22378,16 +22784,6 @@
           },
           "403": {
             "description": "Bukan anggota grup tim-kajian.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Pasangan kode sesi + orang ganda.",
             "content": {
               "application/json": {
                 "schema": {
@@ -22746,6 +23142,24 @@
               "type": "string",
               "title": "Sesi Id"
             }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "ETag untuk concurrency control.",
+              "title": "If-Match"
+            },
+            "description": "ETag untuk concurrency control."
           }
         ],
         "requestBody": {
@@ -22765,6 +23179,26 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/SesiRead"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "If-Match tidak cocok.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "If-Match wajib (REQUIRE_IF_MATCH=true).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -22957,6 +23391,26 @@
             "BearerAuth": []
           }
         ],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Kunci idempotency opsional.",
+              "title": "Idempotency-Key"
+            },
+            "description": "Kunci idempotency opsional."
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -22974,6 +23428,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/BuktiRead"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Kode bukti bentrok.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -23000,16 +23464,6 @@
           },
           "403": {
             "description": "Bukan anggota grup tim-kajian.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Kode bukti bentrok.",
             "content": {
               "application/json": {
                 "schema": {
@@ -23254,6 +23708,24 @@
               "type": "string",
               "title": "Bukti Id"
             }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "ETag untuk concurrency control.",
+              "title": "If-Match"
+            },
+            "description": "ETag untuk concurrency control."
           }
         ],
         "requestBody": {
@@ -23273,6 +23745,26 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/BuktiRead"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "If-Match tidak cocok.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "If-Match wajib (REQUIRE_IF_MATCH=true).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -23455,6 +23947,26 @@
             "BearerAuth": []
           }
         ],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Kunci idempotency opsional.",
+              "title": "Idempotency-Key"
+            },
+            "description": "Kunci idempotency opsional."
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -23472,6 +23984,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/PenilaianRead"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Masalah sudah punya penilaian.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -23498,16 +24020,6 @@
           },
           "403": {
             "description": "Bukan anggota grup tim-kajian.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Masalah sudah punya penilaian.",
             "content": {
               "application/json": {
                 "schema": {
@@ -23866,6 +24378,24 @@
               "type": "string",
               "title": "Penilaian Id"
             }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "ETag untuk concurrency control.",
+              "title": "If-Match"
+            },
+            "description": "ETag untuk concurrency control."
           }
         ],
         "requestBody": {
@@ -23885,6 +24415,26 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/PenilaianRead"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "If-Match tidak cocok.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "If-Match wajib (REQUIRE_IF_MATCH=true).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -23964,6 +24514,24 @@
               "type": "string",
               "title": "Penilaian Id"
             }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Kunci idempotency opsional.",
+              "title": "Idempotency-Key"
+            },
+            "description": "Kunci idempotency opsional."
           }
         ],
         "requestBody": {
@@ -23983,6 +24551,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/PenilaianRead"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Idempotency-Key ini sedang diproses (atau konflik state).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -24062,6 +24640,24 @@
               "type": "string",
               "title": "Penilaian Id"
             }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Kunci idempotency opsional.",
+              "title": "Idempotency-Key"
+            },
+            "description": "Kunci idempotency opsional."
           }
         ],
         "requestBody": {
@@ -24081,6 +24677,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/PenilaianRead"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Idempotency-Key ini sedang diproses (atau konflik state).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -24992,6 +25598,26 @@
             "BearerAuth": []
           }
         ],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Kunci idempotency opsional.",
+              "title": "Idempotency-Key"
+            },
+            "description": "Kunci idempotency opsional."
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -25009,6 +25635,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ProsesRead"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Kode hasil bangkitan bentrok.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -25045,16 +25681,6 @@
           },
           "422": {
             "description": "Payload tidak valid / masalah atau sekolah tak dikenal / sekolah proses berbeda dari sekolah masalah.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Kode hasil bangkitan bentrok.",
             "content": {
               "application/json": {
                 "schema": {
@@ -25289,6 +25915,24 @@
               "type": "string",
               "title": "Proses Id"
             }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "ETag untuk concurrency control.",
+              "title": "If-Match"
+            },
+            "description": "ETag untuk concurrency control."
           }
         ],
         "requestBody": {
@@ -25308,6 +25952,26 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ProsesRead"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "If-Match tidak cocok.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "If-Match wajib (REQUIRE_IF_MATCH=true).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -25387,6 +26051,24 @@
               "type": "string",
               "title": "Proses Id"
             }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Kunci idempotency opsional.",
+              "title": "Idempotency-Key"
+            },
+            "description": "Kunci idempotency opsional."
           }
         ],
         "requestBody": {
@@ -25406,6 +26088,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LangkahRead"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Kode hasil bangkitan bentrok.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -25450,8 +26142,104 @@
               }
             }
           },
-          "409": {
-            "description": "Kode hasil bangkitan bentrok.",
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/redesain/langkah/{langkah_id}": {
+      "get": {
+        "tags": [
+          "redesain"
+        ],
+        "summary": "Detail langkah proses redesain (tim-kajian); sumber ETag untuk PATCH",
+        "description": "Ambil satu langkah beserta header `ETag`-nya (dipakai `If-Match` pada PATCH).",
+        "operationId": "redesain_langkah_get",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "langkah_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Langkah Id"
+            }
+          },
+          {
+            "name": "X-Tujuan-Akses",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN.",
+              "title": "X-Tujuan-Akses"
+            },
+            "description": "Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LangkahRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan anggota grup tim-kajian.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Langkah tidak ditemukan.",
             "content": {
               "application/json": {
                 "schema": {
@@ -25471,9 +26259,7 @@
             }
           }
         }
-      }
-    },
-    "/api/v1/redesain/langkah/{langkah_id}": {
+      },
       "patch": {
         "tags": [
           "redesain"
@@ -25495,6 +26281,24 @@
               "type": "string",
               "title": "Langkah Id"
             }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "ETag untuk concurrency control.",
+              "title": "If-Match"
+            },
+            "description": "ETag untuk concurrency control."
           }
         ],
         "requestBody": {
@@ -25514,6 +26318,26 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LangkahRead"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "If-Match tidak cocok.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "If-Match wajib (REQUIRE_IF_MATCH=true).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -25593,6 +26417,24 @@
               "type": "string",
               "title": "Langkah Id"
             }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Kunci idempotency opsional.",
+              "title": "Idempotency-Key"
+            },
+            "description": "Kunci idempotency opsional."
           }
         ],
         "requestBody": {
@@ -25612,6 +26454,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/KoreksiRead"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Dugaan belum ditampilkan (`DUGAAN_BELUM_DITAMPILKAN`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -25648,16 +26500,6 @@
           },
           "404": {
             "description": "Langkah/konfirmasi tidak ditemukan.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Dugaan belum ditampilkan (`DUGAAN_BELUM_DITAMPILKAN`).",
             "content": {
               "application/json": {
                 "schema": {
@@ -25937,6 +26779,26 @@
             "BearerAuth": []
           }
         ],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Kunci idempotency opsional.",
+              "title": "Idempotency-Key"
+            },
+            "description": "Kunci idempotency opsional."
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -25954,6 +26816,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/KonfirmasiRead"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Sudah ada draf/terkirim untuk masalah ini (`KONFIRMASI_SUDAH_ADA`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -25990,16 +26862,6 @@
           },
           "404": {
             "description": "Masalah tidak ditemukan.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Sudah ada draf/terkirim untuk masalah ini (`KONFIRMASI_SUDAH_ADA`).",
             "content": {
               "application/json": {
                 "schema": {
@@ -26352,15 +27214,40 @@
         "summary": "Catat isian luring (kertas) atas nama pemberi keterangan (tim-kajian)",
         "description": "Simpan langsung `terkirim` dengan `sumber=\"luring\"`; membekukan status awal masalah\ndan menandai eskalasi seperti `kirim`. Riwayat `create` oleh Tim pemanggil.",
         "operationId": "redesain_konfirmasi_luring",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Kunci idempotency opsional.",
+              "title": "Idempotency-Key"
+            },
+            "description": "Kunci idempotency opsional."
+          }
+        ],
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/KonfirmasiLuringCreate"
               }
             }
-          },
-          "required": true
+          }
         },
         "responses": {
           "201": {
@@ -26369,6 +27256,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/KonfirmasiRead"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Pasangan masalah & kode orang sudah punya konfirmasi.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -26403,16 +27300,6 @@
               }
             }
           },
-          "409": {
-            "description": "Pasangan masalah & kode orang sudah punya konfirmasi.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "422": {
             "description": "Field wajib kosong, kode orang/masalah tak dikenal, sekolah tak cocok.",
             "content": {
@@ -26423,12 +27310,7 @@
               }
             }
           }
-        },
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ]
+        }
       }
     },
     "/api/v1/redesain/konfirmasi/{konfirmasi_id}": {
@@ -26557,6 +27439,24 @@
               "type": "string",
               "title": "Konfirmasi Id"
             }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "ETag untuk concurrency control.",
+              "title": "If-Match"
+            },
+            "description": "ETag untuk concurrency control."
           }
         ],
         "requestBody": {
@@ -26576,6 +27476,26 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/KonfirmasiRead"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "If-Match tidak cocok.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "If-Match wajib (REQUIRE_IF_MATCH=true).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -26665,6 +27585,24 @@
               "type": "string",
               "title": "Konfirmasi Id"
             }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Kunci idempotency opsional.",
+              "title": "Idempotency-Key"
+            },
+            "description": "Kunci idempotency opsional."
           }
         ],
         "responses": {
@@ -26674,6 +27612,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/KonfirmasiRead"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Konfirmasi sudah terkirim (`KONFIRMASI_SUDAH_TERKIRIM`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -26710,16 +27658,6 @@
           },
           "404": {
             "description": "Konfirmasi tidak ditemukan.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Konfirmasi sudah terkirim (`KONFIRMASI_SUDAH_TERKIRIM`).",
             "content": {
               "application/json": {
                 "schema": {
@@ -26763,6 +27701,24 @@
               "type": "string",
               "title": "Konfirmasi Id"
             }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Kunci idempotency opsional.",
+              "title": "Idempotency-Key"
+            },
+            "description": "Kunci idempotency opsional."
           }
         ],
         "responses": {
@@ -26772,6 +27728,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/DugaanRead"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Cerita belum dikunci (`CERITA_BELUM_DIKUNCI`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -26808,16 +27774,6 @@
           },
           "404": {
             "description": "Konfirmasi tidak ditemukan.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Cerita belum dikunci (`CERITA_BELUM_DIKUNCI`).",
             "content": {
               "application/json": {
                 "schema": {
@@ -26861,6 +27817,24 @@
               "type": "string",
               "title": "Konfirmasi Id"
             }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Kunci idempotency opsional.",
+              "title": "Idempotency-Key"
+            },
+            "description": "Kunci idempotency opsional."
           }
         ],
         "responses": {
@@ -26870,6 +27844,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/KonfirmasiRead"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Konfirmasi sudah terkirim (`KONFIRMASI_SUDAH_TERKIRIM`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -26906,16 +27890,6 @@
           },
           "404": {
             "description": "Konfirmasi tidak ditemukan.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Konfirmasi sudah terkirim (`KONFIRMASI_SUDAH_TERKIRIM`).",
             "content": {
               "application/json": {
                 "schema": {
@@ -27075,6 +28049,24 @@
               "type": "string",
               "title": "Konfirmasi Id"
             }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Kunci idempotency opsional.",
+              "title": "Idempotency-Key"
+            },
+            "description": "Kunci idempotency opsional."
           }
         ],
         "responses": {
@@ -27084,6 +28076,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/KonfirmasiRead"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "`KONFIRMASI_BELUM_TERKIRIM`, `KONFIRMASI_SUDAH_DIGANTIKAN`, atau `KONFIRMASI_SUDAH_ADA` (sudah ada draf).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -27128,16 +28130,6 @@
               }
             }
           },
-          "409": {
-            "description": "`KONFIRMASI_BELUM_TERKIRIM`, `KONFIRMASI_SUDAH_DIGANTIKAN`, atau `KONFIRMASI_SUDAH_ADA` (sudah ada draf).",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "422": {
             "description": "Validation Error",
             "content": {
@@ -27173,6 +28165,24 @@
               "type": "string",
               "title": "Konfirmasi Id"
             }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Kunci idempotency opsional.",
+              "title": "Idempotency-Key"
+            },
+            "description": "Kunci idempotency opsional."
           }
         ],
         "requestBody": {
@@ -27192,6 +28202,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/MasalahRead"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "`KONFIRMASI_BELUM_TERKIRIM` atau `MASALAH_SUDAH_DIANGKAT`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -27228,16 +28248,6 @@
           },
           "404": {
             "description": "Konfirmasi tidak ditemukan.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "`KONFIRMASI_BELUM_TERKIRIM` atau `MASALAH_SUDAH_DIANGKAT`.",
             "content": {
               "application/json": {
                 "schema": {

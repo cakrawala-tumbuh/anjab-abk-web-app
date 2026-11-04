@@ -3286,7 +3286,11 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /**
+         * Detail langkah proses redesain (tim-kajian); sumber ETag untuk PATCH
+         * @description Ambil satu langkah beserta header `ETag`-nya (dipakai `If-Match` pada PATCH).
+         */
+        get: operations["redesain_langkah_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -24279,7 +24283,10 @@ export interface operations {
     redesain_kode_orang_create: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -24490,7 +24497,10 @@ export interface operations {
     redesain_kode_orang_update: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description ETag untuk concurrency control. */
+                "If-Match"?: string | null;
+            };
             path: {
                 kode_orang_id: string;
             };
@@ -24538,6 +24548,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description If-Match tidak cocok. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Validation Error */
             422: {
                 headers: {
@@ -24545,6 +24564,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description If-Match wajib (REQUIRE_IF_MATCH=true). */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
             /** @description Terlalu banyak permintaan. */
@@ -24625,7 +24653,10 @@ export interface operations {
     redesain_konteks_create: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -24827,7 +24858,10 @@ export interface operations {
     redesain_konteks_update: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description ETag untuk concurrency control. */
+                "If-Match"?: string | null;
+            };
             path: {
                 konteks_id: string;
             };
@@ -24875,6 +24909,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description If-Match tidak cocok. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Validation Error */
             422: {
                 headers: {
@@ -24882,6 +24925,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description If-Match wajib (REQUIRE_IF_MATCH=true). */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
             /** @description Terlalu banyak permintaan. */
@@ -24962,7 +25014,10 @@ export interface operations {
     redesain_masalah_create: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -25164,7 +25219,10 @@ export interface operations {
     redesain_masalah_update: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description ETag untuk concurrency control. */
+                "If-Match"?: string | null;
+            };
             path: {
                 masalah_id: string;
             };
@@ -25221,8 +25279,26 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description If-Match tidak cocok. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Payload tidak valid / konteks, sekolah, atau uraian tugas tak dikenal. */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description If-Match wajib (REQUIRE_IF_MATCH=true). */
+            428: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -25244,7 +25320,10 @@ export interface operations {
     redesain_masalah_status_konfirmasi: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
             path: {
                 masalah_id: string;
             };
@@ -25285,6 +25364,15 @@ export interface operations {
             };
             /** @description Masalah tidak ditemukan. */
             404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Idempotency-Key ini sedang diproses (atau konflik state). */
+            409: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -25449,7 +25537,10 @@ export interface operations {
     redesain_alternatif_create: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -25651,7 +25742,10 @@ export interface operations {
     redesain_alternatif_update: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description ETag untuk concurrency control. */
+                "If-Match"?: string | null;
+            };
             path: {
                 alternatif_id: string;
             };
@@ -25699,6 +25793,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description If-Match tidak cocok. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Validation Error */
             422: {
                 headers: {
@@ -25706,6 +25809,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description If-Match wajib (REQUIRE_IF_MATCH=true). */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
             /** @description Terlalu banyak permintaan. */
@@ -25786,7 +25898,10 @@ export interface operations {
     redesain_cakupan_jabatan_create: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -25988,7 +26103,10 @@ export interface operations {
     redesain_cakupan_jabatan_update: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description ETag untuk concurrency control. */
+                "If-Match"?: string | null;
+            };
             path: {
                 cakupan_id: string;
             };
@@ -26036,6 +26154,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description If-Match tidak cocok. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Validation Error */
             422: {
                 headers: {
@@ -26043,6 +26170,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description If-Match wajib (REQUIRE_IF_MATCH=true). */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
             /** @description Terlalu banyak permintaan. */
@@ -26123,7 +26259,10 @@ export interface operations {
     redesain_versi_metode_create: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -26325,7 +26464,10 @@ export interface operations {
     redesain_versi_metode_update: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description ETag untuk concurrency control. */
+                "If-Match"?: string | null;
+            };
             path: {
                 versi_id: string;
             };
@@ -26382,6 +26524,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description If-Match tidak cocok. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Validation Error */
             422: {
                 headers: {
@@ -26389,6 +26540,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description If-Match wajib (REQUIRE_IF_MATCH=true). */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
             /** @description Terlalu banyak permintaan. */
@@ -26469,7 +26629,10 @@ export interface operations {
     redesain_sesi_create: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -26735,7 +26898,10 @@ export interface operations {
     redesain_sesi_update: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description ETag untuk concurrency control. */
+                "If-Match"?: string | null;
+            };
             path: {
                 sesi_id: string;
             };
@@ -26792,8 +26958,26 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description If-Match tidak cocok. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Payload/rujukan tidak valid. */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description If-Match wajib (REQUIRE_IF_MATCH=true). */
+            428: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -26879,7 +27063,10 @@ export interface operations {
     redesain_bukti_create: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -27081,7 +27268,10 @@ export interface operations {
     redesain_bukti_update: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description ETag untuk concurrency control. */
+                "If-Match"?: string | null;
+            };
             path: {
                 bukti_id: string;
             };
@@ -27129,6 +27319,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description If-Match tidak cocok. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Validation Error */
             422: {
                 headers: {
@@ -27136,6 +27335,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description If-Match wajib (REQUIRE_IF_MATCH=true). */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
             /** @description Terlalu banyak permintaan. */
@@ -27216,7 +27424,10 @@ export interface operations {
     redesain_penilaian_create: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -27482,7 +27693,10 @@ export interface operations {
     redesain_penilaian_update: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description ETag untuk concurrency control. */
+                "If-Match"?: string | null;
+            };
             path: {
                 penilaian_id: string;
             };
@@ -27530,6 +27744,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description If-Match tidak cocok. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Validation Error */
             422: {
                 headers: {
@@ -27537,6 +27760,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description If-Match wajib (REQUIRE_IF_MATCH=true). */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
             /** @description Terlalu banyak permintaan. */
@@ -27553,7 +27785,10 @@ export interface operations {
     redesain_penilaian_putuskan: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
             path: {
                 penilaian_id: string;
             };
@@ -27601,6 +27836,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Idempotency-Key ini sedang diproses (atau konflik state). */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Alasan/pemutus/tanggal tidak valid. */
             422: {
                 headers: {
@@ -27624,7 +27868,10 @@ export interface operations {
     redesain_penilaian_status: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
             path: {
                 penilaian_id: string;
             };
@@ -27665,6 +27912,15 @@ export interface operations {
             };
             /** @description Penilaian tidak ditemukan. */
             404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Idempotency-Key ini sedang diproses (atau konflik state). */
+            409: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -28226,7 +28482,10 @@ export interface operations {
     redesain_proses_create: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -28428,7 +28687,10 @@ export interface operations {
     redesain_proses_update: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description ETag untuk concurrency control. */
+                "If-Match"?: string | null;
+            };
             path: {
                 proses_id: string;
             };
@@ -28476,8 +28738,26 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description If-Match tidak cocok. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Payload tidak valid / masalah atau sekolah tak dikenal / sekolah proses berbeda dari sekolah masalah. */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description If-Match wajib (REQUIRE_IF_MATCH=true). */
+            428: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -28499,7 +28779,10 @@ export interface operations {
     redesain_langkah_create: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
             path: {
                 proses_id: string;
             };
@@ -28576,10 +28859,83 @@ export interface operations {
             };
         };
     };
+    redesain_langkah_get: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
+            path: {
+                langkah_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LangkahRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan anggota grup tim-kajian. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Langkah tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
     redesain_langkah_update: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description ETag untuk concurrency control. */
+                "If-Match"?: string | null;
+            };
             path: {
                 langkah_id: string;
             };
@@ -28627,8 +28983,26 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description If-Match tidak cocok. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Payload tidak valid. */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description If-Match wajib (REQUIRE_IF_MATCH=true). */
+            428: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -28725,7 +29099,10 @@ export interface operations {
     redesain_langkah_koreksi_create: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
             path: {
                 langkah_id: string;
             };
@@ -28933,7 +29310,10 @@ export interface operations {
     redesain_konfirmasi_create: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -29138,7 +29518,10 @@ export interface operations {
     redesain_konfirmasi_luring: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -29277,7 +29660,10 @@ export interface operations {
     redesain_konfirmasi_update: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description ETag untuk concurrency control. */
+                "If-Match"?: string | null;
+            };
             path: {
                 konfirmasi_id: string;
             };
@@ -29334,6 +29720,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description If-Match tidak cocok. */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Validation Error */
             422: {
                 headers: {
@@ -29341,6 +29736,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description If-Match wajib (REQUIRE_IF_MATCH=true). */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
             /** @description Terlalu banyak permintaan. */
@@ -29357,7 +29761,10 @@ export interface operations {
     redesain_konfirmasi_kunci_cerita: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
             path: {
                 konfirmasi_id: string;
             };
@@ -29433,7 +29840,10 @@ export interface operations {
     redesain_konfirmasi_tampilkan_dugaan: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
             path: {
                 konfirmasi_id: string;
             };
@@ -29509,7 +29919,10 @@ export interface operations {
     redesain_konfirmasi_kirim: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
             path: {
                 konfirmasi_id: string;
             };
@@ -29664,7 +30077,10 @@ export interface operations {
     redesain_konfirmasi_ralat: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
             path: {
                 konfirmasi_id: string;
             };
@@ -29740,7 +30156,10 @@ export interface operations {
     redesain_konfirmasi_angkat_masalah: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
             path: {
                 konfirmasi_id: string;
             };
