@@ -1,3 +1,4 @@
+import { DetailsMuatMalas } from "@/components/details-muat-malas";
 import type { MasalahRead, SekolahRead } from "@/lib/api/schema";
 import { labelLangkah } from "@/lib/redesain-alur";
 import { fetchBuktiMasalah, fetchLangkahMasalah } from "./data-bukti";
@@ -68,10 +69,11 @@ export async function BagianBukti({ masalah, accessToken }: BagianBuktiProps) {
       )}
 
       {bukti.map((b) => (
-        <details key={b.id}>
-          <summary className="cursor-pointer text-xs text-blue-600 dark:text-blue-400">
-            Ubah bukti {b.kode}
-          </summary>
+        <DetailsMuatMalas
+          key={b.id}
+          ringkasan={`Ubah bukti ${b.kode}`}
+          summaryClassName="cursor-pointer text-xs text-blue-600 dark:text-blue-400"
+        >
           <div className="mt-2">
             <FormBukti
               masalahId={masalah.id}
@@ -80,7 +82,7 @@ export async function BagianBukti({ masalah, accessToken }: BagianBuktiProps) {
               accessToken={accessToken}
             />
           </div>
-        </details>
+        </DetailsMuatMalas>
       ))}
 
       <details className="rounded-lg border border-dashed border-gray-300 p-4 dark:border-gray-600">

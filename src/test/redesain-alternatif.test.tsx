@@ -29,6 +29,7 @@ import { FormAlternatif } from "@/app/(auth)/redesain/masalah/[id]/form-alternat
 import { fetchAlternatifMasalah } from "@/app/(auth)/redesain/masalah/[id]/data-alternatif";
 import { BAGIAN_DETAIL_MASALAH } from "@/app/(auth)/redesain/masalah/[id]/registry";
 import { ApiError } from "@/lib/api/errors";
+import { PESAN_DATA_BERUBAH } from "@/lib/konkurensi";
 import { validasiAlternatif, JUDUL_ALTERNATIF } from "@/lib/redesain-alternatif";
 import type { AlternatifRead } from "@/lib/api/schema";
 
@@ -36,6 +37,15 @@ const resp = (data: unknown, status = 200) => ({
   data: status < 400 ? data : undefined,
   error: status < 400 ? undefined : { error: "x", message: "ditolak" },
   response: { status, headers: { get: () => "req-1" } },
+});
+/** Respons GET detail yang membawa header ETag (kunci optimistik). */
+const respEtag = (data: unknown, etag = '"v1"') => ({
+  data,
+  error: undefined,
+  response: {
+    status: 200,
+    headers: { get: (n: string) => (n.toLowerCase() === "etag" ? etag : "req-1") },
+  },
 });
 const halaman = (items: unknown[]) => resp({ items, total: items.length, limit: 500, offset: 0 });
 
@@ -78,6 +88,7 @@ function siapkan(daftar: AlternatifRead[] = [alt()]) {
         gelombang: "G1",
         dibuka_untuk_konfirmasi: false,
       });
+    if (path === "/api/v1/redesain/alternatif/{alternatif_id}") return respEtag(daftar[0]);
     if (path === "/api/v1/redesain/konteks")
       return halaman([{ id: "k1", kode: "K-01", tema: "Beban administrasi" }]);
     if (path === "/api/v1/sekolah") return halaman([{ id: "s1", nama: "SD Contoh" }]);
@@ -214,9 +225,23 @@ describe("FormAlternatif", () => {
     siapkan();
     patch.mockResolvedValue(resp(null, 422));
     render(<FormAlternatif masalahId="m1" jabatan={jabatan} awal={alt()} accessToken="tok" />);
-    fireEvent.click(screen.getByRole("button", { name: "Simpan alternatif" }));
+    fireEvent.click(await screen.findByRole("button", { name: "Simpan alternatif" }));
     await waitFor(() => expect(notifyGagal).toHaveBeenCalled());
     expect(patch).toHaveBeenCalled();
+    expect(patch.mock.calls[0][1].headers).toEqual({ "If-Match": '"v1"' });
     expect(refresh).not.toHaveBeenCalled();
+  });
+
+  it("PATCH 412 → pesan baku data berubah", async () => {
+    siapkan();
+    patch.mockResolvedValue({
+      data: undefined,
+      error: { error: { code: "precondition_failed", message: "x" } },
+      response: { status: 412, headers: { get: () => "req-1" } },
+    });
+    render(<FormAlternatif masalahId="m1" jabatan={jabatan} awal={alt()} accessToken="tok" />);
+    fireEvent.click(await screen.findByRole("button", { name: "Simpan alternatif" }));
+    await waitFor(() => expect(notifyGagal).toHaveBeenCalled());
+    expect((notifyGagal.mock.calls[0][0] as Error).message).toBe(PESAN_DATA_BERUBAH);
   });
 });

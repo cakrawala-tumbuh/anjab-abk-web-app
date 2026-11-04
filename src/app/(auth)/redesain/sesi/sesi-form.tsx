@@ -9,6 +9,8 @@ import { withServerAuth } from "@/lib/api/client";
 import { apiErrorDari } from "@/lib/api/errors";
 import type { KonteksRead, MasalahRead, SekolahRead, SesiCreate, SesiRead } from "@/lib/api/schema";
 import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
+import { bacaEtag, headerIfMatch, petakanKonkurensi } from "@/lib/konkurensi";
+import { PemuatRekaman } from "@/lib/use-rekaman-ber-etag";
 import { PESAN_KODE_ORANG_WAJIB } from "@/lib/redesain-kode-orang";
 import {
   JENIS_KEGIATAN,
@@ -46,8 +48,14 @@ function parseMenit(teks: string): number | null | undefined {
   return Number.isInteger(n) && n >= 0 ? n : undefined;
 }
 
+/** Properti isi form: ditambah ETag dari GET detail yang sama dengan `awal`. */
+interface SesiFormIsiProps extends SesiFormProps {
+  etag?: string | null;
+}
+
 /**
- * Form tambah/ubah sesi partisipasi.
+ * Form tambah/ubah sesi partisipasi. Mode ubah memuat sesinya sendiri lewat GET `/sesi/{id}`
+ * dan mengirim `If-Match` dari ETag GET yang sama.
  *
  * Menit kosong dikirim `null`; menit negatif ditolak di klien. `status_izin` informatif:
  * nilai apa pun (termasuk "Tidak diotorisasi") tetap disimpan tanpa peringatan pemblokir.
@@ -56,8 +64,32 @@ function parseMenit(teks: string): number | null | undefined {
  *
  * @param props - Lihat {@link SesiFormProps}.
  */
-export function SesiForm({ awal, sekolah, masalah, konteks, accessToken }: SesiFormProps) {
+export function SesiForm(props: SesiFormProps) {
+  const { awal, accessToken } = props;
+  if (!awal) return <SesiFormIsi {...props} />;
+  return (
+    <PemuatRekaman
+      accessToken={accessToken}
+      kunci={awal.id}
+      ambil={(c) =>
+        c.GET("/api/v1/redesain/sesi/{sesi_id}", { params: { path: { sesi_id: awal.id } } })
+      }
+    >
+      {(data, etag) => <SesiFormIsi {...props} awal={data} etag={etag} />}
+    </PemuatRekaman>
+  );
+}
+
+function SesiFormIsi({
+  awal,
+  sekolah,
+  masalah,
+  konteks,
+  accessToken,
+  etag: etagAwal = null,
+}: SesiFormIsiProps) {
   const router = useRouter();
+  const [etag, setEtag] = useState<string | null>(etagAwal);
   const [kodeSesi, setKodeSesi] = useState(awal?.kode_sesi ?? "");
   const [kodeOrang, setKodeOrang] = useState(awal?.kode_orang ?? "");
   const [sekolahId, setSekolahId] = useState(awal?.sekolah_id ?? "");
@@ -124,6 +156,7 @@ export function SesiForm({ awal, sekolah, masalah, konteks, accessToken }: SesiF
         ? await client.PATCH("/api/v1/redesain/sesi/{sesi_id}", {
             params: { path: { sesi_id: awal.id } },
             body: isi,
+            headers: headerIfMatch(etag),
           })
         : await client.POST("/api/v1/redesain/sesi", { body: isi });
       if (res.response.status === 409) {
@@ -131,12 +164,14 @@ export function SesiForm({ awal, sekolah, masalah, konteks, accessToken }: SesiF
         return;
       }
       if (!res.data) throw apiErrorDari(res);
+      if (awal) setEtag(bacaEtag(res.response));
       notifySukses(awal ? "Sesi diperbarui." : "Sesi dicatat.");
       router.push("/redesain/sesi");
       router.refresh();
     } catch (err) {
-      setError(pesanGagal(err));
-      notifyGagal(err);
+      const galat = petakanKonkurensi(err);
+      setError(pesanGagal(galat));
+      notifyGagal(galat);
     } finally {
       setLoading(false);
     }

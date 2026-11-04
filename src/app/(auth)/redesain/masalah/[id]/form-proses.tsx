@@ -6,6 +6,8 @@ import { withServerAuth } from "@/lib/api/client";
 import { apiErrorDari } from "@/lib/api/errors";
 import type { ProsesRead, SekolahRead } from "@/lib/api/schema";
 import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
+import { bacaEtag, headerIfMatch, petakanKonkurensi } from "@/lib/konkurensi";
+import { PemuatRekaman } from "@/lib/use-rekaman-ber-etag";
 
 const INPUT =
   "w-full rounded-md border border-gray-300 px-2 py-1 text-sm dark:border-gray-600 dark:bg-gray-800";
@@ -25,8 +27,14 @@ export interface FormProsesProps {
   accessToken: string | undefined;
 }
 
+/** Properti isi form: ditambah ETag dari GET detail yang sama dengan `awal`. */
+interface FormProsesIsiProps extends FormProsesProps {
+  etag?: string | null;
+}
+
 /**
- * Form tambah/ubah proses pada bagian Alur.
+ * Form tambah/ubah proses pada bagian Alur. Mode ubah memuat prosesnya sendiri lewat
+ * `GET /proses/{id}` dan mengirim `If-Match` dari ETag GET yang sama.
  *
  * Tambah: `POST /api/v1/redesain/proses` (`masalah_id`, `sekolah_id`, `periode`,
  * `nama_proses`). Bila masalah bersekolah, `sekolah_id` terkunci ke sekolah itu dan tidak
@@ -35,15 +43,33 @@ export interface FormProsesProps {
  *
  * @param props - Lihat {@link FormProsesProps}.
  */
-export function FormProses({
+export function FormProses(props: FormProsesProps) {
+  const { awal, accessToken } = props;
+  if (!awal) return <FormProsesIsi {...props} />;
+  return (
+    <PemuatRekaman
+      accessToken={accessToken}
+      kunci={awal.id}
+      ambil={(c) =>
+        c.GET("/api/v1/redesain/proses/{proses_id}", { params: { path: { proses_id: awal.id } } })
+      }
+    >
+      {(data, etag) => <FormProsesIsi {...props} awal={data} etag={etag} />}
+    </PemuatRekaman>
+  );
+}
+
+function FormProsesIsi({
   masalahId,
   sekolahTerkunci,
   sekolah,
   periodeBawaan,
   awal,
   accessToken,
-}: FormProsesProps) {
+  etag: etagAwal = null,
+}: FormProsesIsiProps) {
   const router = useRouter();
+  const [etag, setEtag] = useState<string | null>(etagAwal);
   const [sekolahId, setSekolahId] = useState(awal?.sekolah_id ?? sekolahTerkunci ?? "");
   const [periode, setPeriode] = useState(awal?.periode ?? periodeBawaan);
   const [nama, setNama] = useState(awal?.nama_proses ?? "");
@@ -60,8 +86,10 @@ export function FormProses({
         const res = await client.PATCH("/api/v1/redesain/proses/{proses_id}", {
           params: { path: { proses_id: awal.id } },
           body: { periode: periode.trim(), nama_proses: nama.trim() },
+          headers: headerIfMatch(etag),
         });
         if (!res.data) throw apiErrorDari(res);
+        setEtag(bacaEtag(res.response));
         notifySukses(`Proses ${res.data.kode} diperbarui.`);
       } else {
         const res = await client.POST("/api/v1/redesain/proses", {
@@ -78,8 +106,9 @@ export function FormProses({
       }
       router.refresh();
     } catch (err) {
-      setError(pesanGagal(err));
-      notifyGagal(err);
+      const galat = petakanKonkurensi(err);
+      setError(pesanGagal(galat));
+      notifyGagal(galat);
     } finally {
       setLoading(false);
     }

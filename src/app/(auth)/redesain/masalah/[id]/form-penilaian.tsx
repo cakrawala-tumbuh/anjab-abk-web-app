@@ -7,6 +7,8 @@ import { withServerAuth } from "@/lib/api/client";
 import { apiErrorDari } from "@/lib/api/errors";
 import type { PenilaianRead, PenilaianUpdate } from "@/lib/api/schema";
 import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
+import { bacaEtag, headerIfMatch, petakanKonkurensi } from "@/lib/konkurensi";
+import { PemuatRekaman } from "@/lib/use-rekaman-ber-etag";
 
 const INPUT =
   "w-full rounded-md border border-gray-300 px-2 py-1 text-sm dark:border-gray-600 dark:bg-gray-800";
@@ -42,8 +44,15 @@ export interface FormPenilaianProps {
   accessToken: string | undefined;
 }
 
+/** Properti isi form: ditambah ETag dari GET detail yang sama dengan `awal`. */
+interface FormPenilaianIsiProps extends FormPenilaianProps {
+  etag?: string | null;
+}
+
 /**
- * Form ubah penilaian beserta panel saran sistem (berdampingan).
+ * Form ubah penilaian beserta panel saran sistem (berdampingan). Memuat penilaiannya
+ * sendiri lewat `GET /penilaian/{id}` dan mengirim `If-Match` dari ETag GET yang sama
+ * (`awal` dari daftar hanya dipakai untuk ID).
  *
  * Simpan → `PATCH /api/v1/redesain/penilaian/{id}`. K1–K4 berpilihan "— belum diisi —"
  * yang dikirim `null` (berbeda dari "Belum tahu"); teks bebas kosong dikirim `null`.
@@ -53,8 +62,26 @@ export interface FormPenilaianProps {
  *
  * @param props - Lihat {@link FormPenilaianProps}.
  */
-export function FormPenilaian({ awal, accessToken }: FormPenilaianProps) {
+export function FormPenilaian(props: FormPenilaianProps) {
+  const { awal, accessToken } = props;
+  return (
+    <PemuatRekaman
+      accessToken={accessToken}
+      kunci={awal.id}
+      ambil={(c) =>
+        c.GET("/api/v1/redesain/penilaian/{penilaian_id}", {
+          params: { path: { penilaian_id: awal.id } },
+        })
+      }
+    >
+      {(data, etag) => <FormPenilaianIsi {...props} awal={data} etag={etag} />}
+    </PemuatRekaman>
+  );
+}
+
+function FormPenilaianIsi({ awal, accessToken, etag: etagAwal = null }: FormPenilaianIsiProps) {
   const router = useRouter();
+  const [etag, setEtag] = useState<string | null>(etagAwal);
   const [statusBukti, setStatusBukti] = useState<string>(awal.status_bukti);
   const [gap, setGap] = useState<string>(awal.gap_material);
   const [kritis, setKritis] = useState<string>(awal.indikasi_kritis);
@@ -86,14 +113,16 @@ export function FormPenilaian({ awal, accessToken }: FormPenilaianProps) {
       } as PenilaianUpdate;
       const res = await withServerAuth(accessToken).PATCH(
         "/api/v1/redesain/penilaian/{penilaian_id}",
-        { params: { path: { penilaian_id: awal.id } }, body },
+        { params: { path: { penilaian_id: awal.id } }, body, headers: headerIfMatch(etag) },
       );
       if (!res.data) throw apiErrorDari(res);
+      setEtag(bacaEtag(res.response));
       notifySukses("Penilaian disimpan.");
       router.refresh();
     } catch (err) {
-      setError(pesanGagal(err));
-      notifyGagal(err);
+      const galat = petakanKonkurensi(err);
+      setError(pesanGagal(galat));
+      notifyGagal(galat);
     } finally {
       setLoading(false);
     }

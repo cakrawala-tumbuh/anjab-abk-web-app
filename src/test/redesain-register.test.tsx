@@ -27,6 +27,7 @@ vi.mock("@/lib/notify", async (orig) => ({
 
 import MasalahPage from "@/app/(auth)/redesain/masalah/page";
 import KonteksPage from "@/app/(auth)/redesain/konteks/page";
+import { PESAN_DATA_BERUBAH } from "@/lib/konkurensi";
 import { MasalahForm } from "@/app/(auth)/redesain/masalah/masalah-form";
 import { ToggleKonfirmasi } from "@/app/(auth)/redesain/masalah/toggle-konfirmasi";
 import { KonteksForm } from "@/app/(auth)/redesain/konteks/konteks-form";
@@ -44,6 +45,22 @@ const resp = (data: unknown, status = 200) => ({
   error: status < 400 ? undefined : { error: "x", message: "ditolak" },
   response: { status, headers: { get: () => "req-1" } },
 });
+/** Respons GET detail yang membawa header ETag (kunci optimistik). */
+const respEtag = (data: unknown, etag = '"v1"') => ({
+  data,
+  error: undefined,
+  response: {
+    status: 200,
+    headers: { get: (n: string) => (n.toLowerCase() === "etag" ? etag : "req-1") },
+  },
+});
+/** GET detail masalah berisi `data`+ETag; path lain tetap dilayani `siapkanGet`. */
+function getDetailMasalah(data: unknown, etag = '"v1"') {
+  const dasar = get.getMockImplementation()!;
+  get.mockImplementation(async (path: string, ...r: unknown[]) =>
+    path === "/api/v1/redesain/masalah/{masalah_id}" ? respEtag(data, etag) : dasar(path, ...r),
+  );
+}
 const halaman = (items: unknown[], total = items.length) =>
   resp({ items, total, limit: 500, offset: 0 });
 
@@ -190,27 +207,70 @@ describe("form masalah", () => {
     accessToken: "tok",
   };
 
-  it("status_awal nonaktif + keterangan bila sudah dibekukan", () => {
-    render(
-      <MasalahForm
-        {...props}
-        awal={masalah({ status_awal_dibekukan_pada: "2026-11-02T08:00:00Z" })}
-      />,
-    );
-    expect(screen.getByLabelText("Status awal")).toBeDisabled();
+  it("status_awal nonaktif + keterangan bila sudah dibekukan", async () => {
+    const beku = masalah({ status_awal_dibekukan_pada: "2026-11-02T08:00:00Z" });
+    getDetailMasalah(beku);
+    render(<MasalahForm {...props} awal={beku} />);
+    expect(await screen.findByLabelText("Status awal")).toBeDisabled();
     expect(
       screen.getByText(/Dibekukan sejak 2026-11-02T08:00:00Z \(konfirmasi pertama terkirim\)/),
     ).toBeInTheDocument();
   });
 
-  it("status_awal aktif bila belum dibekukan", () => {
+  it("status_awal aktif bila belum dibekukan", async () => {
+    getDetailMasalah(masalah());
     render(<MasalahForm {...props} awal={masalah()} />);
-    expect(screen.getByLabelText("Status awal")).not.toBeDisabled();
+    expect(await screen.findByLabelText("Status awal")).not.toBeDisabled();
+  });
+
+  it("mode ubah: GET detail dulu, PATCH membawa If-Match dari GET yang sama", async () => {
+    getDetailMasalah(masalah({ rumusan_hipotesis: "dari GET" }), '"abc"');
+    patch.mockResolvedValue(respEtag(masalah(), '"def"'));
+    render(<MasalahForm {...props} awal={masalah({ rumusan_hipotesis: "dari daftar" })} />);
+    expect(await screen.findByDisplayValue("dari GET")).toBeInTheDocument();
+    expect(get.mock.calls[0][0]).toBe("/api/v1/redesain/masalah/{masalah_id}");
+    fireEvent.submit(screen.getByRole("button", { name: "Simpan perubahan" }).closest("form")!);
+    await waitFor(() => expect(patch).toHaveBeenCalled());
+    expect(patch.mock.calls[0][1].headers).toEqual({ "If-Match": '"abc"' });
+  });
+
+  it("mode tambah tidak melakukan GET detail", () => {
+    render(<MasalahForm {...props} />);
+    expect(screen.getByRole("button", { name: "Tambah masalah" })).toBeInTheDocument();
+    expect(get.mock.calls.map((c) => c[0])).not.toContain("/api/v1/redesain/masalah/{masalah_id}");
+  });
+
+  it("PATCH 412 → pesan baku data berubah, isian tidak hilang", async () => {
+    getDetailMasalah(masalah({ rumusan_hipotesis: "dari GET" }));
+    patch.mockResolvedValue({
+      data: undefined,
+      error: { error: { code: "precondition_failed", message: "x" } },
+      response: { status: 412, headers: { get: () => "req-1" } },
+    });
+    render(<MasalahForm {...props} awal={masalah()} />);
+    await screen.findByDisplayValue("dari GET");
+    fireEvent.submit(screen.getByRole("button", { name: "Simpan perubahan" }).closest("form")!);
+    await waitFor(() => expect(notifyGagal).toHaveBeenCalledTimes(1));
+    expect((notifyGagal.mock.calls[0][0] as Error).message).toBe(PESAN_DATA_BERUBAH);
+    expect(screen.getByDisplayValue("dari GET")).toBeInTheDocument();
+    expect(push).not.toHaveBeenCalled();
+  });
+
+  it("GET detail gagal → tombol simpan tidak tersedia", async () => {
+    const dasar = get.getMockImplementation()!;
+    get.mockImplementation(async (path: string, ...r: unknown[]) =>
+      path === "/api/v1/redesain/masalah/{masalah_id}" ? resp(null, 403) : dasar(path, ...r),
+    );
+    render(<MasalahForm {...props} awal={masalah()} />);
+    await waitFor(() => expect(notifyGagal).toHaveBeenCalled());
+    expect(screen.queryByRole("button", { name: "Simpan perubahan" })).not.toBeInTheDocument();
   });
 
   it("PATCH 409 → toast gagal, bukan sukses, tanpa pindah halaman", async () => {
     patch.mockResolvedValue(resp(null, 409));
+    getDetailMasalah(masalah());
     render(<MasalahForm {...props} awal={masalah()} />);
+    await screen.findByRole("button", { name: "Simpan perubahan" });
     fireEvent.submit(screen.getByRole("button", { name: "Simpan perubahan" }).closest("form")!);
     await waitFor(() => expect(notifyGagal).toHaveBeenCalledTimes(1));
     expect(notifySukses).not.toHaveBeenCalled();

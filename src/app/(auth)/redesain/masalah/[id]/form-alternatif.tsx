@@ -8,6 +8,8 @@ import { withServerAuth } from "@/lib/api/client";
 import { apiErrorDari } from "@/lib/api/errors";
 import type { AlternatifCreate, AlternatifRead } from "@/lib/api/schema";
 import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
+import { bacaEtag, headerIfMatch, petakanKonkurensi } from "@/lib/konkurensi";
+import { PemuatRekaman } from "@/lib/use-rekaman-ber-etag";
 import {
   GAP_PENERIMA,
   OPSI_ALTERNATIF,
@@ -35,8 +37,14 @@ export interface FormAlternatifProps {
   accessToken: string | undefined;
 }
 
+/** Properti isi form: ditambah ETag dari GET detail yang sama dengan `awal`. */
+interface FormAlternatifIsiProps extends FormAlternatifProps {
+  etag?: string | null;
+}
+
 /**
- * Form tambah/ubah alternatif redesain.
+ * Form tambah/ubah alternatif redesain. Mode ubah memuat alternatifnya sendiri lewat
+ * `GET /alternatif/{id}` dan mengirim `If-Match` dari ETag GET yang sama.
  *
  * Tambah: `POST /api/v1/redesain/alternatif`; ubah: `PATCH .../{id}`. Validasi klien
  * (selaras 422 backend) menolak simpan tanpa memanggil API: status `Uji disetujui terpisah`
@@ -45,8 +53,33 @@ export interface FormAlternatifProps {
  *
  * @param props - Lihat {@link FormAlternatifProps}.
  */
-export function FormAlternatif({ masalahId, jabatan, awal, accessToken }: FormAlternatifProps) {
+export function FormAlternatif(props: FormAlternatifProps) {
+  const { awal, accessToken } = props;
+  if (!awal) return <FormAlternatifIsi {...props} />;
+  return (
+    <PemuatRekaman
+      accessToken={accessToken}
+      kunci={awal.id}
+      ambil={(c) =>
+        c.GET("/api/v1/redesain/alternatif/{alternatif_id}", {
+          params: { path: { alternatif_id: awal.id } },
+        })
+      }
+    >
+      {(data, etag) => <FormAlternatifIsi {...props} awal={data} etag={etag} />}
+    </PemuatRekaman>
+  );
+}
+
+function FormAlternatifIsi({
+  masalahId,
+  jabatan,
+  awal,
+  accessToken,
+  etag: etagAwal = null,
+}: FormAlternatifIsiProps) {
   const router = useRouter();
+  const [etag, setEtag] = useState<string | null>(etagAwal);
   const [opsi, setOpsi] = useState<AlternatifCreate["opsi"]>(awal?.opsi ?? "Pertahankan");
   const [alur, setAlur] = useState(awal?.alur_kini_vs_usulan ?? "");
   const [asal, setAsal] = useState(awal?.pihak_asal_jabatan_id ?? "");
@@ -107,8 +140,10 @@ export function FormAlternatif({ masalahId, jabatan, awal, accessToken }: FormAl
         const res = await client.PATCH("/api/v1/redesain/alternatif/{alternatif_id}", {
           params: { path: { alternatif_id: awal.id } },
           body: isi,
+          headers: headerIfMatch(etag),
         });
         if (!res.data) throw apiErrorDari(res);
+        setEtag(bacaEtag(res.response));
         notifySukses(`Alternatif ${res.data.kode} diperbarui.`);
       } else {
         const res = await client.POST("/api/v1/redesain/alternatif", {
@@ -119,8 +154,9 @@ export function FormAlternatif({ masalahId, jabatan, awal, accessToken }: FormAl
       }
       router.refresh();
     } catch (err) {
-      setError(pesanGagal(err));
-      notifyGagal(err);
+      const galat = petakanKonkurensi(err);
+      setError(pesanGagal(galat));
+      notifyGagal(galat);
     } finally {
       setLoading(false);
     }

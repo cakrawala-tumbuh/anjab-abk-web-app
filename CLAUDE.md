@@ -84,6 +84,21 @@ src/
 
 ## Revisi Desain
 
+### [2026-11-04] `If-Match` di 12 PATCH redesain: hook `useRekamanBerEtag`, GET saat panel dibuka
+
+- **Kontrak: nilai formulir dan ETag berasal dari SATU GET yang sama** (`src/lib/use-rekaman-ber-etag.tsx`:
+  `useRekamanBerEtag` + `PemuatRekaman` — skeleton, `ErrorState` bila gagal sehingga tombol simpan tidak
+  dirender). Mengambil ETag tepat sebelum PATCH dilarang (tak mendeteksi apa pun). Respons list tidak
+  membawa ETag, jadi tiap formulir ubah (`Form*` luar, `Form*Isi` dalam) memuat detailnya sendiri.
+- **GET hanya saat formulir dibuka, bukan saat halaman dimuat** (hindari N+1): `DetailsMuatMalas`
+  (`src/components/details-muat-malas.tsx`) menunda render isi `<details>` sampai pertama dibuka;
+  `SelCabang` dan `UbahKeterangan` (kini tombol "Ubah") melakukan hal serupa sendiri.
+- PATCH: `headers: headerIfMatch(etag)`, `setEtag(bacaEtag(res.response))` setelah sukses, 412 lewat
+  `petakanKonkurensi`. `wizard.tsx` tidak memakai hook: ETag dari GET `page.tsx`, diperbarui dari header
+  PATCH/POST sukses dan disinkronkan ulang dari prop setelah `router.refresh()`.
+- Jaring pengaman: `src/test/redesain-ifmatch.test.tsx` memindai berkas redesain yang memanggil `.PATCH(`
+  tanpa `headerIfMatch`. Detail: issue `cakrawala-tumbuh/anjab-abk-web-app#87`.
+
 ### [2026-11-04] Kunci optimistik (`If-Match`) dan `Idempotency-Key` di formulir tulis
 
 Issue `#84`, konsumen `anjab-abk-backend#73` (WCP/DCS) dan `#76` (OPM/TI). `schema.ts` sudah memuat

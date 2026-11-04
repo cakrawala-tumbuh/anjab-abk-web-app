@@ -1,5 +1,6 @@
 import { GagalMuat, TidakBerhak } from "@/components/gagal-muat";
 import { withServerAuth } from "@/lib/api/client";
+import { bacaEtag } from "@/lib/konkurensi";
 import { ApiError, apiErrorDari, isTidakBerhak } from "@/lib/api/errors";
 import { ambilSemuaHalaman } from "@/lib/api/paginasi";
 import { auth } from "@/lib/auth/auth";
@@ -32,6 +33,7 @@ export default async function KonfirmasiPage({ params }: Props) {
     });
     if (!kRes.data) throw apiErrorDari(kRes);
     const konfirmasi = kRes.data;
+    const etag = bacaEtag(kRes.response);
 
     const semuaMasalah = await ambilSemuaHalaman<MasalahSekolahRead>(async (limit, offset) => {
       const res = await client.GET("/api/v1/redesain/sekolah/masalah", {
@@ -74,6 +76,7 @@ export default async function KonfirmasiPage({ params }: Props) {
         masalah={masalah}
         dugaanAwal={dugaan}
         alur={alur}
+        etag={etag}
         accessToken={session?.accessToken}
       />
     );

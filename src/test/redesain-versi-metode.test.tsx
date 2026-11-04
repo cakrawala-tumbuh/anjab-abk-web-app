@@ -25,11 +25,21 @@ import {
   PESAN_KONFLIK_VERSI,
 } from "@/app/(auth)/redesain/versi-metode/form-versi-metode";
 import { ApiError } from "@/lib/api/errors";
+import { PESAN_DATA_BERUBAH } from "@/lib/konkurensi";
 
 const resp = (data: unknown, status = 200) => ({
   data: status < 400 ? data : undefined,
   error: status < 400 ? undefined : { error: "x", message: "ditolak" },
   response: { status, headers: { get: () => "req-1" } },
+});
+/** Respons GET detail yang membawa header ETag (kunci optimistik). */
+const respEtag = (data: unknown, etag = '"v1"') => ({
+  data,
+  error: undefined,
+  response: {
+    status: 200,
+    headers: { get: (n: string) => (n.toLowerCase() === "etag" ? etag : "req-1") },
+  },
 });
 const item = (n: number) => ({
   id: `id-${n}`,
@@ -103,11 +113,41 @@ describe("form versi metode", () => {
   });
 
   it("PATCH 422 memanggil notifyGagal", async () => {
+    get.mockResolvedValue(respEtag(item(1)));
     patch.mockResolvedValue(resp({}, 422));
     render(<FormVersiMetode accessToken="tok" awal={item(1)} />);
-    fireEvent.click(screen.getByRole("button", { name: "Simpan perubahan" }));
+    fireEvent.click(await screen.findByRole("button", { name: "Simpan perubahan" }));
     await waitFor(() => expect(notifyGagal).toHaveBeenCalled());
     expect(patch.mock.calls[0][1].params.path.versi_id).toBe("id-1");
     expect(notifySukses).not.toHaveBeenCalled();
+  });
+
+  it("ubah: PATCH membawa If-Match dari GET detail yang sama", async () => {
+    get.mockResolvedValue(respEtag(item(1), '"abc"'));
+    patch.mockResolvedValue(resp(item(1)));
+    render(<FormVersiMetode accessToken="tok" awal={item(1)} />);
+    fireEvent.click(await screen.findByRole("button", { name: "Simpan perubahan" }));
+    await waitFor(() => expect(patch).toHaveBeenCalled());
+    expect(get.mock.calls[0][0]).toBe("/api/v1/redesain/versi-metode/{versi_id}");
+    expect(patch.mock.calls[0][1].headers).toEqual({ "If-Match": '"abc"' });
+  });
+
+  it("ubah: PATCH 412 → pesan baku data berubah", async () => {
+    get.mockResolvedValue(respEtag(item(1)));
+    patch.mockResolvedValue({
+      data: undefined,
+      error: { error: { code: "precondition_failed", message: "x" } },
+      response: { status: 412, headers: { get: () => "req-1" } },
+    });
+    render(<FormVersiMetode accessToken="tok" awal={item(1)} />);
+    fireEvent.click(await screen.findByRole("button", { name: "Simpan perubahan" }));
+    await waitFor(() => expect(notifyGagal).toHaveBeenCalled());
+    expect((notifyGagal.mock.calls[0][0] as Error).message).toBe(PESAN_DATA_BERUBAH);
+    expect(notifySukses).not.toHaveBeenCalled();
+  });
+
+  it("tambah tidak memanggil GET detail", () => {
+    render(<FormVersiMetode accessToken="tok" />);
+    expect(get).not.toHaveBeenCalled();
   });
 });

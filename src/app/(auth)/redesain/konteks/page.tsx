@@ -1,3 +1,4 @@
+import { DetailsMuatMalas } from "@/components/details-muat-malas";
 import { auth } from "@/lib/auth/auth";
 import { LABEL_BELUM_TEMUAN } from "@/lib/redesain-register";
 import { fetchKonteks } from "./data";
@@ -60,14 +61,14 @@ export default async function KonteksPage() {
                   <td className="px-4 py-3">{k.gelombang}</td>
                   <td className="px-4 py-3">{k.aktif ? "Ya" : "Tidak"}</td>
                   <td className="px-4 py-3">
-                    <details>
-                      <summary className="cursor-pointer text-blue-600 dark:text-blue-400">
-                        Ubah
-                      </summary>
+                    <DetailsMuatMalas
+                      ringkasan="Ubah"
+                      summaryClassName="cursor-pointer text-blue-600 dark:text-blue-400"
+                    >
                       <div className="mt-2">
                         <KonteksForm awal={k} accessToken={session?.accessToken} />
                       </div>
-                    </details>
+                    </DetailsMuatMalas>
                   </td>
                 </tr>
               ))}

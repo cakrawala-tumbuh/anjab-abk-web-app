@@ -8,6 +8,8 @@ import { withServerAuth } from "@/lib/api/client";
 import { apiErrorDari } from "@/lib/api/errors";
 import type { BuktiCreate, BuktiRead } from "@/lib/api/schema";
 import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
+import { bacaEtag, headerIfMatch, petakanKonkurensi } from "@/lib/konkurensi";
+import { PemuatRekaman } from "@/lib/use-rekaman-ber-etag";
 import { INDEPENDEN_BUKTI, JENIS_BUKTI, STATUS_PEMERIKSAAN } from "@/lib/redesain-alur";
 
 const INPUT =
@@ -31,6 +33,11 @@ export interface FormBuktiProps {
   accessToken: string | undefined;
 }
 
+/** Properti isi form: ditambah ETag dari GET detail yang sama dengan `awal`. */
+interface FormBuktiIsiProps extends FormBuktiProps {
+  etag?: string | null;
+}
+
 /**
  * Form tambah/ubah bukti per klaim (rujukan teks, tanpa unggah berkas).
  *
@@ -41,8 +48,31 @@ export interface FormBuktiProps {
  *
  * @param props - Lihat {@link FormBuktiProps}.
  */
-export function FormBukti({ masalahId, langkah, awal, accessToken }: FormBuktiProps) {
+export function FormBukti(props: FormBuktiProps) {
+  const { awal, accessToken } = props;
+  if (!awal) return <FormBuktiIsi {...props} />;
+  return (
+    <PemuatRekaman
+      accessToken={accessToken}
+      kunci={awal.id}
+      ambil={(c) =>
+        c.GET("/api/v1/redesain/bukti/{bukti_id}", { params: { path: { bukti_id: awal.id } } })
+      }
+    >
+      {(data, etag) => <FormBuktiIsi {...props} awal={data} etag={etag} />}
+    </PemuatRekaman>
+  );
+}
+
+function FormBuktiIsi({
+  masalahId,
+  langkah,
+  awal,
+  accessToken,
+  etag: etagAwal = null,
+}: FormBuktiIsiProps) {
   const router = useRouter();
+  const [etag, setEtag] = useState<string | null>(etagAwal);
   const [langkahId, setLangkahId] = useState(awal?.langkah_id ?? "");
   const [unit, setUnit] = useState(awal?.unit_periode ?? "");
   const [jenis, setJenis] = useState<BuktiCreate["jenis"]>(awal?.jenis ?? "SK/aturan");
@@ -88,8 +118,10 @@ export function FormBukti({ masalahId, langkah, awal, accessToken }: FormBuktiPr
         const res = await client.PATCH("/api/v1/redesain/bukti/{bukti_id}", {
           params: { path: { bukti_id: awal.id } },
           body: isi,
+          headers: headerIfMatch(etag),
         });
         if (!res.data) throw apiErrorDari(res);
+        setEtag(bacaEtag(res.response));
         notifySukses(`Bukti ${res.data.kode} diperbarui.`);
       } else {
         const res = await client.POST("/api/v1/redesain/bukti", {
@@ -100,8 +132,9 @@ export function FormBukti({ masalahId, langkah, awal, accessToken }: FormBuktiPr
       }
       router.refresh();
     } catch (err) {
-      setError(pesanGagal(err));
-      notifyGagal(err);
+      const galat = petakanKonkurensi(err);
+      setError(pesanGagal(galat));
+      notifyGagal(galat);
     } finally {
       setLoading(false);
     }

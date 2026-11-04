@@ -29,6 +29,7 @@ import SesiPage from "@/app/(auth)/redesain/sesi/page";
 import RekapSesiPage from "@/app/(auth)/redesain/sesi/rekap/page";
 import { SesiForm } from "@/app/(auth)/redesain/sesi/sesi-form";
 import { ApiError } from "@/lib/api/errors";
+import { PESAN_DATA_BERUBAH } from "@/lib/konkurensi";
 import {
   bacaFilterSesi,
   domainSesi,
@@ -42,6 +43,15 @@ const resp = (data: unknown, status = 200) => ({
   data: status < 400 ? data : undefined,
   error: status < 400 ? undefined : { error: "x", message: "ditolak" },
   response: { status, headers: { get: () => "req-1" } },
+});
+/** Respons GET detail yang membawa header ETag (kunci optimistik). */
+const respEtag = (data: unknown, etag = '"v1"') => ({
+  data,
+  error: undefined,
+  response: {
+    status: 200,
+    headers: { get: (n: string) => (n.toLowerCase() === "etag" ? etag : "req-1") },
+  },
 });
 const halaman = (items: unknown[], total = items.length) =>
   resp({ items, total, limit: 500, offset: 0 });
@@ -80,6 +90,7 @@ function siapkanGet() {
         { id: "ko1", kode: "O-0001", keterangan_peran: "Guru" },
         { id: "ko2", kode: "O-0002", keterangan_peran: null },
       ]);
+    if (path === "/api/v1/redesain/sesi/{sesi_id}") return respEtag(sesiRow());
     return resp(null, 404);
   });
 }
@@ -211,6 +222,25 @@ describe("form sesi", () => {
     fireEvent.submit(screen.getByRole("button", { name: "Simpan perubahan" }).closest("form")!);
     await waitFor(() => expect(patch).toHaveBeenCalled());
     expect(patch.mock.calls[0][1].params.path.sesi_id).toBe("x1");
+    expect(patch.mock.calls[0][1].headers).toEqual({ "If-Match": '"v1"' });
+  });
+  it("mode ubah: PATCH 412 → pesan baku data berubah, tanpa pindah halaman", async () => {
+    patch.mockResolvedValue({
+      data: undefined,
+      error: { error: { code: "precondition_failed", message: "x" } },
+      response: { status: 412, headers: { get: () => "req-1" } },
+    });
+    render(<SesiForm {...props} awal={sesiRow()} />);
+    await screen.findAllByRole("option", { name: "O-0001 — Guru" });
+    fireEvent.submit(screen.getByRole("button", { name: "Simpan perubahan" }).closest("form")!);
+    await waitFor(() => expect(notifyGagal).toHaveBeenCalled());
+    expect((notifyGagal.mock.calls[0][0] as Error).message).toBe(PESAN_DATA_BERUBAH);
+    expect(push).not.toHaveBeenCalled();
+  });
+  it("mode tambah tidak memanggil GET detail sesi", async () => {
+    render(<SesiForm {...props} />);
+    await screen.findAllByRole("option", { name: "O-0001 — Guru" });
+    expect(get.mock.calls.map((c) => c[0])).not.toContain("/api/v1/redesain/sesi/{sesi_id}");
   });
 });
 

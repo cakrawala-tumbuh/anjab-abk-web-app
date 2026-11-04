@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { PeringatanPrivasi } from "@/components/peringatan-privasi";
 import { withServerAuth } from "@/lib/api/client";
@@ -14,6 +14,7 @@ import type {
 } from "@/lib/api/schema";
 import { PanelAlur } from "./panel-alur";
 import { PetunjukKonfirmasi } from "./petunjuk-konfirmasi";
+import { bacaEtag, headerIfMatch, petakanKonkurensi } from "@/lib/konkurensi";
 import { notifyGagal, notifySukses } from "@/lib/notify";
 import {
   OPSI_INDIKASI,
@@ -104,6 +105,8 @@ interface Props {
   dugaanAwal: DugaanRead | null;
   /** Peta alur sekolah; `null` selama dugaan belum ditampilkan (endpoint tidak dipanggil). */
   alur?: AlurRead | null;
+  /** ETag dari GET konfirmasi yang sama dengan `konfirmasi` (dibaca Server Component). */
+  etag?: string | null;
   accessToken: string | undefined;
 }
 
@@ -120,10 +123,30 @@ interface Props {
  * @param props.masalah - Baris `sekolah/masalah` untuk bagian A (identitas masalah).
  * @param props.dugaanAwal - Rumusan bila dugaan sudah pernah ditampilkan, selain itu `null`.
  * @param props.alur - Peta alur untuk panel langkah 2; `null`/kosong bila dugaan belum tampil.
+ * @param props.etag - ETag GET konfirmasi; dikirim sebagai `If-Match` pada PATCH dan diperbarui
+ *   dari header tiap respons sukses (wizard menyimpan berulang). 412 → pesan baku tanpa
+ *   menghapus isian.
  * @param props.accessToken - Token akses dari Server Component induk.
  */
-export function WizardKonfirmasi({ konfirmasi, masalah, dugaanAwal, alur, accessToken }: Props) {
+export function WizardKonfirmasi({
+  konfirmasi,
+  masalah,
+  dugaanAwal,
+  alur,
+  etag: etagProp = null,
+  accessToken,
+}: Props) {
   const router = useRouter();
+  const [etag, setEtag] = useState<string | null>(etagProp);
+  // Server Component memuat ulang (router.refresh) → ETag baru dari GET yang segar.
+  useEffect(() => {
+    setEtag(etagProp);
+  }, [etagProp]);
+  /** Simpan ETag dari respons sukses bila ada. */
+  function perbaruiEtag(response: Response) {
+    const baru = bacaEtag(response);
+    if (baru) setEtag(baru);
+  }
   const [isian, setIsian] = useState<Isian>(() => isianAwal(konfirmasi));
   const [dilihat, setDilihat] = useState<Langkah | null>(null);
   const [dugaanLokal, setDugaanLokal] = useState<DugaanRead | null>(dugaanAwal);
@@ -151,7 +174,8 @@ export function WizardKonfirmasi({ konfirmasi, masalah, dugaanAwal, alur, access
       await aksi();
       if (sukses) notifySukses(sukses);
       return true;
-    } catch (err) {
+    } catch (galatMentah) {
+      const err = petakanKonkurensi(galatMentah);
       const pesan = pesanGagalWizard(err);
       setError(pesan);
       notifyGagal(
@@ -175,8 +199,10 @@ export function WizardKonfirmasi({ konfirmasi, masalah, dugaanAwal, alur, access
     const res = await client().PATCH("/api/v1/redesain/konfirmasi/{konfirmasi_id}", {
       params: { path: { konfirmasi_id: id } },
       body,
+      headers: headerIfMatch(etag),
     });
     if (res.error) throw apiErrorDari(res);
+    perbaruiEtag(res.response);
   }
 
   async function simpanCerita() {
@@ -195,6 +221,7 @@ export function WizardKonfirmasi({ konfirmasi, masalah, dugaanAwal, alur, access
         params: { path: { konfirmasi_id: id } },
       });
       if (res.error) throw apiErrorDari(res);
+      perbaruiEtag(res.response);
     }, "Cerita dikunci.");
     if (ok) {
       setDilihat(null);

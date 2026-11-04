@@ -7,6 +7,8 @@ import { withServerAuth } from "@/lib/api/client";
 import { apiErrorDari } from "@/lib/api/errors";
 import type { VersiMetodeCreate, VersiMetodeRead } from "@/lib/api/schema";
 import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
+import { bacaEtag, headerIfMatch, petakanKonkurensi } from "@/lib/konkurensi";
+import { PemuatRekaman } from "@/lib/use-rekaman-ber-etag";
 
 /** Pesan konflik saat pasangan `versi` + `bagian` sudah tercatat (HTTP 409). */
 export const PESAN_KONFLIK_VERSI = "Versi dan bagian ini sudah tercatat";
@@ -24,8 +26,21 @@ const KOSONG: VersiMetodeCreate = {
 const INPUT =
   "w-full rounded-md border border-gray-300 px-2 py-1 dark:border-gray-600 dark:bg-gray-800";
 
+/** Properti {@link FormVersiMetode}. */
+export interface FormVersiMetodeProps {
+  accessToken: string | undefined;
+  awal?: VersiMetodeRead;
+  onSelesai?: () => void;
+}
+
+/** Properti isi form: ditambah ETag dari GET detail yang sama dengan `awal`. */
+interface FormVersiMetodeIsiProps extends FormVersiMetodeProps {
+  etag?: string | null;
+}
+
 /**
- * Form catatan versi metode: mode tambah (`POST /api/v1/redesain/versi-metode`) bila
+ * Form catatan versi metode (mode ubah memuat catatannya sendiri lewat GET detail dan
+ * mengirim `If-Match` dari ETag GET yang sama): mode tambah (`POST /api/v1/redesain/versi-metode`) bila
  * `awal` tidak diberikan, mode ubah (`PATCH .../{versi_id}`) bila `awal` ada.
  *
  * Respons 409 menampilkan {@link PESAN_KONFLIK_VERSI} tanpa toast sukses; galat lain
@@ -36,16 +51,32 @@ const INPUT =
  * @param props.awal - Catatan yang diubah; kosong untuk mode tambah.
  * @param props.onSelesai - Dipanggil setelah simpan sukses (mis. menutup form ubah).
  */
-export function FormVersiMetode({
+export function FormVersiMetode(props: FormVersiMetodeProps) {
+  const { awal, accessToken } = props;
+  if (!awal) return <FormVersiMetodeIsi {...props} />;
+  return (
+    <PemuatRekaman
+      accessToken={accessToken}
+      kunci={awal.id}
+      ambil={(c) =>
+        c.GET("/api/v1/redesain/versi-metode/{versi_id}", {
+          params: { path: { versi_id: awal.id } },
+        })
+      }
+    >
+      {(data, etag) => <FormVersiMetodeIsi {...props} awal={data} etag={etag} />}
+    </PemuatRekaman>
+  );
+}
+
+function FormVersiMetodeIsi({
   accessToken,
   awal,
   onSelesai,
-}: {
-  accessToken: string | undefined;
-  awal?: VersiMetodeRead;
-  onSelesai?: () => void;
-}) {
+  etag: etagAwal = null,
+}: FormVersiMetodeIsiProps) {
   const router = useRouter();
+  const [etag, setEtag] = useState<string | null>(etagAwal);
   const [nilai, setNilai] = useState<VersiMetodeCreate>(
     awal
       ? {
@@ -76,6 +107,7 @@ export function FormVersiMetode({
         ? await client.PATCH("/api/v1/redesain/versi-metode/{versi_id}", {
             params: { path: { versi_id: awal.id } },
             body: nilai,
+            headers: headerIfMatch(etag),
           })
         : await client.POST("/api/v1/redesain/versi-metode", { body: nilai });
       if (res.response.status === 409) {
@@ -83,13 +115,15 @@ export function FormVersiMetode({
         return;
       }
       if (!res.data) throw apiErrorDari(res);
+      if (awal) setEtag(bacaEtag(res.response));
       notifySukses(awal ? "Catatan versi diperbarui." : "Catatan versi ditambahkan.");
       if (!awal) setNilai(KOSONG);
       router.refresh();
       onSelesai?.();
     } catch (err) {
-      setError(pesanGagal(err));
-      notifyGagal(err);
+      const galat = petakanKonkurensi(err);
+      setError(pesanGagal(galat));
+      notifyGagal(galat);
     } finally {
       setLoading(false);
     }

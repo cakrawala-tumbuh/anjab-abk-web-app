@@ -67,7 +67,9 @@ peta kode ↔ partisipan hanya untuk Tim Kajian.
    pilih **Partisipan** bila ada (boleh dikosongkan), lalu klik **Tambah**.
 3. Bila partisipan itu sudah punya kode, tampil pesan **Partisipan ini sudah punya kode**
    dan tidak ada yang tersimpan.
-4. Untuk mengubah keterangan, edit kolom **Keterangan peran** lalu klik **Simpan**.
+4. Untuk mengubah keterangan, klik **Ubah** pada baris itu, edit kolom **Keterangan peran**, lalu klik
+   **Simpan**. Bila data sudah diubah pengguna lain, muncul pesan "Data telah berubah oleh pengguna
+   lain. Muat ulang halaman sebelum menyimpan."; isian Anda tidak hilang.
 
 Kode orang tidak dapat dihapus. Di form lain, kode dipilih lewat daftar berlabel
 `kode — keterangan peran` (tanpa nama orang). Bila daftar gagal dimuat, tampil pesan

@@ -23,12 +23,16 @@ import { BagianPenilaian } from "@/app/(auth)/redesain/masalah/[id]/bagian-penil
 import { fetchPenilaianMasalah } from "@/app/(auth)/redesain/masalah/[id]/data-penilaian";
 import { BAGIAN_DETAIL_MASALAH } from "@/app/(auth)/redesain/masalah/[id]/registry";
 import { ApiError } from "@/lib/api/errors";
+import { PESAN_DATA_BERUBAH } from "@/lib/konkurensi";
 import type { MasalahRead, PenilaianRead } from "@/lib/api/schema";
 
 const resp = (data: unknown, status = 200) => ({
   data: status < 400 ? data : undefined,
   error: status < 400 ? undefined : { error: { code: "X", message: "ditolak" } },
-  response: { status, headers: { get: () => "req-1" } },
+  response: {
+    status,
+    headers: { get: (n: string) => (n.toLowerCase() === "etag" ? '"v1"' : "req-1") },
+  },
 });
 const halaman = (items: unknown[]) => resp({ items, total: items.length, limit: 2, offset: 0 });
 
@@ -59,13 +63,19 @@ const penilaian = (p: Partial<PenilaianRead> = {}): PenilaianRead =>
 
 async function renderBagian() {
   render(await BagianPenilaian({ masalah, accessToken: "tok" }));
+  // Form ubah memuat rekamannya sendiri (GET detail + ETag); tunggu sampai selesai.
+  await waitFor(() =>
+    expect(screen.queryByRole("status", { name: "Memuat data" })).not.toBeInTheDocument(),
+  );
 }
 
 beforeEach(() => {
   vi.clearAllMocks();
   // Sebaran K1–K4 (GET) dipanggil bagian penilaian pada setiap render.
-  get.mockResolvedValue(
-    resp({ masalah_id: "m1", jumlah_konfirmasi: 0, k1: {}, k2: {}, k3: {}, k4: {} }),
+  get.mockImplementation(async (path: string) =>
+    path === "/api/v1/redesain/penilaian/{penilaian_id}"
+      ? resp(penilaian())
+      : resp({ masalah_id: "m1", jumlah_konfirmasi: 0, k1: {}, k2: {}, k3: {}, k4: {} }),
   );
 });
 
@@ -121,6 +131,7 @@ describe("bagian penilaian", () => {
     const [path, opsi] = patch.mock.calls[0];
     expect(path).toBe("/api/v1/redesain/penilaian/{penilaian_id}");
     expect(opsi.params.path.penilaian_id).toBe("n1");
+    expect(opsi.headers).toEqual({ "If-Match": '"v1"' });
     expect(opsi.body.k1).toBeNull();
     expect(opsi.body.k2).toBe("Tinggi");
     expect(opsi.body.tindak_lanjut).toBeNull();
@@ -144,6 +155,33 @@ describe("bagian penilaian", () => {
     fireEvent.click(screen.getByRole("button", { name: "Simpan penilaian" }));
     await waitFor(() => expect(notifyGagal).toHaveBeenCalled());
     expect(notifySukses).not.toHaveBeenCalled();
+  });
+
+  it("PATCH 412 → pesan baku data berubah, isian tetap", async () => {
+    post.mockResolvedValue(halaman([penilaian()]));
+    await renderBagian();
+    patch.mockResolvedValue({
+      data: undefined,
+      error: { error: { code: "precondition_failed", message: "x" } },
+      response: { status: 412, headers: { get: () => "req-1" } },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Simpan penilaian" }));
+    await waitFor(() => expect(notifyGagal).toHaveBeenCalled());
+    expect((notifyGagal.mock.calls[0][0] as Error).message).toBe(PESAN_DATA_BERUBAH);
+    expect(screen.getByRole("button", { name: "Simpan penilaian" })).toBeInTheDocument();
+    expect(refresh).not.toHaveBeenCalled();
+  });
+
+  it("GET detail gagal → tombol simpan tidak tersedia", async () => {
+    post.mockResolvedValue(halaman([penilaian()]));
+    get.mockImplementation(async (path: string) =>
+      path === "/api/v1/redesain/penilaian/{penilaian_id}"
+        ? resp(null, 403)
+        : resp({ masalah_id: "m1", jumlah_konfirmasi: 0, k1: {}, k2: {}, k3: {}, k4: {} }),
+    );
+    await renderBagian();
+    expect(screen.queryByRole("button", { name: "Simpan penilaian" })).not.toBeInTheDocument();
+    expect(notifyGagal).toHaveBeenCalled();
   });
 
   it("search 403 melempar ApiError", async () => {

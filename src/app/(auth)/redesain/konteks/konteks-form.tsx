@@ -7,10 +7,23 @@ import { withServerAuth } from "@/lib/api/client";
 import { apiErrorDari } from "@/lib/api/errors";
 import type { KonteksRead } from "@/lib/api/schema";
 import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
+import { bacaEtag, headerIfMatch, petakanKonkurensi } from "@/lib/konkurensi";
+import { PemuatRekaman } from "@/lib/use-rekaman-ber-etag";
 import { GELOMBANG, PESAN_KODE_KONTEKS_DUPLIKAT } from "@/lib/redesain-register";
 
 const INPUT =
   "w-full rounded-md border border-gray-300 px-2 py-1 text-sm dark:border-gray-600 dark:bg-gray-800";
+
+/** Properti {@link KonteksForm}. */
+export interface KonteksFormProps {
+  awal?: KonteksRead;
+  accessToken: string | undefined;
+}
+
+/** Properti isi form: ditambah ETag dari GET detail yang sama dengan `awal`. */
+interface KonteksFormIsiProps extends KonteksFormProps {
+  etag?: string | null;
+}
 
 /**
  * Form tambah (tanpa `awal`) atau ubah (dengan `awal`) satu konteks redesain.
@@ -23,14 +36,27 @@ const INPUT =
  * @param props.awal - Konteks yang diubah; kosong = mode tambah.
  * @param props.accessToken - Token akses dari Server Component induk.
  */
-export function KonteksForm({
-  awal,
-  accessToken,
-}: {
-  awal?: KonteksRead;
-  accessToken: string | undefined;
-}) {
+export function KonteksForm(props: KonteksFormProps) {
+  const { awal, accessToken } = props;
+  if (!awal) return <KonteksFormIsi {...props} />;
+  return (
+    <PemuatRekaman
+      accessToken={accessToken}
+      kunci={awal.id}
+      ambil={(c) =>
+        c.GET("/api/v1/redesain/konteks/{konteks_id}", {
+          params: { path: { konteks_id: awal.id } },
+        })
+      }
+    >
+      {(data, etag) => <KonteksFormIsi {...props} awal={data} etag={etag} />}
+    </PemuatRekaman>
+  );
+}
+
+function KonteksFormIsi({ awal, accessToken, etag: etagAwal = null }: KonteksFormIsiProps) {
   const router = useRouter();
+  const [etag, setEtag] = useState<string | null>(etagAwal);
   const [kode, setKode] = useState("");
   const [tema, setTema] = useState(awal?.tema ?? "");
   const [gelombang, setGelombang] = useState<string>(awal?.gelombang ?? "Belum dijadwalkan");
@@ -59,8 +85,10 @@ export function KonteksForm({
         const res = await client.PATCH("/api/v1/redesain/konteks/{konteks_id}", {
           params: { path: { konteks_id: awal.id } },
           body: isi,
+          headers: headerIfMatch(etag),
         });
         if (!res.data) throw apiErrorDari(res);
+        setEtag(bacaEtag(res.response));
         notifySukses(`Konteks ${res.data.kode} diperbarui.`);
       } else {
         const res = await client.POST("/api/v1/redesain/konteks", {
@@ -80,8 +108,9 @@ export function KonteksForm({
       }
       router.refresh();
     } catch (err) {
-      setError(pesanGagal(err));
-      notifyGagal(err);
+      const galat = petakanKonkurensi(err);
+      setError(pesanGagal(galat));
+      notifyGagal(galat);
     } finally {
       setLoading(false);
     }

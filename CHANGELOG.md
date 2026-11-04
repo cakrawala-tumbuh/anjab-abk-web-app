@@ -9,6 +9,12 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ### Ditambahkan
 
+- Seluruh 12 formulir ubah modul redesain (kode orang, konteks, masalah, alternatif, cakupan jabatan,
+  versi metode, sesi, bukti, penilaian, proses, langkah, dan wizard konfirmasi sekolah) kini
+  mengirim `If-Match`. Formulir ubah memuat rekamannya lewat GET detail (isian dan ETag dari satu
+  respons); bila data sudah diubah pengguna lain tampil pesan "Data telah berubah oleh pengguna
+  lain..." tanpa kehilangan isian, dan bila GET gagal tombol simpan tidak tersedia. Di daftar,
+  "Ubah" kode orang kini berupa tombol, dan GET baru terjadi saat panel ubah dibuka (issue #87).
 - Endpoint publik `GET /api/version` (tanpa login) berisi `{version, commit}`; `commit` dari env
   server `APP_BUILD_COMMIT`, diisi build-arg `GIT_COMMIT` (`github.sha` di `release.yml`) (issue #85).
 - Formulir isian WCP/DCS/OPM/TI Tahap 3, editor item master WCP/DCS, edit instrumen WCP/DCS, dan

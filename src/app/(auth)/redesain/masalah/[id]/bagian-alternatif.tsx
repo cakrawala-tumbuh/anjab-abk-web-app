@@ -1,3 +1,4 @@
+import { DetailsMuatMalas } from "@/components/details-muat-malas";
 import type { MasalahRead, SekolahRead } from "@/lib/api/schema";
 import { JUDUL_ALTERNATIF } from "@/lib/redesain-alternatif";
 import { fetchAlternatifMasalah, fetchJabatanAlternatif } from "./data-alternatif";
@@ -65,10 +66,11 @@ export async function BagianAlternatif({ masalah, accessToken }: BagianAlternati
       )}
 
       {alternatif.map((a) => (
-        <details key={a.id}>
-          <summary className="cursor-pointer text-xs text-blue-600 dark:text-blue-400">
-            Ubah alternatif {a.kode}
-          </summary>
+        <DetailsMuatMalas
+          key={a.id}
+          ringkasan={`Ubah alternatif ${a.kode}`}
+          summaryClassName="cursor-pointer text-xs text-blue-600 dark:text-blue-400"
+        >
           <div className="mt-2">
             <FormAlternatif
               masalahId={masalah.id}
@@ -77,7 +79,7 @@ export async function BagianAlternatif({ masalah, accessToken }: BagianAlternati
               accessToken={accessToken}
             />
           </div>
-        </details>
+        </DetailsMuatMalas>
       ))}
 
       <details className="rounded-lg border border-dashed border-gray-300 p-4 dark:border-gray-600">

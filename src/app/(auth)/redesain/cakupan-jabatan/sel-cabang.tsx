@@ -7,7 +7,9 @@ import { PilihKodeOrang } from "@/components/pilih-kode-orang";
 import { withServerAuth } from "@/lib/api/client";
 import { apiErrorDari } from "@/lib/api/errors";
 import type { CakupanJabatanRead, JabatanRead } from "@/lib/api/schema";
+import { bacaEtag, headerIfMatch, petakanKonkurensi } from "@/lib/konkurensi";
 import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
+import { PemuatRekaman } from "@/lib/use-rekaman-ber-etag";
 import { STATUS_UNIT, TINGKAT_PEMERIKSAAN } from "@/lib/redesain-cakupan";
 
 /** Teks penanda record yang `jabatan_id`-nya masih kosong (risiko R-6). */
@@ -41,26 +43,21 @@ function Pilihan({
   );
 }
 
-/**
- * Satu sel cabang pada tabel cakupan: ringkasan record + form ubah (`PATCH
- * /api/v1/redesain/cakupan-jabatan/{id}`).
- *
- * Record ber-`jabatan_id` null diberi penanda {@link PENANDA_BELUM_DIPETAKAN}. Respons
- * 422 (jabatan tak ada) ditampilkan sebagai toast gagal dan galat inline.
- *
- * @param props.rec - Record cakupan untuk role × cabang ini.
- * @param props.jabatan - Master jabatan (pilihan dan label).
- * @param props.accessToken - Token akses dari Server Component induk.
- */
-export function SelCabang({
-  rec,
-  jabatan,
-  accessToken,
-}: {
+/** Properti {@link FormCabang}. */
+interface FormCabangProps {
   rec: CakupanJabatanRead;
+  etag: string | null;
   jabatan: JabatanRead[];
   accessToken: string | undefined;
-}) {
+}
+
+/**
+ * Form ubah satu cakupan: nilai awal dan `If-Match` berasal dari satu GET detail
+ * (`rec` adalah hasil GET itu, bukan baris daftar).
+ *
+ * @param props - Lihat {@link FormCabangProps}.
+ */
+function FormCabang({ rec, etag: etagAwal, jabatan, accessToken }: FormCabangProps) {
   const router = useRouter();
   const [jabatanId, setJabatanId] = useState(rec.jabatan_id ?? "");
   const [statusUnit, setStatusUnit] = useState<string>(rec.status_unit);
@@ -71,10 +68,7 @@ export function SelCabang({
   const [pic, setPic] = useState(rec.pic_kode_orang ?? "");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  const namaJabatan = rec.jabatan_id
-    ? (jabatan.find((j) => j.id === rec.jabatan_id)?.nama ?? rec.jabatan_id)
-    : null;
+  const [etag, setEtag] = useState<string | null>(etagAwal);
 
   async function simpan(e: React.FormEvent) {
     e.preventDefault();
@@ -94,18 +88,120 @@ export function SelCabang({
             gap_variasi: gap.trim() || null,
             pic_kode_orang: pic || null,
           },
+          headers: headerIfMatch(etag),
         },
       );
       if (!res.data) throw apiErrorDari(res);
+      setEtag(bacaEtag(res.response));
       notifySukses("Cakupan disimpan.");
       router.refresh();
     } catch (err) {
-      setError(pesanGagal(err));
-      notifyGagal(err);
+      const galat = petakanKonkurensi(err);
+      setError(pesanGagal(galat));
+      notifyGagal(galat);
     } finally {
       setLoading(false);
     }
   }
+
+  return (
+    <form
+      onSubmit={simpan}
+      className="mt-2 space-y-2"
+      aria-label={`Ubah ${rec.role_kode} ${rec.cabang}`}
+    >
+      <label className="block text-xs">
+        <span className="block text-gray-600 dark:text-gray-400">Jabatan master</span>
+        <select
+          value={jabatanId}
+          onChange={(e) => setJabatanId(e.target.value)}
+          className={kelasInput}
+        >
+          <option value="">— belum dipetakan —</option>
+          {jabatan.map((j) => (
+            <option key={j.id} value={j.id}>
+              {j.nama}
+            </option>
+          ))}
+        </select>
+      </label>
+      <Pilihan label="Status unit" nilai={statusUnit} opsi={STATUS_UNIT} onChange={setStatusUnit} />
+      <Pilihan
+        label="Pemegang diperiksa"
+        nilai={pemegang}
+        opsi={TINGKAT_PEMERIKSAAN}
+        onChange={setPemegang}
+      />
+      <Pilihan
+        label="Inventori ditinjau"
+        nilai={inventori}
+        opsi={TINGKAT_PEMERIKSAAN}
+        onChange={setInventori}
+      />
+      <Pilihan label="Peta diperkuat" nilai={peta} opsi={TINGKAT_PEMERIKSAAN} onChange={setPeta} />
+      <div>
+        <PeringatanPrivasi />
+        <label className="mt-1 block text-xs">
+          <span className="block text-gray-600 dark:text-gray-400">Gap / variasi</span>
+          <textarea
+            value={gap}
+            onChange={(e) => setGap(e.target.value)}
+            rows={2}
+            className={`${kelasInput} w-full`}
+          />
+        </label>
+      </div>
+      <div className="text-xs">
+        <span className="block text-gray-600 dark:text-gray-400">PIC (kode orang)</span>
+        <PilihKodeOrang
+          name="pic_kode_orang"
+          value={pic}
+          onChange={setPic}
+          accessToken={accessToken}
+        />
+      </div>
+      <button
+        type="submit"
+        disabled={loading}
+        className="rounded-md bg-blue-600 px-3 py-1 text-xs font-medium text-white hover:bg-blue-700 disabled:opacity-50"
+      >
+        {loading ? "Menyimpan…" : "Simpan"}
+      </button>
+      {error && (
+        <p role="alert" className="form-error">
+          {error}
+        </p>
+      )}
+    </form>
+  );
+}
+
+/**
+ * Satu sel cabang pada tabel cakupan: ringkasan record + form ubah (`PATCH
+ * /api/v1/redesain/cakupan-jabatan/{id}`).
+ *
+ * Form ubah baru dimontase saat panel pertama kali dibuka dan memuat cakupannya sendiri lewat
+ * `GET /cakupan-jabatan/{id}` (nilai form dan `If-Match` dari GET yang sama; tanpa N GET saat
+ * halaman dibuka). Record ber-`jabatan_id` null diberi penanda {@link PENANDA_BELUM_DIPETAKAN}. Respons
+ * 422 (jabatan tak ada) ditampilkan sebagai toast gagal dan galat inline.
+ *
+ * @param props.rec - Record cakupan untuk role × cabang ini.
+ * @param props.jabatan - Master jabatan (pilihan dan label).
+ * @param props.accessToken - Token akses dari Server Component induk.
+ */
+export function SelCabang({
+  rec,
+  jabatan,
+  accessToken,
+}: {
+  rec: CakupanJabatanRead;
+  jabatan: JabatanRead[];
+  accessToken: string | undefined;
+}) {
+  const [pernahBuka, setPernahBuka] = useState(false);
+  const namaJabatan = rec.jabatan_id
+    ? (jabatan.find((j) => j.id === rec.jabatan_id)?.nama ?? rec.jabatan_id)
+    : null;
 
   return (
     <div className="space-y-1 text-xs">
@@ -118,88 +214,29 @@ export function SelCabang({
           {PENANDA_BELUM_DIPETAKAN}
         </p>
       )}
-      <details>
+      <details
+        onToggle={(e) => {
+          if ((e.currentTarget as HTMLDetailsElement).open) setPernahBuka(true);
+        }}
+      >
         <summary className="cursor-pointer text-blue-600 dark:text-blue-400">
           Ubah {rec.cabang}
         </summary>
-        <form
-          onSubmit={simpan}
-          className="mt-2 space-y-2"
-          aria-label={`Ubah ${rec.role_kode} ${rec.cabang}`}
-        >
-          <label className="block text-xs">
-            <span className="block text-gray-600 dark:text-gray-400">Jabatan master</span>
-            <select
-              value={jabatanId}
-              onChange={(e) => setJabatanId(e.target.value)}
-              className={kelasInput}
-            >
-              <option value="">— belum dipetakan —</option>
-              {jabatan.map((j) => (
-                <option key={j.id} value={j.id}>
-                  {j.nama}
-                </option>
-              ))}
-            </select>
-          </label>
-          <Pilihan
-            label="Status unit"
-            nilai={statusUnit}
-            opsi={STATUS_UNIT}
-            onChange={setStatusUnit}
-          />
-          <Pilihan
-            label="Pemegang diperiksa"
-            nilai={pemegang}
-            opsi={TINGKAT_PEMERIKSAAN}
-            onChange={setPemegang}
-          />
-          <Pilihan
-            label="Inventori ditinjau"
-            nilai={inventori}
-            opsi={TINGKAT_PEMERIKSAAN}
-            onChange={setInventori}
-          />
-          <Pilihan
-            label="Peta diperkuat"
-            nilai={peta}
-            opsi={TINGKAT_PEMERIKSAAN}
-            onChange={setPeta}
-          />
-          <div>
-            <PeringatanPrivasi />
-            <label className="mt-1 block text-xs">
-              <span className="block text-gray-600 dark:text-gray-400">Gap / variasi</span>
-              <textarea
-                value={gap}
-                onChange={(e) => setGap(e.target.value)}
-                rows={2}
-                className={`${kelasInput} w-full`}
-              />
-            </label>
-          </div>
-          <div className="text-xs">
-            <span className="block text-gray-600 dark:text-gray-400">PIC (kode orang)</span>
-            <PilihKodeOrang
-              name="pic_kode_orang"
-              value={pic}
-              onChange={setPic}
-              accessToken={accessToken}
-            />
-          </div>
-          <button
-            type="submit"
-            disabled={loading}
-            className="rounded-md bg-blue-600 px-3 py-1 text-xs font-medium text-white hover:bg-blue-700 disabled:opacity-50"
+        {pernahBuka && (
+          <PemuatRekaman
+            accessToken={accessToken}
+            kunci={rec.id}
+            ambil={(c) =>
+              c.GET("/api/v1/redesain/cakupan-jabatan/{cakupan_id}", {
+                params: { path: { cakupan_id: rec.id } },
+              })
+            }
           >
-            {loading ? "Menyimpan…" : "Simpan"}
-          </button>
-          {error && (
-            <p role="alert" className="form-error">
-              {error}
-            </p>
-          )}
-        </form>
+            {(data, etag) => (
+              <FormCabang rec={data} etag={etag} jabatan={jabatan} accessToken={accessToken} />
+            )}
+          </PemuatRekaman>
+        )}
       </details>
     </div>
   );

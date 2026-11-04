@@ -16,6 +16,8 @@ import type {
   UraianTugasRead,
 } from "@/lib/api/schema";
 import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
+import { bacaEtag, headerIfMatch, petakanKonkurensi } from "@/lib/konkurensi";
+import { PemuatRekaman } from "@/lib/use-rekaman-ber-etag";
 import { GELOMBANG, STATUS_AWAL } from "@/lib/redesain-register";
 
 const INPUT =
@@ -34,8 +36,14 @@ export interface MasalahFormProps {
   accessToken: string | undefined;
 }
 
+/** Properti isi form: ditambah ETag dari GET detail yang sama dengan `awal`. */
+interface MasalahFormIsiProps extends MasalahFormProps {
+  etag?: string | null;
+}
+
 /**
- * Form tambah/ubah masalah redesain.
+ * Form tambah/ubah masalah redesain. Mode ubah memuat rekamannya sendiri lewat GET detail (/masalah/{id}) dan mengirim `If-Match`
+ * dari ETag GET yang sama.
  *
  * Opsi sekolah "Belum ditetapkan" mengirim `sekolah_id: null` disertai
  * `keterangan_sekolah`. `uraian_tugas_ids` dikirim ganti-penuh. Bila
@@ -45,14 +53,34 @@ export interface MasalahFormProps {
  *
  * @param props - Lihat {@link MasalahFormProps}.
  */
-export function MasalahForm({
+export function MasalahForm(props: MasalahFormProps) {
+  const { awal, accessToken } = props;
+  if (!awal) return <MasalahFormIsi {...props} />;
+  return (
+    <PemuatRekaman
+      accessToken={accessToken}
+      kunci={awal.id}
+      ambil={(c) =>
+        c.GET("/api/v1/redesain/masalah/{masalah_id}", {
+          params: { path: { masalah_id: awal.id } },
+        })
+      }
+    >
+      {(data, etag) => <MasalahFormIsi {...props} awal={data} etag={etag} />}
+    </PemuatRekaman>
+  );
+}
+
+function MasalahFormIsi({
   awal,
   konteks,
   sekolah,
   uraianTugas,
   accessToken,
-}: MasalahFormProps) {
+  etag: etagAwal = null,
+}: MasalahFormIsiProps) {
   const router = useRouter();
+  const [etag, setEtag] = useState<string | null>(etagAwal);
   const [konteksId, setKonteksId] = useState(awal?.konteks_id ?? "");
   const [sekolahId, setSekolahId] = useState(awal?.sekolah_id ?? "");
   const [ketSekolah, setKetSekolah] = useState(awal?.keterangan_sekolah ?? "");
@@ -104,8 +132,10 @@ export function MasalahForm({
         const res = await client.PATCH("/api/v1/redesain/masalah/{masalah_id}", {
           params: { path: { masalah_id: awal.id } },
           body,
+          headers: headerIfMatch(etag),
         });
         if (!res.data) throw apiErrorDari(res);
+        setEtag(bacaEtag(res.response));
         notifySukses(`Masalah ${res.data.kode} diperbarui.`);
       } else {
         const res = await client.POST("/api/v1/redesain/masalah", {
@@ -117,8 +147,9 @@ export function MasalahForm({
       router.push("/redesain/masalah");
       router.refresh();
     } catch (err) {
-      setError(pesanGagal(err));
-      notifyGagal(err);
+      const galat = petakanKonkurensi(err);
+      setError(pesanGagal(galat));
+      notifyGagal(galat);
     } finally {
       setLoading(false);
     }

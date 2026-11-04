@@ -29,6 +29,7 @@ import { FormBukti } from "@/app/(auth)/redesain/masalah/[id]/form-bukti";
 import { fetchBuktiMasalah } from "@/app/(auth)/redesain/masalah/[id]/data-bukti";
 import { BAGIAN_DETAIL_MASALAH } from "@/app/(auth)/redesain/masalah/[id]/registry";
 import { ApiError } from "@/lib/api/errors";
+import { PESAN_DATA_BERUBAH } from "@/lib/konkurensi";
 import { kodeBuktiPerLangkah } from "@/lib/redesain-alur";
 import type { BuktiRead } from "@/lib/api/schema";
 
@@ -36,6 +37,15 @@ const resp = (data: unknown, status = 200) => ({
   data: status < 400 ? data : undefined,
   error: status < 400 ? undefined : { error: "x", message: "ditolak" },
   response: { status, headers: { get: () => "req-1" } },
+});
+/** Respons GET detail yang membawa header ETag (kunci optimistik). */
+const respEtag = (data: unknown, etag = '"v1"') => ({
+  data,
+  error: undefined,
+  response: {
+    status: 200,
+    headers: { get: (n: string) => (n.toLowerCase() === "etag" ? etag : "req-1") },
+  },
 });
 const halaman = (items: unknown[]) => resp({ items, total: items.length, limit: 500, offset: 0 });
 
@@ -102,6 +112,7 @@ function siapkan(daftar: BuktiRead[] = [bukti()]) {
       return halaman([{ id: "k1", kode: "K-01", tema: "Beban administrasi" }]);
     if (path === "/api/v1/sekolah") return halaman([{ id: "s1", nama: "SD Contoh" }]);
     if (path === "/api/v1/redesain/proses/{proses_id}") return resp(prosesP1);
+    if (path === "/api/v1/redesain/bukti/{bukti_id}") return respEtag(daftar[0]);
     if (path === "/api/v1/redesain/langkah/{langkah_id}/koreksi") return halaman([]);
     if (path === "/api/v1/redesain/kode-orang")
       return halaman([
@@ -252,13 +263,48 @@ describe("FormBukti", () => {
     siapkan();
     patch.mockResolvedValue(resp(null, 422));
     render(<FormBukti masalahId="m1" langkah={langkah} awal={bukti()} accessToken="tok" />);
-    expect(screen.getByText("B-0001")).toBeInTheDocument();
+    expect(await screen.findByText("B-0001")).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Simpan bukti" }));
     await waitFor(() => expect(notifyGagal).toHaveBeenCalled());
     expect(patch).toHaveBeenCalledWith(
       "/api/v1/redesain/bukti/{bukti_id}",
-      expect.objectContaining({ params: { path: { bukti_id: "b1" } } }),
+      expect.objectContaining({
+        params: { path: { bukti_id: "b1" } },
+        headers: { "If-Match": '"v1"' },
+      }),
     );
     expect(screen.getByRole("button", { name: "Simpan bukti" })).toBeInTheDocument();
+  });
+
+  it("ubah bukti 412 → pesan baku data berubah, isian tetap", async () => {
+    siapkan();
+    patch.mockResolvedValue({
+      data: undefined,
+      error: { error: { code: "precondition_failed", message: "x" } },
+      response: { status: 412, headers: { get: () => "req-1" } },
+    });
+    render(<FormBukti masalahId="m1" langkah={langkah} awal={bukti()} accessToken="tok" />);
+    fireEvent.click(await screen.findByRole("button", { name: "Simpan bukti" }));
+    await waitFor(() => expect(notifyGagal).toHaveBeenCalled());
+    expect((notifyGagal.mock.calls[0][0] as Error).message).toBe(PESAN_DATA_BERUBAH);
+    expect(refresh).not.toHaveBeenCalled();
+    expect(screen.getByRole("button", { name: "Simpan bukti" })).toBeInTheDocument();
+  });
+
+  it("GET detail bukti gagal → tombol simpan tidak tersedia", async () => {
+    siapkan();
+    const dasar = get.getMockImplementation()!;
+    get.mockImplementation(async (path: string, ...r: unknown[]) =>
+      path === "/api/v1/redesain/bukti/{bukti_id}" ? resp(null, 403) : dasar(path, ...r),
+    );
+    render(<FormBukti masalahId="m1" langkah={langkah} awal={bukti()} accessToken="tok" />);
+    await waitFor(() => expect(notifyGagal).toHaveBeenCalled());
+    expect(screen.queryByRole("button", { name: "Simpan bukti" })).not.toBeInTheDocument();
+  });
+
+  it("mode tambah tidak melakukan GET detail bukti", () => {
+    siapkan();
+    render(<FormBukti masalahId="m1" langkah={langkah} accessToken="tok" />);
+    expect(get.mock.calls.map((c) => c[0])).not.toContain("/api/v1/redesain/bukti/{bukti_id}");
   });
 });

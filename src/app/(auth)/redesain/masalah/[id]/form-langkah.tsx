@@ -7,6 +7,8 @@ import { withServerAuth } from "@/lib/api/client";
 import { apiErrorDari } from "@/lib/api/errors";
 import type { LangkahCreate, LangkahRead } from "@/lib/api/schema";
 import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
+import { bacaEtag, headerIfMatch, petakanKonkurensi } from "@/lib/konkurensi";
+import { PemuatRekaman } from "@/lib/use-rekaman-ber-etag";
 import { STATUS_LANGKAH } from "@/lib/redesain-alur";
 
 const INPUT =
@@ -21,8 +23,14 @@ export interface FormLangkahProps {
   accessToken: string | undefined;
 }
 
+/** Properti isi form: ditambah ETag dari GET detail yang sama dengan `awal`. */
+interface FormLangkahIsiProps extends FormLangkahProps {
+  etag?: string | null;
+}
+
 /**
- * Form tambah/ubah langkah sebuah proses.
+ * Form tambah/ubah langkah sebuah proses. Mode ubah memuat langkahnya sendiri lewat
+ * `GET /langkah/{id}` dan mengirim `If-Match` dari ETag GET yang sama.
  *
  * Tambah: `POST /proses/{id}/langkah`; ubah: `PATCH /langkah/{id}`. `pelaksana` dan
  * `pemeriksa_pemutus` diisi jabatan/peran (bukan nama orang) — diingatkan oleh
@@ -31,8 +39,32 @@ export interface FormLangkahProps {
  *
  * @param props - Lihat {@link FormLangkahProps}.
  */
-export function FormLangkah({ prosesId, awal, accessToken }: FormLangkahProps) {
+export function FormLangkah(props: FormLangkahProps) {
+  const { awal, accessToken } = props;
+  if (!awal) return <FormLangkahIsi {...props} />;
+  return (
+    <PemuatRekaman
+      accessToken={accessToken}
+      kunci={awal.id}
+      ambil={(c) =>
+        c.GET("/api/v1/redesain/langkah/{langkah_id}", {
+          params: { path: { langkah_id: awal.id } },
+        })
+      }
+    >
+      {(data, etag) => <FormLangkahIsi {...props} awal={data} etag={etag} />}
+    </PemuatRekaman>
+  );
+}
+
+function FormLangkahIsi({
+  prosesId,
+  awal,
+  accessToken,
+  etag: etagAwal = null,
+}: FormLangkahIsiProps) {
   const router = useRouter();
+  const [etag, setEtag] = useState<string | null>(etagAwal);
   const [urutan, setUrutan] = useState(awal ? String(awal.urutan) : "");
   const [tahap, setTahap] = useState(awal?.tahap ?? "");
   const [pemicu, setPemicu] = useState(awal?.pemicu_input ?? "");
@@ -68,8 +100,10 @@ export function FormLangkah({ prosesId, awal, accessToken }: FormLangkahProps) {
         const res = await client.PATCH("/api/v1/redesain/langkah/{langkah_id}", {
           params: { path: { langkah_id: awal.id } },
           body: isi,
+          headers: headerIfMatch(etag),
         });
         if (!res.data) throw apiErrorDari(res);
+        setEtag(bacaEtag(res.response));
         notifySukses(`Langkah ${res.data.kode} diperbarui.`);
       } else {
         const res = await client.POST("/api/v1/redesain/proses/{proses_id}/langkah", {
@@ -81,8 +115,9 @@ export function FormLangkah({ prosesId, awal, accessToken }: FormLangkahProps) {
       }
       router.refresh();
     } catch (err) {
-      setError(pesanGagal(err));
-      notifyGagal(err);
+      const galat = petakanKonkurensi(err);
+      setError(pesanGagal(galat));
+      notifyGagal(galat);
     } finally {
       setLoading(false);
     }

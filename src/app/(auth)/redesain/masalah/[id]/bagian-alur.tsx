@@ -1,3 +1,4 @@
+import { DetailsMuatMalas } from "@/components/details-muat-malas";
 import type { MasalahRead, SekolahRead } from "@/lib/api/schema";
 import { asalKoreksi, formatWaktu, kodeBuktiPerLangkah } from "@/lib/redesain-alur";
 import { fetchAlurMasalah } from "./data";
@@ -54,10 +55,10 @@ export async function BagianAlur({ masalah, sekolah, accessToken }: BagianAlurPr
               {petaSekolah.get(proses.sekolah_id) ?? proses.sekolah_id} · {proses.periode}
             </p>
           </header>
-          <details>
-            <summary className="cursor-pointer text-xs text-blue-600 dark:text-blue-400">
-              Ubah proses
-            </summary>
+          <DetailsMuatMalas
+            ringkasan="Ubah proses"
+            summaryClassName="cursor-pointer text-xs text-blue-600 dark:text-blue-400"
+          >
             <div className="mt-2">
               <FormProses
                 masalahId={masalah.id}
@@ -68,7 +69,7 @@ export async function BagianAlur({ masalah, sekolah, accessToken }: BagianAlurPr
                 accessToken={accessToken}
               />
             </div>
-          </details>
+          </DetailsMuatMalas>
 
           {langkah.length === 0 ? (
             <p className="text-sm text-gray-500 dark:text-gray-400">Belum ada langkah.</p>
@@ -103,14 +104,14 @@ export async function BagianAlur({ masalah, sekolah, accessToken }: BagianAlurPr
                       {buktiPerLangkah.get(l.id)?.join(", ") ?? "—"}
                     </dd>
                   </dl>
-                  <details>
-                    <summary className="cursor-pointer text-xs text-blue-600 dark:text-blue-400">
-                      Ubah langkah
-                    </summary>
+                  <DetailsMuatMalas
+                    ringkasan="Ubah langkah"
+                    summaryClassName="cursor-pointer text-xs text-blue-600 dark:text-blue-400"
+                  >
                     <div className="mt-2">
                       <FormLangkah prosesId={proses.id} awal={l} accessToken={accessToken} />
                     </div>
-                  </details>
+                  </DetailsMuatMalas>
 
                   <div className="space-y-2 border-t border-gray-200 pt-2 dark:border-gray-700">
                     <h3 className="text-xs font-semibold uppercase text-gray-500">
