@@ -63,7 +63,7 @@ interface SesiFormIsiProps extends SesiFormProps {
  * `masalah_ids` dikirim ganti-penuh. 409 (pasangan `kode_sesi`+`kode_orang` ganda)
  * menampilkan {@link PESAN_SESI_GANDA}. Setelah sukses kembali ke `/redesain/sesi`.
  *
- * POST (mode tambah) membawa `Idempotency-Key` per upaya; key diganti hanya setelah respons
+ * POST (mode tambah) membawa `Idempotency-Key` per upaya (`keyUntuk(body)`: isi kiriman berubah → key baru); key diganti hanya setelah respons
  * sukses sehingga kirim ulang setelah gagal memakai key yang sama. 409 `conflict` dipetakan ke
  * pesan "masih diproses"; 409 guard lain tetap pesan aslinya.
  *
@@ -166,7 +166,7 @@ function SesiFormIsi({
           })
         : await client.POST("/api/v1/redesain/sesi", {
             body: isi,
-            headers: headerIdempotencyKey(idem.key),
+            headers: headerIdempotencyKey(idem.keyUntuk(isi)),
           });
       if (res.response.status === 409 && (awal || apiErrorDari(res).code !== "conflict")) {
         setError(PESAN_SESI_GANDA);

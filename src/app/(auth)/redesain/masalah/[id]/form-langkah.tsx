@@ -38,7 +38,7 @@ interface FormLangkahIsiProps extends FormLangkahProps {
  * `PeringatanPrivasi`. `kode` read-only (tidak ditampilkan sebagai input). Sukses →
  * `router.refresh()`.
  *
- * POST (mode tambah) membawa `Idempotency-Key` per upaya; key diganti hanya setelah respons
+ * POST (mode tambah) membawa `Idempotency-Key` per upaya (`keyUntuk(body)`: isi kiriman berubah → key baru); key diganti hanya setelah respons
  * sukses sehingga kirim ulang setelah gagal memakai key yang sama. 409 `conflict` dipetakan ke
  * pesan "masih diproses"; 409 guard lain tetap pesan aslinya.
  *
@@ -115,7 +115,7 @@ function FormLangkahIsi({
         const res = await client.POST("/api/v1/redesain/proses/{proses_id}/langkah", {
           params: { path: { proses_id: prosesId } },
           body: isi,
-          headers: headerIdempotencyKey(idem.key),
+          headers: headerIdempotencyKey(idem.keyUntuk(isi)),
         });
         if (!res.data) throw apiErrorDari(res);
         idem.perbarui();

@@ -18,7 +18,7 @@ export const PESAN_KONFLIK_KODE = "Partisipan ini sudah punya kode";
  *
  * Partisipan opsional. Respons 409 menampilkan {@link PESAN_KONFLIK_KODE} tanpa toast
  * sukses (kecuali 409 `conflict` = key masih diproses → pesan baku); galat lain ditampilkan
- * inline dan lewat `notifyGagal`. POST membawa `Idempotency-Key` per upaya; key diganti
+ * inline dan lewat `notifyGagal`. POST membawa `Idempotency-Key` per upaya (`keyUntuk(body)`: isi kiriman berubah → key baru); key diganti
  * hanya setelah respons sukses.
  *
  * @param props.partisipan - Master partisipan untuk dropdown.
@@ -43,12 +43,13 @@ export function TambahKodeOrang({
     setLoading(true);
     setError(null);
     try {
+      const body = {
+        keterangan_peran: keterangan.trim(),
+        partisipan_id: partisipanId || undefined,
+      };
       const res = await withServerAuth(accessToken).POST("/api/v1/redesain/kode-orang", {
-        body: {
-          keterangan_peran: keterangan.trim(),
-          partisipan_id: partisipanId || undefined,
-        },
-        headers: headerIdempotencyKey(idem.key),
+        body,
+        headers: headerIdempotencyKey(idem.keyUntuk(body)),
       });
       if (res.response.status === 409 && apiErrorDari(res).code !== "conflict") {
         setError(PESAN_KONFLIK_KODE);

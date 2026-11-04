@@ -42,7 +42,7 @@ interface FormProsesIsiProps extends FormProsesProps {
  * dapat diganti; 422 selisih dari backend tetap tampil sebagai toast gagal. Ubah:
  * `PATCH /proses/{id}` hanya `periode` dan `nama_proses`. Sukses → `router.refresh()`.
  *
- * POST (mode tambah) membawa `Idempotency-Key` per upaya; key diganti hanya setelah respons
+ * POST (mode tambah) membawa `Idempotency-Key` per upaya (`keyUntuk(body)`: isi kiriman berubah → key baru); key diganti hanya setelah respons
  * sukses sehingga kirim ulang setelah gagal memakai key yang sama. 409 `conflict` dipetakan ke
  * pesan "masih diproses"; 409 guard lain tetap pesan aslinya.
  *
@@ -98,14 +98,15 @@ function FormProsesIsi({
         setEtag(bacaEtag(res.response));
         notifySukses(`Proses ${res.data.kode} diperbarui.`);
       } else {
+        const body = {
+          masalah_id: masalahId,
+          sekolah_id: sekolahTerkunci ?? sekolahId,
+          periode: periode.trim(),
+          nama_proses: nama.trim(),
+        };
         const res = await client.POST("/api/v1/redesain/proses", {
-          body: {
-            masalah_id: masalahId,
-            sekolah_id: sekolahTerkunci ?? sekolahId,
-            periode: periode.trim(),
-            nama_proses: nama.trim(),
-          },
-          headers: headerIdempotencyKey(idem.key),
+          body,
+          headers: headerIdempotencyKey(idem.keyUntuk(body)),
         });
         if (!res.data) throw apiErrorDari(res);
         idem.perbarui();

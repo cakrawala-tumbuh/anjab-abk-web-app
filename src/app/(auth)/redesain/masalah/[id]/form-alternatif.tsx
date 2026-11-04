@@ -52,7 +52,7 @@ interface FormAlternatifIsiProps extends FormAlternatifProps {
  * tanpa keputusan/pemutus, atau opsi `Alihkan tugas bersyarat` tanpa penerima. `status_telaah`
  * hanya berubah dari pilihan pengguna. Kegagalan → toast gagal + pesan inline.
  *
- * POST (mode tambah) membawa `Idempotency-Key` per upaya; key diganti hanya setelah respons
+ * POST (mode tambah) membawa `Idempotency-Key` per upaya (`keyUntuk(body)`: isi kiriman berubah → key baru); key diganti hanya setelah respons
  * sukses sehingga kirim ulang setelah gagal memakai key yang sama. 409 `conflict` dipetakan ke
  * pesan "masih diproses"; 409 guard lain tetap pesan aslinya.
  *
@@ -152,9 +152,10 @@ function FormAlternatifIsi({
         setEtag(bacaEtag(res.response));
         notifySukses(`Alternatif ${res.data.kode} diperbarui.`);
       } else {
+        const body = { masalah_id: masalahId, ...isi };
         const res = await client.POST("/api/v1/redesain/alternatif", {
-          body: { masalah_id: masalahId, ...isi },
-          headers: headerIdempotencyKey(idem.key),
+          body,
+          headers: headerIdempotencyKey(idem.keyUntuk(body)),
         });
         if (!res.data) throw apiErrorDari(res);
         idem.perbarui();

@@ -52,7 +52,7 @@ interface MasalahFormIsiProps extends MasalahFormProps {
  * keterangan pembekuan) dan field itu tidak dikirim pada PATCH; 409 backend tetap
  * ditampilkan sebagai toast gagal. Setelah sukses kembali ke `/redesain/masalah`.
  *
- * POST (mode tambah) membawa `Idempotency-Key` per upaya; key diganti hanya setelah respons
+ * POST (mode tambah) membawa `Idempotency-Key` per upaya (`keyUntuk(body)`: isi kiriman berubah → key baru); key diganti hanya setelah respons
  * sukses sehingga kirim ulang setelah gagal memakai key yang sama. 409 `conflict` dipetakan ke
  * pesan "masih diproses"; 409 guard lain tetap pesan aslinya.
  *
@@ -144,9 +144,10 @@ function MasalahFormIsi({
         setEtag(bacaEtag(res.response));
         notifySukses(`Masalah ${res.data.kode} diperbarui.`);
       } else {
+        const body = { ...isi, status_awal: statusAwal };
         const res = await client.POST("/api/v1/redesain/masalah", {
-          body: { ...isi, status_awal: statusAwal },
-          headers: headerIdempotencyKey(idem.key),
+          body,
+          headers: headerIdempotencyKey(idem.keyUntuk(body)),
         });
         if (!res.data) throw apiErrorDari(res);
         idem.perbarui();

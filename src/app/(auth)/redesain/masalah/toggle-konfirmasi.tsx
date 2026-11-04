@@ -13,7 +13,7 @@ import { useIdempotencyKey } from "@/lib/use-idempotency-key";
  *
  * Memanggil `POST .../masalah/{id}/status-konfirmasi` dengan `{dibuka: !dibuka}` lalu
  * `router.refresh()`. Kegagalan lewat `notifyGagal`, tidak ada toast sukses. POST membawa
- * `Idempotency-Key` per upaya (key diganti hanya setelah sukses); 409 `conflict` dipetakan ke
+ * `Idempotency-Key` per upaya (`keyUntuk(body)`: isi kiriman berubah → key baru) (key diganti hanya setelah sukses); 409 `conflict` dipetakan ke
  * pesan "masih diproses".
  *
  * @param props.id - ID masalah.
@@ -36,12 +36,13 @@ export function ToggleKonfirmasi({
   async function ganti() {
     setLoading(true);
     try {
+      const body = { dibuka: !dibuka };
       const res = await withServerAuth(accessToken).POST(
         "/api/v1/redesain/masalah/{masalah_id}/status-konfirmasi",
         {
           params: { path: { masalah_id: id } },
-          body: { dibuka: !dibuka },
-          headers: headerIdempotencyKey(idem.key),
+          body,
+          headers: headerIdempotencyKey(idem.keyUntuk(body)),
         },
       );
       if (!res.data) throw apiErrorDari(res);

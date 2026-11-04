@@ -34,7 +34,7 @@ interface KonteksFormIsiProps extends KonteksFormProps {
  * `PATCH /api/v1/redesain/konteks/{id}` (kode tidak dikirim/diubah). Galat lain tampil
  * inline dan lewat `notifyGagal`.
  *
- * POST (mode tambah) membawa `Idempotency-Key` per upaya; key diganti hanya setelah respons
+ * POST (mode tambah) membawa `Idempotency-Key` per upaya (`keyUntuk(body)`: isi kiriman berubah → key baru); key diganti hanya setelah respons
  * sukses sehingga kirim ulang setelah gagal memakai key yang sama. 409 `conflict` dipetakan ke
  * pesan "masih diproses"; 409 guard lain tetap pesan aslinya.
  *
@@ -97,9 +97,10 @@ function KonteksFormIsi({ awal, accessToken, etag: etagAwal = null }: KonteksFor
         setEtag(bacaEtag(res.response));
         notifySukses(`Konteks ${res.data.kode} diperbarui.`);
       } else {
+        const body = { kode: kode.trim(), ...isi };
         const res = await client.POST("/api/v1/redesain/konteks", {
-          body: { kode: kode.trim(), ...isi },
-          headers: headerIdempotencyKey(idem.key),
+          body,
+          headers: headerIdempotencyKey(idem.keyUntuk(body)),
         });
         if (res.response.status === 409 && apiErrorDari(res).code !== "conflict") {
           setError(PESAN_KODE_KONTEKS_DUPLIKAT);

@@ -48,7 +48,7 @@ interface FormVersiMetodeIsiProps extends FormVersiMetodeProps {
  * (mis. 422) ditampilkan inline dan lewat `notifyGagal`. Teks bebas dilindungi
  * `PeringatanPrivasi` (pemeriksa diisi jabatan/peran, bukan nama).
  *
- * POST (mode tambah) membawa `Idempotency-Key` per upaya; key diganti hanya setelah respons
+ * POST (mode tambah) membawa `Idempotency-Key` per upaya (`keyUntuk(body)`: isi kiriman berubah → key baru); key diganti hanya setelah respons
  * sukses sehingga kirim ulang setelah gagal memakai key yang sama. 409 `conflict` dipetakan ke
  * pesan "masih diproses"; 409 guard lain tetap pesan aslinya.
  *
@@ -117,7 +117,7 @@ function FormVersiMetodeIsi({
           })
         : await client.POST("/api/v1/redesain/versi-metode", {
             body: nilai,
-            headers: headerIdempotencyKey(idem.key),
+            headers: headerIdempotencyKey(idem.keyUntuk(nilai)),
           });
       if (res.response.status === 409 && (awal || apiErrorDari(res).code !== "conflict")) {
         setError(PESAN_KONFLIK_VERSI);

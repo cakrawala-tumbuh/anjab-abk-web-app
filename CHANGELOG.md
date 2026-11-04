@@ -64,6 +64,10 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ### Diperbaiki
 
+- Aksi POST di halaman Tim Kajian modul redesain yang isinya berasal dari isian atau pilihan
+  pengguna kini memakai `Idempotency-Key` baru bila isi kiriman berubah (mis. memilih status lain
+  setelah gagal); kirim ulang dengan isi yang sama tetap memakai key yang sama, sehingga isian baru
+  tidak lagi tertimpa hasil lama diam-diam (issue #94).
 - Semua tabel kini bisa digeser ke samping bila lebih lebar dari layar, sehingga tombol di
   kolom paling kanan (mis. "Buka" dan "Angkat masalah" di tab Konfirmasi) terjangkau di laptop
   (issue #78).

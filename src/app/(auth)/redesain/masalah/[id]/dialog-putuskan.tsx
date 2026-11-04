@@ -42,7 +42,7 @@ export interface DialogPutuskanProps {
  * menjelaskan mengapa simpan nonaktif; pesan bawaan browser tak pernah muncul.
  * Pratinjau peringatan PT-2 tampil bila P1–P3 dipilih pada bukti yang belum diperkuat, tanpa memblokir. Simpan → `POST /api/v1/redesain/penilaian/{id}/putuskan`;
  * 422 backend ditampilkan utuh (inline + toast). Peringatan resmi datang dari respons
- * setelah `router.refresh()`. POST membawa `Idempotency-Key` per upaya (key diganti hanya
+ * setelah `router.refresh()`. POST membawa `Idempotency-Key` per upaya (`keyUntuk(body)`: isi kiriman berubah → key baru) (key diganti hanya
  * setelah sukses); 409 `conflict` dipetakan ke pesan "masih diproses".
  *
  * @param props - Lihat {@link DialogPutuskanProps}.
@@ -76,12 +76,13 @@ export function DialogPutuskan({ penilaian, accessToken }: DialogPutuskanProps) 
     setLoading(true);
     setError(null);
     try {
+      const body = payloadPutuskan(isian);
       const res = await withServerAuth(accessToken).POST(
         "/api/v1/redesain/penilaian/{penilaian_id}/putuskan",
         {
           params: { path: { penilaian_id: penilaian.id } },
-          body: payloadPutuskan(isian),
-          headers: headerIdempotencyKey(idem.key),
+          body,
+          headers: headerIdempotencyKey(idem.keyUntuk(body)),
         },
       );
       if (!res.data) throw apiErrorDari(res);

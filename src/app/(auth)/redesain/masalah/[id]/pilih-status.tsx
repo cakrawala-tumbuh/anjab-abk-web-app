@@ -22,7 +22,7 @@ export interface PilihStatusProps {
  * Pilihan status penilaian (4 status; `Telah diputuskan` hanya lewat aksi putuskan).
  *
  * Memilih status → `POST /api/v1/redesain/penilaian/{id}/status`, lalu `router.refresh()`.
- * POST membawa `Idempotency-Key` per upaya (key diganti hanya setelah sukses); 409 `conflict` dipetakan ke pesan "masih diproses".
+ * POST membawa `Idempotency-Key` per upaya (`keyUntuk(body)`: isi kiriman berubah → key baru) (key diganti hanya setelah sukses); 409 `conflict` dipetakan ke pesan "masih diproses".
  *
  * @param props - Lihat {@link PilihStatusProps}.
  */
@@ -36,12 +36,13 @@ export function PilihStatus({ penilaianId, statusSaatIni, accessToken }: PilihSt
     if (!baru || baru === statusSaatIni) return;
     setLoading(true);
     try {
+      const body = { status_penilaian: baru as PenilaianStatus["status_penilaian"] };
       const res = await withServerAuth(accessToken).POST(
         "/api/v1/redesain/penilaian/{penilaian_id}/status",
         {
           params: { path: { penilaian_id: penilaianId } },
-          body: { status_penilaian: baru as PenilaianStatus["status_penilaian"] },
-          headers: headerIdempotencyKey(idem.key),
+          body,
+          headers: headerIdempotencyKey(idem.keyUntuk(body)),
         },
       );
       if (!res.data) throw apiErrorDari(res);

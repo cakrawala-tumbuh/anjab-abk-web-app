@@ -38,7 +38,7 @@ export interface FormLuringProps {
  * aplikasi `PESAN_KODE_ORANG_WAJIB` tampil di dekat field (`aria-invalid` + `aria-describedby`);
  * pesan hilang begitu kode dipilih. Kelengkapan field wajib lain diputuskan backend:
  * 422 menyebut field yang kurang (inline + toast) dan dialog TIDAK ditutup. Sukses →
- * tutup dan `router.refresh()`. POST membawa `Idempotency-Key` per upaya (key diganti hanya setelah sukses); 409 `conflict` dipetakan ke pesan "masih diproses".
+ * tutup dan `router.refresh()`. POST membawa `Idempotency-Key` per upaya (`keyUntuk(body)`: isi kiriman berubah → key baru) (key diganti hanya setelah sukses); 409 `conflict` dipetakan ke pesan "masih diproses".
  *
  * @param props - Lihat {@link FormLuringProps}.
  */
@@ -67,9 +67,10 @@ export function FormLuring({ masalah, sekolah, accessToken }: FormLuringProps) {
     }
     setLoading(true);
     try {
+      const body = payloadLuring(masalah.id, isian);
       const res = await withServerAuth(accessToken).POST("/api/v1/redesain/konfirmasi/luring", {
-        body: payloadLuring(masalah.id, isian),
-        headers: headerIdempotencyKey(idem.key),
+        body,
+        headers: headerIdempotencyKey(idem.keyUntuk(body)),
       });
       if (!res.data) throw apiErrorDari(res);
       idem.perbarui();

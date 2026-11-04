@@ -21,7 +21,7 @@ export interface FormKoreksiProps {
  *
  * Mengirim `POST /langkah/{id}/koreksi` dengan `{isi}` saja (tanpa `konfirmasi_id`,
  * sehingga berasal "Tim"). Koreksi bersifat append-only; tidak ada ubah/hapus.
- * POST membawa `Idempotency-Key` per upaya (key diganti hanya setelah sukses); 409 `conflict` dipetakan ke pesan "masih diproses".
+ * POST membawa `Idempotency-Key` per upaya (`keyUntuk(body)`: isi kiriman berubah → key baru) (key diganti hanya setelah sukses); 409 `conflict` dipetakan ke pesan "masih diproses".
  *
  * @param props - Lihat {@link FormKoreksiProps}.
  */
@@ -37,12 +37,13 @@ export function FormKoreksi({ langkahId, accessToken }: FormKoreksiProps) {
     setLoading(true);
     setError(null);
     try {
+      const body = { isi: isi.trim() };
       const res = await withServerAuth(accessToken).POST(
         "/api/v1/redesain/langkah/{langkah_id}/koreksi",
         {
           params: { path: { langkah_id: langkahId } },
-          body: { isi: isi.trim() },
-          headers: headerIdempotencyKey(idem.key),
+          body,
+          headers: headerIdempotencyKey(idem.keyUntuk(body)),
         },
       );
       if (!res.data) throw apiErrorDari(res);

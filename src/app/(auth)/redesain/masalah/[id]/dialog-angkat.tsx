@@ -27,7 +27,7 @@ export interface DialogAngkatProps {
  * Isian: konteks dan rumusan hipotesis (keduanya wajib). Simpan →
  * `POST /api/v1/redesain/konfirmasi/{id}/angkat-masalah`; 201 → arahkan ke detail
  * masalah baru. Kegagalan (422/409) ditampilkan inline dan lewat `notifyGagal`; dialog
- * tetap terbuka. POST membawa `Idempotency-Key` per upaya (key diganti hanya setelah sukses);
+ * tetap terbuka. POST membawa `Idempotency-Key` per upaya (`keyUntuk(body)`: isi kiriman berubah → key baru) (key diganti hanya setelah sukses);
  * 409 `conflict` dipetakan ke pesan "masih diproses".
  *
  * @param props - Lihat {@link DialogAngkatProps}.
@@ -48,12 +48,13 @@ export function DialogAngkat({ konfirmasi, konteks, accessToken }: DialogAngkatP
     setLoading(true);
     setError(null);
     try {
+      const body = { konteks_id: konteksId, rumusan_hipotesis: rumusan };
       const res = await withServerAuth(accessToken).POST(
         "/api/v1/redesain/konfirmasi/{konfirmasi_id}/angkat-masalah",
         {
           params: { path: { konfirmasi_id: konfirmasi.id } },
-          body: { konteks_id: konteksId, rumusan_hipotesis: rumusan },
-          headers: headerIdempotencyKey(idem.key),
+          body,
+          headers: headerIdempotencyKey(idem.keyUntuk(body)),
         },
       );
       if (!res.data) throw apiErrorDari(res);

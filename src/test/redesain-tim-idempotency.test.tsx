@@ -20,6 +20,7 @@ vi.mock("@/lib/notify", async (orig) => ({
 import { FormBukti } from "@/app/(auth)/redesain/masalah/[id]/form-bukti";
 import { FormKoreksi } from "@/app/(auth)/redesain/masalah/[id]/form-koreksi";
 import { MulaiPenilaian } from "@/app/(auth)/redesain/masalah/[id]/mulai-penilaian";
+import { PilihStatus } from "@/app/(auth)/redesain/masalah/[id]/pilih-status";
 import { ToggleKonfirmasi } from "@/app/(auth)/redesain/masalah/toggle-konfirmasi";
 import { TambahKodeOrang } from "@/app/(auth)/redesain/kode-orang/tambah-kode-orang";
 import { PESAN_MASIH_DIPROSES } from "@/lib/konkurensi";
@@ -122,6 +123,24 @@ describe("Idempotency-Key — aksi tombol redesain", () => {
     expect(keyKe(2)).not.toBe(keyKe(1));
   });
 
+  it("PilihStatus: gagal lalu memilih status lain memakai key berbeda; isi sama tetap key sama", async () => {
+    post.mockResolvedValueOnce(gagal(500, "internal", "galat"));
+    post.mockResolvedValueOnce(gagal(500, "internal", "galat"));
+    post.mockResolvedValueOnce(gagal(500, "internal", "galat"));
+    render(<PilihStatus penilaianId="p1" statusSaatIni="Belum ditelaah" accessToken="tok" />);
+    const pilih = () => screen.getByRole("combobox", { name: "Status penilaian" });
+    const ubah = async (nilai: string, jumlah: number) => {
+      await waitFor(() => expect(pilih()).not.toBeDisabled());
+      fireEvent.change(pilih(), { target: { value: nilai } });
+      await waitFor(() => expect(post).toHaveBeenCalledTimes(jumlah));
+    };
+    await ubah("Ditunda", 1);
+    await ubah("Perlu klarifikasi", 2);
+    expect(keyKe(1)).not.toBe(keyKe(0));
+    await ubah("Perlu klarifikasi", 3);
+    expect(keyKe(2)).toBe(keyKe(1));
+  });
+
   it("FormKoreksi: 409 conflict → pesan baku; 409 kode lain tidak dipetakan", async () => {
     post.mockResolvedValueOnce(gagal(409, "conflict", "sedang diproses"));
     post.mockResolvedValueOnce(gagal(409, "kode_lain", "pesan asli"));
@@ -166,8 +185,18 @@ describe("Idempotency-Key — jaring pengaman cakupan 16 POST tulis redesain", (
       const tulis = (src.match(/\.POST\(\s*"[^"]*"/g) ?? []).filter((m) => !m.includes("/search"));
       if (tulis.length === 0) continue;
       jumlahBerkas += 1;
-      const dipasang = (src.match(/headerIdempotencyKey\(idem\.key\)/g) ?? []).length;
-      if (dipasang < tulis.length || !src.includes("useIdempotencyKey")) pelanggar.push(f);
+      // Aksi berisi tetap (mulai-penilaian) memakai `idem.key`; semua aksi lain wajib `keyUntuk`.
+      const tetap = f.endsWith("mulai-penilaian.tsx");
+      const pola = tetap
+        ? /headerIdempotencyKey\(idem\.key\)/g
+        : /headerIdempotencyKey\(idem\.keyUntuk\(\w+\)\)/g;
+      const dipasang = (src.match(pola) ?? []).length;
+      const sisaKeyTelanjang = tetap
+        ? 0
+        : (src.match(/headerIdempotencyKey\(idem\.key\)/g) ?? []).length;
+      if (dipasang < tulis.length || sisaKeyTelanjang > 0 || !src.includes("useIdempotencyKey")) {
+        pelanggar.push(f);
+      }
     }
     expect(pelanggar).toEqual([]);
     expect(jumlahBerkas).toBe(16);
