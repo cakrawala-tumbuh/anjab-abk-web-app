@@ -7,7 +7,9 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { withServerAuth } from "@/lib/api/client";
-import { toApiError } from "@/lib/api/errors";
+import { apiErrorDari } from "@/lib/api/errors";
+import { bacaEtag, headerIfMatch, petakanKonkurensi } from "@/lib/konkurensi";
+import { PemuatRekaman } from "@/lib/use-rekaman-ber-etag";
 import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
 import type { JabatanRead, MataPelajaranRead, PartisipanRead, SekolahRead } from "@/lib/api/schema";
 
@@ -33,14 +35,47 @@ interface Props {
   accessToken: string | undefined;
 }
 
-export function EditPartisipanForm({
+/**
+ * Formulir ubah partisipan (`PATCH /api/v1/partisipan/{partisipan_id}`).
+ *
+ * Rekaman dimuat ulang lewat `GET .../partisipan/{id}`: nilai awal isian dan ETag `If-Match`
+ * berasal dari satu respons yang sama. Gagal memuat -> panel galat tanpa tombol simpan; 412
+ * saat simpan tampil sebagai pesan baku data-berubah dan isian tidak hilang.
+ *
+ * @param props.partisipan - Partisipan dari halaman (hanya `id` yang dipakai sebagai kunci GET).
+ * @param props.sekolah - Pilihan sekolah.
+ * @param props.jabatan - Pilihan jabatan.
+ * @param props.mataPelajaran - Pilihan mata pelajaran.
+ * @param props.accessToken - Token akses dari Server Component induk.
+ */
+export function EditPartisipanForm(props: Props) {
+  const { partisipan, accessToken } = props;
+  return (
+    <PemuatRekaman
+      accessToken={accessToken}
+      kunci={partisipan.id}
+      ambil={(c) =>
+        c.GET("/api/v1/partisipan/{partisipan_id}", {
+          params: { path: { partisipan_id: partisipan.id } },
+        })
+      }
+    >
+      {(data, etag) => <FormPartisipan {...props} partisipan={data} etagAwal={etag} />}
+    </PemuatRekaman>
+  );
+}
+
+/** Isi formulir; `partisipan` dan `etagAwal` berasal dari satu GET detail. */
+function FormPartisipan({
   partisipan,
   sekolah,
   jabatan,
   mataPelajaran,
   accessToken,
-}: Props) {
+  etagAwal,
+}: Props & { etagAwal: string | null }) {
   const router = useRouter();
+  const [etag, setEtag] = useState<string | null>(etagAwal);
   const [serverError, setServerError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
 
@@ -98,13 +133,15 @@ export function EditPartisipanForm({
           mata_pelajaran_utama_id: values.mata_pelajaran_utama_id || null,
           aktif: values.aktif,
         },
+        headers: headerIfMatch(etag),
       });
-      const requestId = response.headers.get("x-request-id");
-      if (error) throw toApiError(error, requestId);
+      if (error) throw apiErrorDari({ error, response });
+      setEtag(bacaEtag(response));
       setSaved(true);
       notifySukses("Partisipan berhasil diperbarui.");
       router.refresh();
-    } catch (err) {
+    } catch (rawErr) {
+      const err = petakanKonkurensi(rawErr);
       setServerError(pesanGagal(err));
       notifyGagal(err);
     }

@@ -4,6 +4,8 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
+import { hapusBerEtag, PESAN_DATA_SUDAH_HILANG } from "@/lib/hapus-ber-etag";
+import { bacaEtag, headerIfMatch, petakanKonkurensi } from "@/lib/konkurensi";
 import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
 import type { TiCatalogRead, TiUsulanRead } from "@/lib/api/schema";
 
@@ -15,6 +17,12 @@ interface Props {
   usulanAwal: TiUsulanRead[];
   /** Responden sudah mengirim seleksi Tahap 1 — menyembunyikan kontrol tambah/hapus usulan. */
   tahap1Submit: boolean;
+  /**
+   * ETag seleksi tersimpan (header `ETag` dari `GET .../seleksi`), dibaca Server Component;
+   * `null` bila responden belum pernah menyimpan seleksi (GET 404 -> belum ada kunci).
+   * Diperbarui dari header respons tiap `PUT` sukses.
+   */
+  seleksiEtag?: string | null;
   accessToken: string | undefined;
 }
 
@@ -58,9 +66,11 @@ export function SeleksiForm({
   terpilihAwal,
   usulanAwal,
   tahap1Submit,
+  seleksiEtag = null,
   accessToken,
 }: Props) {
   const router = useRouter();
+  const [etag, setEtag] = useState<string | null>(seleksiEtag);
   const [step, setStep] = useState<1 | 2 | 3>(1);
   // Draft tersimpan hanya berupa daftar task_kode (flat) — state wizard TP/DT
   // dihitung ulang dari draft sesuai hierarki katalog saat form dimuat.
@@ -250,15 +260,22 @@ export function SeleksiForm({
     setUsulanError((prev) => ({ ...prev, [key]: null }));
     try {
       const client = withServerAuth(accessToken);
-      const { error: apiError, response } = await client.DELETE(
-        "/api/v1/task-inventory/usulan/{usulan_id}",
-        { params: { path: { usulan_id: usulanId } } },
-      );
-      const reqId = response.headers.get("x-request-id");
-      if (apiError) throw toApiError(apiError, reqId);
+      const params = { params: { path: { usulan_id: usulanId } } };
+      const hasil = await hapusBerEtag({
+        ambil: () => client.GET("/api/v1/task-inventory/usulan/{usulan_id}", params),
+        konfirmasi: () => true,
+        hapus: (headers) =>
+          client.DELETE("/api/v1/task-inventory/usulan/{usulan_id}", { ...params, headers }),
+      });
+      if (hasil === "hilang") {
+        notifyGagal(new Error(PESAN_DATA_SUDAH_HILANG));
+        router.refresh();
+        return;
+      }
       notifySukses("Usulan dihapus.");
       router.refresh();
-    } catch (err) {
+    } catch (rawErr) {
+      const err = petakanKonkurensi(rawErr);
       setUsulanError((prev) => ({ ...prev, [key]: pesanGagal(err) }));
       notifyGagal(err);
     } finally {
@@ -277,13 +294,16 @@ export function SeleksiForm({
         {
           params: { path: { responden_id: respondenId } },
           body: { task_kode: Array.from(selectedUT) },
+          headers: headerIfMatch(etag),
         },
       );
       const reqId = response.headers.get("x-request-id");
       if (apiError) throw toApiError(apiError, reqId);
+      setEtag(bacaEtag(response));
       setSaveMessage("Draft tersimpan.");
       notifySukses("Draft tersimpan.");
-    } catch (err) {
+    } catch (rawErr) {
+      const err = petakanKonkurensi(rawErr);
       setError(err instanceof Error ? err.message : "Terjadi kesalahan saat menyimpan draft.");
       notifyGagal(err);
     } finally {
@@ -306,10 +326,12 @@ export function SeleksiForm({
         {
           params: { path: { responden_id: respondenId } },
           body: { task_kode: Array.from(selectedUT) },
+          headers: headerIfMatch(etag),
         },
       );
       const saveReqId = saveResponse.headers.get("x-request-id");
       if (saveError) throw toApiError(saveError, saveReqId);
+      setEtag(bacaEtag(saveResponse));
 
       const { error: apiError, response } = await client.POST(
         "/api/v1/task-inventory/sesi/responden/{responden_id}/seleksi/submit",
@@ -322,7 +344,8 @@ export function SeleksiForm({
       // detail sesi yang khusus admin (akan memicu notFound bagi partisipan).
       router.push("/kuesioner");
       router.refresh();
-    } catch (err) {
+    } catch (rawErr) {
+      const err = petakanKonkurensi(rawErr);
       setError(pesanGagal(err));
       notifyGagal(err);
       setSubmitting(false);

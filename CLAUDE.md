@@ -84,6 +84,29 @@ src/
 
 ## Revisi Desain
 
+### [2026-11-04] `If-Match` di 14 operasi master data, Task Inventory, OPM, WCP, DCS (#88)
+
+Melengkapi #84/#87: seluruh PUT/PATCH/DELETE ber-`If-Match` di `schema.ts` yang dipanggil web kini
+mengirim header itu, sehingga `REQUIRE_IF_MATCH` bisa dihidupkan.
+
+- **Formulir ubah** (partisipan, tugas pokok, detil tugas, uraian tugas, koordinator sesi TI) memakai
+  `PemuatRekaman` dari #87: GET detail = sumber nilai isian + ETag. Form tambah/ubah tunggal
+  (`TambahTugasPokokForm`, `TambahDetilTugasForm`, `TambahUraianTugasForm`) membelah diri: tanpa `editId`
+  langsung formulir kosong, dengan `editId` memuat rekaman (prop `defaultValues` diabaikan di mode ubah;
+  halaman edit tidak lagi menghitungnya). `AturKoordinator` tak lagi menerima prop `koordinatorId`
+  (diambil dari GET detail sesi).
+- **Dialog hapus** (`confirm()` bawaan browser, bukan modal): `src/lib/hapus-ber-etag.ts` →
+  `hapusBerEtag` = GET detail → `confirm` → DELETE `If-Match`. GET dilakukan SEBELUM `confirm`, supaya
+  ETag mewakili keadaan saat pengguna memutuskan. 404 pada GET → `PESAN_DATA_SUDAH_HILANG` + muat ulang;
+  412 → `PESAN_DATA_BERUBAH`. Dipakai hapus responden WCP/DCS/OPM/TI, hapus sesi OPM/TI, hapus usulan.
+- **ETag dari Server Component** (pola `detail-form` Tahap 3), bukan hook: `seleksi-form` (`seleksiEtag`
+  dari `GET .../seleksi`, `null` bila 404 = belum ada kunci; diperbarui dari header tiap PUT sukses)
+  dan `SetKoordinatorButton` panel SME (`etag` dari `GET /sme-panel/{id}` di `page.tsx`, diteruskan lewat
+  `AnggotaSection.panelEtag`; disegarkan `router.refresh()`).
+- Jaring pengaman: `src/test/ifmatch-tulis-master.test.tsx` memindai SEMUA operasi ber-header `If-Match`
+  di `schema.ts` dan memastikan tiap pemanggilannya ada di berkas yang memakai `headerIfMatch`/`hapusBerEtag`.
+  Detail keputusan: issue `cakrawala-tumbuh/anjab-abk-web-app#88`.
+
 ### [2026-11-04] `If-Match` di 12 PATCH redesain: hook `useRekamanBerEtag`, GET saat panel dibuka
 
 - **Kontrak: nilai formulir dan ETag berasal dari SATU GET yang sama** (`src/lib/use-rekaman-ber-etag.tsx`:

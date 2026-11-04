@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
+import { hapusBerEtag, PESAN_DATA_SUDAH_HILANG } from "@/lib/hapus-ber-etag";
 import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
 import type { OpmSesiRead } from "@/lib/api/schema";
 
@@ -64,16 +65,29 @@ export function TransisiSesi({ sesi, accessToken }: Props) {
       ? "Hapus PAKSA analisis ini beserta SELURUH responden & jawabannya? " +
         "Tindakan ini PERMANEN dan TIDAK DAPAT DIBATALKAN."
       : "Hapus analisis ini? Tindakan tidak dapat dibatalkan.";
-    if (!confirm(pesan)) return;
     setLoading(true);
     setError(null);
     try {
       const client = withServerAuth(accessToken);
-      const { error: apiError, response } = await client.DELETE("/api/v1/opm/sesi/{sesi_id}", {
-        params: { path: { sesi_id: sesi.id }, query: { paksa } },
+      const path = { params: { path: { sesi_id: sesi.id } } };
+      const hasil = await hapusBerEtag({
+        ambil: () => client.GET("/api/v1/opm/sesi/{sesi_id}", path),
+        konfirmasi: () => confirm(pesan),
+        hapus: (headers) =>
+          client.DELETE("/api/v1/opm/sesi/{sesi_id}", {
+            params: { path: { sesi_id: sesi.id }, query: { paksa } },
+            headers,
+          }),
       });
-      const reqId = response.headers.get("x-request-id");
-      if (apiError) throw toApiError(apiError, reqId);
+      if (hasil === "batal") {
+        setLoading(false);
+        return;
+      }
+      if (hasil === "hilang") {
+        notifyGagal(new Error(PESAN_DATA_SUDAH_HILANG));
+        router.push("/opm");
+        return;
+      }
       notifySukses("Analisis jabatan berhasil dihapus.");
       router.push("/opm");
     } catch (err) {

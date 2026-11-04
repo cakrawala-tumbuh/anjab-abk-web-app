@@ -64,22 +64,6 @@ export default async function EditUraianTugasPage({ params }: { params: Promise<
           detilTugas={detilTugas}
           jabatanList={jabatanList}
           accessToken={session?.accessToken}
-          defaultValues={{
-            kode: uraianTugas.kode,
-            uraian: uraianTugas.uraian,
-            unit: uraianTugas.unit,
-            urutan: uraianTugas.urutan,
-            tugas_pokok_id: uraianTugas.tugas_pokok_id,
-            detil_tugas_id: uraianTugas.detil_tugas_id ?? "",
-            jabatan_id: uraianTugas.jabatan_id ?? "",
-            std_sumber_bukti: uraianTugas.std_sumber_bukti ?? undefined,
-            std_kondisi: uraianTugas.std_kondisi ?? undefined,
-            std_frekuensi_teks: uraianTugas.std_frekuensi_teks ?? undefined,
-            std_durasi_per_kali: uraianTugas.std_durasi_per_kali ?? undefined,
-            std_jam_per_minggu: uraianTugas.std_jam_per_minggu ?? undefined,
-            std_peak4w_hours: uraianTugas.std_peak4w_hours ?? undefined,
-            std_va_type: uraianTugas.std_va_type ?? undefined,
-          }}
           editId={id}
         />
         <HapusUraianTugasButton

@@ -42,7 +42,6 @@ export default async function EditTugasPokokPage({ params }: { params: Promise<{
       <div className="max-w-xl space-y-4">
         <TambahTugasPokokForm
           accessToken={session?.accessToken}
-          defaultValues={{ nama: tugasPokok.nama, jabatan_ids: tugasPokok.jabatan_ids }}
           editId={id}
           jabatanList={jabatanList}
         />

@@ -274,7 +274,6 @@ export default async function TiSesiDetailPage({ params, searchParams }: Props) 
       {/* Pengaturan koordinator SME panel */}
       <AturKoordinator
         sesiId={sesi.id}
-        koordinatorId={sesi.koordinator_id ?? null}
         responden={respondenAll}
         accessToken={session?.accessToken}
       />

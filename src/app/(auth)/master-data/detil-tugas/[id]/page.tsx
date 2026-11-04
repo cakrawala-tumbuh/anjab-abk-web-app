@@ -47,11 +47,6 @@ export default async function EditDetilTugasPage({ params }: { params: Promise<{
           tugasPokok={tugasPokok}
           jabatanList={jabatanList}
           accessToken={session?.accessToken}
-          defaultValues={{
-            nama: detilTugas.nama,
-            tugas_pokok_id: detilTugas.tugas_pokok_id,
-            jabatan_ids: detilTugas.jabatan_ids,
-          }}
           editId={id}
         />
         <HapusDetilTugasButton id={id} nama={detilTugas.nama} accessToken={session?.accessToken} />

@@ -1,6 +1,9 @@
 import { render, screen, fireEvent, act, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import type { TiCatalogRead, TiUsulanRead } from "@/lib/api/schema";
+import { PESAN_DATA_BERUBAH } from "@/lib/konkurensi";
+import { PESAN_DATA_SUDAH_HILANG } from "@/lib/hapus-ber-etag";
+import { toast } from "sonner";
 
 // ── Mock router & API client ────────────────────────────────────────────────
 const push = vi.fn();
@@ -12,8 +15,9 @@ vi.mock("next/navigation", () => ({
 const put = vi.fn();
 const post = vi.fn();
 const del = vi.fn();
+const get = vi.fn();
 vi.mock("@/lib/api/client", () => ({
-  withServerAuth: () => ({ PUT: put, POST: post, DELETE: del }),
+  withServerAuth: () => ({ PUT: put, POST: post, DELETE: del, GET: get }),
 }));
 
 import { SeleksiForm } from "@/app/(auth)/task-inventory/tahap1/[responden_id]/seleksi-form";
@@ -55,7 +59,11 @@ const catalog: TiCatalogRead[] = [
   },
 ];
 
-function renderForm(usulanAwal: TiUsulanRead[] = [], tahap1Submit = false) {
+function renderForm(
+  usulanAwal: TiUsulanRead[] = [],
+  tahap1Submit = false,
+  seleksiEtag: string | null = null,
+) {
   return render(
     <SeleksiForm
       respondenId="trsp_1"
@@ -63,6 +71,7 @@ function renderForm(usulanAwal: TiUsulanRead[] = [], tahap1Submit = false) {
       terpilihAwal={[]}
       usulanAwal={usulanAwal}
       tahap1Submit={tahap1Submit}
+      seleksiEtag={seleksiEtag}
       accessToken="tok"
     />,
   );
@@ -74,6 +83,14 @@ beforeEach(() => {
   put.mockReset();
   post.mockReset();
   del.mockReset();
+  get.mockReset();
+  vi.mocked(toast.error).mockClear();
+  vi.mocked(toast.success).mockClear();
+  get.mockResolvedValue({
+    data: { id: "tius_1" },
+    error: undefined,
+    response: { status: 200, headers: { get: (n: string) => (n === "etag" ? '"u1"' : "req-1") } },
+  });
   put.mockResolvedValue({ error: null, response: { headers: { get: () => "req-1" } } });
   post.mockResolvedValue({ error: null, response: { headers: { get: () => "req-1" } } });
   del.mockResolvedValue({ error: null, response: { headers: { get: () => "req-1" } } });
@@ -308,5 +325,117 @@ describe("SeleksiForm — usulan tugas tambahan di langkah Uraian Tugas (issue #
     // Usulan yang sudah tersimpan tetap tidak ditampilkan sama sekali di mode ini
     // (bukan hanya kontrolnya) — konsisten dengan "disembunyikan", bukan read-only.
     expect(screen.queryByText("Menyusun ulang jadwal piket.")).not.toBeInTheDocument();
+  });
+});
+
+// ── Kunci optimistik If-Match (issue #88) ───────────────────────────────────
+const usulanTersimpan: TiUsulanRead = {
+  id: "tius_1",
+  sesi_id: "sesi_1",
+  responden_id: "trsp_1",
+  tugas_pokok_id: "tp1",
+  tugas_pokok: "Pengelolaan SDM",
+  detil_tugas_id: "dt1",
+  detil_tugas: "Evaluasi Kinerja",
+  uraian: "Menyusun ulang jadwal piket.",
+  disetujui: null,
+  task_kode: null,
+  created_at: "2026-07-26T00:00:00Z",
+};
+
+describe("SeleksiForm — If-Match (issue #88)", () => {
+  async function klikSimpan() {
+    await act(async () => {
+      fireEvent.click(screen.getAllByRole("button", { name: "Simpan" })[0]);
+    });
+  }
+
+  it("PUT pertama memakai ETag dari server; PUT berikutnya memakai ETag dari respons simpan sebelumnya", async () => {
+    put
+      .mockResolvedValueOnce({
+        error: null,
+        response: { headers: { get: (n: string) => (n === "etag" ? '"s2"' : "req-1") } },
+      })
+      .mockResolvedValueOnce({
+        error: null,
+        response: { headers: { get: (n: string) => (n === "etag" ? '"s3"' : "req-1") } },
+      });
+    renderForm([], false, '"s1"');
+    keLevel3ViaEvaluasiKinerja();
+    fireEvent.click(screen.getByRole("checkbox", { name: "Menyusun evaluasi karyawan" }));
+
+    await klikSimpan();
+    await waitFor(() => expect(put).toHaveBeenCalledTimes(1));
+    expect(put.mock.calls[0][1].headers).toEqual({ "If-Match": '"s1"' });
+
+    await klikSimpan();
+    await waitFor(() => expect(put).toHaveBeenCalledTimes(2));
+    expect(put.mock.calls[1][1].headers).toEqual({ "If-Match": '"s2"' });
+  });
+
+  it("belum pernah menyimpan (ETag null): PUT pertama tanpa If-Match", async () => {
+    renderForm();
+    keLevel3ViaEvaluasiKinerja();
+    fireEvent.click(screen.getByRole("checkbox", { name: "Menyusun evaluasi karyawan" }));
+    await klikSimpan();
+    await waitFor(() => expect(put).toHaveBeenCalledTimes(1));
+    expect(put.mock.calls[0][1].headers).toEqual({});
+  });
+
+  it("PUT 412 -> pesan baku data berubah", async () => {
+    put.mockResolvedValue({
+      error: { error: "precondition_failed", message: "etag" },
+      response: { status: 412, headers: { get: () => "req-1" } },
+    });
+    renderForm([], false, '"s1"');
+    keLevel3ViaEvaluasiKinerja();
+    fireEvent.click(screen.getByRole("checkbox", { name: "Menyusun evaluasi karyawan" }));
+    await klikSimpan();
+    await waitFor(() => expect(vi.mocked(toast.error)).toHaveBeenCalled());
+    expect(vi.mocked(toast.error).mock.calls.at(-1)?.[0]).toBe(PESAN_DATA_BERUBAH);
+  });
+
+  it("DELETE usulan mengirim ETag dari GET usulan", async () => {
+    renderForm([usulanTersimpan]);
+    keLevel3ViaEvaluasiKinerja();
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: "Hapus" }));
+    });
+    await waitFor(() => expect(del).toHaveBeenCalledTimes(1));
+    expect(get).toHaveBeenCalledWith("/api/v1/task-inventory/usulan/{usulan_id}", {
+      params: { path: { usulan_id: "tius_1" } },
+    });
+    expect(del.mock.calls[0][1].headers).toEqual({ "If-Match": '"u1"' });
+  });
+
+  it("DELETE usulan 412 -> pesan baku, tanpa 'Usulan dihapus.'", async () => {
+    del.mockResolvedValue({
+      error: { error: "precondition_failed", message: "etag" },
+      response: { status: 412, headers: { get: () => "req-1" } },
+    });
+    renderForm([usulanTersimpan]);
+    keLevel3ViaEvaluasiKinerja();
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: "Hapus" }));
+    });
+    await waitFor(() => expect(vi.mocked(toast.error)).toHaveBeenCalled());
+    expect(vi.mocked(toast.error).mock.calls.at(-1)?.[0]).toBe(PESAN_DATA_BERUBAH);
+    expect(vi.mocked(toast.success)).not.toHaveBeenCalledWith("Usulan dihapus.");
+  });
+
+  it("GET usulan 404 -> pesan 'sudah tidak ada' dan muat ulang, DELETE tidak dipanggil", async () => {
+    get.mockResolvedValue({
+      data: undefined,
+      error: { error: "not_found", message: "tidak ada" },
+      response: { status: 404, headers: { get: () => "req-1" } },
+    });
+    renderForm([usulanTersimpan]);
+    keLevel3ViaEvaluasiKinerja();
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: "Hapus" }));
+    });
+    await waitFor(() => expect(refresh).toHaveBeenCalled());
+    expect(del).not.toHaveBeenCalled();
+    expect(vi.mocked(toast.error).mock.calls.at(-1)?.[0]).toBe(PESAN_DATA_SUDAH_HILANG);
   });
 });

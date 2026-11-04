@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { withServerAuth } from "@/lib/api/client";
-import { toApiError } from "@/lib/api/errors";
+import { hapusBerEtag, PESAN_DATA_SUDAH_HILANG } from "@/lib/hapus-ber-etag";
 import { notifyGagal, notifySukses } from "@/lib/notify";
 
 interface Props {
@@ -12,26 +12,47 @@ interface Props {
   accessToken: string | undefined;
 }
 
+/**
+ * Tombol hapus responden OPM dengan kunci optimistik.
+ *
+ * Saat diklik: `GET /api/v1/opm/sesi/responden/{responden_id}` (ambil ETag) -> konfirmasi -> `DELETE` ber-`If-Match`.
+ * 412 tampil sebagai pesan baku data-berubah; GET 404 menampilkan pesan lalu memuat ulang daftar.
+ *
+ * @param props.respondenId - ID responden.
+ * @param props.nama - Nama responden (untuk dialog konfirmasi).
+ * @param props.accessToken - Token akses dari Server Component induk.
+ */
 export function HapusResponden({ respondenId, nama, accessToken }: Props) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
   async function handleHapus() {
-    if (!confirm(`Hapus responden "${nama}" dari analisis ini?`)) return;
     setLoading(true);
     try {
       const client = withServerAuth(accessToken);
-      const { error, response } = await client.DELETE("/api/v1/opm/sesi/responden/{responden_id}", {
-        params: { path: { responden_id: respondenId } },
+      const params = { params: { path: { responden_id: respondenId } } };
+      const hasil = await hapusBerEtag({
+        ambil: () => client.GET("/api/v1/opm/sesi/responden/{responden_id}", params),
+        konfirmasi: () => confirm(`Hapus responden "${nama}" dari analisis ini?`),
+        hapus: (headers) =>
+          client.DELETE("/api/v1/opm/sesi/responden/{responden_id}", { ...params, headers }),
       });
-      const reqId = response.headers.get("x-request-id");
-      if (error) throw toApiError(error, reqId);
+      if (hasil === "batal") {
+        setLoading(false);
+        return;
+      }
+      if (hasil === "hilang") {
+        notifyGagal(new Error(PESAN_DATA_SUDAH_HILANG));
+        router.refresh();
+        setLoading(false);
+        return;
+      }
       notifySukses("Responden berhasil dihapus.");
       router.refresh();
     } catch (err) {
       notifyGagal(err);
-      setLoading(false);
     }
+    setLoading(false);
   }
 
   return (

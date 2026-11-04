@@ -7,7 +7,9 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { withServerAuth } from "@/lib/api/client";
-import { toApiError } from "@/lib/api/errors";
+import { apiErrorDari } from "@/lib/api/errors";
+import { bacaEtag, headerIfMatch, petakanKonkurensi } from "@/lib/konkurensi";
+import { PemuatRekaman } from "@/lib/use-rekaman-ber-etag";
 import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
 import type { JabatanRead, TugasPokokRead } from "@/lib/api/schema";
 
@@ -28,14 +30,56 @@ interface Props {
   editId?: string;
 }
 
-export function TambahDetilTugasForm({
+/**
+ * Formulir tambah/ubah detil tugas.
+ *
+ * Mode ubah (`editId` terisi) memuat rekamannya sendiri lewat `GET .../detil-tugas/{dt_id}`;
+ * nilai awal isian dan ETag `If-Match` berasal dari respons yang sama. Gagal memuat -> panel
+ * galat tanpa tombol simpan. Mode tambah langsung menampilkan formulir kosong.
+ *
+ * @param props.tugasPokok - Pilihan tugas pokok.
+ * @param props.jabatanList - Pilihan jabatan.
+ * @param props.accessToken - Token akses dari Server Component induk.
+ * @param props.defaultValues - Nilai awal mode tambah (diabaikan di mode ubah; GET menggantikannya).
+ * @param props.editId - ID detil tugas untuk mode ubah.
+ */
+export function TambahDetilTugasForm(props: Props) {
+  const { editId, accessToken } = props;
+  if (!editId) return <FormDetilTugas {...props} etag={null} />;
+  return (
+    <PemuatRekaman
+      accessToken={accessToken}
+      kunci={editId}
+      ambil={(c) =>
+        c.GET("/api/v1/task-inventory/detil-tugas/{dt_id}", { params: { path: { dt_id: editId } } })
+      }
+    >
+      {(data, etag) => (
+        <FormDetilTugas
+          {...props}
+          defaultValues={{
+            nama: data.nama,
+            tugas_pokok_id: data.tugas_pokok_id,
+            jabatan_ids: data.jabatan_ids,
+          }}
+          etag={etag}
+        />
+      )}
+    </PemuatRekaman>
+  );
+}
+
+/** Isi formulir; `etag` (bila ada) dikirim sebagai `If-Match` pada PATCH dan diperbarui dari respons. */
+function FormDetilTugas({
   tugasPokok,
   jabatanList,
   accessToken,
   defaultValues,
   editId,
-}: Props) {
+  etag: etagAwal,
+}: Props & { etag: string | null }) {
   const router = useRouter();
+  const [etag, setEtag] = useState<string | null>(etagAwal);
   const [serverError, setServerError] = useState<string | null>(null);
 
   const {
@@ -87,10 +131,11 @@ export function TambahDetilTugasForm({
               tugas_pokok_id: values.tugas_pokok_id,
               jabatan_ids: values.jabatan_ids,
             },
+            headers: headerIfMatch(etag),
           },
         );
-        const requestId = response.headers.get("x-request-id");
-        if (error) throw toApiError(error, requestId);
+        if (error) throw apiErrorDari({ error, response });
+        setEtag(bacaEtag(response));
       } else {
         const { error, response } = await client.POST("/api/v1/task-inventory/detil-tugas", {
           body: {
@@ -99,15 +144,15 @@ export function TambahDetilTugasForm({
             jabatan_ids: values.jabatan_ids,
           },
         });
-        const requestId = response.headers.get("x-request-id");
-        if (error) throw toApiError(error, requestId);
+        if (error) throw apiErrorDari({ error, response });
       }
       notifySukses(
         editId ? "Detil tugas berhasil diperbarui." : "Detil tugas berhasil ditambahkan.",
       );
       router.push("/master-data/detil-tugas");
       router.refresh();
-    } catch (err) {
+    } catch (rawErr) {
+      const err = petakanKonkurensi(rawErr);
       setServerError(pesanGagal(err));
       notifyGagal(err);
     }

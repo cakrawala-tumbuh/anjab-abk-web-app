@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { auth, isAdmin } from "@/lib/auth/auth";
 import { withServerAuth } from "@/lib/api/client";
+import { bacaEtag } from "@/lib/konkurensi";
 import { apiErrorDari } from "@/lib/api/errors";
 import type { JabatanRead, SMEPanelRead } from "@/lib/api/schema";
 import { AnggotaSection } from "./anggota-form";
@@ -24,6 +25,7 @@ async function fetchAll(accessToken: string | undefined, panelId: string) {
   if (!jabatanRes.data) throw apiErrorDari(jabatanRes);
   return {
     panel: panelRes.data as SMEPanelRead,
+    panelEtag: bacaEtag(panelRes.response),
     jabatan: (jabatanRes.data.items ?? []) as JabatanRead[],
   };
 }
@@ -37,7 +39,7 @@ export default async function SMEPanelDetailPage({ params }: Props) {
   if (!isAdmin(session)) notFound();
 
   const { id } = await params;
-  const { panel, jabatan } = await fetchAll(session?.accessToken, id);
+  const { panel, panelEtag, jabatan } = await fetchAll(session?.accessToken, id);
 
   const jabatanMap = Object.fromEntries(jabatan.map((j) => [j.id, j]));
   const jbt = jabatanMap[panel.jabatan_id];
@@ -84,6 +86,7 @@ export default async function SMEPanelDetailPage({ params }: Props) {
           panelId={panel.id}
           partisipanIds={panelPartisipanIds}
           koordinatorId={panel.koordinator_id ?? null}
+          panelEtag={panelEtag}
           jabatanMap={jabatanMap}
           accessToken={session?.accessToken}
         />

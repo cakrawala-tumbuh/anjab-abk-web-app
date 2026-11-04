@@ -7,7 +7,9 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { withServerAuth } from "@/lib/api/client";
-import { toApiError } from "@/lib/api/errors";
+import { apiErrorDari } from "@/lib/api/errors";
+import { bacaEtag, headerIfMatch, petakanKonkurensi } from "@/lib/konkurensi";
+import { PemuatRekaman } from "@/lib/use-rekaman-ber-etag";
 import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
 import { FREKUENSI, KONDISI, SUMBER_BUKTI, VA_TYPE_PREFILL } from "@/components/calhr";
 import type { DetilTugasRead, JabatanRead, TugasPokokRead } from "@/lib/api/schema";
@@ -44,15 +46,71 @@ interface Props {
   editId?: string;
 }
 
-export function TambahUraianTugasForm({
+/**
+ * Formulir tambah/ubah uraian tugas.
+ *
+ * Mode ubah (`editId` terisi) memuat rekamannya sendiri lewat `GET .../uraian-tugas/{ut_id}`;
+ * nilai awal isian dan ETag `If-Match` berasal dari respons yang sama. Gagal memuat -> panel
+ * galat tanpa tombol simpan. Mode tambah langsung menampilkan formulir kosong.
+ *
+ * @param props.tugasPokok - Pilihan tugas pokok.
+ * @param props.detilTugas - Pilihan detil tugas.
+ * @param props.jabatanList - Pilihan jabatan.
+ * @param props.accessToken - Token akses dari Server Component induk.
+ * @param props.defaultValues - Nilai awal mode tambah (diabaikan di mode ubah; GET menggantikannya).
+ * @param props.editId - ID uraian tugas untuk mode ubah.
+ */
+export function TambahUraianTugasForm(props: Props) {
+  const { editId, accessToken } = props;
+  if (!editId) return <FormUraianTugas {...props} etag={null} />;
+  return (
+    <PemuatRekaman
+      accessToken={accessToken}
+      kunci={editId}
+      ambil={(c) =>
+        c.GET("/api/v1/task-inventory/uraian-tugas/{ut_id}", {
+          params: { path: { ut_id: editId } },
+        })
+      }
+    >
+      {(u, etag) => (
+        <FormUraianTugas
+          {...props}
+          defaultValues={{
+            kode: u.kode,
+            uraian: u.uraian,
+            unit: u.unit,
+            urutan: u.urutan,
+            tugas_pokok_id: u.tugas_pokok_id,
+            detil_tugas_id: u.detil_tugas_id ?? "",
+            jabatan_id: u.jabatan_id ?? "",
+            std_sumber_bukti: u.std_sumber_bukti ?? undefined,
+            std_kondisi: u.std_kondisi ?? undefined,
+            std_frekuensi_teks: u.std_frekuensi_teks ?? undefined,
+            std_durasi_per_kali: u.std_durasi_per_kali ?? undefined,
+            std_jam_per_minggu: u.std_jam_per_minggu ?? undefined,
+            std_peak4w_hours: u.std_peak4w_hours ?? undefined,
+            std_va_type: u.std_va_type ?? undefined,
+          }}
+          etag={etag}
+        />
+      )}
+    </PemuatRekaman>
+  );
+}
+
+/** Isi formulir; `etag` (bila ada) dikirim sebagai `If-Match` pada PATCH dan diperbarui dari respons. */
+function FormUraianTugas({
   tugasPokok,
   detilTugas,
   jabatanList,
   accessToken,
   defaultValues,
   editId,
-}: Props) {
+  etag: etagAwal,
+}: Props & { etag: string | null }) {
   const router = useRouter();
+  const [etag, setEtag] = useState<string | null>(etagAwal);
   const [serverError, setServerError] = useState<string | null>(null);
 
   const {
@@ -121,23 +179,24 @@ export function TambahUraianTugasForm({
           {
             params: { path: { ut_id: editId } },
             body,
+            headers: headerIfMatch(etag),
           },
         );
-        const requestId = response.headers.get("x-request-id");
-        if (error) throw toApiError(error, requestId);
+        if (error) throw apiErrorDari({ error, response });
+        setEtag(bacaEtag(response));
       } else {
         const { error, response } = await client.POST("/api/v1/task-inventory/uraian-tugas", {
           body,
         });
-        const requestId = response.headers.get("x-request-id");
-        if (error) throw toApiError(error, requestId);
+        if (error) throw apiErrorDari({ error, response });
       }
       notifySukses(
         editId ? "Uraian tugas berhasil diperbarui." : "Uraian tugas berhasil ditambahkan.",
       );
       router.push("/master-data/uraian-tugas");
       router.refresh();
-    } catch (err) {
+    } catch (rawErr) {
+      const err = petakanKonkurensi(rawErr);
       setServerError(pesanGagal(err));
       notifyGagal(err);
     }

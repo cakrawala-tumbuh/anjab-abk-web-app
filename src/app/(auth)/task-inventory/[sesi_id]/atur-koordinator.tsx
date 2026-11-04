@@ -3,7 +3,9 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { withServerAuth } from "@/lib/api/client";
-import { toApiError } from "@/lib/api/errors";
+import { apiErrorDari } from "@/lib/api/errors";
+import { bacaEtag, headerIfMatch, petakanKonkurensi } from "@/lib/konkurensi";
+import { PemuatRekaman } from "@/lib/use-rekaman-ber-etag";
 import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
 import type { TiRespondenRead } from "@/lib/api/schema";
 import { labelResponden } from "@/lib/format/label-responden";
@@ -16,8 +18,6 @@ interface KandidatKoordinator {
 
 interface Props {
   sesiId: string;
-  /** Koordinator saat ini (id partisipan), null bila belum ditentukan. */
-  koordinatorId: string | null;
   /**
    * Daftar responden sesi ini — sumber kandidat koordinator (backlog `#57`,
    * menggantikan anggota SME panel). Backend sudah menyaring responden per
@@ -37,10 +37,50 @@ interface Props {
  * partisipan tidak dapat dijadikan koordinator karena `koordinator_id` sesi
  * merujuk id partisipan. Kandidat ditampilkan sebagai nama; id partisipan hanya
  * disimpan untuk submit.
+ *
+ * Koordinator saat ini dan ETag `If-Match` dimuat lewat `GET .../sesi/{sesi_id}` (satu
+ * respons yang sama) sebelum kontrol ditampilkan; gagal memuat → panel galat, tanpa tombol simpan.
  */
-export function AturKoordinator({ sesiId, koordinatorId, responden, accessToken }: Props) {
+export function AturKoordinator({ sesiId, responden, accessToken }: Props) {
+  return (
+    <PemuatRekaman
+      accessToken={accessToken}
+      kunci={sesiId}
+      ambil={(c) =>
+        c.GET("/api/v1/task-inventory/sesi/{sesi_id}", { params: { path: { sesi_id: sesiId } } })
+      }
+    >
+      {(sesi, etag) => (
+        <KartuKoordinator
+          sesiId={sesiId}
+          koordinatorAwal={sesi.koordinator_id ?? null}
+          etagAwal={etag}
+          responden={responden}
+          accessToken={accessToken}
+        />
+      )}
+    </PemuatRekaman>
+  );
+}
+
+/** Isi kartu; baseline koordinator dan ETag berasal dari satu GET detail sesi. */
+function KartuKoordinator({
+  sesiId,
+  koordinatorAwal,
+  etagAwal,
+  responden,
+  accessToken,
+}: {
+  sesiId: string;
+  koordinatorAwal: string | null;
+  etagAwal: string | null;
+  responden: TiRespondenRead[];
+  accessToken: string | undefined;
+}) {
   const router = useRouter();
-  const [pilihan, setPilihan] = useState<string>(koordinatorId ?? "");
+  const [koordinatorId, setKoordinatorId] = useState<string | null>(koordinatorAwal);
+  const [etag, setEtag] = useState<string | null>(etagAwal);
+  const [pilihan, setPilihan] = useState<string>(koordinatorAwal ?? "");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -68,13 +108,16 @@ export function AturKoordinator({ sesiId, koordinatorId, responden, accessToken 
         {
           params: { path: { sesi_id: sesiId } },
           body: { koordinator_id: pilihan === "" ? null : pilihan },
+          headers: headerIfMatch(etag),
         },
       );
-      const reqId = response.headers.get("x-request-id");
-      if (apiError) throw toApiError(apiError, reqId);
+      if (apiError) throw apiErrorDari({ error: apiError, response });
+      setEtag(bacaEtag(response));
+      setKoordinatorId(pilihan === "" ? null : pilihan);
       notifySukses(pilihan === "" ? "Koordinator dikosongkan." : "Koordinator diperbarui.");
       router.refresh();
-    } catch (err) {
+    } catch (rawErr) {
+      const err = petakanKonkurensi(rawErr);
       setError(pesanGagal(err));
       notifyGagal(err);
     } finally {

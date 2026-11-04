@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { withServerAuth } from "@/lib/api/client";
 import { apiErrorDari, toApiError } from "@/lib/api/errors";
+import { headerIfMatch, petakanKonkurensi } from "@/lib/konkurensi";
 import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
 import type { PartisipanRead } from "@/lib/api/schema";
 
@@ -151,13 +152,27 @@ interface SetKoordinatorProps {
   panelId: string;
   partisipanId: string;
   isKoordinator: boolean;
+  /**
+   * ETag panel (header `ETag` dari `GET /sme-panel/{panel_id}` yang dibaca Server Component
+   * halaman); dikirim sebagai `If-Match`. Disegarkan lewat `router.refresh()` tiap perubahan.
+   */
+  etag?: string | null;
   accessToken: string | undefined;
 }
 
+/**
+ * Tombol "Jadikan / Batalkan Koordinator" pada daftar anggota panel SME.
+ *
+ * `PATCH /sme-panel/{panel_id}` dikirim dengan `If-Match` berisi ETag panel dari halaman;
+ * 412 tampil sebagai pesan baku data-berubah.
+ *
+ * @param props - Lihat {@link SetKoordinatorProps}.
+ */
 export function SetKoordinatorButton({
   panelId,
   partisipanId,
   isKoordinator,
+  etag = null,
   accessToken,
 }: SetKoordinatorProps) {
   const router = useRouter();
@@ -171,6 +186,7 @@ export function SetKoordinatorButton({
       const { error, response } = await client.PATCH("/api/v1/sme-panel/{panel_id}", {
         params: { path: { panel_id: panelId } },
         body: { koordinator_id: newKoordinatorId },
+        headers: headerIfMatch(etag),
       });
       if (error) throw toApiError(error, response.headers.get("x-request-id"));
       notifySukses(
@@ -178,7 +194,7 @@ export function SetKoordinatorButton({
       );
       router.refresh();
     } catch (err) {
-      notifyGagal(err);
+      notifyGagal(petakanKonkurensi(err));
     } finally {
       setLoading(false);
     }
@@ -214,6 +230,8 @@ interface AnggotaSectionProps {
   panelId: string;
   partisipanIds: string[];
   koordinatorId: string | null;
+  /** ETag panel dari halaman; diteruskan ke tombol koordinator sebagai `If-Match`. */
+  panelEtag?: string | null;
   jabatanMap: Record<string, { nama: string }>;
   accessToken: string | undefined;
 }
@@ -222,6 +240,7 @@ export function AnggotaSection({
   panelId,
   partisipanIds,
   koordinatorId,
+  panelEtag = null,
   jabatanMap,
   accessToken,
 }: AnggotaSectionProps) {
@@ -335,6 +354,7 @@ export function AnggotaSection({
                         panelId={panelId}
                         partisipanId={p.id}
                         isKoordinator={isKoordinator}
+                        etag={panelEtag}
                         accessToken={accessToken}
                       />
                       <HapusAnggotaButton

@@ -34,7 +34,7 @@ export default async function Tahap1Page({ params }: Props) {
     throw err;
   }
 
-  const { responden, sesi, catalog, terpilih, usulan } = data;
+  const { responden, sesi, catalog, terpilih, usulan, seleksiEtag } = data;
   const admin = isAdmin(session);
 
   return (
@@ -76,6 +76,7 @@ export default async function Tahap1Page({ params }: Props) {
           terpilihAwal={terpilih}
           usulanAwal={usulan}
           tahap1Submit={responden.tahap1_submit}
+          seleksiEtag={seleksiEtag}
           accessToken={session?.accessToken}
         />
       )}

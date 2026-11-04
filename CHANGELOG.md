@@ -9,6 +9,13 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ### Ditambahkan
 
+- 14 operasi ber-`If-Match` lainnya kini mengirim header itu: ubah partisipan, anggota/koordinator
+  panel SME, tugas pokok, detil tugas, uraian tugas, koordinator sesi Task Inventory (PATCH);
+  hapus responden WCP/DCS/OPM/Task Inventory, hapus sesi OPM/Task Inventory, hapus usulan (DELETE);
+  simpan seleksi Tahap 1 (PUT). Formulir ubah memuat rekamannya lewat GET detail; dialog hapus
+  mengambil ETag lewat GET sebelum konfirmasi. Data yang sudah diubah pengguna lain tampil sebagai
+  pesan "Data telah berubah oleh pengguna lain..." dan baris yang sudah hilang tampil sebagai
+  "Data ini sudah tidak ada..." disertai muat ulang daftar (issue #88).
 - Seluruh 12 formulir ubah modul redesain (kode orang, konteks, masalah, alternatif, cakupan jabatan,
   versi metode, sesi, bukti, penilaian, proses, langkah, dan wizard konfirmasi sekolah) kini
   mengirim `If-Match`. Formulir ubah memuat rekamannya lewat GET detail (isian dan ETag dari satu

@@ -10,6 +10,7 @@
  */
 import { withServerAuth } from "@/lib/api/client";
 import { apiErrorDari } from "@/lib/api/errors";
+import { bacaEtag } from "@/lib/konkurensi";
 import type {
   TiCatalogRead,
   TiRespondenRead,
@@ -24,6 +25,8 @@ export interface Tahap1PageData {
   catalog: TiCatalogRead[];
   terpilih: string[];
   usulan: TiUsulanRead[];
+  /** Header `ETag` dari `GET .../seleksi`; `null` bila belum pernah menyimpan seleksi (404). */
+  seleksiEtag: string | null;
 }
 
 export async function fetchTahap1Data(
@@ -60,8 +63,10 @@ export async function fetchTahap1Data(
     params: { path: { responden_id: respondenId } },
   });
   let terpilih: string[] = [];
+  let seleksiEtag: string | null = null;
   if (selRes.data) {
     terpilih = (selRes.data as TiSeleksiRead).task_kode;
+    seleksiEtag = bacaEtag(selRes.response);
   } else {
     const err = apiErrorDari(selRes);
     if (err.status !== 404) throw err;
@@ -80,5 +85,5 @@ export async function fetchTahap1Data(
   if (!usulanRes.data) throw apiErrorDari(usulanRes);
   const usulan = usulanRes.data as TiUsulanRead[];
 
-  return { responden, sesi, catalog, terpilih, usulan };
+  return { responden, sesi, catalog, terpilih, usulan, seleksiEtag };
 }
