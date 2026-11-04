@@ -7,6 +7,8 @@ import { withServerAuth } from "@/lib/api/client";
 import { apiErrorDari } from "@/lib/api/errors";
 import type { PartisipanRead } from "@/lib/api/schema";
 import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
+import { headerIdempotencyKey, petakanKonkurensi } from "@/lib/konkurensi";
+import { useIdempotencyKey } from "@/lib/use-idempotency-key";
 
 /** Pesan konflik saat partisipan sudah punya kode orang (HTTP 409). */
 export const PESAN_KONFLIK_KODE = "Partisipan ini sudah punya kode";
@@ -15,7 +17,9 @@ export const PESAN_KONFLIK_KODE = "Partisipan ini sudah punya kode";
  * Form "Tambah narasumber": membuat kode orang baru (`POST /api/v1/redesain/kode-orang`).
  *
  * Partisipan opsional. Respons 409 menampilkan {@link PESAN_KONFLIK_KODE} tanpa toast
- * sukses; galat lain ditampilkan inline dan lewat `notifyGagal`.
+ * sukses (kecuali 409 `conflict` = key masih diproses → pesan baku); galat lain ditampilkan
+ * inline dan lewat `notifyGagal`. POST membawa `Idempotency-Key` per upaya; key diganti
+ * hanya setelah respons sukses.
  *
  * @param props.partisipan - Master partisipan untuk dropdown.
  * @param props.accessToken - Token akses dari Server Component induk.
@@ -32,6 +36,7 @@ export function TambahKodeOrang({
   const [partisipanId, setPartisipanId] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const idem = useIdempotencyKey();
 
   async function kirim(e: React.FormEvent) {
     e.preventDefault();
@@ -43,17 +48,20 @@ export function TambahKodeOrang({
           keterangan_peran: keterangan.trim(),
           partisipan_id: partisipanId || undefined,
         },
+        headers: headerIdempotencyKey(idem.key),
       });
-      if (res.response.status === 409) {
+      if (res.response.status === 409 && apiErrorDari(res).code !== "conflict") {
         setError(PESAN_KONFLIK_KODE);
         return;
       }
       if (!res.data) throw apiErrorDari(res);
+      idem.perbarui();
       notifySukses(`Kode ${res.data.kode} dibuat.`);
       setKeterangan("");
       setPartisipanId("");
       router.refresh();
-    } catch (err) {
+    } catch (galatMentah) {
+      const err = petakanKonkurensi(galatMentah, true);
       setError(pesanGagal(err));
       notifyGagal(err);
     } finally {

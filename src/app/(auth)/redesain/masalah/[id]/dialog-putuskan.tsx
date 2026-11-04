@@ -9,6 +9,8 @@ import { withServerAuth } from "@/lib/api/client";
 import { apiErrorDari } from "@/lib/api/errors";
 import type { PenilaianRead } from "@/lib/api/schema";
 import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
+import { headerIdempotencyKey, petakanKonkurensi } from "@/lib/konkurensi";
+import { useIdempotencyKey } from "@/lib/use-idempotency-key";
 import {
   OPSI_PRIORITAS_FINAL,
   TEKS_PENCATAT_KEPUTUSAN,
@@ -40,7 +42,8 @@ export interface DialogPutuskanProps {
  * menjelaskan mengapa simpan nonaktif; pesan bawaan browser tak pernah muncul.
  * Pratinjau peringatan PT-2 tampil bila P1–P3 dipilih pada bukti yang belum diperkuat, tanpa memblokir. Simpan → `POST /api/v1/redesain/penilaian/{id}/putuskan`;
  * 422 backend ditampilkan utuh (inline + toast). Peringatan resmi datang dari respons
- * setelah `router.refresh()`.
+ * setelah `router.refresh()`. POST membawa `Idempotency-Key` per upaya (key diganti hanya
+ * setelah sukses); 409 `conflict` dipetakan ke pesan "masih diproses".
  *
  * @param props - Lihat {@link DialogPutuskanProps}.
  */
@@ -56,6 +59,7 @@ export function DialogPutuskan({ penilaian, accessToken }: DialogPutuskanProps) 
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const idem = useIdempotencyKey();
 
   const galat = validasiKeputusan(isian);
   const valid = Object.keys(galat).length === 0;
@@ -74,13 +78,19 @@ export function DialogPutuskan({ penilaian, accessToken }: DialogPutuskanProps) 
     try {
       const res = await withServerAuth(accessToken).POST(
         "/api/v1/redesain/penilaian/{penilaian_id}/putuskan",
-        { params: { path: { penilaian_id: penilaian.id } }, body: payloadPutuskan(isian) },
+        {
+          params: { path: { penilaian_id: penilaian.id } },
+          body: payloadPutuskan(isian),
+          headers: headerIdempotencyKey(idem.key),
+        },
       );
       if (!res.data) throw apiErrorDari(res);
+      idem.perbarui();
       notifySukses("Keputusan prioritas dicatat.");
       setBuka(false);
       router.refresh();
-    } catch (err) {
+    } catch (galatMentah) {
+      const err = petakanKonkurensi(galatMentah, true);
       setError(pesanGagal(err));
       notifyGagal(err);
     } finally {

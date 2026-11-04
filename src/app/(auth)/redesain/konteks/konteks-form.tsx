@@ -7,7 +7,8 @@ import { withServerAuth } from "@/lib/api/client";
 import { apiErrorDari } from "@/lib/api/errors";
 import type { KonteksRead } from "@/lib/api/schema";
 import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
-import { bacaEtag, headerIfMatch, petakanKonkurensi } from "@/lib/konkurensi";
+import { bacaEtag, headerIdempotencyKey, headerIfMatch, petakanKonkurensi } from "@/lib/konkurensi";
+import { useIdempotencyKey } from "@/lib/use-idempotency-key";
 import { PemuatRekaman } from "@/lib/use-rekaman-ber-etag";
 import { GELOMBANG, PESAN_KODE_KONTEKS_DUPLIKAT } from "@/lib/redesain-register";
 
@@ -32,6 +33,10 @@ interface KonteksFormIsiProps extends KonteksFormProps {
  * 409 menampilkan {@link PESAN_KODE_KONTEKS_DUPLIKAT} tanpa toast sukses. Ubah →
  * `PATCH /api/v1/redesain/konteks/{id}` (kode tidak dikirim/diubah). Galat lain tampil
  * inline dan lewat `notifyGagal`.
+ *
+ * POST (mode tambah) membawa `Idempotency-Key` per upaya; key diganti hanya setelah respons
+ * sukses sehingga kirim ulang setelah gagal memakai key yang sama. 409 `conflict` dipetakan ke
+ * pesan "masih diproses"; 409 guard lain tetap pesan aslinya.
  *
  * @param props.awal - Konteks yang diubah; kosong = mode tambah.
  * @param props.accessToken - Token akses dari Server Component induk.
@@ -66,6 +71,7 @@ function KonteksFormIsi({ awal, accessToken, etag: etagAwal = null }: KonteksFor
   const [aktif, setAktif] = useState(awal?.aktif ?? true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const idem = useIdempotencyKey();
 
   async function kirim(e: React.FormEvent) {
     e.preventDefault();
@@ -93,12 +99,14 @@ function KonteksFormIsi({ awal, accessToken, etag: etagAwal = null }: KonteksFor
       } else {
         const res = await client.POST("/api/v1/redesain/konteks", {
           body: { kode: kode.trim(), ...isi },
+          headers: headerIdempotencyKey(idem.key),
         });
-        if (res.response.status === 409) {
+        if (res.response.status === 409 && apiErrorDari(res).code !== "conflict") {
           setError(PESAN_KODE_KONTEKS_DUPLIKAT);
           return;
         }
         if (!res.data) throw apiErrorDari(res);
+        idem.perbarui();
         notifySukses(`Konteks ${res.data.kode} dibuat.`);
         setKode("");
         setTema("");
@@ -108,7 +116,7 @@ function KonteksFormIsi({ awal, accessToken, etag: etagAwal = null }: KonteksFor
       }
       router.refresh();
     } catch (err) {
-      const galat = petakanKonkurensi(err);
+      const galat = petakanKonkurensi(err, !awal);
       setError(pesanGagal(galat));
       notifyGagal(galat);
     } finally {

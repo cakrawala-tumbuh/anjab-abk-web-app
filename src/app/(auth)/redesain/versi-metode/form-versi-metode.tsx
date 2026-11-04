@@ -7,7 +7,8 @@ import { withServerAuth } from "@/lib/api/client";
 import { apiErrorDari } from "@/lib/api/errors";
 import type { VersiMetodeCreate, VersiMetodeRead } from "@/lib/api/schema";
 import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
-import { bacaEtag, headerIfMatch, petakanKonkurensi } from "@/lib/konkurensi";
+import { bacaEtag, headerIdempotencyKey, headerIfMatch, petakanKonkurensi } from "@/lib/konkurensi";
+import { useIdempotencyKey } from "@/lib/use-idempotency-key";
 import { PemuatRekaman } from "@/lib/use-rekaman-ber-etag";
 
 /** Pesan konflik saat pasangan `versi` + `bagian` sudah tercatat (HTTP 409). */
@@ -46,6 +47,10 @@ interface FormVersiMetodeIsiProps extends FormVersiMetodeProps {
  * Respons 409 menampilkan {@link PESAN_KONFLIK_VERSI} tanpa toast sukses; galat lain
  * (mis. 422) ditampilkan inline dan lewat `notifyGagal`. Teks bebas dilindungi
  * `PeringatanPrivasi` (pemeriksa diisi jabatan/peran, bukan nama).
+ *
+ * POST (mode tambah) membawa `Idempotency-Key` per upaya; key diganti hanya setelah respons
+ * sukses sehingga kirim ulang setelah gagal memakai key yang sama. 409 `conflict` dipetakan ke
+ * pesan "masih diproses"; 409 guard lain tetap pesan aslinya.
  *
  * @param props.accessToken - Token akses dari Server Component induk.
  * @param props.awal - Catatan yang diubah; kosong untuk mode tambah.
@@ -92,6 +97,7 @@ function FormVersiMetodeIsi({
   );
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const idem = useIdempotencyKey();
 
   function ubah<K extends keyof VersiMetodeCreate>(k: K, v: string) {
     setNilai((s) => ({ ...s, [k]: v }));
@@ -109,19 +115,23 @@ function FormVersiMetodeIsi({
             body: nilai,
             headers: headerIfMatch(etag),
           })
-        : await client.POST("/api/v1/redesain/versi-metode", { body: nilai });
-      if (res.response.status === 409) {
+        : await client.POST("/api/v1/redesain/versi-metode", {
+            body: nilai,
+            headers: headerIdempotencyKey(idem.key),
+          });
+      if (res.response.status === 409 && (awal || apiErrorDari(res).code !== "conflict")) {
         setError(PESAN_KONFLIK_VERSI);
         return;
       }
       if (!res.data) throw apiErrorDari(res);
       if (awal) setEtag(bacaEtag(res.response));
+      else idem.perbarui();
       notifySukses(awal ? "Catatan versi diperbarui." : "Catatan versi ditambahkan.");
       if (!awal) setNilai(KOSONG);
       router.refresh();
       onSelesai?.();
     } catch (err) {
-      const galat = petakanKonkurensi(err);
+      const galat = petakanKonkurensi(err, !awal);
       setError(pesanGagal(galat));
       notifyGagal(galat);
     } finally {

@@ -16,7 +16,8 @@ import type {
   UraianTugasRead,
 } from "@/lib/api/schema";
 import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
-import { bacaEtag, headerIfMatch, petakanKonkurensi } from "@/lib/konkurensi";
+import { bacaEtag, headerIdempotencyKey, headerIfMatch, petakanKonkurensi } from "@/lib/konkurensi";
+import { useIdempotencyKey } from "@/lib/use-idempotency-key";
 import { PemuatRekaman } from "@/lib/use-rekaman-ber-etag";
 import { GELOMBANG, STATUS_AWAL } from "@/lib/redesain-register";
 
@@ -50,6 +51,10 @@ interface MasalahFormIsiProps extends MasalahFormProps {
  * `awal.status_awal_dibekukan_pada` terisi, kontrol `status_awal` nonaktif (dengan
  * keterangan pembekuan) dan field itu tidak dikirim pada PATCH; 409 backend tetap
  * ditampilkan sebagai toast gagal. Setelah sukses kembali ke `/redesain/masalah`.
+ *
+ * POST (mode tambah) membawa `Idempotency-Key` per upaya; key diganti hanya setelah respons
+ * sukses sehingga kirim ulang setelah gagal memakai key yang sama. 409 `conflict` dipetakan ke
+ * pesan "masih diproses"; 409 guard lain tetap pesan aslinya.
  *
  * @param props - Lihat {@link MasalahFormProps}.
  */
@@ -95,6 +100,7 @@ function MasalahFormIsi({
   const [uraianIds, setUraianIds] = useState<Set<string>>(new Set(awal?.uraian_tugas_ids ?? []));
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const idem = useIdempotencyKey();
 
   const beku = awal?.status_awal_dibekukan_pada ?? null;
 
@@ -140,14 +146,16 @@ function MasalahFormIsi({
       } else {
         const res = await client.POST("/api/v1/redesain/masalah", {
           body: { ...isi, status_awal: statusAwal },
+          headers: headerIdempotencyKey(idem.key),
         });
         if (!res.data) throw apiErrorDari(res);
+        idem.perbarui();
         notifySukses(`Masalah ${res.data.kode} dibuat.`);
       }
       router.push("/redesain/masalah");
       router.refresh();
     } catch (err) {
-      const galat = petakanKonkurensi(err);
+      const galat = petakanKonkurensi(err, !awal);
       setError(pesanGagal(galat));
       notifyGagal(galat);
     } finally {

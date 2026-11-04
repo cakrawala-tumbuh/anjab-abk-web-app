@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { withServerAuth } from "@/lib/api/client";
 import { apiErrorDari } from "@/lib/api/errors";
 import { notifyGagal, notifySukses } from "@/lib/notify";
+import { headerIdempotencyKey, petakanKonkurensi } from "@/lib/konkurensi";
+import { useIdempotencyKey } from "@/lib/use-idempotency-key";
 
 /** Properti {@link MulaiPenilaian}. */
 export interface MulaiPenilaianProps {
@@ -24,31 +26,36 @@ const AWAL = {
  *
  * `POST /api/v1/redesain/penilaian` (201) dengan isian wajib bernilai awal netral. Status
  * 409 (penilaian sudah dibuat pihak lain) bukan kegagalan bagi pengguna: cukup
- * `router.refresh()` tanpa toast sukses. Kegagalan lain → toast gagal.
+ * `router.refresh()` tanpa toast sukses (kecuali 409 `conflict` = key masih diproses → pesan
+ * baku). Kegagalan lain → toast gagal. POST membawa `Idempotency-Key` per upaya; key diganti
+ * hanya setelah respons sukses.
  *
  * @param props - Lihat {@link MulaiPenilaianProps}.
  */
 export function MulaiPenilaian({ masalahId, accessToken }: MulaiPenilaianProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const idem = useIdempotencyKey();
 
   async function mulai() {
     setLoading(true);
     try {
       const res = await withServerAuth(accessToken).POST("/api/v1/redesain/penilaian", {
         body: { masalah_id: masalahId, ...AWAL },
+        headers: headerIdempotencyKey(idem.key),
       });
       if (!res.data) {
-        if (res.response?.status === 409) {
+        if (res.response?.status === 409 && apiErrorDari(res).code !== "conflict") {
           router.refresh();
           return;
         }
         throw apiErrorDari(res);
       }
+      idem.perbarui();
       notifySukses("Penilaian dimulai.");
       router.refresh();
-    } catch (err) {
-      notifyGagal(err);
+    } catch (galatMentah) {
+      notifyGagal(petakanKonkurensi(galatMentah, true));
     } finally {
       setLoading(false);
     }

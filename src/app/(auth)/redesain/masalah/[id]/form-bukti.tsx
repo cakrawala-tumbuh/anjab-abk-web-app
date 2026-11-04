@@ -8,7 +8,8 @@ import { withServerAuth } from "@/lib/api/client";
 import { apiErrorDari } from "@/lib/api/errors";
 import type { BuktiCreate, BuktiRead } from "@/lib/api/schema";
 import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
-import { bacaEtag, headerIfMatch, petakanKonkurensi } from "@/lib/konkurensi";
+import { bacaEtag, headerIdempotencyKey, headerIfMatch, petakanKonkurensi } from "@/lib/konkurensi";
+import { useIdempotencyKey } from "@/lib/use-idempotency-key";
 import { PemuatRekaman } from "@/lib/use-rekaman-ber-etag";
 import { INDEPENDEN_BUKTI, JENIS_BUKTI, STATUS_PEMERIKSAAN } from "@/lib/redesain-alur";
 
@@ -45,6 +46,10 @@ interface FormBuktiIsiProps extends FormBuktiProps {
  * `kode` dibangkitkan sistem (read-only). Pembuat/pemeriksa dipilih sebagai kode orang
  * lewat `PilihKodeOrang`. Kegagalan (mis. 422) → toast gagal + pesan inline dan form
  * tidak ditutup. Sukses → `router.refresh()`.
+ *
+ * POST (mode tambah) membawa `Idempotency-Key` per upaya; key diganti hanya setelah respons
+ * sukses sehingga kirim ulang setelah gagal memakai key yang sama. 409 `conflict` dipetakan ke
+ * pesan "masih diproses"; 409 guard lain tetap pesan aslinya.
  *
  * @param props - Lihat {@link FormBuktiProps}.
  */
@@ -92,6 +97,7 @@ function FormBuktiIsi({
   const [catatan, setCatatan] = useState(awal?.catatan_privasi_gap ?? "");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const idem = useIdempotencyKey();
 
   async function kirim(e: React.FormEvent) {
     e.preventDefault();
@@ -126,13 +132,15 @@ function FormBuktiIsi({
       } else {
         const res = await client.POST("/api/v1/redesain/bukti", {
           body: { masalah_id: masalahId, ...isi },
+          headers: headerIdempotencyKey(idem.key),
         });
         if (!res.data) throw apiErrorDari(res);
+        idem.perbarui();
         notifySukses(`Bukti ${res.data.kode} ditambahkan.`);
       }
       router.refresh();
     } catch (err) {
-      const galat = petakanKonkurensi(err);
+      const galat = petakanKonkurensi(err, !awal);
       setError(pesanGagal(galat));
       notifyGagal(galat);
     } finally {

@@ -7,6 +7,8 @@ import { withServerAuth } from "@/lib/api/client";
 import { apiErrorDari } from "@/lib/api/errors";
 import type { KonfirmasiDaftarRead, KonteksRead } from "@/lib/api/schema";
 import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
+import { headerIdempotencyKey, petakanKonkurensi } from "@/lib/konkurensi";
+import { useIdempotencyKey } from "@/lib/use-idempotency-key";
 
 const INPUT =
   "w-full rounded-md border border-gray-300 px-2 py-1 text-sm dark:border-gray-600 dark:bg-gray-800";
@@ -25,7 +27,8 @@ export interface DialogAngkatProps {
  * Isian: konteks dan rumusan hipotesis (keduanya wajib). Simpan →
  * `POST /api/v1/redesain/konfirmasi/{id}/angkat-masalah`; 201 → arahkan ke detail
  * masalah baru. Kegagalan (422/409) ditampilkan inline dan lewat `notifyGagal`; dialog
- * tetap terbuka.
+ * tetap terbuka. POST membawa `Idempotency-Key` per upaya (key diganti hanya setelah sukses);
+ * 409 `conflict` dipetakan ke pesan "masih diproses".
  *
  * @param props - Lihat {@link DialogAngkatProps}.
  */
@@ -36,6 +39,7 @@ export function DialogAngkat({ konfirmasi, konteks, accessToken }: DialogAngkatP
   const [rumusan, setRumusan] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const idem = useIdempotencyKey();
   const valid = konteksId !== "" && rumusan.trim() !== "";
 
   async function simpan(e: React.FormEvent) {
@@ -49,13 +53,16 @@ export function DialogAngkat({ konfirmasi, konteks, accessToken }: DialogAngkatP
         {
           params: { path: { konfirmasi_id: konfirmasi.id } },
           body: { konteks_id: konteksId, rumusan_hipotesis: rumusan },
+          headers: headerIdempotencyKey(idem.key),
         },
       );
       if (!res.data) throw apiErrorDari(res);
+      idem.perbarui();
       notifySukses("Masalah baru diangkat.");
       setBuka(false);
       router.push(`/redesain/masalah/${res.data.id}`);
-    } catch (err) {
+    } catch (galatMentah) {
+      const err = petakanKonkurensi(galatMentah, true);
       setError(pesanGagal(err));
       notifyGagal(err);
     } finally {

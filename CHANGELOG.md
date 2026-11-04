@@ -9,6 +9,12 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ### Ditambahkan
 
+- Aksi POST tulis di halaman Tim Kajian modul redesain (tambah kode orang, konteks, masalah, sesi,
+  catatan versi metode, bukti, alternatif, proses, langkah, koreksi, mulai penilaian, ubah status
+  penilaian, keputusan prioritas, isian luring, angkat masalah, buka/tutup konfirmasi) kini mengirim
+  `Idempotency-Key` per upaya: klik ganda atau kirim ulang setelah gagal memakai key yang sama, key
+  diganti hanya setelah sukses. 409 `conflict` tampil sebagai "Permintaan sebelumnya masih
+  diproses." (issue #92).
 - Aksi POST di portal sekolah modul redesain (mulai isi, kunci cerita, tampilkan dugaan, kirim
   konfirmasi, ralat isian, tambah koreksi) kini mengirim `Idempotency-Key` per upaya: klik ganda
   atau kirim ulang setelah gagal memakai key yang sama, key diganti hanya setelah sukses. 409

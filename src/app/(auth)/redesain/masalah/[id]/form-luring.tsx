@@ -8,6 +8,8 @@ import { withServerAuth } from "@/lib/api/client";
 import { apiErrorDari } from "@/lib/api/errors";
 import type { MasalahRead, SekolahRead } from "@/lib/api/schema";
 import { notifyGagal, notifySukses } from "@/lib/notify";
+import { headerIdempotencyKey, petakanKonkurensi } from "@/lib/konkurensi";
+import { useIdempotencyKey } from "@/lib/use-idempotency-key";
 import { PESAN_KODE_ORANG_WAJIB } from "@/lib/redesain-kode-orang";
 import { OPSI_INDIKASI, OPSI_KESESUAIAN, OPSI_SKALA } from "@/lib/redesain-konfirmasi";
 import {
@@ -36,7 +38,7 @@ export interface FormLuringProps {
  * aplikasi `PESAN_KODE_ORANG_WAJIB` tampil di dekat field (`aria-invalid` + `aria-describedby`);
  * pesan hilang begitu kode dipilih. Kelengkapan field wajib lain diputuskan backend:
  * 422 menyebut field yang kurang (inline + toast) dan dialog TIDAK ditutup. Sukses →
- * tutup dan `router.refresh()`.
+ * tutup dan `router.refresh()`. POST membawa `Idempotency-Key` per upaya (key diganti hanya setelah sukses); 409 `conflict` dipetakan ke pesan "masih diproses".
  *
  * @param props - Lihat {@link FormLuringProps}.
  */
@@ -49,6 +51,7 @@ export function FormLuring({ masalah, sekolah, accessToken }: FormLuringProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [galatKode, setGalatKode] = useState(false);
+  const idem = useIdempotencyKey();
   const idGalatKode = useId();
   const ubah = (k: keyof IsianLuring, val: string) => {
     if (k === "kode_orang" && val !== "") setGalatKode(false);
@@ -66,14 +69,17 @@ export function FormLuring({ masalah, sekolah, accessToken }: FormLuringProps) {
     try {
       const res = await withServerAuth(accessToken).POST("/api/v1/redesain/konfirmasi/luring", {
         body: payloadLuring(masalah.id, isian),
+        headers: headerIdempotencyKey(idem.key),
       });
       if (!res.data) throw apiErrorDari(res);
+      idem.perbarui();
       notifySukses("Isian luring dicatat.");
       setBuka(false);
       setIsian(isianLuringKosong(masalah.sekolah_id ?? ""));
       setGalatKode(false);
       router.refresh();
-    } catch (err) {
+    } catch (galatMentah) {
+      const err = petakanKonkurensi(galatMentah, true);
       setError(pesanGagalLuring(err));
       notifyGagal(err);
     } finally {

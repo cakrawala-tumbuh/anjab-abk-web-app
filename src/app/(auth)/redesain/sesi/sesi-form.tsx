@@ -9,7 +9,8 @@ import { withServerAuth } from "@/lib/api/client";
 import { apiErrorDari } from "@/lib/api/errors";
 import type { KonteksRead, MasalahRead, SekolahRead, SesiCreate, SesiRead } from "@/lib/api/schema";
 import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
-import { bacaEtag, headerIfMatch, petakanKonkurensi } from "@/lib/konkurensi";
+import { bacaEtag, headerIdempotencyKey, headerIfMatch, petakanKonkurensi } from "@/lib/konkurensi";
+import { useIdempotencyKey } from "@/lib/use-idempotency-key";
 import { PemuatRekaman } from "@/lib/use-rekaman-ber-etag";
 import { PESAN_KODE_ORANG_WAJIB } from "@/lib/redesain-kode-orang";
 import {
@@ -62,6 +63,10 @@ interface SesiFormIsiProps extends SesiFormProps {
  * `masalah_ids` dikirim ganti-penuh. 409 (pasangan `kode_sesi`+`kode_orang` ganda)
  * menampilkan {@link PESAN_SESI_GANDA}. Setelah sukses kembali ke `/redesain/sesi`.
  *
+ * POST (mode tambah) membawa `Idempotency-Key` per upaya; key diganti hanya setelah respons
+ * sukses sehingga kirim ulang setelah gagal memakai key yang sama. 409 `conflict` dipetakan ke
+ * pesan "masih diproses"; 409 guard lain tetap pesan aslinya.
+ *
  * @param props - Lihat {@link SesiFormProps}.
  */
 export function SesiForm(props: SesiFormProps) {
@@ -106,6 +111,7 @@ function SesiFormIsi({
   const [masalahIds, setMasalahIds] = useState<Set<string>>(new Set(awal?.masalah_ids ?? []));
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const idem = useIdempotencyKey();
   const [galatKode, setGalatKode] = useState(false);
   const idGalatKode = useId();
 
@@ -158,18 +164,22 @@ function SesiFormIsi({
             body: isi,
             headers: headerIfMatch(etag),
           })
-        : await client.POST("/api/v1/redesain/sesi", { body: isi });
-      if (res.response.status === 409) {
+        : await client.POST("/api/v1/redesain/sesi", {
+            body: isi,
+            headers: headerIdempotencyKey(idem.key),
+          });
+      if (res.response.status === 409 && (awal || apiErrorDari(res).code !== "conflict")) {
         setError(PESAN_SESI_GANDA);
         return;
       }
       if (!res.data) throw apiErrorDari(res);
       if (awal) setEtag(bacaEtag(res.response));
+      else idem.perbarui();
       notifySukses(awal ? "Sesi diperbarui." : "Sesi dicatat.");
       router.push("/redesain/sesi");
       router.refresh();
     } catch (err) {
-      const galat = petakanKonkurensi(err);
+      const galat = petakanKonkurensi(err, !awal);
       setError(pesanGagal(galat));
       notifyGagal(galat);
     } finally {

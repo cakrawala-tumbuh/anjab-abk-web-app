@@ -5,12 +5,16 @@ import { useRouter } from "next/navigation";
 import { withServerAuth } from "@/lib/api/client";
 import { apiErrorDari } from "@/lib/api/errors";
 import { notifyGagal, notifySukses } from "@/lib/notify";
+import { headerIdempotencyKey, petakanKonkurensi } from "@/lib/konkurensi";
+import { useIdempotencyKey } from "@/lib/use-idempotency-key";
 
 /**
  * Tombol "Buka untuk konfirmasi sekolah" / "Tutup" sebuah masalah.
  *
  * Memanggil `POST .../masalah/{id}/status-konfirmasi` dengan `{dibuka: !dibuka}` lalu
- * `router.refresh()`. Kegagalan lewat `notifyGagal`, tidak ada toast sukses.
+ * `router.refresh()`. Kegagalan lewat `notifyGagal`, tidak ada toast sukses. POST membawa
+ * `Idempotency-Key` per upaya (key diganti hanya setelah sukses); 409 `conflict` dipetakan ke
+ * pesan "masih diproses".
  *
  * @param props.id - ID masalah.
  * @param props.dibuka - Status sekarang (`dibuka_untuk_konfirmasi`).
@@ -27,21 +31,27 @@ export function ToggleKonfirmasi({
 }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const idem = useIdempotencyKey();
 
   async function ganti() {
     setLoading(true);
     try {
       const res = await withServerAuth(accessToken).POST(
         "/api/v1/redesain/masalah/{masalah_id}/status-konfirmasi",
-        { params: { path: { masalah_id: id } }, body: { dibuka: !dibuka } },
+        {
+          params: { path: { masalah_id: id } },
+          body: { dibuka: !dibuka },
+          headers: headerIdempotencyKey(idem.key),
+        },
       );
       if (!res.data) throw apiErrorDari(res);
+      idem.perbarui();
       notifySukses(
         dibuka ? "Masalah ditutup untuk konfirmasi." : "Masalah dibuka untuk konfirmasi.",
       );
       router.refresh();
-    } catch (err) {
-      notifyGagal(err);
+    } catch (galatMentah) {
+      notifyGagal(petakanKonkurensi(galatMentah, true));
     } finally {
       setLoading(false);
     }

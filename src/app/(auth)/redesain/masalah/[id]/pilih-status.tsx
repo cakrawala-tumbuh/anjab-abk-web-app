@@ -6,6 +6,8 @@ import { withServerAuth } from "@/lib/api/client";
 import { apiErrorDari } from "@/lib/api/errors";
 import type { PenilaianStatus } from "@/lib/api/schema";
 import { notifyGagal, notifySukses } from "@/lib/notify";
+import { headerIdempotencyKey, petakanKonkurensi } from "@/lib/konkurensi";
+import { useIdempotencyKey } from "@/lib/use-idempotency-key";
 import { OPSI_STATUS_PILIHAN } from "@/lib/redesain-keputusan";
 
 /** Properti {@link PilihStatus}. */
@@ -20,12 +22,14 @@ export interface PilihStatusProps {
  * Pilihan status penilaian (4 status; `Telah diputuskan` hanya lewat aksi putuskan).
  *
  * Memilih status → `POST /api/v1/redesain/penilaian/{id}/status`, lalu `router.refresh()`.
+ * POST membawa `Idempotency-Key` per upaya (key diganti hanya setelah sukses); 409 `conflict` dipetakan ke pesan "masih diproses".
  *
  * @param props - Lihat {@link PilihStatusProps}.
  */
 export function PilihStatus({ penilaianId, statusSaatIni, accessToken }: PilihStatusProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const idem = useIdempotencyKey();
   const dalamPilihan = (OPSI_STATUS_PILIHAN as readonly string[]).includes(statusSaatIni);
 
   async function ubah(baru: string) {
@@ -37,13 +41,15 @@ export function PilihStatus({ penilaianId, statusSaatIni, accessToken }: PilihSt
         {
           params: { path: { penilaian_id: penilaianId } },
           body: { status_penilaian: baru as PenilaianStatus["status_penilaian"] },
+          headers: headerIdempotencyKey(idem.key),
         },
       );
       if (!res.data) throw apiErrorDari(res);
+      idem.perbarui();
       notifySukses("Status penilaian diubah.");
       router.refresh();
-    } catch (err) {
-      notifyGagal(err);
+    } catch (galatMentah) {
+      notifyGagal(petakanKonkurensi(galatMentah, true));
     } finally {
       setLoading(false);
     }

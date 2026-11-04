@@ -7,7 +7,8 @@ import { withServerAuth } from "@/lib/api/client";
 import { apiErrorDari } from "@/lib/api/errors";
 import type { LangkahCreate, LangkahRead } from "@/lib/api/schema";
 import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
-import { bacaEtag, headerIfMatch, petakanKonkurensi } from "@/lib/konkurensi";
+import { bacaEtag, headerIdempotencyKey, headerIfMatch, petakanKonkurensi } from "@/lib/konkurensi";
+import { useIdempotencyKey } from "@/lib/use-idempotency-key";
 import { PemuatRekaman } from "@/lib/use-rekaman-ber-etag";
 import { STATUS_LANGKAH } from "@/lib/redesain-alur";
 
@@ -36,6 +37,10 @@ interface FormLangkahIsiProps extends FormLangkahProps {
  * `pemeriksa_pemutus` diisi jabatan/peran (bukan nama orang) — diingatkan oleh
  * `PeringatanPrivasi`. `kode` read-only (tidak ditampilkan sebagai input). Sukses →
  * `router.refresh()`.
+ *
+ * POST (mode tambah) membawa `Idempotency-Key` per upaya; key diganti hanya setelah respons
+ * sukses sehingga kirim ulang setelah gagal memakai key yang sama. 409 `conflict` dipetakan ke
+ * pesan "masih diproses"; 409 guard lain tetap pesan aslinya.
  *
  * @param props - Lihat {@link FormLangkahProps}.
  */
@@ -78,6 +83,7 @@ function FormLangkahIsi({
   );
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const idem = useIdempotencyKey();
 
   async function kirim(e: React.FormEvent) {
     e.preventDefault();
@@ -109,13 +115,15 @@ function FormLangkahIsi({
         const res = await client.POST("/api/v1/redesain/proses/{proses_id}/langkah", {
           params: { path: { proses_id: prosesId } },
           body: isi,
+          headers: headerIdempotencyKey(idem.key),
         });
         if (!res.data) throw apiErrorDari(res);
+        idem.perbarui();
         notifySukses(`Langkah ${res.data.kode} ditambahkan.`);
       }
       router.refresh();
     } catch (err) {
-      const galat = petakanKonkurensi(err);
+      const galat = petakanKonkurensi(err, !awal);
       setError(pesanGagal(galat));
       notifyGagal(galat);
     } finally {

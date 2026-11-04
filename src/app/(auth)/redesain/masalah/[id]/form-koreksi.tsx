@@ -6,6 +6,8 @@ import { PeringatanPrivasi } from "@/components/peringatan-privasi";
 import { withServerAuth } from "@/lib/api/client";
 import { apiErrorDari } from "@/lib/api/errors";
 import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
+import { headerIdempotencyKey, petakanKonkurensi } from "@/lib/konkurensi";
+import { useIdempotencyKey } from "@/lib/use-idempotency-key";
 
 /** Properti {@link FormKoreksi}. */
 export interface FormKoreksiProps {
@@ -19,6 +21,7 @@ export interface FormKoreksiProps {
  *
  * Mengirim `POST /langkah/{id}/koreksi` dengan `{isi}` saja (tanpa `konfirmasi_id`,
  * sehingga berasal "Tim"). Koreksi bersifat append-only; tidak ada ubah/hapus.
+ * POST membawa `Idempotency-Key` per upaya (key diganti hanya setelah sukses); 409 `conflict` dipetakan ke pesan "masih diproses".
  *
  * @param props - Lihat {@link FormKoreksiProps}.
  */
@@ -27,6 +30,7 @@ export function FormKoreksi({ langkahId, accessToken }: FormKoreksiProps) {
   const [isi, setIsi] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const idem = useIdempotencyKey();
 
   async function kirim(e: React.FormEvent) {
     e.preventDefault();
@@ -35,13 +39,19 @@ export function FormKoreksi({ langkahId, accessToken }: FormKoreksiProps) {
     try {
       const res = await withServerAuth(accessToken).POST(
         "/api/v1/redesain/langkah/{langkah_id}/koreksi",
-        { params: { path: { langkah_id: langkahId } }, body: { isi: isi.trim() } },
+        {
+          params: { path: { langkah_id: langkahId } },
+          body: { isi: isi.trim() },
+          headers: headerIdempotencyKey(idem.key),
+        },
       );
       if (!res.data) throw apiErrorDari(res);
+      idem.perbarui();
       notifySukses("Koreksi ditambahkan.");
       setIsi("");
       router.refresh();
-    } catch (err) {
+    } catch (galatMentah) {
+      const err = petakanKonkurensi(galatMentah, true);
       setError(pesanGagal(err));
       notifyGagal(err);
     } finally {

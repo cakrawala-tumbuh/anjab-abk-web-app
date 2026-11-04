@@ -6,7 +6,8 @@ import { withServerAuth } from "@/lib/api/client";
 import { apiErrorDari } from "@/lib/api/errors";
 import type { ProsesRead, SekolahRead } from "@/lib/api/schema";
 import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
-import { bacaEtag, headerIfMatch, petakanKonkurensi } from "@/lib/konkurensi";
+import { bacaEtag, headerIdempotencyKey, headerIfMatch, petakanKonkurensi } from "@/lib/konkurensi";
+import { useIdempotencyKey } from "@/lib/use-idempotency-key";
 import { PemuatRekaman } from "@/lib/use-rekaman-ber-etag";
 
 const INPUT =
@@ -40,6 +41,10 @@ interface FormProsesIsiProps extends FormProsesProps {
  * `nama_proses`). Bila masalah bersekolah, `sekolah_id` terkunci ke sekolah itu dan tidak
  * dapat diganti; 422 selisih dari backend tetap tampil sebagai toast gagal. Ubah:
  * `PATCH /proses/{id}` hanya `periode` dan `nama_proses`. Sukses → `router.refresh()`.
+ *
+ * POST (mode tambah) membawa `Idempotency-Key` per upaya; key diganti hanya setelah respons
+ * sukses sehingga kirim ulang setelah gagal memakai key yang sama. 409 `conflict` dipetakan ke
+ * pesan "masih diproses"; 409 guard lain tetap pesan aslinya.
  *
  * @param props - Lihat {@link FormProsesProps}.
  */
@@ -75,6 +80,7 @@ function FormProsesIsi({
   const [nama, setNama] = useState(awal?.nama_proses ?? "");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const idem = useIdempotencyKey();
 
   async function kirim(e: React.FormEvent) {
     e.preventDefault();
@@ -99,14 +105,16 @@ function FormProsesIsi({
             periode: periode.trim(),
             nama_proses: nama.trim(),
           },
+          headers: headerIdempotencyKey(idem.key),
         });
         if (!res.data) throw apiErrorDari(res);
+        idem.perbarui();
         notifySukses(`Proses ${res.data.kode} ditambahkan.`);
         setNama("");
       }
       router.refresh();
     } catch (err) {
-      const galat = petakanKonkurensi(err);
+      const galat = petakanKonkurensi(err, !awal);
       setError(pesanGagal(galat));
       notifyGagal(galat);
     } finally {
