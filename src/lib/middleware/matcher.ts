@@ -15,4 +15,4 @@
  * saat cek installability) sehingga tidak boleh ikut di-redirect ke /login.
  */
 export const PUBLIC_ASSET_MATCHER =
-  "/((?!api/auth|_next/static|_next/image|favicon.ico|favicon.svg|icon.svg|manifest.webmanifest|sw.js|login|$).*)";
+  "/((?!api/auth|_next/static|_next/image|favicon.ico|favicon.svg|icon.svg|manifest.webmanifest|sw.js|api/version$|login|$).*)";

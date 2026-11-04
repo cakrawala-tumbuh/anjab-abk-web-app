@@ -21,6 +21,8 @@ jobs:
     uses: andhit-r/release-docker-image-ghcr/.github/workflows/ghcr.yml@v2
     with:
       dockerfile: Dockerfile
+      build_args: |
+        GIT_COMMIT=${{ github.sha }}
       # NEXT_PUBLIC_* tidak perlu di-bake saat build — docker-entrypoint.sh
       # mengganti placeholder __NEXT_PUBLIC_API_BASE_URL__ di runtime.
     secrets: inherit

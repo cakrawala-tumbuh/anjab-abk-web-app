@@ -4,7 +4,7 @@
  * Pengguna yang belum login diarahkan ke /login (yang kemudian auto-redirect
  * ke Authentik via next-auth/react signIn). Route yang dikecualikan: API auth
  * callbacks, aset statis, halaman login, root / (yang redirect sendiri), dan
- * aset publik PWA (manifest, service worker, ikon) — aset-aset ini di-fetch
+ * aset publik PWA (manifest, service worker, ikon), dan endpoint publik `GET /api/version` — aset-aset ini di-fetch
  * browser di luar konteks sesi (mis. saat cek installability), sehingga tidak
  * boleh ikut di-redirect ke /login.
  */
@@ -21,6 +21,6 @@ export { auth as default } from "@/lib/auth/auth";
 // juga string di sana.
 export const config = {
   matcher: [
-    "/((?!api/auth|_next/static|_next/image|favicon.ico|favicon.svg|icon.svg|manifest.webmanifest|sw.js|login|$).*)",
+    "/((?!api/auth|_next/static|_next/image|favicon.ico|favicon.svg|icon.svg|manifest.webmanifest|sw.js|api/version$|login|$).*)",
   ],
 };

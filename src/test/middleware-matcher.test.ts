@@ -15,6 +15,7 @@ describe("PUBLIC_ASSET_MATCHER — aset publik LOLOS dari middleware auth", () =
     "/login",
     "/",
     "/api/auth/session",
+    "/api/version",
     "/_next/static/chunk.js",
     "/_next/image?url=x",
   ])("%s TIDAK cocok matcher (middleware tidak menjalankan proteksi login)", (path) => {
@@ -23,10 +24,17 @@ describe("PUBLIC_ASSET_MATCHER — aset publik LOLOS dari middleware auth", () =
 });
 
 describe("PUBLIC_ASSET_MATCHER — route aplikasi TETAP terlindungi", () => {
-  it.each(["/dashboard", "/task-inventory", "/kuesioner", "/dcs", "/wcp", "/opm", "/partisipan"])(
-    "%s COCOK matcher (middleware tetap memproteksi login)",
-    (path) => {
-      expect(matcherRe.test(path)).toBe(true);
-    },
-  );
+  it.each([
+    "/dashboard",
+    "/task-inventory",
+    "/kuesioner",
+    "/dcs",
+    "/wcp",
+    "/opm",
+    "/partisipan",
+    "/api/redesain/ekspor",
+    "/api/versions",
+  ])("%s COCOK matcher (middleware tetap memproteksi login)", (path) => {
+    expect(matcherRe.test(path)).toBe(true);
+  });
 });
