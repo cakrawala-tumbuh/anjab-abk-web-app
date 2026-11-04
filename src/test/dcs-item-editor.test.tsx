@@ -1,7 +1,7 @@
 import { render, screen, fireEvent, act, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { toast } from "sonner";
-import type { DcsItemRead } from "@/lib/api/schema";
+import type { DcsItemBerEtagRead } from "@/lib/api/schema";
 
 // ── Mock router & API client ────────────────────────────────────────────────
 const refresh = vi.fn();
@@ -17,7 +17,7 @@ vi.mock("@/lib/api/client", () => ({
 import { DcsItemEditor } from "@/app/(auth)/master-data/dcs/[kode]/dcs-item-editor";
 
 // ── Fixtures ────────────────────────────────────────────────────────────────
-function item(itemId: string, pernyataan: string, urutan: number): DcsItemRead {
+function item(itemId: string, pernyataan: string, urutan: number): DcsItemBerEtagRead {
   return {
     id: `ditm_${itemId}`,
     item_id: itemId,
@@ -26,7 +26,8 @@ function item(itemId: string, pernyataan: string, urutan: number): DcsItemRead {
     pernyataan,
     arah: "F",
     urutan,
-  } as DcsItemRead;
+    etag: `"etag-${itemId}"`,
+  } as DcsItemBerEtagRead;
 }
 
 const items = [item("D1a", "Pernyataan pertama.", 1), item("D1b", "Pernyataan kedua.", 2)];
@@ -152,7 +153,7 @@ describe("DcsItemEditor — lencana status paket", () => {
       { ...item("A1", "satu", 1), status_paket: "SAMA", kembar_dengan: null },
       { ...item("C8a", "dua", 2), status_paket: "REDAKSI_BEDA", kembar_dengan: "WCP:WP1a" },
       { ...item("A3", "tiga", 3), status_paket: "TIDAK_ADA_DI_PAKET", kembar_dengan: null },
-    ] as DcsItemRead[];
+    ] as DcsItemBerEtagRead[];
     render(<DcsItemEditor items={daftar} accessToken="tok" />);
 
     const rows = screen.getAllByRole("row").slice(1);

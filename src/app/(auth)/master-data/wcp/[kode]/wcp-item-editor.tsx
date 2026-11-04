@@ -8,16 +8,11 @@ import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
 import { LencanaItemPaket } from "@/components/lencana-item-paket";
 import { petakanGuard409 } from "@/lib/pesan-guard-409";
 import { bacaEtag, headerIfMatch, petakanKonkurensi } from "@/lib/konkurensi";
-import type { WcpItemRead, WcpReverseType } from "@/lib/api/schema";
+import type { WcpItemBerEtagRead, WcpReverseType } from "@/lib/api/schema";
 
 interface Props {
-  items: WcpItemRead[];
+  items: WcpItemBerEtagRead[];
   accessToken: string | undefined;
-  /**
-   * ETag per item (kunci `item_id`), dibaca Server Component dari `GET .../items/{item_id}`.
-   * Dikirim sebagai `If-Match` pada `PATCH`; item tanpa ETag disimpan tanpa kunci optimistik.
-   */
-  etags?: Record<string, string | null>;
 }
 
 const REVERSE_LABEL: Record<WcpReverseType, string> = {
@@ -27,11 +22,30 @@ const REVERSE_LABEL: Record<WcpReverseType, string> = {
   R_STAR: "R_STAR — reverse khusus",
 };
 
-export function WcpItemEditor({ items, accessToken, etags = {} }: Props) {
+/**
+ * Tabel item yang dapat disunting. ETag tiap item dibaca dari `item.etag` pada respons detail
+ * (tanpa GET per item) dan dikirim sebagai `If-Match` pada `PATCH`; setelah simpan, ETag dari
+ * header respons `PATCH` dipakai untuk simpanan berikutnya sampai data segar tiba dari server.
+ *
+ * @param props - `items` (beserta `etag`) dan `accessToken` sesi.
+ * @returns Tabel dengan baris tampil/ubah.
+ */
+export function WcpItemEditor({ items, accessToken }: Props) {
   const router = useRouter();
   const [editingId, setEditingId] = useState<string | null>(null);
+  // ETag dari header respons PATCH, per item. `dari` = ETag prop yang digantikan, sehingga
+  // penggantian hanya berlaku selama prop belum disegarkan server (tidak pernah menutupi data lebih baru).
+  const [etagBaru, setEtagBaru] = useState<Record<string, { dari: string; etag: string }>>({});
 
-  function handleSaved() {
+  function etagUntuk(item: { item_id: string; etag: string }): string {
+    const baru = etagBaru[item.item_id];
+    return baru && baru.dari === item.etag ? baru.etag : item.etag;
+  }
+
+  function handleSaved(item: { item_id: string; etag: string }, etag: string | null) {
+    if (etag) {
+      setEtagBaru((prev) => ({ ...prev, [item.item_id]: { dari: item.etag, etag } }));
+    }
     setEditingId(null);
     router.refresh();
   }
@@ -57,9 +71,9 @@ export function WcpItemEditor({ items, accessToken, etags = {} }: Props) {
                 key={item.item_id}
                 item={item}
                 accessToken={accessToken}
-                etag={etags[item.item_id] ?? null}
+                etag={etagUntuk(item)}
                 onCancel={() => setEditingId(null)}
-                onSaved={handleSaved}
+                onSaved={(etag) => handleSaved(item, etag)}
               />
             ) : (
               <tr key={item.item_id} className="align-top hover:bg-gray-50">
@@ -96,11 +110,11 @@ export function WcpItemEditor({ items, accessToken, etags = {} }: Props) {
 }
 
 interface RowProps {
-  item: WcpItemRead;
+  item: WcpItemBerEtagRead;
   accessToken: string | undefined;
   etag: string | null;
   onCancel: () => void;
-  onSaved: () => void;
+  onSaved: (etagBaru: string | null) => void;
 }
 
 function WcpItemEditRow({ item, accessToken, etag, onCancel, onSaved }: RowProps) {
@@ -128,9 +142,9 @@ function WcpItemEditRow({ item, accessToken, etag, onCancel, onSaved }: RowProps
       });
       const requestId = response.headers.get("x-request-id");
       if (apiError || !data) throw toApiError(apiError, requestId, response.status);
-      bacaEtag(response); // ETag baru dipasok ulang oleh Server Component lewat router.refresh()
+      const etagBaru = bacaEtag(response);
       notifySukses("Item berhasil disimpan.");
-      onSaved();
+      onSaved(etagBaru);
     } catch (err) {
       const galat = petakanKonkurensi(petakanGuard409(err));
       setError(pesanGagal(galat));

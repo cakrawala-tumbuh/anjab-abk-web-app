@@ -1,7 +1,7 @@
 import { render, screen, fireEvent, act, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { toast } from "sonner";
-import type { WcpItemRead } from "@/lib/api/schema";
+import type { WcpItemBerEtagRead } from "@/lib/api/schema";
 
 // ── Mock router & API client ────────────────────────────────────────────────
 const refresh = vi.fn();
@@ -17,7 +17,7 @@ vi.mock("@/lib/api/client", () => ({
 import { WcpItemEditor } from "@/app/(auth)/master-data/wcp/[kode]/wcp-item-editor";
 
 // ── Fixtures ────────────────────────────────────────────────────────────────
-function item(itemId: string, pernyataan: string, urutan: number): WcpItemRead {
+function item(itemId: string, pernyataan: string, urutan: number): WcpItemBerEtagRead {
   return {
     id: `witm_${itemId}`,
     item_id: itemId,
@@ -27,7 +27,8 @@ function item(itemId: string, pernyataan: string, urutan: number): WcpItemRead {
     pernyataan,
     reverse_type: "NONE",
     urutan,
-  } as WcpItemRead;
+    etag: `"etag-${itemId}"`,
+  } as WcpItemBerEtagRead;
 }
 
 const items = [item("SC1a", "Pernyataan pertama.", 1), item("SC1b", "Pernyataan kedua.", 2)];
@@ -152,7 +153,7 @@ describe("WcpItemEditor — lencana status paket", () => {
       { ...item("A1", "satu", 1), status_paket: "SAMA", kembar_dengan: null },
       { ...item("A2", "dua", 2), status_paket: "REDAKSI_BEDA", kembar_dengan: "DCS:C8a" },
       { ...item("A3", "tiga", 3), status_paket: "TIDAK_ADA_DI_PAKET", kembar_dengan: null },
-    ] as WcpItemRead[];
+    ] as WcpItemBerEtagRead[];
     render(<WcpItemEditor items={daftar} accessToken="tok" />);
 
     const rows = screen.getAllByRole("row").slice(1);

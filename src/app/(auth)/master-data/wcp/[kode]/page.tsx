@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { auth, isAdmin } from "@/lib/auth/auth";
 import { withServerAuth } from "@/lib/api/client";
 import { apiErrorDari } from "@/lib/api/errors";
-import type { WcpDimensiWithItemsRead } from "@/lib/api/schema";
+import type { WcpDimensiWithItemsEtagRead } from "@/lib/api/schema";
 import { WcpItemEditor } from "./wcp-item-editor";
 
 interface PageProps {
@@ -15,7 +15,7 @@ export const metadata = { title: "Item Dimensi WCP — Master Data" };
 async function fetchDimensi(
   kode: string,
   accessToken: string | undefined,
-): Promise<WcpDimensiWithItemsRead> {
+): Promise<WcpDimensiWithItemsEtagRead> {
   const client = withServerAuth(accessToken);
   const res = await client.GET("/api/v1/wcp/dimensi/{kode}", {
     params: { path: { kode } },
@@ -24,38 +24,12 @@ async function fetchDimensi(
   return res.data;
 }
 
-/**
- * Ambil ETag tiap item dari `GET /api/v1/wcp/dimensi/items/{item_id}` untuk dipakai sebagai `If-Match` oleh editor.
- *
- * @param items - Item yang ditampilkan editor.
- * @param accessToken - Bearer token sesi.
- * @returns Peta `item_id` → ETag (`null` bila backend tidak mengirim header).
- * @throws ApiError bila salah satu GET gagal (jalur baca tidak boleh menelan kegagalan).
- */
-async function fetchEtagItem(
-  items: { item_id: string }[],
-  accessToken: string | undefined,
-): Promise<Record<string, string | null>> {
-  const client = withServerAuth(accessToken);
-  const hasil = await Promise.all(
-    items.map(async (it) => {
-      const res = await client.GET("/api/v1/wcp/dimensi/items/{item_id}", {
-        params: { path: { item_id: it.item_id } },
-      });
-      if (!res.data) throw apiErrorDari(res);
-      return [it.item_id, res.response.headers.get("etag")] as const;
-    }),
-  );
-  return Object.fromEntries(hasil);
-}
-
 export default async function WcpDimensiDetailPage({ params }: PageProps) {
   const session = await auth();
   if (!isAdmin(session)) notFound();
 
   const { kode } = await params;
   const dimensi = await fetchDimensi(kode, session?.accessToken);
-  const etags = await fetchEtagItem(dimensi.items, session?.accessToken);
 
   return (
     <div className="space-y-4">
@@ -82,7 +56,7 @@ export default async function WcpDimensiDetailPage({ params }: PageProps) {
         </p>
       </div>
 
-      <WcpItemEditor items={dimensi.items} accessToken={session?.accessToken} etags={etags} />
+      <WcpItemEditor items={dimensi.items} accessToken={session?.accessToken} />
     </div>
   );
 }

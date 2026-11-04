@@ -55,6 +55,9 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ### Diubah
 
+- Halaman master item WCP dan DCS tidak lagi memanggil backend satu kali per item hanya untuk ETag
+  (6 panggilan untuk WCP, 14 untuk DCS); ETag dibaca dari `items[].etag` pada respons detail.
+  Tampilan tidak berubah (issue #90).
 - Daftar dan detail responden WCP, DCS, OPM, dan Task Inventory (serta panel review usulan Tahap 2)
   kini menampilkan **kode orang** (`O-nnnn`), bukan nama responden; responden eksternal TI tampil
   "Responden eksternal" + 8 karakter awal ID. Kolom "Nama" menjadi "Kode Orang" (issue #81).

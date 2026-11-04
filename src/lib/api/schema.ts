@@ -45,7 +45,15 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Versi */
+        /**
+         * Versi
+         * @description Kembalikan versi aplikasi dan commit build runtime.
+         *
+         *     Endpoint publik, tidak menyentuh basis data.
+         *
+         *     Returns:
+         *         VersiRead: ``commit`` bernilai ``unknown`` bila ``APP_BUILD_COMMIT`` tak diset.
+         */
         get: operations["version_api_v1_version_get"];
         put?: never;
         post?: never;
@@ -607,7 +615,13 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Ambil dimensi WCP beserta 6 item-nya */
+        /**
+         * Ambil dimensi WCP beserta 6 item-nya
+         * @description Ambil dimensi beserta item-nya; tiap item membawa `etag` per item.
+         *
+         *     `etag` dihitung dengan `compute_etag` atas `WcpItemRead` asal, sehingga identik
+         *     dengan header `ETag` `GET /items/{item_id}` dan langsung dapat dipakai sebagai `If-Match`.
+         */
         get: operations["wcp_dimensi_get"];
         put?: never;
         post?: never;
@@ -1185,7 +1199,13 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Ambil sub-skala DCS beserta 14 item-nya */
+        /**
+         * Ambil sub-skala DCS beserta 14 item-nya
+         * @description Ambil sub-skala beserta item-nya; tiap item membawa `etag` per item.
+         *
+         *     `etag` dihitung dengan `compute_etag` atas `DcsItemRead` asal, sehingga identik
+         *     dengan header `ETag` `GET /items/{item_id}` dan langsung dapat dipakai sebagai `If-Match`.
+         */
         get: operations["dcs_subskala_get"];
         put?: never;
         post?: never;
@@ -4484,6 +4504,74 @@ export interface components {
             catatan?: string | null;
         };
         /**
+         * DcsItemBerEtagRead
+         * @description Item DCS yang membawa ETag-nya sendiri di dalam badan respons detail sub-skala.
+         */
+        DcsItemBerEtagRead: {
+            /**
+             * Id
+             * @description ID item.
+             * @example ditm_D1a
+             */
+            id: string;
+            /**
+             * Item Id
+             * @description Kode item orisinal.
+             * @example D1a
+             */
+            item_id: string;
+            /**
+             * Subskala Kode
+             * @description Kode sub-skala.
+             * @example DEMAND
+             */
+            subskala_kode: string;
+            /**
+             * Sub Dimensi
+             * @description Sub-dimensi item.
+             * @example Volume
+             */
+            sub_dimensi: string;
+            /**
+             * Pernyataan
+             * @description Teks pernyataan.
+             * @example Saya harus menyelesaikan banyak tugas dalam waktu yang sangat terbatas.
+             */
+            pernyataan: string;
+            /**
+             * Arah
+             * @description Arah item: F (Favorable) atau UF (Unfavorable, reverse-scored).
+             * @example UF
+             * @enum {string}
+             */
+            arah: "F" | "UF";
+            /**
+             * Urutan
+             * @description Urutan global item (1–42).
+             * @example 1
+             */
+            urutan: number;
+            /**
+             * Status Paket
+             * @description Status redaksi item terhadap CSV paket R1.1 (normalisasi: trim + rapatkan spasi; tanda baca dan huruf besar dihitung beda). Hanya penanda: teks item tidak diubah.
+             * @example SAMA
+             * @enum {string}
+             */
+            status_paket: "SAMA" | "REDAKSI_BEDA" | "TIDAK_ADA_DI_PAKET";
+            /**
+             * Kembar Dengan
+             * @description Item kembar lintas instrumen menurut paket R1.1, berbentuk `"<INSTRUMEN>:<item_id>"`; null bila tidak punya kembar.
+             * @example WCP:WP1a
+             */
+            kembar_dengan?: string | null;
+            /**
+             * Etag
+             * @description ETag item, identik dengan header `ETag` pada `GET .../items/{item_id}` (termasuk tanda kutip ganda); dipakai langsung sebagai `If-Match` PATCH/DELETE item.
+             * @example "0123456789abcdef0123456789abcdef"
+             */
+            etag: string;
+        };
+        /**
          * DcsItemRead
          * @description Representasi satu item pernyataan DCS.
          */
@@ -4764,10 +4852,10 @@ export interface components {
             urutan: number;
         };
         /**
-         * DcsSubSkalaWithItemsRead
-         * @description Representasi sub-skala DCS beserta 14 item-nya.
+         * DcsSubSkalaWithItemsEtagRead
+         * @description Sub-skala DCS beserta item-itemnya, tiap item membawa `etag`.
          */
-        DcsSubSkalaWithItemsRead: {
+        DcsSubSkalaWithItemsEtagRead: {
             /**
              * Id
              * @description ID sub-skala.
@@ -4794,9 +4882,9 @@ export interface components {
             urutan: number;
             /**
              * Items
-             * @description Daftar 14 item sub-skala ini.
+             * @description Daftar 14 item sub-skala ini, masing-masing ber-`etag`.
              */
-            items: components["schemas"]["DcsItemRead"][];
+            items: components["schemas"]["DcsItemBerEtagRead"][];
         };
         /**
          * DetilTugasCreate
@@ -11205,6 +11293,30 @@ export interface components {
             pemeriksa_pemutus?: string | null;
         };
         /**
+         * VersiRead
+         * @description Respons ``GET /api/v1/version``: versi aplikasi plus identitas build runtime.
+         */
+        VersiRead: {
+            /**
+             * Status
+             * @description Status ringkas.
+             * @example ok
+             */
+            status: string;
+            /**
+             * Version
+             * @description Versi aplikasi.
+             * @example 0.1.0
+             */
+            version: string;
+            /**
+             * Commit
+             * @description SHA commit build image; 'unknown' bila dibangun di luar release.yml.
+             * @example 0f16ded0000000000000000000000000000000a1
+             */
+            commit: string;
+        };
+        /**
          * WcpDimensiRead
          * @description Representasi dimensi WCP tanpa item.
          */
@@ -11240,10 +11352,10 @@ export interface components {
             is_risk: boolean;
         };
         /**
-         * WcpDimensiWithItemsRead
-         * @description Representasi dimensi WCP beserta 6 item-nya.
+         * WcpDimensiWithItemsEtagRead
+         * @description Dimensi WCP beserta item-itemnya, tiap item membawa `etag`.
          */
-        WcpDimensiWithItemsRead: {
+        WcpDimensiWithItemsEtagRead: {
             /**
              * Id
              * @description ID dimensi.
@@ -11275,9 +11387,9 @@ export interface components {
             is_risk: boolean;
             /**
              * Items
-             * @description Daftar 6 item dimensi ini.
+             * @description Daftar 6 item dimensi ini, masing-masing ber-`etag`.
              */
-            items: components["schemas"]["WcpItemRead"][];
+            items: components["schemas"]["WcpItemBerEtagRead"][];
         };
         /**
          * WcpHasilDimensiRead
@@ -11504,6 +11616,79 @@ export interface components {
              * @description Catatan baru.
              */
             catatan?: string | null;
+        };
+        /**
+         * WcpItemBerEtagRead
+         * @description Item WCP yang membawa ETag-nya sendiri di dalam badan respons detail dimensi.
+         */
+        WcpItemBerEtagRead: {
+            /**
+             * Id
+             * @description ID item.
+             * @example witm_SC1a
+             */
+            id: string;
+            /**
+             * Item Id
+             * @description Kode item orisinal.
+             * @example SC1a
+             */
+            item_id: string;
+            /**
+             * Dimensi Kode
+             * @description Kode dimensi.
+             * @example SC
+             */
+            dimensi_kode: string;
+            /**
+             * Indikator Kode
+             * @description Kode indikator (1/2/3).
+             * @example 1
+             */
+            indikator_kode: string;
+            /**
+             * Indikator Label
+             * @description Label indikator.
+             * @example Frekuensi perubahan kebijakan
+             */
+            indikator_label: string;
+            /**
+             * Pernyataan
+             * @description Teks pernyataan.
+             * @example Kebijakan dan prosedur kerja di unit saya berubah terlalu sering.
+             */
+            pernyataan: string;
+            /**
+             * Reverse Type
+             * @description Tipe scoring: NONE | R | UF | R_STAR.
+             * @example R
+             */
+            reverse_type: string;
+            /**
+             * Urutan
+             * @description Urutan global item (1–72).
+             * @example 1
+             */
+            urutan: number;
+            /**
+             * Status Paket
+             * @description Status redaksi item terhadap CSV paket R1.1 (normalisasi: trim + rapatkan spasi; tanda baca dan huruf besar dihitung beda). Hanya penanda: teks item tidak diubah.
+             * @example SAMA
+             * @enum {string}
+             */
+            status_paket: "SAMA" | "REDAKSI_BEDA" | "TIDAK_ADA_DI_PAKET";
+            /**
+             * Kembar Dengan
+             * @description Item kembar lintas instrumen menurut paket R1.1, berbentuk `"<INSTRUMEN>:<item_id>"`; null bila tidak punya kembar.
+             * @example DCS:C8a
+             */
+            kembar_dengan?: string | null;
+            /**
+             * Etag
+             * @description ETag item, identik dengan header `ETag` pada `GET .../items/{item_id}` (termasuk tanda kutip ganda); dipakai langsung sebagai `If-Match` PATCH/DELETE item.
+             * @example "0123456789abcdef0123456789abcdef"
+             */
+            etag: string;
         };
         /**
          * WcpItemRead
@@ -11833,7 +12018,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Health"];
+                    "application/json": components["schemas"]["VersiRead"];
                 };
             };
         };
@@ -12275,6 +12460,8 @@ export interface operations {
             /** @description Successful Response */
             200: {
                 headers: {
+                    /** @description ETag representasi resource; kirim kembali lewat If-Match. */
+                    ETag?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -12405,6 +12592,8 @@ export interface operations {
             /** @description Successful Response */
             200: {
                 headers: {
+                    /** @description ETag representasi resource; kirim kembali lewat If-Match. */
+                    ETag?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -12659,6 +12848,8 @@ export interface operations {
             /** @description Successful Response */
             200: {
                 headers: {
+                    /** @description ETag representasi resource; kirim kembali lewat If-Match. */
+                    ETag?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -12789,6 +12980,8 @@ export interface operations {
             /** @description Successful Response */
             200: {
                 headers: {
+                    /** @description ETag representasi resource; kirim kembali lewat If-Match. */
+                    ETag?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -13043,6 +13236,8 @@ export interface operations {
             /** @description Successful Response */
             200: {
                 headers: {
+                    /** @description ETag representasi resource; kirim kembali lewat If-Match. */
+                    ETag?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -13173,6 +13368,8 @@ export interface operations {
             /** @description Successful Response */
             200: {
                 headers: {
+                    /** @description ETag representasi resource; kirim kembali lewat If-Match. */
+                    ETag?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -13477,6 +13674,8 @@ export interface operations {
             /** @description Successful Response */
             200: {
                 headers: {
+                    /** @description ETag representasi resource; kirim kembali lewat If-Match. */
+                    ETag?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -13607,6 +13806,8 @@ export interface operations {
             /** @description Successful Response */
             200: {
                 headers: {
+                    /** @description ETag representasi resource; kirim kembali lewat If-Match. */
+                    ETag?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -13861,6 +14062,8 @@ export interface operations {
             /** @description Successful Response */
             200: {
                 headers: {
+                    /** @description ETag representasi resource; kirim kembali lewat If-Match. */
+                    ETag?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -13991,6 +14194,8 @@ export interface operations {
             /** @description Successful Response */
             200: {
                 headers: {
+                    /** @description ETag representasi resource; kirim kembali lewat If-Match. */
+                    ETag?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -14245,6 +14450,8 @@ export interface operations {
             /** @description Successful Response */
             200: {
                 headers: {
+                    /** @description ETag representasi resource; kirim kembali lewat If-Match. */
+                    ETag?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -14375,6 +14582,8 @@ export interface operations {
             /** @description Successful Response */
             200: {
                 headers: {
+                    /** @description ETag representasi resource; kirim kembali lewat If-Match. */
+                    ETag?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -14750,7 +14959,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["WcpDimensiWithItemsRead"];
+                    "application/json": components["schemas"]["WcpDimensiWithItemsEtagRead"];
                 };
             };
             /** @description Token tidak ada/invalid. */
@@ -14889,6 +15098,8 @@ export interface operations {
             /** @description Successful Response */
             200: {
                 headers: {
+                    /** @description ETag representasi resource; kirim kembali lewat If-Match. */
+                    ETag?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -15051,6 +15262,8 @@ export interface operations {
             /** @description Successful Response */
             200: {
                 headers: {
+                    /** @description ETag representasi resource; kirim kembali lewat If-Match. */
+                    ETag?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -15137,6 +15350,8 @@ export interface operations {
             /** @description Successful Response */
             200: {
                 headers: {
+                    /** @description ETag representasi resource; kirim kembali lewat If-Match. */
+                    ETag?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -15191,6 +15406,8 @@ export interface operations {
             /** @description Successful Response */
             200: {
                 headers: {
+                    /** @description ETag representasi resource; kirim kembali lewat If-Match. */
+                    ETag?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -15572,6 +15789,8 @@ export interface operations {
             /** @description Successful Response */
             200: {
                 headers: {
+                    /** @description ETag representasi resource; kirim kembali lewat If-Match. */
+                    ETag?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -15730,6 +15949,8 @@ export interface operations {
             /** @description Successful Response */
             200: {
                 headers: {
+                    /** @description ETag representasi resource; kirim kembali lewat If-Match. */
+                    ETag?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -15805,6 +16026,8 @@ export interface operations {
             /** @description Successful Response */
             200: {
                 headers: {
+                    /** @description ETag representasi resource; kirim kembali lewat If-Match. */
+                    ETag?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -16412,6 +16635,8 @@ export interface operations {
             /** @description Successful Response */
             200: {
                 headers: {
+                    /** @description ETag representasi resource; kirim kembali lewat If-Match. */
+                    ETag?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -16577,6 +16802,8 @@ export interface operations {
             /** @description Successful Response */
             200: {
                 headers: {
+                    /** @description ETag representasi resource; kirim kembali lewat If-Match. */
+                    ETag?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -17207,6 +17434,8 @@ export interface operations {
             /** @description Successful Response */
             200: {
                 headers: {
+                    /** @description ETag representasi resource; kirim kembali lewat If-Match. */
+                    ETag?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -17449,6 +17678,8 @@ export interface operations {
             /** @description Successful Response */
             200: {
                 headers: {
+                    /** @description ETag representasi resource; kirim kembali lewat If-Match. */
+                    ETag?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -17524,6 +17755,8 @@ export interface operations {
             /** @description Successful Response */
             200: {
                 headers: {
+                    /** @description ETag representasi resource; kirim kembali lewat If-Match. */
+                    ETag?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -17903,7 +18136,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["DcsSubSkalaWithItemsRead"];
+                    "application/json": components["schemas"]["DcsSubSkalaWithItemsEtagRead"];
                 };
             };
             /** @description Token tidak ada/invalid. */
@@ -18042,6 +18275,8 @@ export interface operations {
             /** @description Successful Response */
             200: {
                 headers: {
+                    /** @description ETag representasi resource; kirim kembali lewat If-Match. */
+                    ETag?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -18204,6 +18439,8 @@ export interface operations {
             /** @description Successful Response */
             200: {
                 headers: {
+                    /** @description ETag representasi resource; kirim kembali lewat If-Match. */
+                    ETag?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -18290,6 +18527,8 @@ export interface operations {
             /** @description Successful Response */
             200: {
                 headers: {
+                    /** @description ETag representasi resource; kirim kembali lewat If-Match. */
+                    ETag?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -18344,6 +18583,8 @@ export interface operations {
             /** @description Successful Response */
             200: {
                 headers: {
+                    /** @description ETag representasi resource; kirim kembali lewat If-Match. */
+                    ETag?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -18725,6 +18966,8 @@ export interface operations {
             /** @description Successful Response */
             200: {
                 headers: {
+                    /** @description ETag representasi resource; kirim kembali lewat If-Match. */
+                    ETag?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -18883,6 +19126,8 @@ export interface operations {
             /** @description Successful Response */
             200: {
                 headers: {
+                    /** @description ETag representasi resource; kirim kembali lewat If-Match. */
+                    ETag?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -18958,6 +19203,8 @@ export interface operations {
             /** @description Successful Response */
             200: {
                 headers: {
+                    /** @description ETag representasi resource; kirim kembali lewat If-Match. */
+                    ETag?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -19813,6 +20060,8 @@ export interface operations {
             /** @description Successful Response */
             200: {
                 headers: {
+                    /** @description ETag representasi resource; kirim kembali lewat If-Match. */
+                    ETag?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -19978,6 +20227,8 @@ export interface operations {
             /** @description Successful Response */
             200: {
                 headers: {
+                    /** @description ETag representasi resource; kirim kembali lewat If-Match. */
+                    ETag?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -20721,6 +20972,8 @@ export interface operations {
             /** @description Successful Response */
             200: {
                 headers: {
+                    /** @description ETag representasi resource; kirim kembali lewat If-Match. */
+                    ETag?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -20963,6 +21216,8 @@ export interface operations {
             /** @description Successful Response */
             200: {
                 headers: {
+                    /** @description ETag representasi resource; kirim kembali lewat If-Match. */
+                    ETag?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -21038,6 +21293,8 @@ export interface operations {
             /** @description Successful Response */
             200: {
                 headers: {
+                    /** @description ETag representasi resource; kirim kembali lewat If-Match. */
+                    ETag?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -21212,6 +21469,8 @@ export interface operations {
             /** @description Successful Response */
             200: {
                 headers: {
+                    /** @description ETag representasi resource; kirim kembali lewat If-Match. */
+                    ETag?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -21287,6 +21546,8 @@ export interface operations {
             /** @description Successful Response */
             200: {
                 headers: {
+                    /** @description ETag representasi resource; kirim kembali lewat If-Match. */
+                    ETag?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -21990,6 +22251,8 @@ export interface operations {
             /** @description Successful Response */
             200: {
                 headers: {
+                    /** @description ETag representasi resource; kirim kembali lewat If-Match. */
+                    ETag?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -23066,6 +23329,8 @@ export interface operations {
             /** @description Successful Response */
             200: {
                 headers: {
+                    /** @description ETag representasi resource; kirim kembali lewat If-Match. */
+                    ETag?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -23196,6 +23461,8 @@ export interface operations {
             /** @description Successful Response */
             200: {
                 headers: {
+                    /** @description ETag representasi resource; kirim kembali lewat If-Match. */
+                    ETag?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -23450,6 +23717,8 @@ export interface operations {
             /** @description Successful Response */
             200: {
                 headers: {
+                    /** @description ETag representasi resource; kirim kembali lewat If-Match. */
+                    ETag?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -23580,6 +23849,8 @@ export interface operations {
             /** @description Successful Response */
             200: {
                 headers: {
+                    /** @description ETag representasi resource; kirim kembali lewat If-Match. */
+                    ETag?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -23834,6 +24105,8 @@ export interface operations {
             /** @description Successful Response */
             200: {
                 headers: {
+                    /** @description ETag representasi resource; kirim kembali lewat If-Match. */
+                    ETag?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -23964,6 +24237,8 @@ export interface operations {
             /** @description Successful Response */
             200: {
                 headers: {
+                    /** @description ETag representasi resource; kirim kembali lewat If-Match. */
+                    ETag?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -24441,6 +24716,8 @@ export interface operations {
             /** @description Successful Response */
             200: {
                 headers: {
+                    /** @description ETag representasi resource; kirim kembali lewat If-Match. */
+                    ETag?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -24515,6 +24792,8 @@ export interface operations {
             /** @description Successful Response */
             200: {
                 headers: {
+                    /** @description ETag representasi resource; kirim kembali lewat If-Match. */
+                    ETag?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -24802,6 +25081,8 @@ export interface operations {
             /** @description Successful Response */
             200: {
                 headers: {
+                    /** @description ETag representasi resource; kirim kembali lewat If-Match. */
+                    ETag?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -24876,6 +25157,8 @@ export interface operations {
             /** @description Successful Response */
             200: {
                 headers: {
+                    /** @description ETag representasi resource; kirim kembali lewat If-Match. */
+                    ETag?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -25163,6 +25446,8 @@ export interface operations {
             /** @description Successful Response */
             200: {
                 headers: {
+                    /** @description ETag representasi resource; kirim kembali lewat If-Match. */
+                    ETag?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -25237,6 +25522,8 @@ export interface operations {
             /** @description Successful Response */
             200: {
                 headers: {
+                    /** @description ETag representasi resource; kirim kembali lewat If-Match. */
+                    ETag?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -25686,6 +25973,8 @@ export interface operations {
             /** @description Successful Response */
             200: {
                 headers: {
+                    /** @description ETag representasi resource; kirim kembali lewat If-Match. */
+                    ETag?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -25760,6 +26049,8 @@ export interface operations {
             /** @description Successful Response */
             200: {
                 headers: {
+                    /** @description ETag representasi resource; kirim kembali lewat If-Match. */
+                    ETag?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -26047,6 +26338,8 @@ export interface operations {
             /** @description Successful Response */
             200: {
                 headers: {
+                    /** @description ETag representasi resource; kirim kembali lewat If-Match. */
+                    ETag?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -26121,6 +26414,8 @@ export interface operations {
             /** @description Successful Response */
             200: {
                 headers: {
+                    /** @description ETag representasi resource; kirim kembali lewat If-Match. */
+                    ETag?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -26408,6 +26703,8 @@ export interface operations {
             /** @description Successful Response */
             200: {
                 headers: {
+                    /** @description ETag representasi resource; kirim kembali lewat If-Match. */
+                    ETag?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -26482,6 +26779,8 @@ export interface operations {
             /** @description Successful Response */
             200: {
                 headers: {
+                    /** @description ETag representasi resource; kirim kembali lewat If-Match. */
+                    ETag?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -26842,6 +27141,8 @@ export interface operations {
             /** @description Successful Response */
             200: {
                 headers: {
+                    /** @description ETag representasi resource; kirim kembali lewat If-Match. */
+                    ETag?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -26916,6 +27217,8 @@ export interface operations {
             /** @description Successful Response */
             200: {
                 headers: {
+                    /** @description ETag representasi resource; kirim kembali lewat If-Match. */
+                    ETag?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -27212,6 +27515,8 @@ export interface operations {
             /** @description Successful Response */
             200: {
                 headers: {
+                    /** @description ETag representasi resource; kirim kembali lewat If-Match. */
+                    ETag?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -27286,6 +27591,8 @@ export interface operations {
             /** @description Successful Response */
             200: {
                 headers: {
+                    /** @description ETag representasi resource; kirim kembali lewat If-Match. */
+                    ETag?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -27637,6 +27944,8 @@ export interface operations {
             /** @description Successful Response */
             200: {
                 headers: {
+                    /** @description ETag representasi resource; kirim kembali lewat If-Match. */
+                    ETag?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -27711,6 +28020,8 @@ export interface operations {
             /** @description Successful Response */
             200: {
                 headers: {
+                    /** @description ETag representasi resource; kirim kembali lewat If-Match. */
+                    ETag?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -28631,6 +28942,8 @@ export interface operations {
             /** @description Successful Response */
             200: {
                 headers: {
+                    /** @description ETag representasi resource; kirim kembali lewat If-Match. */
+                    ETag?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -28705,6 +29018,8 @@ export interface operations {
             /** @description Successful Response */
             200: {
                 headers: {
+                    /** @description ETag representasi resource; kirim kembali lewat If-Match. */
+                    ETag?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -28876,6 +29191,8 @@ export interface operations {
             /** @description Successful Response */
             200: {
                 headers: {
+                    /** @description ETag representasi resource; kirim kembali lewat If-Match. */
+                    ETag?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -28950,6 +29267,8 @@ export interface operations {
             /** @description Successful Response */
             200: {
                 headers: {
+                    /** @description ETag representasi resource; kirim kembali lewat If-Match. */
+                    ETag?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -29604,6 +29923,8 @@ export interface operations {
             /** @description Successful Response */
             200: {
                 headers: {
+                    /** @description ETag representasi resource; kirim kembali lewat If-Match. */
+                    ETag?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -29678,6 +29999,8 @@ export interface operations {
             /** @description Successful Response */
             200: {
                 headers: {
+                    /** @description ETag representasi resource; kirim kembali lewat If-Match. */
+                    ETag?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -30251,14 +30574,14 @@ export type DcsRespondenCreate = components["schemas"]["DcsRespondenCreate"];
 export type DcsInstrumenRead = components["schemas"]["DcsInstrumenRead"];
 export type DcsInstrumenUpdate = components["schemas"]["DcsInstrumenUpdate"];
 export type DcsSubSkalaRead = components["schemas"]["DcsSubSkalaRead"];
-export type DcsSubSkalaWithItemsRead = components["schemas"]["DcsSubSkalaWithItemsRead"];
+export type DcsSubSkalaWithItemsRead = components["schemas"]["DcsSubSkalaWithItemsEtagRead"];
 export type DcsArahItem = components["schemas"]["DcsItemRead"]["arah"];
 export type DcsHasilRead = components["schemas"]["DcsHasilRead"];
 export type DcsHasilRespondenRead = components["schemas"]["DcsHasilRespondenRead"];
 export type DcsHasilSubSkalaRead = components["schemas"]["DcsHasilSubSkalaRead"];
 export type DcsHasilSubSkalaRespondenRead = components["schemas"]["DcsHasilSubSkalaRespondenRead"];
 export type WcpDimensiRead = components["schemas"]["WcpDimensiRead"];
-export type WcpDimensiWithItemsRead = components["schemas"]["WcpDimensiWithItemsRead"];
+export type WcpDimensiWithItemsRead = components["schemas"]["WcpDimensiWithItemsEtagRead"];
 export type WcpItemRead = components["schemas"]["WcpItemRead"];
 export type WcpJawabanRead = components["schemas"]["WcpJawabanRead"];
 export type WcpKuesionerItemRead = components["schemas"]["WcpKuesionerItemRead"];
@@ -30367,3 +30690,7 @@ export type FiturKode = components["schemas"]["FiturKode"];
 export type HasilRawItemRead = components["schemas"]["HasilRawItemRead"];
 export type DcsHasilRawRead = components["schemas"]["DcsHasilRawRead"];
 export type WcpHasilRawRead = components["schemas"]["WcpHasilRawRead"];
+export type WcpItemBerEtagRead = components["schemas"]["WcpItemBerEtagRead"];
+export type DcsItemBerEtagRead = components["schemas"]["DcsItemBerEtagRead"];
+export type WcpDimensiWithItemsEtagRead = components["schemas"]["WcpDimensiWithItemsEtagRead"];
+export type DcsSubSkalaWithItemsEtagRead = components["schemas"]["DcsSubSkalaWithItemsEtagRead"];

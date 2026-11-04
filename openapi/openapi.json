@@ -76,6 +76,7 @@
           "system"
         ],
         "summary": "Versi",
+        "description": "Kembalikan versi aplikasi dan commit build runtime.\n\nEndpoint publik, tidak menyentuh basis data.\n\nReturns:\n    VersiRead: ``commit`` bernilai ``unknown`` bila ``APP_BUILD_COMMIT`` tak diset.",
         "operationId": "version_api_v1_version_get",
         "responses": {
           "200": {
@@ -83,7 +84,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Health"
+                  "$ref": "#/components/schemas/VersiRead"
                 }
               }
             }
@@ -789,6 +790,14 @@
                   "$ref": "#/components/schemas/JenjangPendidikanRead"
                 }
               }
+            },
+            "headers": {
+              "ETag": {
+                "description": "ETag representasi resource; kirim kembali lewat If-Match.",
+                "schema": {
+                  "type": "string"
+                }
+              }
             }
           },
           "401": {
@@ -895,6 +904,14 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/JenjangPendidikanRead"
+                }
+              }
+            },
+            "headers": {
+              "ETag": {
+                "description": "ETag representasi resource; kirim kembali lewat If-Match.",
+                "schema": {
+                  "type": "string"
                 }
               }
             }
@@ -1397,6 +1414,14 @@
                   "$ref": "#/components/schemas/SekolahRead"
                 }
               }
+            },
+            "headers": {
+              "ETag": {
+                "description": "ETag representasi resource; kirim kembali lewat If-Match.",
+                "schema": {
+                  "type": "string"
+                }
+              }
             }
           },
           "401": {
@@ -1503,6 +1528,14 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/SekolahRead"
+                }
+              }
+            },
+            "headers": {
+              "ETag": {
+                "description": "ETag representasi resource; kirim kembali lewat If-Match.",
+                "schema": {
+                  "type": "string"
                 }
               }
             }
@@ -2011,6 +2044,14 @@
                   "$ref": "#/components/schemas/MataPelajaranRead"
                 }
               }
+            },
+            "headers": {
+              "ETag": {
+                "description": "ETag representasi resource; kirim kembali lewat If-Match.",
+                "schema": {
+                  "type": "string"
+                }
+              }
             }
           },
           "401": {
@@ -2117,6 +2158,14 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/MataPelajaranRead"
+                }
+              }
+            },
+            "headers": {
+              "ETag": {
+                "description": "ETag representasi resource; kirim kembali lewat If-Match.",
+                "schema": {
+                  "type": "string"
                 }
               }
             }
@@ -2712,6 +2761,14 @@
                   "$ref": "#/components/schemas/PartisipanRead"
                 }
               }
+            },
+            "headers": {
+              "ETag": {
+                "description": "ETag representasi resource; kirim kembali lewat If-Match.",
+                "schema": {
+                  "type": "string"
+                }
+              }
             }
           },
           "401": {
@@ -2818,6 +2875,14 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/PartisipanRead"
+                }
+              }
+            },
+            "headers": {
+              "ETag": {
+                "description": "ETag representasi resource; kirim kembali lewat If-Match.",
+                "schema": {
+                  "type": "string"
                 }
               }
             }
@@ -3327,6 +3392,14 @@
                   "$ref": "#/components/schemas/JabatanRead"
                 }
               }
+            },
+            "headers": {
+              "ETag": {
+                "description": "ETag representasi resource; kirim kembali lewat If-Match.",
+                "schema": {
+                  "type": "string"
+                }
+              }
             }
           },
           "401": {
@@ -3433,6 +3506,14 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/JabatanRead"
+                }
+              }
+            },
+            "headers": {
+              "ETag": {
+                "description": "ETag representasi resource; kirim kembali lewat If-Match.",
+                "schema": {
+                  "type": "string"
                 }
               }
             }
@@ -3932,6 +4013,14 @@
                   "$ref": "#/components/schemas/SMEPanelRead"
                 }
               }
+            },
+            "headers": {
+              "ETag": {
+                "description": "ETag representasi resource; kirim kembali lewat If-Match.",
+                "schema": {
+                  "type": "string"
+                }
+              }
             }
           },
           "401": {
@@ -4038,6 +4127,14 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/SMEPanelRead"
+                }
+              }
+            },
+            "headers": {
+              "ETag": {
+                "description": "ETag representasi resource; kirim kembali lewat If-Match.",
+                "schema": {
+                  "type": "string"
                 }
               }
             }
@@ -4622,6 +4719,7 @@
           "wcp.dimensi"
         ],
         "summary": "Ambil dimensi WCP beserta 6 item-nya",
+        "description": "Ambil dimensi beserta item-nya; tiap item membawa `etag` per item.\n\n`etag` dihitung dengan `compute_etag` atas `WcpItemRead` asal, sehingga identik\ndengan header `ETag` `GET /items/{item_id}` dan langsung dapat dipakai sebagai `If-Match`.",
         "operationId": "wcp_dimensi_get",
         "security": [
           {
@@ -4665,7 +4763,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/WcpDimensiWithItemsRead"
+                  "$ref": "#/components/schemas/WcpDimensiWithItemsEtagRead"
                 }
               }
             }
@@ -4886,6 +4984,14 @@
                   "$ref": "#/components/schemas/WcpItemRead"
                 }
               }
+            },
+            "headers": {
+              "ETag": {
+                "description": "ETag representasi resource; kirim kembali lewat If-Match.",
+                "schema": {
+                  "type": "string"
+                }
+              }
             }
           },
           "401": {
@@ -4999,6 +5105,14 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/WcpItemRead"
+                }
+              }
+            },
+            "headers": {
+              "ETag": {
+                "description": "ETag representasi resource; kirim kembali lewat If-Match.",
+                "schema": {
+                  "type": "string"
                 }
               }
             }
@@ -5235,6 +5349,14 @@
                   "$ref": "#/components/schemas/WcpInstrumenRead"
                 }
               }
+            },
+            "headers": {
+              "ETag": {
+                "description": "ETag representasi resource; kirim kembali lewat If-Match.",
+                "schema": {
+                  "type": "string"
+                }
+              }
             }
           },
           "401": {
@@ -5317,6 +5439,14 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/WcpInstrumenRead"
+                }
+              }
+            },
+            "headers": {
+              "ETag": {
+                "description": "ETag representasi resource; kirim kembali lewat If-Match.",
+                "schema": {
+                  "type": "string"
                 }
               }
             }
@@ -5884,6 +6014,14 @@
                   "$ref": "#/components/schemas/WcpRespondenRead"
                 }
               }
+            },
+            "headers": {
+              "ETag": {
+                "description": "ETag representasi resource; kirim kembali lewat If-Match.",
+                "schema": {
+                  "type": "string"
+                }
+              }
             }
           },
           "429": {
@@ -6123,6 +6261,14 @@
                   "title": "Response Wcp Jawaban Save Draft"
                 }
               }
+            },
+            "headers": {
+              "ETag": {
+                "description": "ETag representasi resource; kirim kembali lewat If-Match.",
+                "schema": {
+                  "type": "string"
+                }
+              }
             }
           },
           "401": {
@@ -6260,6 +6406,14 @@
                     "$ref": "#/components/schemas/WcpJawabanRead"
                   },
                   "title": "Response Wcp Jawaban List"
+                }
+              }
+            },
+            "headers": {
+              "ETag": {
+                "description": "ETag representasi resource; kirim kembali lewat If-Match.",
+                "schema": {
+                  "type": "string"
                 }
               }
             }
@@ -7149,6 +7303,14 @@
                   "$ref": "#/components/schemas/OpmSesiRead"
                 }
               }
+            },
+            "headers": {
+              "ETag": {
+                "description": "ETag representasi resource; kirim kembali lewat If-Match.",
+                "schema": {
+                  "type": "string"
+                }
+              }
             }
           },
           "401": {
@@ -7262,6 +7424,14 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/OpmSesiRead"
+                }
+              }
+            },
+            "headers": {
+              "ETag": {
+                "description": "ETag representasi resource; kirim kembali lewat If-Match.",
+                "schema": {
+                  "type": "string"
                 }
               }
             }
@@ -8364,6 +8534,14 @@
                   "$ref": "#/components/schemas/OpmRespondenRead"
                 }
               }
+            },
+            "headers": {
+              "ETag": {
+                "description": "ETag representasi resource; kirim kembali lewat If-Match.",
+                "schema": {
+                  "type": "string"
+                }
+              }
             }
           },
           "429": {
@@ -8731,6 +8909,14 @@
                   "title": "Response Opm Jawaban Save Draft"
                 }
               }
+            },
+            "headers": {
+              "ETag": {
+                "description": "ETag representasi resource; kirim kembali lewat If-Match.",
+                "schema": {
+                  "type": "string"
+                }
+              }
             }
           },
           "401": {
@@ -8858,6 +9044,14 @@
                     "$ref": "#/components/schemas/OpmJawabanRead"
                   },
                   "title": "Response Opm Jawaban List"
+                }
+              }
+            },
+            "headers": {
+              "ETag": {
+                "description": "ETag representasi resource; kirim kembali lewat If-Match.",
+                "schema": {
+                  "type": "string"
                 }
               }
             }
@@ -9338,6 +9532,7 @@
           "dcs.sub-skala"
         ],
         "summary": "Ambil sub-skala DCS beserta 14 item-nya",
+        "description": "Ambil sub-skala beserta item-nya; tiap item membawa `etag` per item.\n\n`etag` dihitung dengan `compute_etag` atas `DcsItemRead` asal, sehingga identik\ndengan header `ETag` `GET /items/{item_id}` dan langsung dapat dipakai sebagai `If-Match`.",
         "operationId": "dcs_subskala_get",
         "security": [
           {
@@ -9381,7 +9576,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DcsSubSkalaWithItemsRead"
+                  "$ref": "#/components/schemas/DcsSubSkalaWithItemsEtagRead"
                 }
               }
             }
@@ -9602,6 +9797,14 @@
                   "$ref": "#/components/schemas/DcsItemRead"
                 }
               }
+            },
+            "headers": {
+              "ETag": {
+                "description": "ETag representasi resource; kirim kembali lewat If-Match.",
+                "schema": {
+                  "type": "string"
+                }
+              }
             }
           },
           "401": {
@@ -9715,6 +9918,14 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/DcsItemRead"
+                }
+              }
+            },
+            "headers": {
+              "ETag": {
+                "description": "ETag representasi resource; kirim kembali lewat If-Match.",
+                "schema": {
+                  "type": "string"
                 }
               }
             }
@@ -9951,6 +10162,14 @@
                   "$ref": "#/components/schemas/DcsInstrumenRead"
                 }
               }
+            },
+            "headers": {
+              "ETag": {
+                "description": "ETag representasi resource; kirim kembali lewat If-Match.",
+                "schema": {
+                  "type": "string"
+                }
+              }
             }
           },
           "401": {
@@ -10033,6 +10252,14 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/DcsInstrumenRead"
+                }
+              }
+            },
+            "headers": {
+              "ETag": {
+                "description": "ETag representasi resource; kirim kembali lewat If-Match.",
+                "schema": {
+                  "type": "string"
                 }
               }
             }
@@ -10600,6 +10827,14 @@
                   "$ref": "#/components/schemas/DcsRespondenRead"
                 }
               }
+            },
+            "headers": {
+              "ETag": {
+                "description": "ETag representasi resource; kirim kembali lewat If-Match.",
+                "schema": {
+                  "type": "string"
+                }
+              }
             }
           },
           "429": {
@@ -10839,6 +11074,14 @@
                   "title": "Response Dcs Jawaban Save Draft"
                 }
               }
+            },
+            "headers": {
+              "ETag": {
+                "description": "ETag representasi resource; kirim kembali lewat If-Match.",
+                "schema": {
+                  "type": "string"
+                }
+              }
             }
           },
           "401": {
@@ -10976,6 +11219,14 @@
                     "$ref": "#/components/schemas/DcsJawabanRead"
                   },
                   "title": "Response Dcs Jawaban List"
+                }
+              }
+            },
+            "headers": {
+              "ETag": {
+                "description": "ETag representasi resource; kirim kembali lewat If-Match.",
+                "schema": {
+                  "type": "string"
                 }
               }
             }
@@ -12284,6 +12535,14 @@
                   "$ref": "#/components/schemas/TiSesiRead"
                 }
               }
+            },
+            "headers": {
+              "ETag": {
+                "description": "ETag representasi resource; kirim kembali lewat If-Match.",
+                "schema": {
+                  "type": "string"
+                }
+              }
             }
           },
           "429": {
@@ -12397,6 +12656,14 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/TiSesiRead"
+                }
+              }
+            },
+            "headers": {
+              "ETag": {
+                "description": "ETag representasi resource; kirim kembali lewat If-Match.",
+                "schema": {
+                  "type": "string"
                 }
               }
             }
@@ -13663,6 +13930,14 @@
                   "$ref": "#/components/schemas/TiRespondenRead"
                 }
               }
+            },
+            "headers": {
+              "ETag": {
+                "description": "ETag representasi resource; kirim kembali lewat If-Match.",
+                "schema": {
+                  "type": "string"
+                }
+              }
             }
           },
           "429": {
@@ -14026,6 +14301,14 @@
                   "$ref": "#/components/schemas/TiSeleksiRead"
                 }
               }
+            },
+            "headers": {
+              "ETag": {
+                "description": "ETag representasi resource; kirim kembali lewat If-Match.",
+                "schema": {
+                  "type": "string"
+                }
+              }
             }
           },
           "401": {
@@ -14149,6 +14432,14 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/TiSeleksiRead"
+                }
+              }
+            },
+            "headers": {
+              "ETag": {
+                "description": "ETag representasi resource; kirim kembali lewat If-Match.",
+                "schema": {
+                  "type": "string"
                 }
               }
             }
@@ -14389,6 +14680,14 @@
                   "title": "Response Taskinv Detail Save Draft"
                 }
               }
+            },
+            "headers": {
+              "ETag": {
+                "description": "ETag representasi resource; kirim kembali lewat If-Match.",
+                "schema": {
+                  "type": "string"
+                }
+              }
             }
           },
           "401": {
@@ -14539,6 +14838,14 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Page_TiDetailRead_"
+                }
+              }
+            },
+            "headers": {
+              "ETag": {
+                "description": "ETag representasi resource; kirim kembali lewat If-Match.",
+                "schema": {
+                  "type": "string"
                 }
               }
             }
@@ -15576,6 +15883,14 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/TiUsulanRead"
+                }
+              }
+            },
+            "headers": {
+              "ETag": {
+                "description": "ETag representasi resource; kirim kembali lewat If-Match.",
+                "schema": {
+                  "type": "string"
                 }
               }
             }
@@ -17193,6 +17508,14 @@
                   "$ref": "#/components/schemas/TugasPokokRead"
                 }
               }
+            },
+            "headers": {
+              "ETag": {
+                "description": "ETag representasi resource; kirim kembali lewat If-Match.",
+                "schema": {
+                  "type": "string"
+                }
+              }
             }
           },
           "401": {
@@ -17299,6 +17622,14 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/TugasPokokRead"
+                }
+              }
+            },
+            "headers": {
+              "ETag": {
+                "description": "ETag representasi resource; kirim kembali lewat If-Match.",
+                "schema": {
+                  "type": "string"
                 }
               }
             }
@@ -17801,6 +18132,14 @@
                   "$ref": "#/components/schemas/DetilTugasRead"
                 }
               }
+            },
+            "headers": {
+              "ETag": {
+                "description": "ETag representasi resource; kirim kembali lewat If-Match.",
+                "schema": {
+                  "type": "string"
+                }
+              }
             }
           },
           "401": {
@@ -17907,6 +18246,14 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/DetilTugasRead"
+                }
+              }
+            },
+            "headers": {
+              "ETag": {
+                "description": "ETag representasi resource; kirim kembali lewat If-Match.",
+                "schema": {
+                  "type": "string"
                 }
               }
             }
@@ -18411,6 +18758,14 @@
                   "$ref": "#/components/schemas/UraianTugasRead"
                 }
               }
+            },
+            "headers": {
+              "ETag": {
+                "description": "ETag representasi resource; kirim kembali lewat If-Match.",
+                "schema": {
+                  "type": "string"
+                }
+              }
             }
           },
           "401": {
@@ -18517,6 +18872,14 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/UraianTugasRead"
+                }
+              }
+            },
+            "headers": {
+              "ETag": {
+                "description": "ETag representasi resource; kirim kembali lewat If-Match.",
+                "schema": {
+                  "type": "string"
                 }
               }
             }
@@ -19365,6 +19728,14 @@
                   "$ref": "#/components/schemas/KodeOrangRead"
                 }
               }
+            },
+            "headers": {
+              "ETag": {
+                "description": "ETag representasi resource; kirim kembali lewat If-Match.",
+                "schema": {
+                  "type": "string"
+                }
+              }
             }
           },
           "401": {
@@ -19477,6 +19848,14 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/KodeOrangRead"
+                }
+              }
+            },
+            "headers": {
+              "ETag": {
+                "description": "ETag representasi resource; kirim kembali lewat If-Match.",
+                "schema": {
+                  "type": "string"
                 }
               }
             }
@@ -19921,6 +20300,14 @@
                   "$ref": "#/components/schemas/KonteksRead"
                 }
               }
+            },
+            "headers": {
+              "ETag": {
+                "description": "ETag representasi resource; kirim kembali lewat If-Match.",
+                "schema": {
+                  "type": "string"
+                }
+              }
             }
           },
           "401": {
@@ -20033,6 +20420,14 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/KonteksRead"
+                }
+              }
+            },
+            "headers": {
+              "ETag": {
+                "description": "ETag representasi resource; kirim kembali lewat If-Match.",
+                "schema": {
+                  "type": "string"
                 }
               }
             }
@@ -20477,6 +20872,14 @@
                   "$ref": "#/components/schemas/MasalahRead"
                 }
               }
+            },
+            "headers": {
+              "ETag": {
+                "description": "ETag representasi resource; kirim kembali lewat If-Match.",
+                "schema": {
+                  "type": "string"
+                }
+              }
             }
           },
           "401": {
@@ -20589,6 +20992,14 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/MasalahRead"
+                }
+              }
+            },
+            "headers": {
+              "ETag": {
+                "description": "ETag representasi resource; kirim kembali lewat If-Match.",
+                "schema": {
+                  "type": "string"
                 }
               }
             }
@@ -21275,6 +21686,14 @@
                   "$ref": "#/components/schemas/AlternatifRead"
                 }
               }
+            },
+            "headers": {
+              "ETag": {
+                "description": "ETag representasi resource; kirim kembali lewat If-Match.",
+                "schema": {
+                  "type": "string"
+                }
+              }
             }
           },
           "401": {
@@ -21387,6 +21806,14 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/AlternatifRead"
+                }
+              }
+            },
+            "headers": {
+              "ETag": {
+                "description": "ETag representasi resource; kirim kembali lewat If-Match.",
+                "schema": {
+                  "type": "string"
                 }
               }
             }
@@ -21831,6 +22258,14 @@
                   "$ref": "#/components/schemas/CakupanJabatanRead"
                 }
               }
+            },
+            "headers": {
+              "ETag": {
+                "description": "ETag representasi resource; kirim kembali lewat If-Match.",
+                "schema": {
+                  "type": "string"
+                }
+              }
             }
           },
           "401": {
@@ -21943,6 +22378,14 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/CakupanJabatanRead"
+                }
+              }
+            },
+            "headers": {
+              "ETag": {
+                "description": "ETag representasi resource; kirim kembali lewat If-Match.",
+                "schema": {
+                  "type": "string"
                 }
               }
             }
@@ -22387,6 +22830,14 @@
                   "$ref": "#/components/schemas/VersiMetodeRead"
                 }
               }
+            },
+            "headers": {
+              "ETag": {
+                "description": "ETag representasi resource; kirim kembali lewat If-Match.",
+                "schema": {
+                  "type": "string"
+                }
+              }
             }
           },
           "401": {
@@ -22499,6 +22950,14 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/VersiMetodeRead"
+                }
+              }
+            },
+            "headers": {
+              "ETag": {
+                "description": "ETag representasi resource; kirim kembali lewat If-Match.",
+                "schema": {
+                  "type": "string"
                 }
               }
             }
@@ -23067,6 +23526,14 @@
                   "$ref": "#/components/schemas/SesiRead"
                 }
               }
+            },
+            "headers": {
+              "ETag": {
+                "description": "ETag representasi resource; kirim kembali lewat If-Match.",
+                "schema": {
+                  "type": "string"
+                }
+              }
             }
           },
           "401": {
@@ -23179,6 +23646,14 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/SesiRead"
+                }
+              }
+            },
+            "headers": {
+              "ETag": {
+                "description": "ETag representasi resource; kirim kembali lewat If-Match.",
+                "schema": {
+                  "type": "string"
                 }
               }
             }
@@ -23633,6 +24108,14 @@
                   "$ref": "#/components/schemas/BuktiRead"
                 }
               }
+            },
+            "headers": {
+              "ETag": {
+                "description": "ETag representasi resource; kirim kembali lewat If-Match.",
+                "schema": {
+                  "type": "string"
+                }
+              }
             }
           },
           "401": {
@@ -23745,6 +24228,14 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/BuktiRead"
+                }
+              }
+            },
+            "headers": {
+              "ETag": {
+                "description": "ETag representasi resource; kirim kembali lewat If-Match.",
+                "schema": {
+                  "type": "string"
                 }
               }
             }
@@ -24303,6 +24794,14 @@
                   "$ref": "#/components/schemas/PenilaianRead"
                 }
               }
+            },
+            "headers": {
+              "ETag": {
+                "description": "ETag representasi resource; kirim kembali lewat If-Match.",
+                "schema": {
+                  "type": "string"
+                }
+              }
             }
           },
           "401": {
@@ -24415,6 +24914,14 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/PenilaianRead"
+                }
+              }
+            },
+            "headers": {
+              "ETag": {
+                "description": "ETag representasi resource; kirim kembali lewat If-Match.",
+                "schema": {
+                  "type": "string"
                 }
               }
             }
@@ -25840,6 +26347,14 @@
                   "$ref": "#/components/schemas/ProsesRead"
                 }
               }
+            },
+            "headers": {
+              "ETag": {
+                "description": "ETag representasi resource; kirim kembali lewat If-Match.",
+                "schema": {
+                  "type": "string"
+                }
+              }
             }
           },
           "401": {
@@ -25952,6 +26467,14 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ProsesRead"
+                }
+              }
+            },
+            "headers": {
+              "ETag": {
+                "description": "ETag representasi resource; kirim kembali lewat If-Match.",
+                "schema": {
+                  "type": "string"
                 }
               }
             }
@@ -26206,6 +26729,14 @@
                   "$ref": "#/components/schemas/LangkahRead"
                 }
               }
+            },
+            "headers": {
+              "ETag": {
+                "description": "ETag representasi resource; kirim kembali lewat If-Match.",
+                "schema": {
+                  "type": "string"
+                }
+              }
             }
           },
           "401": {
@@ -26318,6 +26849,14 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LangkahRead"
+                }
+              }
+            },
+            "headers": {
+              "ETag": {
+                "description": "ETag representasi resource; kirim kembali lewat If-Match.",
+                "schema": {
+                  "type": "string"
                 }
               }
             }
@@ -27364,6 +27903,14 @@
                   "$ref": "#/components/schemas/KonfirmasiRead"
                 }
               }
+            },
+            "headers": {
+              "ETag": {
+                "description": "ETag representasi resource; kirim kembali lewat If-Match.",
+                "schema": {
+                  "type": "string"
+                }
+              }
             }
           },
           "401": {
@@ -27476,6 +28023,14 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/KonfirmasiRead"
+                }
+              }
+            },
+            "headers": {
+              "ETag": {
+                "description": "ETag representasi resource; kirim kembali lewat If-Match.",
+                "schema": {
+                  "type": "string"
                 }
               }
             }
@@ -30460,6 +31015,120 @@
         "title": "DcsInstrumenUpdate",
         "description": "Payload pembaruan parsial instrumen DCS (min_responden/catatan)."
       },
+      "DcsItemBerEtagRead": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id",
+            "description": "ID item.",
+            "examples": [
+              "ditm_D1a"
+            ]
+          },
+          "item_id": {
+            "type": "string",
+            "title": "Item Id",
+            "description": "Kode item orisinal.",
+            "examples": [
+              "D1a"
+            ]
+          },
+          "subskala_kode": {
+            "type": "string",
+            "title": "Subskala Kode",
+            "description": "Kode sub-skala.",
+            "examples": [
+              "DEMAND"
+            ]
+          },
+          "sub_dimensi": {
+            "type": "string",
+            "title": "Sub Dimensi",
+            "description": "Sub-dimensi item.",
+            "examples": [
+              "Volume"
+            ]
+          },
+          "pernyataan": {
+            "type": "string",
+            "title": "Pernyataan",
+            "description": "Teks pernyataan.",
+            "examples": [
+              "Saya harus menyelesaikan banyak tugas dalam waktu yang sangat terbatas."
+            ]
+          },
+          "arah": {
+            "type": "string",
+            "enum": [
+              "F",
+              "UF"
+            ],
+            "title": "Arah",
+            "description": "Arah item: F (Favorable) atau UF (Unfavorable, reverse-scored).",
+            "examples": [
+              "UF"
+            ]
+          },
+          "urutan": {
+            "type": "integer",
+            "title": "Urutan",
+            "description": "Urutan global item (1–42).",
+            "examples": [
+              1
+            ]
+          },
+          "status_paket": {
+            "type": "string",
+            "enum": [
+              "SAMA",
+              "REDAKSI_BEDA",
+              "TIDAK_ADA_DI_PAKET"
+            ],
+            "title": "Status Paket",
+            "description": "Status redaksi item terhadap CSV paket R1.1 (normalisasi: trim + rapatkan spasi; tanda baca dan huruf besar dihitung beda). Hanya penanda: teks item tidak diubah.",
+            "examples": [
+              "SAMA"
+            ]
+          },
+          "kembar_dengan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Kembar Dengan",
+            "description": "Item kembar lintas instrumen menurut paket R1.1, berbentuk `\"<INSTRUMEN>:<item_id>\"`; null bila tidak punya kembar.",
+            "examples": [
+              "WCP:WP1a"
+            ]
+          },
+          "etag": {
+            "type": "string",
+            "title": "Etag",
+            "description": "ETag item, identik dengan header `ETag` pada `GET .../items/{item_id}` (termasuk tanda kutip ganda); dipakai langsung sebagai `If-Match` PATCH/DELETE item.",
+            "examples": [
+              "\"0123456789abcdef0123456789abcdef\""
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "item_id",
+          "subskala_kode",
+          "sub_dimensi",
+          "pernyataan",
+          "arah",
+          "urutan",
+          "status_paket",
+          "etag"
+        ],
+        "title": "DcsItemBerEtagRead",
+        "description": "Item DCS yang membawa ETag-nya sendiri di dalam badan respons detail sub-skala."
+      },
       "DcsItemRead": {
         "properties": {
           "id": {
@@ -30934,7 +31603,7 @@
         "title": "DcsSubSkalaRead",
         "description": "Representasi sub-skala DCS tanpa item."
       },
-      "DcsSubSkalaWithItemsRead": {
+      "DcsSubSkalaWithItemsEtagRead": {
         "properties": {
           "id": {
             "type": "string",
@@ -30970,11 +31639,11 @@
           },
           "items": {
             "items": {
-              "$ref": "#/components/schemas/DcsItemRead"
+              "$ref": "#/components/schemas/DcsItemBerEtagRead"
             },
             "type": "array",
             "title": "Items",
-            "description": "Daftar 14 item sub-skala ini."
+            "description": "Daftar 14 item sub-skala ini, masing-masing ber-`etag`."
           }
         },
         "type": "object",
@@ -30985,8 +31654,8 @@
           "urutan",
           "items"
         ],
-        "title": "DcsSubSkalaWithItemsRead",
-        "description": "Representasi sub-skala DCS beserta 14 item-nya."
+        "title": "DcsSubSkalaWithItemsEtagRead",
+        "description": "Sub-skala DCS beserta item-itemnya, tiap item membawa `etag`."
       },
       "DetilTugasCreate": {
         "properties": {
@@ -44181,6 +44850,42 @@
         "title": "VersiMetodeUpdate",
         "description": "Payload ubah parsial; field yang dikirim `null` diabaikan (semua kolom wajib)."
       },
+      "VersiRead": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "title": "Status",
+            "description": "Status ringkas.",
+            "examples": [
+              "ok"
+            ]
+          },
+          "version": {
+            "type": "string",
+            "title": "Version",
+            "description": "Versi aplikasi.",
+            "examples": [
+              "0.1.0"
+            ]
+          },
+          "commit": {
+            "type": "string",
+            "title": "Commit",
+            "description": "SHA commit build image; 'unknown' bila dibangun di luar release.yml.",
+            "examples": [
+              "0f16ded0000000000000000000000000000000a1"
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "status",
+          "version",
+          "commit"
+        ],
+        "title": "VersiRead",
+        "description": "Respons ``GET /api/v1/version``: versi aplikasi plus identitas build runtime."
+      },
       "WcpDimensiRead": {
         "properties": {
           "id": {
@@ -44232,7 +44937,7 @@
         "title": "WcpDimensiRead",
         "description": "Representasi dimensi WCP tanpa item."
       },
-      "WcpDimensiWithItemsRead": {
+      "WcpDimensiWithItemsEtagRead": {
         "properties": {
           "id": {
             "type": "string",
@@ -44273,11 +44978,11 @@
           },
           "items": {
             "items": {
-              "$ref": "#/components/schemas/WcpItemRead"
+              "$ref": "#/components/schemas/WcpItemBerEtagRead"
             },
             "type": "array",
             "title": "Items",
-            "description": "Daftar 6 item dimensi ini."
+            "description": "Daftar 6 item dimensi ini, masing-masing ber-`etag`."
           }
         },
         "type": "object",
@@ -44289,8 +44994,8 @@
           "is_risk",
           "items"
         ],
-        "title": "WcpDimensiWithItemsRead",
-        "description": "Representasi dimensi WCP beserta 6 item-nya."
+        "title": "WcpDimensiWithItemsEtagRead",
+        "description": "Dimensi WCP beserta item-itemnya, tiap item membawa `etag`."
       },
       "WcpHasilDimensiRead": {
         "properties": {
@@ -44663,6 +45368,125 @@
         "type": "object",
         "title": "WcpInstrumenUpdate",
         "description": "Payload pembaruan parsial instrumen WCP (min_responden/catatan)."
+      },
+      "WcpItemBerEtagRead": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id",
+            "description": "ID item.",
+            "examples": [
+              "witm_SC1a"
+            ]
+          },
+          "item_id": {
+            "type": "string",
+            "title": "Item Id",
+            "description": "Kode item orisinal.",
+            "examples": [
+              "SC1a"
+            ]
+          },
+          "dimensi_kode": {
+            "type": "string",
+            "title": "Dimensi Kode",
+            "description": "Kode dimensi.",
+            "examples": [
+              "SC"
+            ]
+          },
+          "indikator_kode": {
+            "type": "string",
+            "title": "Indikator Kode",
+            "description": "Kode indikator (1/2/3).",
+            "examples": [
+              "1"
+            ]
+          },
+          "indikator_label": {
+            "type": "string",
+            "title": "Indikator Label",
+            "description": "Label indikator.",
+            "examples": [
+              "Frekuensi perubahan kebijakan"
+            ]
+          },
+          "pernyataan": {
+            "type": "string",
+            "title": "Pernyataan",
+            "description": "Teks pernyataan.",
+            "examples": [
+              "Kebijakan dan prosedur kerja di unit saya berubah terlalu sering."
+            ]
+          },
+          "reverse_type": {
+            "type": "string",
+            "title": "Reverse Type",
+            "description": "Tipe scoring: NONE | R | UF | R_STAR.",
+            "examples": [
+              "R"
+            ]
+          },
+          "urutan": {
+            "type": "integer",
+            "title": "Urutan",
+            "description": "Urutan global item (1–72).",
+            "examples": [
+              1
+            ]
+          },
+          "status_paket": {
+            "type": "string",
+            "enum": [
+              "SAMA",
+              "REDAKSI_BEDA",
+              "TIDAK_ADA_DI_PAKET"
+            ],
+            "title": "Status Paket",
+            "description": "Status redaksi item terhadap CSV paket R1.1 (normalisasi: trim + rapatkan spasi; tanda baca dan huruf besar dihitung beda). Hanya penanda: teks item tidak diubah.",
+            "examples": [
+              "SAMA"
+            ]
+          },
+          "kembar_dengan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Kembar Dengan",
+            "description": "Item kembar lintas instrumen menurut paket R1.1, berbentuk `\"<INSTRUMEN>:<item_id>\"`; null bila tidak punya kembar.",
+            "examples": [
+              "DCS:C8a"
+            ]
+          },
+          "etag": {
+            "type": "string",
+            "title": "Etag",
+            "description": "ETag item, identik dengan header `ETag` pada `GET .../items/{item_id}` (termasuk tanda kutip ganda); dipakai langsung sebagai `If-Match` PATCH/DELETE item.",
+            "examples": [
+              "\"0123456789abcdef0123456789abcdef\""
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "item_id",
+          "dimensi_kode",
+          "indikator_kode",
+          "indikator_label",
+          "pernyataan",
+          "reverse_type",
+          "urutan",
+          "status_paket",
+          "etag"
+        ],
+        "title": "WcpItemBerEtagRead",
+        "description": "Item WCP yang membawa ETag-nya sendiri di dalam badan respons detail dimensi."
       },
       "WcpItemRead": {
         "properties": {
