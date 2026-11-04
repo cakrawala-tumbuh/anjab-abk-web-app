@@ -97,7 +97,7 @@ src/
   `petakanKonkurensi`. `wizard.tsx` tidak memakai hook: ETag dari GET `page.tsx`, diperbarui dari header
   PATCH/POST sukses dan disinkronkan ulang dari prop setelah `router.refresh()`.
 - Jaring pengaman: `src/test/redesain-ifmatch.test.tsx` memindai berkas redesain yang memanggil `.PATCH(`
-  tanpa `headerIfMatch`. Detail: issue `cakrawala-tumbuh/anjab-abk-web-app#87`.
+  tanpa `headerIfMatch`. Detail: issue #87 repo ini.
 
 ### [2026-11-04] Kunci optimistik (`If-Match`) dan `Idempotency-Key` di formulir tulis
 
