@@ -50,6 +50,35 @@ function Badge({ ya, label }: { ya: boolean | null | undefined; label: string })
   );
 }
 
+/**
+ * Format tiga angka sebaran (min / median / maks) satu dimensi.
+ *
+ * Tiap nilai diformat sendiri lewat {@link formatAngkaOpm}: `null` tampil "—",
+ * median n genap (mis. 3.5) tidak dibulatkan.
+ *
+ * @param min - Nilai minimum lintas responden, atau `null`.
+ * @param median - Median lintas responden, atau `null`.
+ * @param max - Nilai maksimum lintas responden, atau `null`.
+ * @returns Teks "min / median / maks".
+ */
+function sebaran(
+  min: number | null | undefined,
+  median: number | null | undefined,
+  max: number | null | undefined,
+): string {
+  return `${formatAngkaOpm(min)} / ${formatAngkaOpm(median)} / ${formatAngkaOpm(max)}`;
+}
+
+/**
+ * Halaman hasil agregat OPM (Server Component, khusus admin).
+ *
+ * Menampilkan mean, simpangan baku, sebaran (min/median/maks) per dimensi, flag
+ * esensial, dan pil amber "Perlu telaah" bila `rating_spread === true`. Penanda
+ * adalah sinyal untuk ditelaah, bukan bukti kesalahan; `false`/`null` tanpa penanda.
+ *
+ * @param props.params - Parameter rute berisi `sesi_id`.
+ * @returns Halaman hasil; memanggil `notFound()` bila bukan admin.
+ */
 export default async function OpmHasilPage({ params }: Props) {
   const session = await auth();
   if (!isAdmin(session)) notFound();
@@ -84,6 +113,15 @@ export default async function OpmHasilPage({ params }: Props) {
         </p>
       </div>
 
+      <p className="text-xs text-gray-500 dark:text-gray-400">
+        Sebaran kolom I/F/C ditulis min / median / maks. Penanda{" "}
+        <span className="inline-flex rounded-full bg-amber-100 px-2 py-0.5 font-medium text-amber-800">
+          Perlu telaah
+        </span>{" "}
+        muncul bila selisih maks dan min minimal 2 pada salah satu dimensi. Ini sinyal untuk
+        ditelaah, bukan bukti kesalahan.
+      </p>
+
       <div className="table-container">
         <table className="w-full text-sm">
           <thead className="bg-gray-50 dark:bg-gray-800">
@@ -103,6 +141,15 @@ export default async function OpmHasilPage({ params }: Props) {
               <th className="px-4 py-3 text-right font-medium text-gray-600 dark:text-gray-400">
                 SD (I/F/C)
               </th>
+              <th className="px-4 py-3 text-right font-medium text-gray-600 dark:text-gray-400">
+                I (min / med / maks)
+              </th>
+              <th className="px-4 py-3 text-right font-medium text-gray-600 dark:text-gray-400">
+                F (min / med / maks)
+              </th>
+              <th className="px-4 py-3 text-right font-medium text-gray-600 dark:text-gray-400">
+                C (min / med / maks)
+              </th>
               <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">
                 Flag
               </th>
@@ -120,6 +167,11 @@ export default async function OpmHasilPage({ params }: Props) {
                     {t.orphan && (
                       <span className="ml-2 inline-flex rounded-full bg-amber-100 px-2 py-0.5 font-sans font-medium text-amber-800">
                         Orphan
+                      </span>
+                    )}
+                    {t.rating_spread === true && (
+                      <span className="ml-2 inline-flex rounded-full bg-amber-100 px-2 py-0.5 font-sans font-medium text-amber-800">
+                        Perlu telaah
                       </span>
                     )}
                   </p>
@@ -141,6 +193,15 @@ export default async function OpmHasilPage({ params }: Props) {
                 <td className="px-4 py-3 text-right text-xs text-gray-500 dark:text-gray-400">
                   {formatAngkaOpm(t.sd_importance)} / {formatAngkaOpm(t.sd_frequency)} /{" "}
                   {formatAngkaOpm(t.sd_criticality)}
+                </td>
+                <td className="whitespace-nowrap px-4 py-3 text-right text-xs text-gray-500 dark:text-gray-400">
+                  {sebaran(t.min_importance, t.median_importance, t.max_importance)}
+                </td>
+                <td className="whitespace-nowrap px-4 py-3 text-right text-xs text-gray-500 dark:text-gray-400">
+                  {sebaran(t.min_frequency, t.median_frequency, t.max_frequency)}
+                </td>
+                <td className="whitespace-nowrap px-4 py-3 text-right text-xs text-gray-500 dark:text-gray-400">
+                  {sebaran(t.min_criticality, t.median_criticality, t.max_criticality)}
                 </td>
                 <td className="px-4 py-3">
                   <div className="flex flex-col gap-1">

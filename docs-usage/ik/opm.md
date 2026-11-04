@@ -173,7 +173,10 @@ di samping periode dan jumlah responden — penting untuk membedakan hasil Bandu
 Semarang pada jabatan yang sama. Tabel menampilkan per task: rata-rata (mean) &
 simpangan baku (SD) tiap dimensi, badge **Selection Essential** dan **Workload
 Essential**, serta proporsi responden yang menandai task tersebut esensial secara
-individual.
+individual. Tiga kolom tambahan menampilkan sebaran rating Importance, Frequency, dan
+Criticality sebagai **min / median / maks** (median n genap bisa berakhir .5). Task diberi
+penanda amber **Perlu telaah** bila selisih maks dan min minimal 2 pada salah satu
+dimensi. Penanda ini sinyal untuk ditelaah, bukan bukti kesalahan.
 
 Task yang **tidak punya rating** ditampilkan dengan tanda **"—"** pada kolom rata-rata,
 simpangan baku, dan badge esensial (bukan angka 0 atau "Tidak"). Task yang tercatat di

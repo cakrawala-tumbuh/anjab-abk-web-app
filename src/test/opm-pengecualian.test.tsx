@@ -123,6 +123,79 @@ describe("halaman hasil OPM", () => {
   });
 });
 
+describe("halaman hasil OPM — sebaran dan penanda telaah", () => {
+  const taskSebaran = {
+    ...taskOrphan,
+    orphan: false,
+    n: 4,
+    mean_importance: 3,
+    mean_frequency: 3,
+    mean_criticality: 3,
+    min_importance: 2,
+    median_importance: 3.5,
+    max_importance: 5,
+    min_frequency: 3,
+    median_frequency: 3,
+    max_frequency: 3,
+    min_criticality: 1,
+    median_criticality: 2,
+    max_criticality: 4,
+  };
+  async function renderTasks(tasks: unknown[]) {
+    get.mockImplementation(async (path: string) => {
+      if (path.endsWith("/hasil"))
+        return ok({
+          jabatan_id: "j1",
+          jabatan_nama: "Guru",
+          cabang: "Bandung",
+          periode: "2026-01",
+          n_responden_submit: 4,
+          tasks,
+        });
+      return ok(sesiBase);
+    });
+    await render_(OpmHasilPage({ params: Promise.resolve({ sesi_id: "s1" }) }));
+  }
+  const penanda = () => screen.queryAllByText("Perlu telaah").filter((e) => e.closest("td"));
+
+  it("rating_spread true: penanda tampil di sel task; min/median/maks ketiga dimensi tampil, median .5 tidak dibulatkan", async () => {
+    await renderTasks([{ ...taskSebaran, rating_spread: true }]);
+    expect(penanda().length).toBe(1);
+    expect(screen.getByText("2.00 / 3.50 / 5.00")).toBeTruthy();
+    expect(screen.getByText("3.00 / 3.00 / 3.00")).toBeTruthy();
+    expect(screen.getByText("1.00 / 2.00 / 4.00")).toBeTruthy();
+  });
+  it("rating_spread false atau null: tanpa penanda", async () => {
+    await renderTasks([
+      { ...taskSebaran, task_kode: "T-1", rating_spread: false },
+      { ...taskSebaran, task_kode: "T-2", rating_spread: null },
+    ]);
+    expect(penanda().length).toBe(0);
+  });
+  it("n=0: seluruh sebaran null tampil '—' dan tanpa penanda", async () => {
+    await renderTasks([
+      {
+        ...taskOrphan,
+        orphan: false,
+        min_importance: null,
+        median_importance: null,
+        max_importance: null,
+        min_frequency: null,
+        median_frequency: null,
+        max_frequency: null,
+        min_criticality: null,
+        median_criticality: null,
+        max_criticality: null,
+        rating_spread: null,
+      },
+    ]);
+    // 3 sel sebaran (I/F/C) + 1 sel SD yang juga null, semuanya "—" (bukan 0).
+    expect(screen.getAllByText("— / — / —").length).toBe(4);
+    expect(screen.queryByText(/0\.00/)).toBeNull();
+    expect(penanda().length).toBe(0);
+  });
+});
+
 describe("detail sesi OPM", () => {
   function mockDetail(sesi: unknown, pengecualian: unknown) {
     get.mockImplementation(async (path: string) => {

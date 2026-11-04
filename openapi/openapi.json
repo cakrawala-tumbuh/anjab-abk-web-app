@@ -35500,6 +35500,126 @@
             "title": "Sd Criticality",
             "description": "Standar deviasi criticality (None bila n < 2)."
           },
+          "min_importance": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Min Importance",
+            "description": "Nilai minimum importance lintas responden (null bila n == 0)."
+          },
+          "min_frequency": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Min Frequency",
+            "description": "Nilai minimum frequency lintas responden (null bila n == 0)."
+          },
+          "min_criticality": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Min Criticality",
+            "description": "Nilai minimum criticality lintas responden (null bila n == 0)."
+          },
+          "median_importance": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Median Importance",
+            "description": "Nilai median importance lintas responden (null bila n == 0)."
+          },
+          "median_frequency": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Median Frequency",
+            "description": "Nilai median frequency lintas responden (null bila n == 0)."
+          },
+          "median_criticality": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Median Criticality",
+            "description": "Nilai median criticality lintas responden (null bila n == 0)."
+          },
+          "max_importance": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Importance",
+            "description": "Nilai maksimum importance lintas responden (null bila n == 0)."
+          },
+          "max_frequency": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Frequency",
+            "description": "Nilai maksimum frequency lintas responden (null bila n == 0)."
+          },
+          "max_criticality": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Criticality",
+            "description": "Nilai maksimum criticality lintas responden (null bila n == 0)."
+          },
+          "rating_spread": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rating Spread",
+            "description": "True bila selisih max - min >= 2 pada minimal satu dimensi; sinyal perlu telaah, bukan bukti error, dan tidak memengaruhi flag lain (null bila n == 0)."
+          },
           "selection_essential": {
             "anyOf": [
               {

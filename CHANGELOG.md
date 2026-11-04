@@ -9,6 +9,9 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ### Ditambahkan
 
+- Halaman hasil OPM menampilkan sebaran rating (min / median / maks) untuk Importance, Frequency,
+  dan Criticality, serta penanda amber "Perlu telaah" bila `rating_spread` benar. Nilai kosong tampil
+  "—" (issue #91).
 - Aksi POST tulis di halaman Tim Kajian modul redesain (tambah kode orang, konteks, masalah, sesi,
   catatan versi metode, bukti, alternatif, proses, langkah, koreksi, mulai penilaian, ubah status
   penilaian, keputusan prioritas, isian luring, angkat masalah, buka/tutup konfirmasi) kini mengirim
