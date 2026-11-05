@@ -4049,6 +4049,122 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/system/ai/penyedia": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Pengaturan penyedia model AI
+         * @description Baca mode, model, effort, status kunci, dan status CLI langganan (admin saja).
+         *
+         *     Dapat menjalankan subprocess status CLI bila binary terpasang. Kredensial dan identitas
+         *     akun tidak pernah ada di respons; memilih penyedia tidak menyalakan AI.
+         */
+        get: operations["system_ai_penyedia_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/system/ai/penyedia/mode": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Ubah mode penyedia model AI
+         * @description Pilih penyedia (admin saja). ``409`` bila sama; mode langganan boleh walau CLI belum siap.
+         *
+         *     Tidak menyalakan AI. Aktor diambil dari token.
+         */
+        post: operations["system_ai_penyedia_mode"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/system/ai/penyedia/model": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Ubah model dan effort AI
+         * @description Ubah model dan effort (admin saja). ``null`` mengembalikan ke bawaan.
+         *
+         *     Raises:
+         *         ModelDitolak: Nama model tidak sah atau mewajibkan retensi (``422 MODEL_DITOLAK``).
+         *         ConflictError: Keduanya sama dengan yang berlaku (``409``).
+         */
+        post: operations["system_ai_penyedia_model"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/system/ai/penyedia/kredensial": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Pasang kunci API Anthropic
+         * @description Simpan kunci API terenkripsi, menggantikan yang lama (admin saja).
+         *
+         *     Respons hanya memuat empat karakter akhir. Catatan idempotensi menyimpan respons itu dan
+         *     hash dari key header; isi permintaan tidak pernah disimpan. Key yang sama dengan kunci
+         *     berbeda membalas respons lama tanpa memasang kunci baru.
+         *
+         *     Raises:
+         *         KunciIndukTidakAda: Kunci induk kosong atau salah (``503 KUNCI_INDUK_TIDAK_ADA``).
+         */
+        post: operations["system_ai_penyedia_kredensial_pasang"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/system/ai/penyedia/kredensial/hapus": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Hapus kunci API Anthropic
+         * @description Hapus kunci API tersimpan (admin saja). ``409`` bila tidak terpasang.
+         */
+        post: operations["system_ai_penyedia_kredensial_hapus"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -13437,6 +13553,172 @@ export interface components {
             hasil_serap: string | null;
             /** Kode Serap */
             kode_serap: string[] | null;
+        };
+        /**
+         * AiEffort
+         * @description Kedalaman berpikir yang diizinkan.
+         * @enum {string}
+         */
+        AiEffort: "low" | "medium" | "high" | "xhigh" | "max";
+        /**
+         * AiPenyediaKredensialHapus
+         * @description Body ``POST .../penyedia/kredensial/hapus``.
+         */
+        AiPenyediaKredensialHapus: {
+            /**
+             * Alasan
+             * @description Alasan aksi (min. 5 karakter).
+             * @example Beralih penyedia untuk evaluasi
+             */
+            alasan: string;
+        };
+        /**
+         * AiPenyediaKredensialPasang
+         * @description Body ``POST .../penyedia/kredensial``. Nilai kunci tidak pernah keluar lagi.
+         */
+        AiPenyediaKredensialPasang: {
+            /**
+             * Alasan
+             * @description Alasan aksi (min. 5 karakter).
+             * @example Beralih penyedia untuk evaluasi
+             */
+            alasan: string;
+            /**
+             * Kunci Api
+             * Format: password
+             * @description Kunci API Anthropic (min. 20 karakter). Hanya dapat ditulis.
+             */
+            kunci_api: string;
+        };
+        /**
+         * AiPenyediaMode
+         * @description Penyedia model AI yang dipilih admin. Memilih tidak menyalakan AI.
+         * @enum {string}
+         */
+        AiPenyediaMode: "MATI" | "API_ANTHROPIC" | "LANGGANAN_CLAUDE";
+        /**
+         * AiPenyediaModeUbah
+         * @description Body ``POST .../penyedia/mode``.
+         */
+        AiPenyediaModeUbah: {
+            /**
+             * Alasan
+             * @description Alasan aksi (min. 5 karakter).
+             * @example Beralih penyedia untuk evaluasi
+             */
+            alasan: string;
+            /** @description Penyedia baru. Memilih tidak menyalakan AI. */
+            mode: components["schemas"]["AiPenyediaMode"];
+        };
+        /**
+         * AiPenyediaModelUbah
+         * @description Body ``POST .../penyedia/model``. ``null`` mengembalikan nilai ke bawaan.
+         *
+         *     Kedua field wajib dikirim supaya field yang lupa disertakan tidak diam-diam mereset
+         *     nilai yang berlaku. ``model`` sengaja tanpa batasan bentuk di sini: nama yang tidak sah
+         *     ditolak service dengan kode ``MODEL_DITOLAK``.
+         */
+        AiPenyediaModelUbah: {
+            /**
+             * Alasan
+             * @description Alasan aksi (min. 5 karakter).
+             * @example Beralih penyedia untuk evaluasi
+             */
+            alasan: string;
+            /**
+             * Model
+             * @description Nama model, atau null untuk bawaan.
+             */
+            model: string | null;
+            /** @description Effort, atau null untuk bawaan. */
+            effort: components["schemas"]["AiEffort"] | null;
+        };
+        /**
+         * AiPenyediaRead
+         * @description Respons pengaturan penyedia AI. Tanpa kredensial maupun identitas akun.
+         */
+        AiPenyediaRead: {
+            /** @description Penyedia terpilih; MATI bila belum diatur. */
+            mode: components["schemas"]["AiPenyediaMode"];
+            /**
+             * Mode Tersedia
+             * @description Semua mode yang dapat dipilih.
+             */
+            mode_tersedia: components["schemas"]["AiPenyediaMode"][];
+            /**
+             * Kredensial Terpasang
+             * @description True bila kunci API tersimpan.
+             */
+            kredensial_terpasang: boolean;
+            /**
+             * Kredensial Akhiran
+             * @description Empat karakter terakhir kunci API.
+             */
+            kredensial_akhiran?: string | null;
+            /**
+             * Kredensial Terbaca
+             * @description True bila kunci tersimpan dapat didekripsi; false bila tidak ada kunci.
+             */
+            kredensial_terbaca: boolean;
+            /**
+             * Enkripsi Siap
+             * @description True bila kunci induk deployment sah.
+             */
+            enkripsi_siap: boolean;
+            /**
+             * Model
+             * @description Model efektif.
+             */
+            model: string;
+            /** @description Effort efektif. */
+            effort: components["schemas"]["AiEffort"];
+            /**
+             * Effort Tersedia
+             * @description Semua effort yang dapat dipilih.
+             */
+            effort_tersedia: components["schemas"]["AiEffort"][];
+            /**
+             * Model Bawaan
+             * @description Model bila pengaturan kosong.
+             */
+            model_bawaan: string;
+            /** @description Effort bila pengaturan kosong. */
+            effort_bawaan: components["schemas"]["AiEffort"];
+            /**
+             * Diperbarui Oleh
+             * @description Aktor perubahan terakhir.
+             */
+            diperbarui_oleh?: string | null;
+            /**
+             * Diperbarui Pada
+             * @description Waktu perubahan terakhir (UTC).
+             */
+            diperbarui_pada?: string | null;
+            /**
+             * Langganan Cli Terpasang
+             * @description True bila binary CLI langganan ada.
+             */
+            langganan_cli_terpasang: boolean;
+            /**
+             * Langganan Cli Masuk
+             * @description True bila CLI langganan sudah masuk.
+             */
+            langganan_cli_masuk: boolean;
+            /**
+             * Langganan Cli Versi
+             * @description Versi CLI langganan.
+             */
+            langganan_cli_versi?: string | null;
+            /**
+             * Inference Geo
+             * @description Nilai env AI_INFERENCE_GEO, baca-saja; kosong bila tidak diatur.
+             */
+            inference_geo: string;
+            /**
+             * Refusal Fallback
+             * @description Nilai env AI_REFUSAL_FALLBACK, baca-saja.
+             */
+            refusal_fallback: boolean;
         };
     };
     responses: never;
@@ -33528,6 +33810,305 @@ export interface operations {
             };
         };
     };
+    system_ai_penyedia_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AiPenyediaRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    system_ai_penyedia_mode: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AiPenyediaModeUbah"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AiPenyediaRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Tidak ada perubahan atau key sedang diproses. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Payload tidak valid. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    system_ai_penyedia_model: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AiPenyediaModelUbah"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AiPenyediaRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Tidak ada perubahan atau key sedang diproses. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Payload tidak valid. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    system_ai_penyedia_kredensial_pasang: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AiPenyediaKredensialPasang"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AiPenyediaRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Tidak ada perubahan atau key sedang diproses. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Payload tidak valid. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description KUNCI_INDUK_TIDAK_ADA: kunci induk enkripsi belum diatur atau salah. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    system_ai_penyedia_kredensial_hapus: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AiPenyediaKredensialHapus"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AiPenyediaRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Tidak ada perubahan atau key sedang diproses. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Payload tidak valid. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
 }
 export type JabatanRead = components["schemas"]["JabatanRead"];
 export type JenjangPendidikanRead = components["schemas"]["JenjangPendidikanRead"];
@@ -33685,3 +34266,10 @@ export type TinjauanCreate = components["schemas"]["TinjauanCreate"];
 export type AksiTinjauan = components["schemas"]["AksiTinjauan"];
 export type PermintaanAiRead = components["schemas"]["PermintaanAiRead"];
 export type PermintaanAiCreate = components["schemas"]["PermintaanAiCreate"];
+export type AiPenyediaRead = components["schemas"]["AiPenyediaRead"];
+export type AiPenyediaMode = components["schemas"]["AiPenyediaMode"];
+export type AiEffort = components["schemas"]["AiEffort"];
+export type AiPenyediaModeUbah = components["schemas"]["AiPenyediaModeUbah"];
+export type AiPenyediaModelUbah = components["schemas"]["AiPenyediaModelUbah"];
+export type AiPenyediaKredensialPasang = components["schemas"]["AiPenyediaKredensialPasang"];
+export type AiPenyediaKredensialHapus = components["schemas"]["AiPenyediaKredensialHapus"];

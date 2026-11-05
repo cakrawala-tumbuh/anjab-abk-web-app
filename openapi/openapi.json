@@ -31244,6 +31244,456 @@
           }
         }
       }
+    },
+    "/api/v1/system/ai/penyedia": {
+      "get": {
+        "tags": [
+          "system",
+          "system"
+        ],
+        "summary": "Pengaturan penyedia model AI",
+        "description": "Baca mode, model, effort, status kunci, dan status CLI langganan (admin saja).\n\nDapat menjalankan subprocess status CLI bila binary terpasang. Kredensial dan identitas\nakun tidak pernah ada di respons; memilih penyedia tidak menyalakan AI.",
+        "operationId": "system_ai_penyedia_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AiPenyediaRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan admin.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/system/ai/penyedia/mode": {
+      "post": {
+        "tags": [
+          "system",
+          "system"
+        ],
+        "summary": "Ubah mode penyedia model AI",
+        "description": "Pilih penyedia (admin saja). ``409`` bila sama; mode langganan boleh walau CLI belum siap.\n\nTidak menyalakan AI. Aktor diambil dari token.",
+        "operationId": "system_ai_penyedia_mode",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Kunci idempotency opsional.",
+              "title": "Idempotency-Key"
+            },
+            "description": "Kunci idempotency opsional."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AiPenyediaModeUbah"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AiPenyediaRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan admin.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Tidak ada perubahan atau key sedang diproses.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Payload tidak valid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/system/ai/penyedia/model": {
+      "post": {
+        "tags": [
+          "system",
+          "system"
+        ],
+        "summary": "Ubah model dan effort AI",
+        "description": "Ubah model dan effort (admin saja). ``null`` mengembalikan ke bawaan.\n\nRaises:\n    ModelDitolak: Nama model tidak sah atau mewajibkan retensi (``422 MODEL_DITOLAK``).\n    ConflictError: Keduanya sama dengan yang berlaku (``409``).",
+        "operationId": "system_ai_penyedia_model",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Kunci idempotency opsional.",
+              "title": "Idempotency-Key"
+            },
+            "description": "Kunci idempotency opsional."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AiPenyediaModelUbah"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AiPenyediaRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan admin.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Tidak ada perubahan atau key sedang diproses.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Payload tidak valid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/system/ai/penyedia/kredensial": {
+      "post": {
+        "tags": [
+          "system",
+          "system"
+        ],
+        "summary": "Pasang kunci API Anthropic",
+        "description": "Simpan kunci API terenkripsi, menggantikan yang lama (admin saja).\n\nRespons hanya memuat empat karakter akhir. Catatan idempotensi menyimpan respons itu dan\nhash dari key header; isi permintaan tidak pernah disimpan. Key yang sama dengan kunci\nberbeda membalas respons lama tanpa memasang kunci baru.\n\nRaises:\n    KunciIndukTidakAda: Kunci induk kosong atau salah (``503 KUNCI_INDUK_TIDAK_ADA``).",
+        "operationId": "system_ai_penyedia_kredensial_pasang",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Kunci idempotency opsional.",
+              "title": "Idempotency-Key"
+            },
+            "description": "Kunci idempotency opsional."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AiPenyediaKredensialPasang"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AiPenyediaRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan admin.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Tidak ada perubahan atau key sedang diproses.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Payload tidak valid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "KUNCI_INDUK_TIDAK_ADA: kunci induk enkripsi belum diatur atau salah.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/system/ai/penyedia/kredensial/hapus": {
+      "post": {
+        "tags": [
+          "system",
+          "system"
+        ],
+        "summary": "Hapus kunci API Anthropic",
+        "description": "Hapus kunci API tersimpan (admin saja). ``409`` bila tidak terpasang.",
+        "operationId": "system_ai_penyedia_kredensial_hapus",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Kunci idempotency opsional.",
+              "title": "Idempotency-Key"
+            },
+            "description": "Kunci idempotency opsional."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AiPenyediaKredensialHapus"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AiPenyediaRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan admin.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Tidak ada perubahan atau key sedang diproses.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Payload tidak valid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -50746,6 +51196,296 @@
         ],
         "title": "PermintaanAiRead",
         "description": "Satu permintaan draf AI beserta status job-nya; tanpa `masukan` dan `keluaran`."
+      },
+      "AiEffort": {
+        "type": "string",
+        "enum": [
+          "low",
+          "medium",
+          "high",
+          "xhigh",
+          "max"
+        ],
+        "title": "AiEffort",
+        "description": "Kedalaman berpikir yang diizinkan."
+      },
+      "AiPenyediaKredensialHapus": {
+        "properties": {
+          "alasan": {
+            "type": "string",
+            "maxLength": 2000,
+            "minLength": 5,
+            "title": "Alasan",
+            "description": "Alasan aksi (min. 5 karakter).",
+            "examples": [
+              "Beralih penyedia untuk evaluasi"
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "alasan"
+        ],
+        "title": "AiPenyediaKredensialHapus",
+        "description": "Body ``POST .../penyedia/kredensial/hapus``."
+      },
+      "AiPenyediaKredensialPasang": {
+        "properties": {
+          "alasan": {
+            "type": "string",
+            "maxLength": 2000,
+            "minLength": 5,
+            "title": "Alasan",
+            "description": "Alasan aksi (min. 5 karakter).",
+            "examples": [
+              "Beralih penyedia untuk evaluasi"
+            ]
+          },
+          "kunci_api": {
+            "type": "string",
+            "minLength": 20,
+            "format": "password",
+            "title": "Kunci Api",
+            "description": "Kunci API Anthropic (min. 20 karakter). Hanya dapat ditulis.",
+            "writeOnly": true
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "alasan",
+          "kunci_api"
+        ],
+        "title": "AiPenyediaKredensialPasang",
+        "description": "Body ``POST .../penyedia/kredensial``. Nilai kunci tidak pernah keluar lagi."
+      },
+      "AiPenyediaMode": {
+        "type": "string",
+        "enum": [
+          "MATI",
+          "API_ANTHROPIC",
+          "LANGGANAN_CLAUDE"
+        ],
+        "title": "AiPenyediaMode",
+        "description": "Penyedia model AI yang dipilih admin. Memilih tidak menyalakan AI."
+      },
+      "AiPenyediaModeUbah": {
+        "properties": {
+          "alasan": {
+            "type": "string",
+            "maxLength": 2000,
+            "minLength": 5,
+            "title": "Alasan",
+            "description": "Alasan aksi (min. 5 karakter).",
+            "examples": [
+              "Beralih penyedia untuk evaluasi"
+            ]
+          },
+          "mode": {
+            "$ref": "#/components/schemas/AiPenyediaMode",
+            "description": "Penyedia baru. Memilih tidak menyalakan AI."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "alasan",
+          "mode"
+        ],
+        "title": "AiPenyediaModeUbah",
+        "description": "Body ``POST .../penyedia/mode``."
+      },
+      "AiPenyediaModelUbah": {
+        "properties": {
+          "alasan": {
+            "type": "string",
+            "maxLength": 2000,
+            "minLength": 5,
+            "title": "Alasan",
+            "description": "Alasan aksi (min. 5 karakter).",
+            "examples": [
+              "Beralih penyedia untuk evaluasi"
+            ]
+          },
+          "model": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Model",
+            "description": "Nama model, atau null untuk bawaan."
+          },
+          "effort": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AiEffort"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Effort, atau null untuk bawaan."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "alasan",
+          "model",
+          "effort"
+        ],
+        "title": "AiPenyediaModelUbah",
+        "description": "Body ``POST .../penyedia/model``. ``null`` mengembalikan nilai ke bawaan.\n\nKedua field wajib dikirim supaya field yang lupa disertakan tidak diam-diam mereset\nnilai yang berlaku. ``model`` sengaja tanpa batasan bentuk di sini: nama yang tidak sah\nditolak service dengan kode ``MODEL_DITOLAK``."
+      },
+      "AiPenyediaRead": {
+        "properties": {
+          "mode": {
+            "$ref": "#/components/schemas/AiPenyediaMode",
+            "description": "Penyedia terpilih; MATI bila belum diatur."
+          },
+          "mode_tersedia": {
+            "items": {
+              "$ref": "#/components/schemas/AiPenyediaMode"
+            },
+            "type": "array",
+            "title": "Mode Tersedia",
+            "description": "Semua mode yang dapat dipilih."
+          },
+          "kredensial_terpasang": {
+            "type": "boolean",
+            "title": "Kredensial Terpasang",
+            "description": "True bila kunci API tersimpan."
+          },
+          "kredensial_akhiran": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Kredensial Akhiran",
+            "description": "Empat karakter terakhir kunci API."
+          },
+          "kredensial_terbaca": {
+            "type": "boolean",
+            "title": "Kredensial Terbaca",
+            "description": "True bila kunci tersimpan dapat didekripsi; false bila tidak ada kunci."
+          },
+          "enkripsi_siap": {
+            "type": "boolean",
+            "title": "Enkripsi Siap",
+            "description": "True bila kunci induk deployment sah."
+          },
+          "model": {
+            "type": "string",
+            "title": "Model",
+            "description": "Model efektif."
+          },
+          "effort": {
+            "$ref": "#/components/schemas/AiEffort",
+            "description": "Effort efektif."
+          },
+          "effort_tersedia": {
+            "items": {
+              "$ref": "#/components/schemas/AiEffort"
+            },
+            "type": "array",
+            "title": "Effort Tersedia",
+            "description": "Semua effort yang dapat dipilih."
+          },
+          "model_bawaan": {
+            "type": "string",
+            "title": "Model Bawaan",
+            "description": "Model bila pengaturan kosong."
+          },
+          "effort_bawaan": {
+            "$ref": "#/components/schemas/AiEffort",
+            "description": "Effort bila pengaturan kosong."
+          },
+          "diperbarui_oleh": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Diperbarui Oleh",
+            "description": "Aktor perubahan terakhir."
+          },
+          "diperbarui_pada": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Diperbarui Pada",
+            "description": "Waktu perubahan terakhir (UTC)."
+          },
+          "langganan_cli_terpasang": {
+            "type": "boolean",
+            "title": "Langganan Cli Terpasang",
+            "description": "True bila binary CLI langganan ada."
+          },
+          "langganan_cli_masuk": {
+            "type": "boolean",
+            "title": "Langganan Cli Masuk",
+            "description": "True bila CLI langganan sudah masuk."
+          },
+          "langganan_cli_versi": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Langganan Cli Versi",
+            "description": "Versi CLI langganan."
+          },
+          "inference_geo": {
+            "type": "string",
+            "title": "Inference Geo",
+            "description": "Nilai env AI_INFERENCE_GEO, baca-saja; kosong bila tidak diatur."
+          },
+          "refusal_fallback": {
+            "type": "boolean",
+            "title": "Refusal Fallback",
+            "description": "Nilai env AI_REFUSAL_FALLBACK, baca-saja."
+          }
+        },
+        "type": "object",
+        "required": [
+          "mode",
+          "mode_tersedia",
+          "kredensial_terpasang",
+          "kredensial_terbaca",
+          "enkripsi_siap",
+          "model",
+          "effort",
+          "effort_tersedia",
+          "model_bawaan",
+          "effort_bawaan",
+          "langganan_cli_terpasang",
+          "langganan_cli_masuk",
+          "inference_geo",
+          "refusal_fallback"
+        ],
+        "title": "AiPenyediaRead",
+        "description": "Respons pengaturan penyedia AI. Tanpa kredensial maupun identitas akun."
       }
     },
     "securitySchemes": {
