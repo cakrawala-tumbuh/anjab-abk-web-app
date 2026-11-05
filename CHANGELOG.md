@@ -9,6 +9,10 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ### Ditambahkan
 
+- Layar Tim Kajian **Tinjauan Narasi** (`/narasi/antrean/[narasi_id]`): draf dan teks sumber
+  berdampingan (bertumpuk di layar sempit), panel ketidakpastian, dan empat aksi satu per satu
+  (Terima dengan konfirmasi, Koreksi, Tolak, Butuh sumber). Keputusan selalu atas versi yang
+  ditampilkan, hasil tertinggi hanya `TEAM_VERIFIED`, tanpa aksi massal (issue #100).
 - Layar Tim Kajian **Antrean Tinjauan Narasi** (`/narasi/antrean`): daftar kasus berstatus `AI_DRAFT`,
   `TEAM_REVIEW`, `NEED_FACT` dalam urutan server, dengan filter status, instrumen, periode lewat URL,
   tanda **Draf AI** dan kontradiksi, tanpa kotak centang atau aksi massal. Menu **Narasi → Antrean**

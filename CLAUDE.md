@@ -84,6 +84,29 @@ src/
 
 ## Revisi Desain
 
+### [2026-11-05] Layar tinjauan narasi (`/narasi/antrean/[narasi_id]`)
+
+Item #100; konsumen kontrak backend #95. Bergantung pada #98 (daftar antrean).
+
+- **Kontrak tidak diregenerasi**: `openapi/openapi.json` dan `schema.ts` dari #98 sudah memuat
+  `GET /api/v1/narasi/antrean/{narasi_id}` (`AntreanDetailRead`) dan `POST /api/v1/narasi/kasus/{narasi_id}/tinjauan`
+  (`TinjauanCreate` -> `NarasiEventRead`). Hanya alias `AntreanDetailRead`/`AntreanSumberRead`/`TinjauanCreate`/
+  `AksiTinjauan` ditambahkan di akhir `schema.ts`.
+- **Rute** `antrean/[narasi_id]/` (`page.tsx`, `data.ts`, `loading.tsx`, `error.tsx`). `fetchDetailAntrean`
+  membedakan `ada`, `luar_antrean` (409 `narasi_tidak_dalam_antrean`, jadi panel keterangan), dan `tidak_ada` (404, `notFound()`);
+  status lain (termasuk 403) dilempar `apiErrorDari(res)` ke `error.tsx`.
+- **Tampilan**: `PanelDraf` dan `PanelSumber` dalam grid `lg:grid-cols-2` (bertumpuk di layar sempit), lalu
+  `PanelKetidakpastian`. `AI_DRAFT` selalu berlabel kandidat. Versi tanpa teks dinyatakan terang.
+- **Aksi** (`AksiTinjauan`, Client Component; `FormKoreksi` terkendali, state dimiliki induk agar isian bertahan saat
+  `router.refresh()`): `narasi_versi_id` selalu `versi_id` yang ditampilkan; aktor tidak pernah dikirim; `Idempotency-Key`
+  lewat `useIdempotencyKey().keyUntuk(body)`. `TERIMA` memakai `window.confirm` dan nonaktif bila `teks` null; `TOLAK`/`BUTUH_SUMBER`
+  wajib catatan >= 5 karakter; `KOREKSI` wajib teks dan minimal satu sumber. 409 `versi_basi` menawarkan muat ulang tanpa
+  membuang isian; 409 `narasi_tanpa_teks` tampil sebagai pesan. Sukses hanya setelah 2xx, lalu `push("/narasi/antrean")` dengan
+  pesan yang menyebut `ke_status`. Tidak ada aksi massal.
+- Logika murni di `src/lib/narasi-tinjauan.ts`. Docs: `docs-usage/ik/narasi-tinjauan.md` (IK-16). Tidak mengubah
+  `FEATURE_AI_NARRATIVE_DRAFT`, tidak menyalakan AI.
+- Detail keputusan: issue #100 repo ini.
+
 ### [2026-11-05] Layar antrean reviewer narasi (`/narasi/antrean`)
 
 Konsumen kontrak backend `#95`; butir `#98` repo ini.

@@ -33392,3 +33392,7 @@ export type NarasiEventRead = components["schemas"]["NarasiEventRead"];
 export type NarasiRiwayatRead = components["schemas"]["NarasiRiwayatRead"];
 export type SumberRevisiItem = components["schemas"]["SumberRevisiItem"];
 export type AntreanItemRead = components["schemas"]["AntreanItemRead"];
+export type AntreanDetailRead = components["schemas"]["AntreanDetailRead"];
+export type AntreanSumberRead = components["schemas"]["AntreanSumberRead"];
+export type TinjauanCreate = components["schemas"]["TinjauanCreate"];
+export type AksiTinjauan = components["schemas"]["AksiTinjauan"];

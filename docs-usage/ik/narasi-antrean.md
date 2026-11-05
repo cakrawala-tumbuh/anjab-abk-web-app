@@ -20,7 +20,8 @@ per satu. Halaman ini tidak meminta draf AI dan tidak menyalakan AI.
    versi terbaru berasal dari draf AI. Tanda peringatan **kontradiksi** muncul bila ada sumber
    yang bertentangan dengan isi versi.
 3. Kode instrumen, isian, dan peran tampil apa adanya sebagaimana dicatat pada kasus.
-4. Klik status pada sebuah baris untuk membuka kasus tersebut.
+4. Klik status pada sebuah baris untuk membuka kasus tersebut. Langkah meninjaunya ada di
+   [IK-16 Tinjauan Narasi](narasi-tinjauan.md).
 
 ## Menyaring antrean
 
