@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { offsetHalaman, UKURAN_HALAMAN } from "@/components/pagination";
 import { withServerAuth } from "@/lib/api/client";
 import { apiErrorDari } from "@/lib/api/errors";
@@ -57,6 +58,11 @@ export default async function SistemAiPage({ searchParams }: Props) {
         <p className="page-subtext">
           Hentikan atau hidupkan kembali layanan AI dengan alasan, dan telusuri register run. Isi
           masukan dan keluaran tidak pernah ditampilkan.
+        </p>
+        <p className="mt-1 text-sm">
+          <Link href="/sistem/ai/penyedia" className="text-blue-600 underline">
+            Pengaturan penyedia AI
+          </Link>
         </p>
       </div>
       <SaklarPanel saklar={saklarRes.data} accessToken={session?.accessToken} />

@@ -84,6 +84,31 @@ src/
 
 ## Revisi Desain
 
+### [2026-11-05] Layar admin Penyedia AI (`/sistem/ai/penyedia`)
+
+Item #104; konsumen API backend `#110`.
+
+- **Kontrak diverifikasi ke kode** backend master `ee9436cd9d8b85d7f932b52838b9da8ee2aa499f` (klon scratch,
+  image `Dockerfile.test`, `scripts/export_openapi.py`): `GET /api/v1/system/ai/penyedia` dan empat `POST`
+  (`.../mode`, `.../model`, `.../kredensial`, `.../kredensial/hapus`), semua beralasan >= 5 karakter. `openapi.json`
+  hanya bertambah (lima rute); alias `AiPenyedia*`/`AiEffort` ditambahkan di akhir `schema.ts`.
+- **Rute** `src/app/(auth)/sistem/ai/penyedia/` (`page.tsx`, `penyedia-panel.tsx`, `loading.tsx`, `error.tsx`) di
+  bawah layout `admin`; kedua GET (penyedia + saklar) data inti dan melempar `apiErrorDari`. Logika murni di
+  `src/lib/ai-penyedia.ts`. Sidebar: item `Penyedia AI` (admin saja); item induk `/sistem/ai` tidak ikut aktif saat
+  item yang lebih spesifik aktif.
+- **Opsi mode dan effort hanya dari `mode_tersedia` dan `effort_tersedia`**, tidak ada daftar tetap di klien.
+  Model berupa input teks (kosong dikirim `null` = bawaan).
+- **Kunci API**: satu-satunya input kredensial di layar. Dikosongkan di `finally` setelah respons APA PUN (termasuk
+  galat jaringan), tidak pernah masuk URL, toast, pesan galat, props, atau `Idempotency-Key`. Aksi kunci memakai
+  key BARU per upaya (`crypto.randomUUID()`), BUKAN `useIdempotencyKey().keyUntuk(body)`: hook itu menyimpan
+  serialisasi isi kiriman di memori, dan backend membalas respons lama bila key sama dipakai dengan kunci berbeda.
+  `enkripsi_siap=false` menonaktifkan formulir kunci; `kredensial_terbaca=false` pada kunci terpasang menampilkan
+  peringatan pasang ulang.
+- **Langganan**: status CLI baca-saja, tanpa kolom token atau alur login di aplikasi. Keterangan fakta dan tiga
+  tautan tampil apa adanya; mode langganan tetap dapat dipilih, peringatan CLI belum siap hanya informasi.
+- Tidak mengubah geo atau fallback, tidak menyalakan AI. Docs: `docs-usage/ik/penyedia-ai.md` (IK-17).
+  Detail keputusan: issue #104 repo ini.
+
 ### [2026-11-05] Panel permintaan draf AI (`/narasi/kasus/[id]`)
 
 Item #101; konsumen kontrak backend #98 (pengaju) dan #99 (penyerap). Bergantung pada #97 dan #100.

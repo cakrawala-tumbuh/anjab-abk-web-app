@@ -58,6 +58,7 @@ describe("struktur menu admin", () => {
       "/master-data",
       "/backup",
       "/sistem/ai",
+      "/sistem/ai/penyedia",
     ]);
   });
 });
@@ -100,6 +101,23 @@ describe("menu Saklar & Run AI", () => {
     expect(hrefs(["partisipan"])).not.toContain("/sistem/ai");
     expect(hrefs(["tim-kajian"])).not.toContain("/sistem/ai");
     expect(hrefs(["sekolah-pengisi"])).not.toContain("/sistem/ai");
+  });
+});
+
+describe("menu Penyedia AI", () => {
+  const hrefs = (g: string[]) => navForGroups(g).map((e) => e.href);
+
+  it("hanya tampil untuk admin", () => {
+    expect(hrefs(["admin"])).toContain("/sistem/ai/penyedia");
+    expect(hrefs([])).not.toContain("/sistem/ai/penyedia");
+    expect(hrefs(["partisipan"])).not.toContain("/sistem/ai/penyedia");
+    expect(hrefs(["tim-kajian"])).not.toContain("/sistem/ai/penyedia");
+    expect(hrefs(["sekolah-pengisi"])).not.toContain("/sistem/ai/penyedia");
+  });
+
+  it("berlabel Penyedia AI", () => {
+    const item = NAV_ADMIN.find((e) => e.href === "/sistem/ai/penyedia");
+    expect(item?.label).toBe("Penyedia AI");
   });
 });
 

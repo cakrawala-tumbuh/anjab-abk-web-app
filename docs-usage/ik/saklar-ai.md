@@ -9,7 +9,8 @@ Pengguna selain Administrator melihat panel "Tidak berhak mengakses halaman ini"
 !!! note "Yang TIDAK bisa dilakukan di halaman ini"
 Halaman ini tidak menyalakan AI. Menyalakan atau mematikan flag layanan adalah pengaturan
 deployment di server, bukan tombol di layar ini. Isi masukan dan keluaran AI juga tidak
-pernah ditampilkan, hanya catatan teknis tiap run.
+pernah ditampilkan, hanya catatan teknis tiap run. Pemilihan penyedia model dan kunci API ada
+di halaman terpisah, [IK-17 Penyedia AI](penyedia-ai.md).
 
 ---
 

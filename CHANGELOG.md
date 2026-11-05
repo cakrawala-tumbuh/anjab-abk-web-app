@@ -9,6 +9,11 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ### Ditambahkan
 
+- Layar admin **Penyedia AI** (`/sistem/ai/penyedia`): pilih mode Anthropic API atau langganan
+  Anthropic, atur model dan effort (opsi dari API), pasang atau hapus kunci API (kolom kunci
+  dikosongkan setelah respons apa pun, kunci tidak pernah tampil kembali), dan lihat status CLI
+  langganan serta setelan baca-saja. Memilih penyedia tidak menyalakan AI. Item sidebar **Penyedia
+  AI** hanya untuk admin (issue #104).
 - Panel **Permintaan draf AI** di detail kasus narasi (`/narasi/kasus/[id]`): pengajuan draf dengan
   pemilih sumber (tanda izin AI), status permintaan yang jujur (`AI_PENDING`, gagal, menunggu
   penyerapan, draf tersedia, butuh fakta, `MANUAL_REVIEW`), pesan untuk setiap penolakan 409/422,

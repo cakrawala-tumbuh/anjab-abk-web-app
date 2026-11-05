@@ -14,6 +14,7 @@ import {
   DatabaseBackup,
   FileText,
   Gauge,
+  KeyRound,
   LayoutDashboard,
   Scale,
   Users,
@@ -134,6 +135,7 @@ export const NAV_ADMIN: ReadonlyArray<NavEntry> = [
   },
   { kind: "link", href: "/backup", label: "Backup & Restore", icon: DatabaseBackup },
   { kind: "link", href: "/sistem/ai", label: "Saklar & Run AI", icon: Bot },
+  { kind: "link", href: "/sistem/ai/penyedia", label: "Penyedia AI", icon: KeyRound },
 ];
 
 export const NAV_PARTISIPAN: ReadonlyArray<NavEntry> = [
@@ -200,7 +202,16 @@ function NavList({
   return (
     <>
       {entries.map((entry) => {
-        const active = isActiveHref(pathname, entry.href);
+        // Item yang href-nya awalan item lain (`/sistem/ai` vs `/sistem/ai/penyedia`) tidak ikut
+        // bertanda aktif bila item yang lebih spesifik sedang aktif.
+        const active =
+          isActiveHref(pathname, entry.href) &&
+          !entries.some(
+            (lain) =>
+              lain !== entry &&
+              lain.href.startsWith(`${entry.href}/`) &&
+              isActiveHref(pathname, lain.href),
+          );
         const Icon = entry.icon;
 
         if (entry.kind === "link") {
