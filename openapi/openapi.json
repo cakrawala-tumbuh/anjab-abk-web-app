@@ -30985,6 +30985,265 @@
           }
         }
       }
+    },
+    "/api/v1/narasi/kasus/{narasi_id}/draf-ai": {
+      "post": {
+        "tags": [
+          "narasi"
+        ],
+        "summary": "Ajukan draf AI atas kasus narasi (tim-kajian)",
+        "description": "Ajukan job P10 atas satu kasus; tautan kasus dan `ai_run` dicatat di tabel permintaan.\n\nUrutan periksa mengikat: flag/saklar AI (sebelum membaca apa pun), mode PII, kasus,\nstatus, permintaan berjalan, sumber dikenal, sumber berizin AI, lalu pengajuan.",
+        "operationId": "narasi_kasus_draf_ai_ajukan",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "narasi_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Narasi Id"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Kunci idempotency opsional.",
+              "title": "Idempotency-Key"
+            },
+            "description": "Kunci idempotency opsional."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PermintaanAiCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PermintaanAiRead"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "feature_disabled; pii_mode_belum_didukung; narasi_status_tidak_sah; permintaan_berjalan; izin_sumber_tidak_ada; fungsi_belum_aktif.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan anggota grup tim-kajian.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Kasus narasi tidak ditemukan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "sumber_id tak dikenal / parameter tak sah.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/narasi/kasus/{narasi_id}/permintaan-ai": {
+      "get": {
+        "tags": [
+          "narasi"
+        ],
+        "summary": "Daftar permintaan draf AI atas kasus narasi (tim-kajian)",
+        "description": "Permintaan terbaru dulu beserta status job; tanpa `masukan` dan `keluaran`.",
+        "operationId": "narasi_kasus_permintaan_ai_list",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "narasi_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Narasi Id"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 500,
+              "minimum": 1,
+              "description": "Maks item per halaman.",
+              "default": 20,
+              "title": "Limit"
+            },
+            "description": "Maks item per halaman."
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Jumlah item yang dilewati.",
+              "default": 0,
+              "title": "Offset"
+            },
+            "description": "Jumlah item yang dilewati."
+          },
+          {
+            "name": "X-Tujuan-Akses",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN.",
+              "title": "X-Tujuan-Akses"
+            },
+            "description": "Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_PermintaanAiRead_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan anggota grup tim-kajian.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Kasus narasi tidak ditemukan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -50325,6 +50584,168 @@
         "type": "object",
         "title": "UjiKeringRequest",
         "description": "Payload uji kering."
+      },
+      "Page_PermintaanAiRead_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/PermintaanAiRead"
+            },
+            "type": "array",
+            "title": "Items",
+            "description": "Item pada halaman ini."
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total",
+            "description": "Total item tersedia.",
+            "examples": [
+              42
+            ]
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit",
+            "description": "Maksimum item per halaman.",
+            "examples": [
+              20
+            ]
+          },
+          "offset": {
+            "type": "integer",
+            "title": "Offset",
+            "description": "Jumlah item yang dilewati.",
+            "examples": [
+              0
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
+        "title": "Page[PermintaanAiRead]"
+      },
+      "PermintaanAiCreate": {
+        "properties": {
+          "sumber_ids": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "maxItems": 50,
+            "title": "Sumber Ids",
+            "description": "Id sumber narasi yang diajukan; boleh kosong."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "PermintaanAiCreate",
+        "description": "Badan `POST /narasi/kasus/{id}/draf-ai`.\n\n`sumber_ids` boleh kosong: sumber kosong berakhir `NEED_FACT` tanpa memanggil model."
+      },
+      "PermintaanAiRead": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id",
+            "description": "UUID v4 permintaan."
+          },
+          "job_id": {
+            "type": "string",
+            "title": "Job Id",
+            "description": "Id job asinkron."
+          },
+          "job_status": {
+            "$ref": "#/components/schemas/StatusJob",
+            "description": "Status job saat dibaca."
+          },
+          "job_error_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Job Error Code",
+            "description": "Kode galat job bila ada."
+          },
+          "ai_run_id": {
+            "type": "string",
+            "title": "Ai Run Id",
+            "description": "Id run pada register `ai_run`."
+          },
+          "sumber_ids": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Sumber Ids",
+            "description": "Sumber yang diajukan, urut pengajuan."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "diserap_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Diserap At",
+            "description": "Terisi saat hasil run diserap."
+          },
+          "hasil_serap": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Hasil Serap"
+          },
+          "kode_serap": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Kode Serap"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "job_id",
+          "job_status",
+          "job_error_code",
+          "ai_run_id",
+          "sumber_ids",
+          "created_at",
+          "diserap_at",
+          "hasil_serap",
+          "kode_serap"
+        ],
+        "title": "PermintaanAiRead",
+        "description": "Satu permintaan draf AI beserta status job-nya; tanpa `masukan` dan `keluaran`."
       }
     },
     "securitySchemes": {
