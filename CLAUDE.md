@@ -84,6 +84,29 @@ src/
 
 ## Revisi Desain
 
+### [2026-11-05] Panel permintaan draf AI (`/narasi/kasus/[id]`)
+
+Item #101; konsumen kontrak backend #98 (pengaju) dan #99 (penyerap). Bergantung pada #97 dan #100.
+
+- **Kontrak diverifikasi ke kode** backend master `4b01eba4e429a64b24273e8b360b2b261bd6b239` (klon scratch,
+  image `Dockerfile.test`, `scripts/export_openapi.py`): `POST /api/v1/narasi/kasus/{narasi_id}/draf-ai` (202
+  `PermintaanAiRead`, body `sumber_ids`) dan `GET .../permintaan-ai` (`Page[PermintaanAiRead]`); nama field cocok
+  dengan issue. `openapi.json` hanya bertambah (dua rute, tiga skema); alias `PermintaanAiRead`/`PermintaanAiCreate`
+  ditambahkan di akhir `schema.ts`. Enam kode 409 dibaca dari kode rute, bukan hanya dari openapi.
+- **Pemetaan tunggal** `statusPermintaanAi` (`src/lib/narasi-permintaan.ts`): belum diserap (`diserap_at` kosong)
+  - `PENDING`/`RUNNING` = `AI_PENDING`, `FAILED` = gagal (tampil `job_error_code`), `SUCCEEDED` = menunggu
+    penyerapan (BUKAN sukses), `MANUAL_REVIEW` = `MANUAL_REVIEW`; sudah diserap: `VERSI_DIBUAT` = draf tersedia
+    belum ditinjau (tautan antrean), `NEED_FACT` = butuh fakta, `MANUAL` = `MANUAL_REVIEW` + `kode_serap`. Nilai
+    tak dikenal menjadi `TAK_DIKENAL`, tidak pernah tampak sukses. Kata "berhasil"/"selesai" dilarang di panel
+    dan dijaga unit test.
+- **Baca**: daftar permintaan lewat `ambilSemuaHalaman` (data inti, gagal melempar); daftar dirender dari prop,
+  tanpa cermin state. **Tulis**: `PermintaanDrafAi` (Client Component) memakai `useIdempotencyKey().keyUntuk(body)`
+  (bukan `crypto.randomUUID()` mentah: hook repo ini sudah per upaya aksi dan isi-sadar), sukses hanya setelah
+  2xx dan hanya berarti "diterima". Flag tidak diperiksa di klien; 409 `feature_disabled` tampil sebagai pesan.
+  `AutoRefresh` terpasang hanya selagi ada permintaan belum diserap. Form revisi manual tidak disentuh.
+- Tidak mengubah `FEATURE_AI_NARRATIVE_DRAFT`, tidak menyalakan AI, tidak mengirim data riil. Docs:
+  `docs-usage/ik/narasi-kasus.md`. Detail keputusan: issue #101 repo ini.
+
 ### [2026-11-05] Layar tinjauan narasi (`/narasi/antrean/[narasi_id]`)
 
 Item #100; konsumen kontrak backend #95. Bergantung pada #98 (daftar antrean).

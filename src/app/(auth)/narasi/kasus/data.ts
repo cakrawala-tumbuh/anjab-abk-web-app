@@ -12,6 +12,7 @@ import type {
   NarasiKasusRead,
   NarasiRiwayatRead,
   NarasiSumberRingkas,
+  PermintaanAiRead,
 } from "@/lib/api/schema";
 import type { FilterKasus } from "@/lib/narasi-kasus";
 
@@ -95,6 +96,29 @@ export async function fetchSemuaSumber(
     const res = await withServerAuth(accessToken).GET("/api/v1/narasi/sumber", {
       params: { query: { limit, offset } },
     });
+    if (!res.data) throw apiErrorDari(res);
+    return { items: res.data.items, total: res.data.total };
+  });
+}
+
+/**
+ * Ambil SELURUH permintaan draf AI atas satu kasus (terbaru dulu). Data INTI panel: dasar
+ * keputusan "masih ada yang belum diserap", sehingga tidak boleh terpotong paginasi dan
+ * kegagalan melempar, tidak pernah menjadi daftar kosong.
+ *
+ * @param accessToken - Token akses sesi.
+ * @param id - Id kasus.
+ * @throws ApiError bila salah satu halaman gagal.
+ */
+export async function fetchSemuaPermintaanAi(
+  accessToken: string | undefined,
+  id: string,
+): Promise<PermintaanAiRead[]> {
+  return ambilSemuaHalaman<PermintaanAiRead>(async (limit, offset) => {
+    const res = await withServerAuth(accessToken).GET(
+      "/api/v1/narasi/kasus/{narasi_id}/permintaan-ai",
+      { params: { path: { narasi_id: id }, query: { limit, offset } } },
+    );
     if (!res.data) throw apiErrorDari(res);
     return { items: res.data.items, total: res.data.total };
   });

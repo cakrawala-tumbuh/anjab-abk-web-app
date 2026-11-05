@@ -9,6 +9,11 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ### Ditambahkan
 
+- Panel **Permintaan draf AI** di detail kasus narasi (`/narasi/kasus/[id]`): pengajuan draf dengan
+  pemilih sumber (tanda izin AI), status permintaan yang jujur (`AI_PENDING`, gagal, menunggu
+  penyerapan, draf tersedia, butuh fakta, `MANUAL_REVIEW`), pesan untuk setiap penolakan 409/422,
+  dan penyegaran otomatis hanya selagi ada yang belum diserap. Tidak ada tanda sukses sebelum hasil
+  diserap; AI tidak dinyalakan (issue #101).
 - Layar Tim Kajian **Tinjauan Narasi** (`/narasi/antrean/[narasi_id]`): draf dan teks sumber
   berdampingan (bertumpuk di layar sempit), panel ketidakpastian, dan empat aksi satu per satu
   (Terima dengan konfirmasi, Koreksi, Tolak, Butuh sumber). Keputusan selalu atas versi yang

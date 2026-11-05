@@ -2,7 +2,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { auth } from "@/lib/auth/auth";
 import { labelStatus } from "@/lib/narasi-kasus";
-import { fetchKasus, fetchRiwayat, fetchSemuaSumber } from "../data";
+import { fetchKasus, fetchRiwayat, fetchSemuaPermintaanAi, fetchSemuaSumber } from "../data";
+import { PermintaanDrafAi } from "./permintaan-draf-ai";
 import { RevisiManualForm } from "../revisi-manual-form";
 import { RiwayatKasus } from "../riwayat-kasus";
 
@@ -14,7 +15,7 @@ interface Props {
 
 /**
  * Halaman detail Kasus Narasi (Server Component): lingkup kasus, status, riwayat versi dan
- * event, serta formulir revisi manual. Daftar sumber untuk formulir adalah data inti: gagal
+ * event, panel permintaan draf AI, serta formulir revisi manual. Daftar sumber untuk formulir adalah data inti: gagal
  * muat dilempar ke `error.tsx`, tidak pernah menjadi pilihan kosong. 404 → tidak ditemukan.
  */
 export default async function DetailKasusPage({ params }: Props) {
@@ -23,7 +24,11 @@ export default async function DetailKasusPage({ params }: Props) {
   const token = session?.accessToken;
   const kasus = await fetchKasus(token, id);
   if (!kasus) notFound();
-  const [riwayat, sumber] = await Promise.all([fetchRiwayat(token, id), fetchSemuaSumber(token)]);
+  const [riwayat, sumber, permintaan] = await Promise.all([
+    fetchRiwayat(token, id),
+    fetchSemuaSumber(token),
+    fetchSemuaPermintaanAi(token, id),
+  ]);
 
   const baris: Array<[string, React.ReactNode]> = [
     ["Instrumen", kasus.instrument_id],
@@ -68,6 +73,19 @@ export default async function DetailKasusPage({ params }: Props) {
           Riwayat
         </h2>
         <RiwayatKasus versi={riwayat.versi} event={riwayat.event} />
+      </section>
+
+      <section aria-labelledby="draf-ai-kasus" className="space-y-2">
+        <h2 id="draf-ai-kasus" className="text-base font-semibold">
+          Permintaan draf AI
+        </h2>
+        <PermintaanDrafAi
+          kasusId={kasus.id}
+          statusKasus={kasus.status}
+          sumberOpsi={sumber}
+          permintaan={permintaan}
+          accessToken={token}
+        />
       </section>
 
       <section aria-labelledby="revisi-kasus" className="space-y-2">

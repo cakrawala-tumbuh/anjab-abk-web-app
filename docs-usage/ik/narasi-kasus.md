@@ -7,7 +7,8 @@ Buka grup **Narasi → Kasus** di sidebar kiri. Pengguna tanpa peran Tim Kajian 
 Administrator) melihat panel "Tidak berhak mengakses halaman ini".
 
 !!! note "Yang TIDAK bisa dilakukan di halaman ini"
-Halaman ini tidak meninjau, menyetujui, atau meminta draf AI, dan tidak menyalakan AI.
+Halaman ini tidak meninjau atau menyetujui draf, dan tidak menyalakan AI. Permintaan draf AI
+dapat diajukan, tetapi selama AI belum dinyalakan permintaan itu ditolak dengan pesan jelas.
 Hanya jenis **F1_FORMAL** dan kelas **NONPRIBADI** yang dibuka; keduanya tampil hanya-baca.
 
 ---
@@ -41,3 +42,26 @@ Hanya jenis **F1_FORMAL** dan kelas **NONPRIBADI** yang dibuka; keduanya tampil 
    bahwa versi sudah berubah; teks Anda tetap ada, klik **Muat ulang versi terbaru**, lalu
    simpan lagi.
 5. Bila daftar sumber gagal dimuat, halaman menampilkan galat, bukan pilihan kosong.
+
+## Meminta draf AI
+
+Bagian **Permintaan draf AI** di halaman detail kasus. Jalur manual di atas tetap tersedia
+kapan pun.
+
+1. Tombol **Minta draf AI** hanya muncul bila kasus berstatus `SOURCE_CHECKED` atau
+   `NEED_FACT`.
+2. Centang sumber yang diajukan. Tiap sumber ditandai **berizin AI** atau **tanpa izin AI**.
+   Bila tidak ada sumber yang dicentang, muncul peringatan bahwa hasilnya `NEED_FACT`;
+   permintaan tetap boleh dikirim.
+3. Klik **Minta draf AI**. Setelah server menerima, muncul "Permintaan diterima ... (AI_PENDING)".
+   Itu **bukan** tanda draf sudah ada: draf baru tersedia setelah statusnya berubah.
+4. Status tiap permintaan diperbarui otomatis selama masih ada yang belum diserap:
+   - `AI_PENDING`: menunggu atau sedang diproses.
+   - **Gagal diproses**: tampil kode galatnya; coba lagi nanti atau pakai jalur manual.
+   - **Menunggu penyerapan hasil**: belum ada draf.
+   - **Draf tersedia, belum ditinjau**: ada tautan ke antrean tinjauan.
+   - **Butuh fakta**: tambahkan fakta atau sumber.
+   - `MANUAL_REVIEW`: tulis revisi manual; kodenya tampil bila ada.
+5. Pesan penolakan yang mungkin muncul: AI belum dinyalakan (lanjutkan manual), status kasus tidak
+   sah, masih ada permintaan yang belum diserap, ada sumber tanpa izin AI, fungsi belum aktif,
+   atau sumber tidak dikenal.
