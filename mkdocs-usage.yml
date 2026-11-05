@@ -94,5 +94,6 @@ nav:
       - "IK-09 Backup & Restore": ik/backup-restore.md
       - "IK-10 Redesain Pekerjaan": ik/redesain-tim.md
       - "IK-11 Konfirmasi Redesain": ik/redesain-sekolah.md
+      - "IK-12 Saklar & Run AI": ik/saklar-ai.md
   - Referensi:
       - FAQ: referensi/faq.md

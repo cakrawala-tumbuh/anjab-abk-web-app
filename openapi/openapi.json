@@ -276,6 +276,510 @@
         }
       }
     },
+    "/api/v1/system/skema": {
+      "get": {
+        "tags": [
+          "system",
+          "system"
+        ],
+        "summary": "Revisi skema basis data",
+        "description": "Bandingkan skema basis data aktif dengan head migrasi kode dan model ORM (admin saja).\n\nHanya membaca; tidak menjalankan migrasi dan tidak memuat data baris. ``selaras`` hanya\nmembandingkan revisi, sedangkan ``selisih_model`` membandingkan struktur sebenarnya.",
+        "operationId": "system_skema_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SkemaDbRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan admin.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Basis data tak terjangkau.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/system/ai/runs": {
+      "get": {
+        "tags": [
+          "system",
+          "system"
+        ],
+        "summary": "Daftar run AI",
+        "description": "Daftar register run AI, terbaru dulu (admin saja). Tanpa ``masukan``/``keluaran``.",
+        "operationId": "system_ai_run_list",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "fungsi",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter fungsi AI.",
+              "title": "Fungsi"
+            },
+            "description": "Filter fungsi AI."
+          },
+          {
+            "name": "status_qa",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/StatusQaAi"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter status QA.",
+              "title": "Status Qa"
+            },
+            "description": "Filter status QA."
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 500,
+              "minimum": 1,
+              "description": "Maks item per halaman.",
+              "default": 20,
+              "title": "Limit"
+            },
+            "description": "Maks item per halaman."
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Jumlah item yang dilewati.",
+              "default": 0,
+              "title": "Offset"
+            },
+            "description": "Jumlah item yang dilewati."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_AiRunRead_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan admin.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/system/ai/runs/{run_id}": {
+      "get": {
+        "tags": [
+          "system",
+          "system"
+        ],
+        "summary": "Detail run AI",
+        "description": "Baca satu run AI (admin saja). ``masukan`` dan ``keluaran`` tidak pernah diekspos.",
+        "operationId": "system_ai_run_get",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "run_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Run Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AiRunRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan admin.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Run tak ditemukan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/system/ai/saklar": {
+      "get": {
+        "tags": [
+          "system",
+          "system"
+        ],
+        "summary": "Status kill switch layanan AI",
+        "description": "Status saklar: flag env, apakah dimatikan, dan event terakhir (admin saja).",
+        "operationId": "system_ai_saklar_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SaklarAiRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan admin.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/system/ai/saklar/matikan": {
+      "post": {
+        "tags": [
+          "system",
+          "system"
+        ],
+        "summary": "Matikan layanan AI seketika",
+        "description": "Catat event MATIKAN tanpa restart (admin saja). Aktor diambil dari token.",
+        "operationId": "system_ai_saklar_matikan",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Kunci idempotency opsional.",
+              "title": "Idempotency-Key"
+            },
+            "description": "Kunci idempotency opsional."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SaklarAiAlasan"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SaklarAiRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan admin.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Aksi berulang atau Idempotency-Key diproses.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/system/ai/saklar/hidupkan": {
+      "post": {
+        "tags": [
+          "system",
+          "system"
+        ],
+        "summary": "Hidupkan kembali layanan AI",
+        "description": "Catat event HIDUPKAN (admin saja). Tidak menyalakan flag env: dengan flag mati\n``boleh_jalan`` tetap ``false``. Aktor diambil dari token.",
+        "operationId": "system_ai_saklar_hidupkan",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Kunci idempotency opsional.",
+              "title": "Idempotency-Key"
+            },
+            "description": "Kunci idempotency opsional."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SaklarAiAlasan"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SaklarAiRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan admin.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Aksi berulang atau Idempotency-Key diproses.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/system/backup": {
       "post": {
         "tags": [
@@ -28827,6 +29331,193 @@
   },
   "components": {
     "schemas": {
+      "AiRunRead": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id",
+            "description": "UUID v4 run (ModelRun_ID)."
+          },
+          "fungsi": {
+            "type": "string",
+            "title": "Fungsi",
+            "description": "Fungsi AI yang dipanggil.",
+            "examples": [
+              "draf_narasi"
+            ]
+          },
+          "prompt_version": {
+            "type": "string",
+            "title": "Prompt Version",
+            "description": "Versi instruksi (prompt).",
+            "examples": [
+              "v1"
+            ]
+          },
+          "prompt_hash": {
+            "type": "string",
+            "title": "Prompt Hash",
+            "description": "SHA-256 prompt yang dipakai."
+          },
+          "model_diminta": {
+            "type": "string",
+            "title": "Model Diminta",
+            "description": "Model yang diminta pemanggil."
+          },
+          "model_dilayani": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Model Dilayani",
+            "description": "Model yang benar-benar melayani."
+          },
+          "protocol_id": {
+            "type": "string",
+            "title": "Protocol Id",
+            "description": "Protocol_ID: arm/versi aplikasi+commit/fungsi@prompt."
+          },
+          "input_snapshot_id": {
+            "type": "string",
+            "title": "Input Snapshot Id",
+            "description": "SHA-256 kanonik masukan (sidik jari data)."
+          },
+          "sumber": {
+            "items": {
+              "$ref": "#/components/schemas/AiSumber"
+            },
+            "type": "array",
+            "title": "Sumber",
+            "description": "Sumber data beserta hash-nya."
+          },
+          "status_qa": {
+            "$ref": "#/components/schemas/StatusQaAi",
+            "description": "Status teknis run."
+          },
+          "kode_qa": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Kode Qa",
+            "description": "Kode hasil pemeriksaan QA."
+          },
+          "stop_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Stop Reason",
+            "description": "Alasan model berhenti."
+          },
+          "input_tokens": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Input Tokens",
+            "description": "Jumlah token masukan."
+          },
+          "output_tokens": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Output Tokens",
+            "description": "Jumlah token keluaran."
+          },
+          "dibuat_oleh": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Dibuat Oleh",
+            "description": "Subjek pemicu run."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At",
+            "description": "Waktu run dibuka (UTC)."
+          },
+          "selesai_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Selesai At",
+            "description": "Waktu run ditutup (UTC)."
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "fungsi",
+          "prompt_version",
+          "prompt_hash",
+          "model_diminta",
+          "protocol_id",
+          "input_snapshot_id",
+          "sumber",
+          "status_qa",
+          "kode_qa",
+          "created_at"
+        ],
+        "title": "AiRunRead",
+        "description": "Satu baris register run AI. Tidak memuat ``masukan`` maupun ``keluaran``."
+      },
+      "AiSumber": {
+        "properties": {
+          "source_id": {
+            "type": "string",
+            "title": "Source Id",
+            "description": "Id sumber data.",
+            "examples": [
+              "bukti-123"
+            ]
+          },
+          "source_hash": {
+            "type": "string",
+            "title": "Source Hash",
+            "description": "SHA-256 isi sumber.",
+            "examples": [
+              "abababababababababababababababababababababababababababababababab"
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "source_id",
+          "source_hash"
+        ],
+        "title": "AiSumber",
+        "description": "Rujukan satu sumber data yang dipakai run: id dan hash isinya (bukan isinya)."
+      },
       "AlternatifCreate": {
         "properties": {
           "masalah_id": {
@@ -36578,6 +37269,50 @@
         "title": "OpmSesiUpdate",
         "description": "Payload pembaruan sesi OPM (hanya saat DRAFT).\n\n`jabatan_id` dan `ti_sesi_id` tidak dapat diubah — ganti sumber berarti hapus\nsesi lalu buat ulang."
       },
+      "Page_AiRunRead_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/AiRunRead"
+            },
+            "type": "array",
+            "title": "Items",
+            "description": "Item pada halaman ini."
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total",
+            "description": "Total item tersedia.",
+            "examples": [
+              42
+            ]
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit",
+            "description": "Maksimum item per halaman.",
+            "examples": [
+              20
+            ]
+          },
+          "offset": {
+            "type": "integer",
+            "title": "Offset",
+            "description": "Jumlah item yang dilewati.",
+            "examples": [
+              0
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
+        "title": "Page[AiRunRead]"
+      },
       "Page_AlternatifRead_": {
         "properties": {
           "items": {
@@ -40213,6 +40948,95 @@
         "title": "SMEPanelUpdate",
         "description": "Payload pembaruan sebagian SME panel."
       },
+      "SaklarAiAlasan": {
+        "properties": {
+          "alasan": {
+            "type": "string",
+            "maxLength": 2000,
+            "minLength": 5,
+            "title": "Alasan",
+            "description": "Alasan aksi (min. 5 karakter).",
+            "examples": [
+              "Insiden: keluaran AI tidak wajar"
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "alasan"
+        ],
+        "title": "SaklarAiAlasan",
+        "description": "Body ``matikan``/``hidupkan``. Aktor tidak pernah dibaca dari body (diambil dari token)."
+      },
+      "SaklarAiRead": {
+        "properties": {
+          "layanan": {
+            "$ref": "#/components/schemas/FiturKode",
+            "description": "Layanan AI yang dikendalikan."
+          },
+          "flag_aktif": {
+            "type": "boolean",
+            "title": "Flag Aktif",
+            "description": "Nilai flag env layanan (gerbang utama)."
+          },
+          "dimatikan": {
+            "type": "boolean",
+            "title": "Dimatikan",
+            "description": "True bila event terakhir adalah MATIKAN."
+          },
+          "boleh_jalan": {
+            "type": "boolean",
+            "title": "Boleh Jalan",
+            "description": "True hanya bila flag aktif dan tidak dimatikan."
+          },
+          "alasan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Alasan",
+            "description": "Alasan event terakhir."
+          },
+          "aktor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Aktor",
+            "description": "Subjek pelaku event terakhir."
+          },
+          "pada": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pada",
+            "description": "Waktu event terakhir (UTC)."
+          }
+        },
+        "type": "object",
+        "required": [
+          "layanan",
+          "flag_aktif",
+          "dimatikan",
+          "boleh_jalan"
+        ],
+        "title": "SaklarAiRead",
+        "description": "Status saklar sebuah layanan AI, dihitung dari event terakhir dan flag env."
+      },
       "SearchRequest": {
         "properties": {
           "domain": {
@@ -41221,6 +42045,75 @@
         "title": "SesiUpdate",
         "description": "Payload ubah parsial sesi.\n\nField nullable boleh dikosongkan dengan `null`; field wajib yang dikirim `null`\ndiabaikan. `masalah_ids` bila dikirim mengganti seluruh tautan (ganti-penuh)."
       },
+      "SkemaDbRead": {
+        "properties": {
+          "revisi_db": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Revisi Db",
+            "description": "Isi tabel alembic_version pada basis data aktif; kosong bila tabel tak ada.",
+            "examples": [
+              [
+                "c1eacaf37063"
+              ]
+            ]
+          },
+          "head_kode": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Head Kode",
+            "description": "Revisi head yang terdefinisi di migrations/versions/ pada kode ini.",
+            "examples": [
+              [
+                "c1eacaf37063"
+              ]
+            ]
+          },
+          "selaras": {
+            "type": "boolean",
+            "title": "Selaras",
+            "description": "True bila revisi_db dan head_kode berisi himpunan yang sama dan tidak kosong.",
+            "examples": [
+              true
+            ]
+          },
+          "selisih_model": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Selisih Model",
+            "description": "Selisih skema aktual terhadap model ORM, bentuk '<operasi>:<nama objek>'.",
+            "examples": [
+              [
+                "remove_table:tabel_liar"
+              ]
+            ]
+          },
+          "selisih_terbaca": {
+            "type": "boolean",
+            "title": "Selisih Terbaca",
+            "description": "False bila pembandingan dengan model gagal; selisih_model tak andal.",
+            "examples": [
+              true
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "revisi_db",
+          "head_kode",
+          "selaras",
+          "selisih_model",
+          "selisih_terbaca"
+        ],
+        "title": "SkemaDbRead",
+        "description": "Perbandingan skema basis data aktif dengan kode dan model ORM.\n\nHanya memuat nama revisi, tabel, kolom, dan objek skema; tidak pernah memuat data baris."
+      },
       "StatusJob": {
         "type": "string",
         "enum": [
@@ -41232,6 +42125,19 @@
         ],
         "title": "StatusJob",
         "description": "Status siklus hidup job asinkron.\n\nUntuk fitur `AI_*`, `PENDING` adalah padanan `AI_PENDING` pada paket kajian."
+      },
+      "StatusQaAi": {
+        "type": "string",
+        "enum": [
+          "MENUNGGU",
+          "LOLOS",
+          "KARANTINA",
+          "EVIDENCE_GAP",
+          "DIBLOKIR",
+          "GAGAL"
+        ],
+        "title": "StatusQaAi",
+        "description": "Status teknis sebuah run AI (bukan status narasi P-20)."
       },
       "TiCatalogPurgeCounts": {
         "properties": {

@@ -9,6 +9,9 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ### Ditambahkan
 
+- Layar admin **Saklar & Run AI** (`/sistem/ai`, `/sistem/ai/run/[run_id]`): matikan/hidupkan saklar
+  layanan AI dengan alasan (min. 5 karakter) dan telusuri register run tanpa pernah menampilkan
+  masukan/keluaran. Tidak ada kontrol penyala flag (issue #99).
 - Image Docker web kini diterbitkan multi-arsitektur `linux/amd64` dan `linux/arm64` pada rilis berikutnya
   (`platforms` di `release.yml`). Target baru `make test-arm64` dan job CI `arm64` (runner
   `ubuntu-24.04-arm`) membangun image runtime arm64, memastikan `uname -m` = `aarch64`, dan

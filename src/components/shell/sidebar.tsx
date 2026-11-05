@@ -3,6 +3,7 @@
 import Link from "next/link";
 import {
   BarChart3,
+  Bot,
   ChevronDown,
   ClipboardCheck,
   ClipboardList,
@@ -112,6 +113,7 @@ export const NAV_ADMIN: ReadonlyArray<NavEntry> = [
     items: MASTER_DATA_ITEMS,
   },
   { kind: "link", href: "/backup", label: "Backup & Restore", icon: DatabaseBackup },
+  { kind: "link", href: "/sistem/ai", label: "Saklar & Run AI", icon: Bot },
 ];
 
 export const NAV_PARTISIPAN: ReadonlyArray<NavEntry> = [

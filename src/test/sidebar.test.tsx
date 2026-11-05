@@ -56,6 +56,7 @@ describe("struktur menu admin", () => {
       "/wcp",
       "/master-data",
       "/backup",
+      "/sistem/ai",
     ]);
   });
 });
@@ -86,5 +87,17 @@ describe("isActiveHref", () => {
 
   it("tidak aktif untuk route yang sama sekali berbeda", () => {
     expect(isActiveHref("/wcp", "/dcs")).toBe(false);
+  });
+});
+
+describe("menu Saklar & Run AI", () => {
+  const hrefs = (g: string[]) => navForGroups(g).map((e) => e.href);
+
+  it("hanya tampil untuk admin", () => {
+    expect(hrefs(["admin"])).toContain("/sistem/ai");
+    expect(hrefs([])).not.toContain("/sistem/ai");
+    expect(hrefs(["partisipan"])).not.toContain("/sistem/ai");
+    expect(hrefs(["tim-kajian"])).not.toContain("/sistem/ai");
+    expect(hrefs(["sekolah-pengisi"])).not.toContain("/sistem/ai");
   });
 });

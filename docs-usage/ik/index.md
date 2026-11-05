@@ -17,6 +17,7 @@ detail klik tombol, mengisi formulir, dan menginput data. IK adalah pelengkap
 | [IK-09](backup-restore.md)   | Backup & Restore    | Administrator                          |
 | [IK-10](redesain-tim.md)     | Redesain Pekerjaan  | Tim Kajian                             |
 | [IK-11](redesain-sekolah.md) | Konfirmasi Redesain | Pengisi Sekolah                        |
+| [IK-12](saklar-ai.md)        | Saklar & Run AI     | Administrator                          |
 
 ---
 

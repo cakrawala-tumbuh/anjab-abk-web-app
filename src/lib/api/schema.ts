@@ -120,6 +120,130 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/system/skema": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Revisi skema basis data
+         * @description Bandingkan skema basis data aktif dengan head migrasi kode dan model ORM (admin saja).
+         *
+         *     Hanya membaca; tidak menjalankan migrasi dan tidak memuat data baris. ``selaras`` hanya
+         *     membandingkan revisi, sedangkan ``selisih_model`` membandingkan struktur sebenarnya.
+         */
+        get: operations["system_skema_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/system/ai/runs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Daftar run AI
+         * @description Daftar register run AI, terbaru dulu (admin saja). Tanpa ``masukan``/``keluaran``.
+         */
+        get: operations["system_ai_run_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/system/ai/runs/{run_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Detail run AI
+         * @description Baca satu run AI (admin saja). ``masukan`` dan ``keluaran`` tidak pernah diekspos.
+         */
+        get: operations["system_ai_run_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/system/ai/saklar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Status kill switch layanan AI
+         * @description Status saklar: flag env, apakah dimatikan, dan event terakhir (admin saja).
+         */
+        get: operations["system_ai_saklar_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/system/ai/saklar/matikan": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Matikan layanan AI seketika
+         * @description Catat event MATIKAN tanpa restart (admin saja). Aktor diambil dari token.
+         */
+        post: operations["system_ai_saklar_matikan"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/system/ai/saklar/hidupkan": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Hidupkan kembali layanan AI
+         * @description Catat event HIDUPKAN (admin saja). Tidak menyalakan flag env: dengan flag mati
+         *     ``boleh_jalan`` tetap ``false``. Aktor diambil dari token.
+         */
+        post: operations["system_ai_saklar_hidupkan"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/system/backup": {
         parameters: {
             query?: never;
@@ -3625,6 +3749,115 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /**
+         * AiRunRead
+         * @description Satu baris register run AI. Tidak memuat ``masukan`` maupun ``keluaran``.
+         */
+        AiRunRead: {
+            /**
+             * Id
+             * @description UUID v4 run (ModelRun_ID).
+             */
+            id: string;
+            /**
+             * Fungsi
+             * @description Fungsi AI yang dipanggil.
+             * @example draf_narasi
+             */
+            fungsi: string;
+            /**
+             * Prompt Version
+             * @description Versi instruksi (prompt).
+             * @example v1
+             */
+            prompt_version: string;
+            /**
+             * Prompt Hash
+             * @description SHA-256 prompt yang dipakai.
+             */
+            prompt_hash: string;
+            /**
+             * Model Diminta
+             * @description Model yang diminta pemanggil.
+             */
+            model_diminta: string;
+            /**
+             * Model Dilayani
+             * @description Model yang benar-benar melayani.
+             */
+            model_dilayani?: string | null;
+            /**
+             * Protocol Id
+             * @description Protocol_ID: arm/versi aplikasi+commit/fungsi@prompt.
+             */
+            protocol_id: string;
+            /**
+             * Input Snapshot Id
+             * @description SHA-256 kanonik masukan (sidik jari data).
+             */
+            input_snapshot_id: string;
+            /**
+             * Sumber
+             * @description Sumber data beserta hash-nya.
+             */
+            sumber: components["schemas"]["AiSumber"][];
+            /** @description Status teknis run. */
+            status_qa: components["schemas"]["StatusQaAi"];
+            /**
+             * Kode Qa
+             * @description Kode hasil pemeriksaan QA.
+             */
+            kode_qa: string[];
+            /**
+             * Stop Reason
+             * @description Alasan model berhenti.
+             */
+            stop_reason?: string | null;
+            /**
+             * Input Tokens
+             * @description Jumlah token masukan.
+             */
+            input_tokens?: number | null;
+            /**
+             * Output Tokens
+             * @description Jumlah token keluaran.
+             */
+            output_tokens?: number | null;
+            /**
+             * Dibuat Oleh
+             * @description Subjek pemicu run.
+             */
+            dibuat_oleh?: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             * @description Waktu run dibuka (UTC).
+             */
+            created_at: string;
+            /**
+             * Selesai At
+             * @description Waktu run ditutup (UTC).
+             */
+            selesai_at?: string | null;
+        };
+        /**
+         * AiSumber
+         * @description Rujukan satu sumber data yang dipakai run: id dan hash isinya (bukan isinya).
+         */
+        AiSumber: {
+            /**
+             * Source Id
+             * @description Id sumber data.
+             * @example bukti-123
+             */
+            source_id: string;
+            /**
+             * Source Hash
+             * @description SHA-256 isi sumber.
+             * @example abababababababababababababababababababababababababababababababab
+             */
+            source_hash: string;
+        };
         /**
          * AlternatifCreate
          * @description Payload alternatif baru; `kode` dibangkitkan sistem (`U-001`, global).
@@ -7136,6 +7369,32 @@ export interface components {
              */
             catatan?: string | null;
         };
+        /** Page[AiRunRead] */
+        Page_AiRunRead_: {
+            /**
+             * Items
+             * @description Item pada halaman ini.
+             */
+            items: components["schemas"]["AiRunRead"][];
+            /**
+             * Total
+             * @description Total item tersedia.
+             * @example 42
+             */
+            total: number;
+            /**
+             * Limit
+             * @description Maksimum item per halaman.
+             * @example 20
+             */
+            limit: number;
+            /**
+             * Offset
+             * @description Jumlah item yang dilewati.
+             * @example 0
+             */
+            offset: number;
+        };
         /** Page[AlternatifRead] */
         Page_AlternatifRead_: {
             /**
@@ -9023,6 +9282,56 @@ export interface components {
             koordinator_id?: string | null;
         };
         /**
+         * SaklarAiAlasan
+         * @description Body ``matikan``/``hidupkan``. Aktor tidak pernah dibaca dari body (diambil dari token).
+         */
+        SaklarAiAlasan: {
+            /**
+             * Alasan
+             * @description Alasan aksi (min. 5 karakter).
+             * @example Insiden: keluaran AI tidak wajar
+             */
+            alasan: string;
+        };
+        /**
+         * SaklarAiRead
+         * @description Status saklar sebuah layanan AI, dihitung dari event terakhir dan flag env.
+         */
+        SaklarAiRead: {
+            /** @description Layanan AI yang dikendalikan. */
+            layanan: components["schemas"]["FiturKode"];
+            /**
+             * Flag Aktif
+             * @description Nilai flag env layanan (gerbang utama).
+             */
+            flag_aktif: boolean;
+            /**
+             * Dimatikan
+             * @description True bila event terakhir adalah MATIKAN.
+             */
+            dimatikan: boolean;
+            /**
+             * Boleh Jalan
+             * @description True hanya bila flag aktif dan tidak dimatikan.
+             */
+            boleh_jalan: boolean;
+            /**
+             * Alasan
+             * @description Alasan event terakhir.
+             */
+            alasan?: string | null;
+            /**
+             * Aktor
+             * @description Subjek pelaku event terakhir.
+             */
+            aktor?: string | null;
+            /**
+             * Pada
+             * @description Waktu event terakhir (UTC).
+             */
+            pada?: string | null;
+        };
+        /**
          * SearchRequest
          * @example {
          *       "domain": [
@@ -9416,6 +9725,50 @@ export interface components {
             masalah_ids?: string[] | null;
         };
         /**
+         * SkemaDbRead
+         * @description Perbandingan skema basis data aktif dengan kode dan model ORM.
+         *
+         *     Hanya memuat nama revisi, tabel, kolom, dan objek skema; tidak pernah memuat data baris.
+         */
+        SkemaDbRead: {
+            /**
+             * Revisi Db
+             * @description Isi tabel alembic_version pada basis data aktif; kosong bila tabel tak ada.
+             * @example [
+             *       "c1eacaf37063"
+             *     ]
+             */
+            revisi_db: string[];
+            /**
+             * Head Kode
+             * @description Revisi head yang terdefinisi di migrations/versions/ pada kode ini.
+             * @example [
+             *       "c1eacaf37063"
+             *     ]
+             */
+            head_kode: string[];
+            /**
+             * Selaras
+             * @description True bila revisi_db dan head_kode berisi himpunan yang sama dan tidak kosong.
+             * @example true
+             */
+            selaras: boolean;
+            /**
+             * Selisih Model
+             * @description Selisih skema aktual terhadap model ORM, bentuk '<operasi>:<nama objek>'.
+             * @example [
+             *       "remove_table:tabel_liar"
+             *     ]
+             */
+            selisih_model: string[];
+            /**
+             * Selisih Terbaca
+             * @description False bila pembandingan dengan model gagal; selisih_model tak andal.
+             * @example true
+             */
+            selisih_terbaca: boolean;
+        };
+        /**
          * StatusJob
          * @description Status siklus hidup job asinkron.
          *
@@ -9423,6 +9776,12 @@ export interface components {
          * @enum {string}
          */
         StatusJob: "PENDING" | "RUNNING" | "SUCCEEDED" | "FAILED" | "MANUAL_REVIEW";
+        /**
+         * StatusQaAi
+         * @description Status teknis sebuah run AI (bukan status narasi P-20).
+         * @enum {string}
+         */
+        StatusQaAi: "MENUNGGU" | "LOLOS" | "KARANTINA" | "EVIDENCE_GAP" | "DIBLOKIR" | "GAGAL";
         /**
          * TiCatalogPurgeCounts
          * @description Jumlah baris yang dihapus per tabel katalog.
@@ -12183,6 +12542,331 @@ export interface operations {
             };
             /** @description Job tidak ditemukan. */
             404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    system_skema_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SkemaDbRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Basis data tak terjangkau. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    system_ai_run_list: {
+        parameters: {
+            query?: {
+                /** @description Filter fungsi AI. */
+                fungsi?: string | null;
+                /** @description Filter status QA. */
+                status_qa?: components["schemas"]["StatusQaAi"] | null;
+                /** @description Maks item per halaman. */
+                limit?: number;
+                /** @description Jumlah item yang dilewati. */
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Page_AiRunRead_"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    system_ai_run_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                run_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AiRunRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Run tak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    system_ai_saklar_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SaklarAiRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    system_ai_saklar_matikan: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SaklarAiAlasan"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SaklarAiRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Aksi berulang atau Idempotency-Key diproses. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    system_ai_saklar_hidupkan: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SaklarAiAlasan"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SaklarAiRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Aksi berulang atau Idempotency-Key diproses. */
+            409: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -30744,3 +31428,6 @@ export type WcpItemBerEtagRead = components["schemas"]["WcpItemBerEtagRead"];
 export type DcsItemBerEtagRead = components["schemas"]["DcsItemBerEtagRead"];
 export type WcpDimensiWithItemsEtagRead = components["schemas"]["WcpDimensiWithItemsEtagRead"];
 export type DcsSubSkalaWithItemsEtagRead = components["schemas"]["DcsSubSkalaWithItemsEtagRead"];
+export type SaklarAiRead = components["schemas"]["SaklarAiRead"];
+export type AiRunRead = components["schemas"]["AiRunRead"];
+export type StatusQaAi = components["schemas"]["StatusQaAi"];

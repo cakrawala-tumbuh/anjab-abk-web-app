@@ -84,6 +84,16 @@ src/
 
 ## Revisi Desain
 
+### [2026-11-05] Layar admin Saklar & Run AI (`/sistem/ai`)
+
+Butir WA-5 pelacak `cakrawala-tumbuh/ypii-support#442`; konsumen `anjab-abk-backend#88` (saklar) dan `#85` (register run).
+
+- **Segmen `src/app/(auth)/sistem/`**: `layout.tsx` = `WajibGrup` grup `admin`; rute `ai/` (`SaklarPanel` + `RunTabel`, filter `fungsi`/`status_qa` + `hlm` lewat `searchParams`) dan `ai/run/[run_id]/` (`DetailRun`, dirender dari field `AiRunRead` yang disebut satu per satu, tidak pernah `masukan`/`keluaran`). Menu "Saklar & Run AI" hanya di `NAV_ADMIN`.
+- **Tak ada kontrol penyala flag env** (K-8): `Hidupkan` hanya mencatat event; bila `flag_aktif=false` panel menyatakan AI tetap tidak berjalan. `Matikan` tanpa konfirmasi tambahan selain alasan.
+- Tulis: `Idempotency-Key` lewat `useIdempotencyKey().keyUntuk({aksi, alasan})`; sukses hanya setelah 2xx; 409 tampil sebagai pesan.
+- `openapi/openapi.json` diregenerasi dari backend `master` `80b2029` (klon scratch, image `Dockerfile.test`, `scripts/export_openapi.py`); hanya penambahan di `schema.ts`; alias `SaklarAiRead`/`AiRunRead`/`StatusQaAi` ditambahkan di akhir. Diff openapi juga memuat rute backend lain yang sudah masuk master sejak regenerasi terakhir.
+- Detail keputusan: issue `cakrawala-tumbuh/anjab-abk-web-app#99`.
+
 ### [2026-11-04] `If-Match` di 14 operasi master data, Task Inventory, OPM, WCP, DCS (#88)
 
 Melengkapi #84/#87: seluruh PUT/PATCH/DELETE ber-`If-Match` di `schema.ts` yang dipanggil web kini
