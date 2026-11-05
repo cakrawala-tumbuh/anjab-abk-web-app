@@ -86,7 +86,7 @@ src/
 
 ### [2026-11-05] Layar antrean reviewer narasi (`/narasi/antrean`)
 
-Butir WA-2 pelacak `cakrawala-tumbuh/ypii-support#442`; konsumen `anjab-abk-backend#95`.
+Konsumen kontrak backend `#95`; butir `#98` repo ini.
 
 - **Kontrak diverifikasi ke kode** backend master `27d53dcbd56e715f154a0f190d3aad138cae2333` (klon scratch,
   image `Dockerfile.test`, `scripts/export_openapi.py`): `GET /api/v1/narasi/antrean` → `Page[AntreanItemRead]`,
@@ -101,7 +101,7 @@ Butir WA-2 pelacak `cakrawala-tumbuh/ypii-support#442`; konsumen `anjab-abk-back
   `jumlah_kontradiksi > 0` bertanda peringatan; `label_dokumenter` bertipe bebas di kontrak sehingga ditampilkan
   lewat `teksLabelDokumenter`. Logika murni di `src/lib/narasi-antrean.ts`.
 - Tidak mengubah `FEATURE_AI_NARRATIVE_DRAFT`, tidak menyalakan AI. Docs: `docs-usage/ik/narasi-antrean.md` (IK-15).
-- Detail keputusan: issue `cakrawala-tumbuh/anjab-abk-web-app#98`.
+- Detail keputusan: issue `#98`.
 
 ### [2026-11-05] Layar Kasus Narasi (`/narasi/kasus`)
 
