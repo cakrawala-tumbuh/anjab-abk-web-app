@@ -84,6 +84,31 @@ src/
 
 ## Revisi Desain
 
+### [2026-11-05] Layar Kasus Narasi (`/narasi/kasus`)
+
+Konsumen kontrak kasus backend `#94`. Melengkapi `/narasi/sumber` sehingga jalur manual
+berjalan dari web tanpa AI.
+
+- **Kontrak diverifikasi ke kode** backend master `bb55456074227eb79fc9d7871a0af1ae2bb0368d` (klon scratch, image `Dockerfile.test`,
+  `scripts/export_openapi.py`): `POST/GET /api/v1/narasi/kasus`, `GET .../{narasi_id}`,
+  `GET .../{narasi_id}/riwayat`, `POST .../{narasi_id}/revisi`. `openapi.json` hanya bertambah; blok
+  alias di akhir `schema.ts` ditempel ulang + alias `NarasiKasus*`/`NarasiVersi*`/`NarasiRiwayatRead`.
+  `POST .../search` tidak dipakai.
+- **Rute** `src/app/(auth)/narasi/kasus/` di bawah layout `WajibGrup` `tim-kajian`: daftar (filter
+  `status`/`instrument_id`/`periode` lewat form GET), `tambah` (`KasusForm`), `[id]` (lingkup, `RiwayatKasus`,
+  `RevisiManualForm`); tiap rute punya `loading.tsx` + `error.tsx`. Menu `Narasi → Kasus`
+  (`NARASI_TIM_ITEMS`).
+- **Baca**: `data.ts` melempar `apiErrorDari(res)`; hanya 404 detail menjadi `notFound()`. Daftar sumber untuk
+  formulir revisi = data inti via `ambilSemuaHalaman`: gagal melempar, tidak pernah pilihan kosong.
+- **Tulis**: `useIdempotencyKey().keyUntuk(body)` + `headerIdempotencyKey`; sukses hanya setelah 2xx.
+  `narrative_kind=F1_FORMAL` dan `sensitivity_class=NONPRIBADI` konstanta hanya-baca; kolom opsional kosong
+  dikirim `null`. 409 `narasi_lingkup_ganda` = pesan + tautan penelusuran; 409 `versi_basi` = pesan + tombol
+  muat ulang, teks yang diketik tidak dibuang. `supersedes_id` = id `versi_terbaru` yang dimuat halaman.
+- **Bahasa**: status tampil sebagai enum internal + keterangan (`labelStatus`); `TEAM_VERIFIED` tidak memakai
+  kata rilis, final, atau fakta. Logika murni di `src/lib/narasi-kasus.ts`.
+- Tidak mengubah `FEATURE_AI_NARRATIVE_DRAFT`, tidak menyalakan AI, tidak ada aksi tinjauan atau permintaan
+  draf. Docs: `docs-usage/ik/narasi-kasus.md` (IK-14). Detail keputusan: issue `#97` repo ini.
+
 ### [2026-11-05] Layar Sumber Narasi Tim Kajian (`/narasi/sumber`)
 
 Butir WA-1 pelacak `cakrawala-tumbuh/ypii-support#442`; konsumen `anjab-abk-backend#91`.

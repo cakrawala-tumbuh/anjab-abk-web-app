@@ -106,12 +106,12 @@ describe("menu Saklar & Run AI", () => {
 describe("menu Narasi", () => {
   const hrefs = (g: string[]) => navForGroups(g).map((e) => e.href);
 
-  it("hanya tampil untuk tim-kajian, dengan item Sumber Narasi", () => {
+  it("hanya tampil untuk tim-kajian, dengan item Sumber Narasi dan Kasus", () => {
     expect(hrefs(["tim-kajian"])).toContain("/narasi");
     const grup = navForGroups(["tim-kajian"]).find((e) => e.href === "/narasi");
     expect(grup?.kind).toBe("group");
     expect(grup && "items" in grup ? grup.items : []).toEqual(NARASI_TIM_ITEMS);
-    expect(NARASI_TIM_ITEMS.map((i) => i.href)).toEqual(["/narasi/sumber"]);
+    expect(NARASI_TIM_ITEMS.map((i) => i.href)).toEqual(["/narasi/sumber", "/narasi/kasus"]);
   });
 
   it("tidak tampil untuk admin saja, partisipan, atau sekolah-pengisi", () => {

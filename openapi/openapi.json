@@ -29786,6 +29786,793 @@
           }
         }
       }
+    },
+    "/api/v1/narasi/sumber/uji-kering": {
+      "post": {
+        "tags": [
+          "narasi"
+        ],
+        "summary": "Uji kering gerbang PII atas sumber narasi (tim-kajian)",
+        "description": "Hitung berapa sumber ditolak gerbang PII (mode BLOKIR) dan mengapa.\n\nTanpa model, tanpa tulisan, dan tanpa nilai PII pada respons. Berjalan walau flag AI mati.",
+        "operationId": "narasi_sumber_uji_kering",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UjiKeringRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UjiKeringRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan anggota grup tim-kajian.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Id tak dikenal atau lebih dari 500 sumber (uji_kering_terlalu_banyak).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/narasi/kasus": {
+      "get": {
+        "tags": [
+          "narasi"
+        ],
+        "summary": "Daftar kasus narasi (tim-kajian)",
+        "description": "Daftar kasus terbaru dulu; filter `status`, `instrument_id`, `periode`.",
+        "operationId": "narasi_kasus_list",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/StatusNarasi"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter status.",
+              "title": "Status"
+            },
+            "description": "Filter status."
+          },
+          {
+            "name": "instrument_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 50
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter instrumen.",
+              "title": "Instrument Id"
+            },
+            "description": "Filter instrumen."
+          },
+          {
+            "name": "periode",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 20
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter periode.",
+              "title": "Periode"
+            },
+            "description": "Filter periode."
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 500,
+              "minimum": 1,
+              "description": "Maks item per halaman.",
+              "default": 20,
+              "title": "Limit"
+            },
+            "description": "Maks item per halaman."
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Jumlah item yang dilewati.",
+              "default": 0,
+              "title": "Offset"
+            },
+            "description": "Jumlah item yang dilewati."
+          },
+          {
+            "name": "X-Tujuan-Akses",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN.",
+              "title": "X-Tujuan-Akses"
+            },
+            "description": "Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_NarasiKasusRead_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan anggota grup tim-kajian.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "narasi"
+        ],
+        "summary": "Buat kasus narasi F1 nonpribadi (tim-kajian)",
+        "description": "Buat kasus berstatus `SOURCE_CHECKED`; `dibuat_oleh` diambil dari token.\n\nHanya `F1_FORMAL` dan `NONPRIBADI` yang dibuka (K-1); lainnya 422.",
+        "operationId": "narasi_kasus_create",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Kunci idempotency opsional.",
+              "title": "Idempotency-Key"
+            },
+            "description": "Kunci idempotency opsional."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NarasiKasusBuat"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NarasiKasusRead"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Lingkup ganda (narasi_lingkup_ganda).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan anggota grup tim-kajian.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Payload tidak valid; jenis selain F1_FORMAL (narasi_jenis_belum_dibuka) atau SENSITIF (narasi_sensitif_belum_dibuka).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/narasi/kasus/search": {
+      "post": {
+        "tags": [
+          "narasi"
+        ],
+        "summary": "Cari kasus narasi (domain ala Odoo) (tim-kajian)",
+        "description": "Cari dengan domain ala Odoo; field di-whitelist.",
+        "operationId": "narasi_kasus_search",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-Tujuan-Akses",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN.",
+              "title": "X-Tujuan-Akses"
+            },
+            "description": "Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_NarasiKasusRead_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan anggota grup tim-kajian.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Domain/field tidak valid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/narasi/kasus/{narasi_id}": {
+      "get": {
+        "tags": [
+          "narasi"
+        ],
+        "summary": "Detail kasus narasi dengan versi terbaru dan sumbernya (tim-kajian)",
+        "description": "Kasus + versi terbaru (dengan tautan sumber, tanpa teks sumber).",
+        "operationId": "narasi_kasus_get",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "narasi_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Narasi Id"
+            }
+          },
+          {
+            "name": "X-Tujuan-Akses",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN.",
+              "title": "X-Tujuan-Akses"
+            },
+            "description": "Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NarasiKasusDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan anggota grup tim-kajian.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Kasus narasi tidak ditemukan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/narasi/kasus/{narasi_id}/riwayat": {
+      "get": {
+        "tags": [
+          "narasi"
+        ],
+        "summary": "Riwayat versi dan event kasus narasi (tim-kajian)",
+        "description": "Seluruh versi (urut `revision_no`) dan event (urut waktu).",
+        "operationId": "narasi_kasus_riwayat",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "narasi_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Narasi Id"
+            }
+          },
+          {
+            "name": "X-Tujuan-Akses",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN.",
+              "title": "X-Tujuan-Akses"
+            },
+            "description": "Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NarasiRiwayatRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan anggota grup tim-kajian.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Kasus narasi tidak ditemukan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/narasi/kasus/{narasi_id}/revisi": {
+      "post": {
+        "tags": [
+          "narasi"
+        ],
+        "summary": "Tulis revisi manual bersumber (tim-kajian)",
+        "description": "Tambah versi `REVIEWER_EDIT` berstatus hasil `TEAM_REVIEW`.\n\n`source_hash` diisi server dari sumber tersimpan; `sumber_id` tak dikenal 422.",
+        "operationId": "narasi_kasus_revisi",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "narasi_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Narasi Id"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Kunci idempotency opsional.",
+              "title": "Idempotency-Key"
+            },
+            "description": "Kunci idempotency opsional."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NarasiRevisiCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NarasiVersiRead"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "supersedes_id basi (versi_basi).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan anggota grup tim-kajian.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Kasus narasi tidak ditemukan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Teks/sumber tidak valid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -47710,6 +48497,1035 @@
         ],
         "title": "WcpRespondenRead",
         "description": "Representasi responden yang dikembalikan API."
+      },
+      "BasisRelation": {
+        "type": "string",
+        "enum": [
+          "DIRECT",
+          "CONTEXT",
+          "CONTRADICTS",
+          "UNKNOWN"
+        ],
+        "title": "BasisRelation",
+        "description": "Hubungan kutipan sumber terhadap isi versi narasi."
+      },
+      "EventKind": {
+        "type": "string",
+        "enum": [
+          "TEAM_APPROVE",
+          "TEAM_REVISE",
+          "TEAM_REJECT",
+          "NEED_SOURCE",
+          "SUBJECT_CONFIRM",
+          "SUBJECT_CORRECT",
+          "SUBJECT_REJECT",
+          "SUBJECT_UNSURE",
+          "FINAL_TEAM_APPROVE",
+          "RELEASE_LIMITED",
+          "RETURN_CLARIFICATION"
+        ],
+        "title": "EventKind",
+        "description": "Jenis tindakan manusia pada tabel `narasi_event` (11 nilai paket)."
+      },
+      "NarasiEventRead": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "narasi_id": {
+            "type": "string",
+            "title": "Narasi Id"
+          },
+          "narasi_versi_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Narasi Versi Id"
+          },
+          "actor_key": {
+            "type": "string",
+            "title": "Actor Key"
+          },
+          "actor_role": {
+            "type": "string",
+            "title": "Actor Role"
+          },
+          "event_kind": {
+            "$ref": "#/components/schemas/EventKind"
+          },
+          "dari_status": {
+            "$ref": "#/components/schemas/StatusNarasi"
+          },
+          "ke_status": {
+            "$ref": "#/components/schemas/StatusNarasi"
+          },
+          "event_notes": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Event Notes"
+          },
+          "event_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Event At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "narasi_id",
+          "narasi_versi_id",
+          "actor_key",
+          "actor_role",
+          "event_kind",
+          "dari_status",
+          "ke_status",
+          "event_notes",
+          "event_at"
+        ],
+        "title": "NarasiEventRead",
+        "description": "Satu tindakan manusia yang tercatat pada sebuah kasus."
+      },
+      "NarasiKasusBuat": {
+        "properties": {
+          "instrument_id": {
+            "type": "string",
+            "maxLength": 50,
+            "minLength": 1,
+            "title": "Instrument Id"
+          },
+          "field_key": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 1,
+            "title": "Field Key"
+          },
+          "peran_ref": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 1,
+            "title": "Peran Ref"
+          },
+          "periode": {
+            "type": "string",
+            "maxLength": 20,
+            "minLength": 1,
+            "title": "Periode"
+          },
+          "sekolah_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 40
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sekolah Id"
+          },
+          "assignment_ref": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 100
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Assignment Ref"
+          },
+          "target_subject_ref": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 100
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target Subject Ref"
+          },
+          "konteks_kode": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 100
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Konteks Kode"
+          },
+          "narrative_kind": {
+            "$ref": "#/components/schemas/NarrativeKind",
+            "description": "Hanya `F1_FORMAL` yang dibuka."
+          },
+          "intended_use": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Intended Use"
+          },
+          "permission_scope": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Permission Scope"
+          },
+          "sensitivity_class": {
+            "$ref": "#/components/schemas/SensitivityClass",
+            "description": "Hanya `NONPRIBADI` yang dibuka."
+          }
+        },
+        "type": "object",
+        "required": [
+          "instrument_id",
+          "field_key",
+          "peran_ref",
+          "periode",
+          "narrative_kind",
+          "intended_use",
+          "permission_scope",
+          "sensitivity_class"
+        ],
+        "title": "NarasiKasusBuat",
+        "description": "Badan `POST /narasi/kasus`. Kunci tak dikenal (mis. `dibuat_oleh`) diabaikan.\n\nAktor selalu dari token; `status` awal selalu `SOURCE_CHECKED`."
+      },
+      "NarasiKasusDetail": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "instrument_id": {
+            "type": "string",
+            "title": "Instrument Id"
+          },
+          "field_key": {
+            "type": "string",
+            "title": "Field Key"
+          },
+          "peran_ref": {
+            "type": "string",
+            "title": "Peran Ref"
+          },
+          "periode": {
+            "type": "string",
+            "title": "Periode"
+          },
+          "sekolah_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sekolah Id"
+          },
+          "assignment_ref": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Assignment Ref"
+          },
+          "target_subject_ref": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target Subject Ref"
+          },
+          "konteks_kode": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Konteks Kode"
+          },
+          "narrative_kind": {
+            "$ref": "#/components/schemas/NarrativeKind"
+          },
+          "status": {
+            "$ref": "#/components/schemas/StatusNarasi"
+          },
+          "intended_use": {
+            "type": "string",
+            "title": "Intended Use"
+          },
+          "permission_scope": {
+            "type": "string",
+            "title": "Permission Scope"
+          },
+          "sensitivity_class": {
+            "type": "string",
+            "title": "Sensitivity Class"
+          },
+          "dibuat_oleh": {
+            "type": "string",
+            "title": "Dibuat Oleh"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          },
+          "versi_terbaru": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/NarasiVersiLengkap"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "instrument_id",
+          "field_key",
+          "peran_ref",
+          "periode",
+          "sekolah_id",
+          "assignment_ref",
+          "target_subject_ref",
+          "konteks_kode",
+          "narrative_kind",
+          "status",
+          "intended_use",
+          "permission_scope",
+          "sensitivity_class",
+          "dibuat_oleh",
+          "created_at",
+          "updated_at",
+          "versi_terbaru"
+        ],
+        "title": "NarasiKasusDetail",
+        "description": "Kasus beserta versi terbaru (bila ada); sumber ada di `versi_terbaru.sumber`."
+      },
+      "NarasiKasusRead": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "instrument_id": {
+            "type": "string",
+            "title": "Instrument Id"
+          },
+          "field_key": {
+            "type": "string",
+            "title": "Field Key"
+          },
+          "peran_ref": {
+            "type": "string",
+            "title": "Peran Ref"
+          },
+          "periode": {
+            "type": "string",
+            "title": "Periode"
+          },
+          "sekolah_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sekolah Id"
+          },
+          "assignment_ref": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Assignment Ref"
+          },
+          "target_subject_ref": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target Subject Ref"
+          },
+          "konteks_kode": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Konteks Kode"
+          },
+          "narrative_kind": {
+            "$ref": "#/components/schemas/NarrativeKind"
+          },
+          "status": {
+            "$ref": "#/components/schemas/StatusNarasi"
+          },
+          "intended_use": {
+            "type": "string",
+            "title": "Intended Use"
+          },
+          "permission_scope": {
+            "type": "string",
+            "title": "Permission Scope"
+          },
+          "sensitivity_class": {
+            "type": "string",
+            "title": "Sensitivity Class"
+          },
+          "dibuat_oleh": {
+            "type": "string",
+            "title": "Dibuat Oleh"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "instrument_id",
+          "field_key",
+          "peran_ref",
+          "periode",
+          "sekolah_id",
+          "assignment_ref",
+          "target_subject_ref",
+          "konteks_kode",
+          "narrative_kind",
+          "status",
+          "intended_use",
+          "permission_scope",
+          "sensitivity_class",
+          "dibuat_oleh",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "NarasiKasusRead",
+        "description": "Kasus narasi beserta status proyeksinya."
+      },
+      "NarasiRevisiCreate": {
+        "properties": {
+          "teks": {
+            "type": "string",
+            "maxLength": 200000,
+            "minLength": 1,
+            "title": "Teks"
+          },
+          "sumber": {
+            "items": {
+              "$ref": "#/components/schemas/SumberRevisiItem"
+            },
+            "type": "array",
+            "minItems": 1,
+            "title": "Sumber"
+          },
+          "supersedes_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 36
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Supersedes Id",
+            "description": "Versi terbaru saat ini; kosong untuk versi 1."
+          }
+        },
+        "type": "object",
+        "required": [
+          "teks",
+          "sumber"
+        ],
+        "title": "NarasiRevisiCreate",
+        "description": "Badan `POST /narasi/kasus/{id}/revisi`; asal dan status hasil ditetapkan service."
+      },
+      "NarasiRiwayatRead": {
+        "properties": {
+          "versi": {
+            "items": {
+              "$ref": "#/components/schemas/NarasiVersiLengkap"
+            },
+            "type": "array",
+            "title": "Versi"
+          },
+          "event": {
+            "items": {
+              "$ref": "#/components/schemas/NarasiEventRead"
+            },
+            "type": "array",
+            "title": "Event"
+          }
+        },
+        "type": "object",
+        "required": [
+          "versi",
+          "event"
+        ],
+        "title": "NarasiRiwayatRead",
+        "description": "Seluruh versi (urut `revision_no`) dan event (urut waktu) satu kasus."
+      },
+      "NarasiVersiLengkap": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "narasi_id": {
+            "type": "string",
+            "title": "Narasi Id"
+          },
+          "revision_no": {
+            "type": "integer",
+            "title": "Revision No"
+          },
+          "revision_origin": {
+            "$ref": "#/components/schemas/RevisionOrigin"
+          },
+          "status_hasil": {
+            "type": "string",
+            "title": "Status Hasil"
+          },
+          "teks": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Teks"
+          },
+          "supersedes_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Supersedes Id"
+          },
+          "ai_run_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ai Run Id"
+          },
+          "output_hash": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Output Hash"
+          },
+          "metadata_ai": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Metadata Ai"
+          },
+          "dibuat_oleh": {
+            "type": "string",
+            "title": "Dibuat Oleh"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "sumber": {
+            "items": {
+              "$ref": "#/components/schemas/NarasiVersiSumberRead"
+            },
+            "type": "array",
+            "title": "Sumber"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "narasi_id",
+          "revision_no",
+          "revision_origin",
+          "status_hasil",
+          "teks",
+          "supersedes_id",
+          "ai_run_id",
+          "output_hash",
+          "metadata_ai",
+          "dibuat_oleh",
+          "created_at",
+          "sumber"
+        ],
+        "title": "NarasiVersiLengkap",
+        "description": "Versi beserta tautan sumbernya."
+      },
+      "NarasiVersiRead": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "narasi_id": {
+            "type": "string",
+            "title": "Narasi Id"
+          },
+          "revision_no": {
+            "type": "integer",
+            "title": "Revision No"
+          },
+          "revision_origin": {
+            "$ref": "#/components/schemas/RevisionOrigin"
+          },
+          "status_hasil": {
+            "type": "string",
+            "title": "Status Hasil"
+          },
+          "teks": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Teks"
+          },
+          "supersedes_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Supersedes Id"
+          },
+          "ai_run_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ai Run Id"
+          },
+          "output_hash": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Output Hash"
+          },
+          "metadata_ai": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Metadata Ai"
+          },
+          "dibuat_oleh": {
+            "type": "string",
+            "title": "Dibuat Oleh"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "narasi_id",
+          "revision_no",
+          "revision_origin",
+          "status_hasil",
+          "teks",
+          "supersedes_id",
+          "ai_run_id",
+          "output_hash",
+          "metadata_ai",
+          "dibuat_oleh",
+          "created_at"
+        ],
+        "title": "NarasiVersiRead",
+        "description": "Satu versi teks kasus narasi."
+      },
+      "NarasiVersiSumberRead": {
+        "properties": {
+          "sumber_id": {
+            "type": "string",
+            "title": "Sumber Id"
+          },
+          "source_span": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Span"
+          },
+          "source_hash": {
+            "type": "string",
+            "title": "Source Hash"
+          },
+          "basis_relation": {
+            "$ref": "#/components/schemas/BasisRelation"
+          }
+        },
+        "type": "object",
+        "required": [
+          "sumber_id",
+          "source_span",
+          "source_hash",
+          "basis_relation"
+        ],
+        "title": "NarasiVersiSumberRead",
+        "description": "Tautan versi ke sumber (tanpa teks sumber)."
+      },
+      "NarrativeKind": {
+        "type": "string",
+        "enum": [
+          "F1_FORMAL",
+          "F2_ACTUAL",
+          "F3_HANDOFF",
+          "F4_ANALYTICAL",
+          "F5_RESEARCH"
+        ],
+        "title": "NarrativeKind",
+        "description": "Jenis narasi: F1 dokumen formal s.d. F5 riset."
+      },
+      "Page_NarasiKasusRead_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/NarasiKasusRead"
+            },
+            "type": "array",
+            "title": "Items",
+            "description": "Item pada halaman ini."
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total",
+            "description": "Total item tersedia.",
+            "examples": [
+              42
+            ]
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit",
+            "description": "Maksimum item per halaman.",
+            "examples": [
+              20
+            ]
+          },
+          "offset": {
+            "type": "integer",
+            "title": "Offset",
+            "description": "Jumlah item yang dilewati.",
+            "examples": [
+              0
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
+        "title": "Page[NarasiKasusRead]"
+      },
+      "RevisionOrigin": {
+        "type": "string",
+        "enum": [
+          "AI_DRAFT",
+          "HUMAN_CORRECTION",
+          "AI_REVISION",
+          "REVIEWER_EDIT",
+          "ORIGINAL_QUOTE"
+        ],
+        "title": "RevisionOrigin",
+        "description": "Asal sebuah versi narasi."
+      },
+      "SensitivityClass": {
+        "type": "string",
+        "enum": [
+          "NONPRIBADI",
+          "SENSITIF"
+        ],
+        "title": "SensitivityClass",
+        "description": "Kelas kepekaan kasus; hanya `NONPRIBADI` yang dibuka pada jalur manual."
+      },
+      "StatusNarasi": {
+        "type": "string",
+        "enum": [
+          "SOURCE_CHECKED",
+          "AI_DRAFT",
+          "NEED_FACT",
+          "TEAM_REVIEW",
+          "TEAM_VERIFIED",
+          "SUBJECT_REVIEW",
+          "SUBJECT_CONFIRMED",
+          "SUBJECT_CORRECTION",
+          "SUBJECT_REJECTED",
+          "SUBJECT_UNCERTAIN",
+          "FINAL_TEAM_REVIEW",
+          "RELEASED_FACT",
+          "RELEASED_LIMITED",
+          "RETURN_FOR_CLARIFICATION"
+        ],
+        "title": "StatusNarasi",
+        "description": "Status siklus tinjauan sebuah kasus narasi (14 nilai); proyeksi, boleh berubah."
+      },
+      "SumberRevisiItem": {
+        "properties": {
+          "sumber_id": {
+            "type": "string",
+            "maxLength": 36,
+            "minLength": 1,
+            "title": "Sumber Id"
+          },
+          "source_span": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Span"
+          },
+          "basis_relation": {
+            "$ref": "#/components/schemas/BasisRelation"
+          }
+        },
+        "type": "object",
+        "required": [
+          "sumber_id",
+          "basis_relation"
+        ],
+        "title": "SumberRevisiItem",
+        "description": "Satu kutipan sumber pada revisi; hash dicocokkan server dari sumber tersimpan."
+      },
+      "UjiKeringItem": {
+        "properties": {
+          "sumber_id": {
+            "type": "string",
+            "title": "Sumber Id"
+          },
+          "jenis": {
+            "type": "string",
+            "title": "Jenis"
+          },
+          "lolos": {
+            "type": "boolean",
+            "title": "Lolos"
+          },
+          "alasan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Alasan",
+            "description": "Alasan penolakan gerbang; null bila lolos."
+          },
+          "temuan": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object",
+            "title": "Temuan",
+            "description": "{kategori PII: jumlah kemunculan}."
+          }
+        },
+        "type": "object",
+        "required": [
+          "sumber_id",
+          "jenis",
+          "lolos",
+          "alasan",
+          "temuan"
+        ],
+        "title": "UjiKeringItem",
+        "description": "Hasil gerbang untuk satu sumber; tidak memuat teks maupun nilai PII."
+      },
+      "UjiKeringRead": {
+        "properties": {
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "lolos": {
+            "type": "integer",
+            "title": "Lolos"
+          },
+          "ditolak": {
+            "type": "integer",
+            "title": "Ditolak"
+          },
+          "per_alasan": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object",
+            "title": "Per Alasan",
+            "description": "{alasan: jumlah sumber ditolak}."
+          },
+          "per_kategori": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object",
+            "title": "Per Kategori",
+            "description": "{kategori PII: jumlah sumber ditolak yang memuat kategori itu}."
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/UjiKeringItem"
+            },
+            "type": "array",
+            "title": "Items"
+          }
+        },
+        "type": "object",
+        "required": [
+          "total",
+          "lolos",
+          "ditolak",
+          "per_alasan",
+          "per_kategori",
+          "items"
+        ],
+        "title": "UjiKeringRead",
+        "description": "Rekap uji kering. Tidak ada yang disimpan; tiap panggilan menghitung ulang."
+      },
+      "UjiKeringRequest": {
+        "properties": {
+          "sumber_ids": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array",
+                "maxItems": 10000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sumber Ids",
+            "description": "Id sumber yang diuji; null = semua sumber (maksimum 500)."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "UjiKeringRequest",
+        "description": "Payload uji kering."
       }
     },
     "securitySchemes": {

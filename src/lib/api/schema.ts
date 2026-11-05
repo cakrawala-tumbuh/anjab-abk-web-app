@@ -3811,6 +3811,136 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/narasi/sumber/uji-kering": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Uji kering gerbang PII atas sumber narasi (tim-kajian)
+         * @description Hitung berapa sumber ditolak gerbang PII (mode BLOKIR) dan mengapa.
+         *
+         *     Tanpa model, tanpa tulisan, dan tanpa nilai PII pada respons. Berjalan walau flag AI mati.
+         */
+        post: operations["narasi_sumber_uji_kering"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/narasi/kasus": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Daftar kasus narasi (tim-kajian)
+         * @description Daftar kasus terbaru dulu; filter `status`, `instrument_id`, `periode`.
+         */
+        get: operations["narasi_kasus_list"];
+        put?: never;
+        /**
+         * Buat kasus narasi F1 nonpribadi (tim-kajian)
+         * @description Buat kasus berstatus `SOURCE_CHECKED`; `dibuat_oleh` diambil dari token.
+         *
+         *     Hanya `F1_FORMAL` dan `NONPRIBADI` yang dibuka (K-1); lainnya 422.
+         */
+        post: operations["narasi_kasus_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/narasi/kasus/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Cari kasus narasi (domain ala Odoo) (tim-kajian)
+         * @description Cari dengan domain ala Odoo; field di-whitelist.
+         */
+        post: operations["narasi_kasus_search"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/narasi/kasus/{narasi_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Detail kasus narasi dengan versi terbaru dan sumbernya (tim-kajian)
+         * @description Kasus + versi terbaru (dengan tautan sumber, tanpa teks sumber).
+         */
+        get: operations["narasi_kasus_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/narasi/kasus/{narasi_id}/riwayat": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Riwayat versi dan event kasus narasi (tim-kajian)
+         * @description Seluruh versi (urut `revision_no`) dan event (urut waktu).
+         */
+        get: operations["narasi_kasus_riwayat"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/narasi/kasus/{narasi_id}/revisi": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Tulis revisi manual bersumber (tim-kajian)
+         * @description Tambah versi `REVIEWER_EDIT` berstatus hasil `TEAM_REVIEW`.
+         *
+         *     `source_hash` diisi server dari sumber tersimpan; `sumber_id` tak dikenal 422.
+         */
+        post: operations["narasi_kasus_revisi"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -12569,6 +12699,397 @@ export interface components {
              * @description Hash bank item yang berlaku saat responden submit final; null untuk draft dan responden lama (sebelum fitur ini).
              */
             item_bank_hash?: string | null;
+        };
+        /**
+         * BasisRelation
+         * @description Hubungan kutipan sumber terhadap isi versi narasi.
+         * @enum {string}
+         */
+        BasisRelation: "DIRECT" | "CONTEXT" | "CONTRADICTS" | "UNKNOWN";
+        /**
+         * EventKind
+         * @description Jenis tindakan manusia pada tabel `narasi_event` (11 nilai paket).
+         * @enum {string}
+         */
+        EventKind: "TEAM_APPROVE" | "TEAM_REVISE" | "TEAM_REJECT" | "NEED_SOURCE" | "SUBJECT_CONFIRM" | "SUBJECT_CORRECT" | "SUBJECT_REJECT" | "SUBJECT_UNSURE" | "FINAL_TEAM_APPROVE" | "RELEASE_LIMITED" | "RETURN_CLARIFICATION";
+        /**
+         * NarasiEventRead
+         * @description Satu tindakan manusia yang tercatat pada sebuah kasus.
+         */
+        NarasiEventRead: {
+            /** Id */
+            id: string;
+            /** Narasi Id */
+            narasi_id: string;
+            /** Narasi Versi Id */
+            narasi_versi_id: string | null;
+            /** Actor Key */
+            actor_key: string;
+            /** Actor Role */
+            actor_role: string;
+            event_kind: components["schemas"]["EventKind"];
+            dari_status: components["schemas"]["StatusNarasi"];
+            ke_status: components["schemas"]["StatusNarasi"];
+            /** Event Notes */
+            event_notes: string | null;
+            /**
+             * Event At
+             * Format: date-time
+             */
+            event_at: string;
+        };
+        /**
+         * NarasiKasusBuat
+         * @description Badan `POST /narasi/kasus`. Kunci tak dikenal (mis. `dibuat_oleh`) diabaikan.
+         *
+         *     Aktor selalu dari token; `status` awal selalu `SOURCE_CHECKED`.
+         */
+        NarasiKasusBuat: {
+            /** Instrument Id */
+            instrument_id: string;
+            /** Field Key */
+            field_key: string;
+            /** Peran Ref */
+            peran_ref: string;
+            /** Periode */
+            periode: string;
+            /** Sekolah Id */
+            sekolah_id?: string | null;
+            /** Assignment Ref */
+            assignment_ref?: string | null;
+            /** Target Subject Ref */
+            target_subject_ref?: string | null;
+            /** Konteks Kode */
+            konteks_kode?: string | null;
+            /** @description Hanya `F1_FORMAL` yang dibuka. */
+            narrative_kind: components["schemas"]["NarrativeKind"];
+            /** Intended Use */
+            intended_use: string;
+            /** Permission Scope */
+            permission_scope: string;
+            /** @description Hanya `NONPRIBADI` yang dibuka. */
+            sensitivity_class: components["schemas"]["SensitivityClass"];
+        };
+        /**
+         * NarasiKasusDetail
+         * @description Kasus beserta versi terbaru (bila ada); sumber ada di `versi_terbaru.sumber`.
+         */
+        NarasiKasusDetail: {
+            /** Id */
+            id: string;
+            /** Instrument Id */
+            instrument_id: string;
+            /** Field Key */
+            field_key: string;
+            /** Peran Ref */
+            peran_ref: string;
+            /** Periode */
+            periode: string;
+            /** Sekolah Id */
+            sekolah_id: string | null;
+            /** Assignment Ref */
+            assignment_ref: string | null;
+            /** Target Subject Ref */
+            target_subject_ref: string | null;
+            /** Konteks Kode */
+            konteks_kode: string | null;
+            narrative_kind: components["schemas"]["NarrativeKind"];
+            status: components["schemas"]["StatusNarasi"];
+            /** Intended Use */
+            intended_use: string;
+            /** Permission Scope */
+            permission_scope: string;
+            /** Sensitivity Class */
+            sensitivity_class: string;
+            /** Dibuat Oleh */
+            dibuat_oleh: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+            versi_terbaru: components["schemas"]["NarasiVersiLengkap"] | null;
+        };
+        /**
+         * NarasiKasusRead
+         * @description Kasus narasi beserta status proyeksinya.
+         */
+        NarasiKasusRead: {
+            /** Id */
+            id: string;
+            /** Instrument Id */
+            instrument_id: string;
+            /** Field Key */
+            field_key: string;
+            /** Peran Ref */
+            peran_ref: string;
+            /** Periode */
+            periode: string;
+            /** Sekolah Id */
+            sekolah_id: string | null;
+            /** Assignment Ref */
+            assignment_ref: string | null;
+            /** Target Subject Ref */
+            target_subject_ref: string | null;
+            /** Konteks Kode */
+            konteks_kode: string | null;
+            narrative_kind: components["schemas"]["NarrativeKind"];
+            status: components["schemas"]["StatusNarasi"];
+            /** Intended Use */
+            intended_use: string;
+            /** Permission Scope */
+            permission_scope: string;
+            /** Sensitivity Class */
+            sensitivity_class: string;
+            /** Dibuat Oleh */
+            dibuat_oleh: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+        };
+        /**
+         * NarasiRevisiCreate
+         * @description Badan `POST /narasi/kasus/{id}/revisi`; asal dan status hasil ditetapkan service.
+         */
+        NarasiRevisiCreate: {
+            /** Teks */
+            teks: string;
+            /** Sumber */
+            sumber: components["schemas"]["SumberRevisiItem"][];
+            /**
+             * Supersedes Id
+             * @description Versi terbaru saat ini; kosong untuk versi 1.
+             */
+            supersedes_id?: string | null;
+        };
+        /**
+         * NarasiRiwayatRead
+         * @description Seluruh versi (urut `revision_no`) dan event (urut waktu) satu kasus.
+         */
+        NarasiRiwayatRead: {
+            /** Versi */
+            versi: components["schemas"]["NarasiVersiLengkap"][];
+            /** Event */
+            event: components["schemas"]["NarasiEventRead"][];
+        };
+        /**
+         * NarasiVersiLengkap
+         * @description Versi beserta tautan sumbernya.
+         */
+        NarasiVersiLengkap: {
+            /** Id */
+            id: string;
+            /** Narasi Id */
+            narasi_id: string;
+            /** Revision No */
+            revision_no: number;
+            revision_origin: components["schemas"]["RevisionOrigin"];
+            /** Status Hasil */
+            status_hasil: string;
+            /** Teks */
+            teks: string | null;
+            /** Supersedes Id */
+            supersedes_id: string | null;
+            /** Ai Run Id */
+            ai_run_id: string | null;
+            /** Output Hash */
+            output_hash: string | null;
+            /** Metadata Ai */
+            metadata_ai: {
+                [key: string]: unknown;
+            } | null;
+            /** Dibuat Oleh */
+            dibuat_oleh: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Sumber */
+            sumber: components["schemas"]["NarasiVersiSumberRead"][];
+        };
+        /**
+         * NarasiVersiRead
+         * @description Satu versi teks kasus narasi.
+         */
+        NarasiVersiRead: {
+            /** Id */
+            id: string;
+            /** Narasi Id */
+            narasi_id: string;
+            /** Revision No */
+            revision_no: number;
+            revision_origin: components["schemas"]["RevisionOrigin"];
+            /** Status Hasil */
+            status_hasil: string;
+            /** Teks */
+            teks: string | null;
+            /** Supersedes Id */
+            supersedes_id: string | null;
+            /** Ai Run Id */
+            ai_run_id: string | null;
+            /** Output Hash */
+            output_hash: string | null;
+            /** Metadata Ai */
+            metadata_ai: {
+                [key: string]: unknown;
+            } | null;
+            /** Dibuat Oleh */
+            dibuat_oleh: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+        };
+        /**
+         * NarasiVersiSumberRead
+         * @description Tautan versi ke sumber (tanpa teks sumber).
+         */
+        NarasiVersiSumberRead: {
+            /** Sumber Id */
+            sumber_id: string;
+            /** Source Span */
+            source_span: string | null;
+            /** Source Hash */
+            source_hash: string;
+            basis_relation: components["schemas"]["BasisRelation"];
+        };
+        /**
+         * NarrativeKind
+         * @description Jenis narasi: F1 dokumen formal s.d. F5 riset.
+         * @enum {string}
+         */
+        NarrativeKind: "F1_FORMAL" | "F2_ACTUAL" | "F3_HANDOFF" | "F4_ANALYTICAL" | "F5_RESEARCH";
+        /** Page[NarasiKasusRead] */
+        Page_NarasiKasusRead_: {
+            /**
+             * Items
+             * @description Item pada halaman ini.
+             */
+            items: components["schemas"]["NarasiKasusRead"][];
+            /**
+             * Total
+             * @description Total item tersedia.
+             * @example 42
+             */
+            total: number;
+            /**
+             * Limit
+             * @description Maksimum item per halaman.
+             * @example 20
+             */
+            limit: number;
+            /**
+             * Offset
+             * @description Jumlah item yang dilewati.
+             * @example 0
+             */
+            offset: number;
+        };
+        /**
+         * RevisionOrigin
+         * @description Asal sebuah versi narasi.
+         * @enum {string}
+         */
+        RevisionOrigin: "AI_DRAFT" | "HUMAN_CORRECTION" | "AI_REVISION" | "REVIEWER_EDIT" | "ORIGINAL_QUOTE";
+        /**
+         * SensitivityClass
+         * @description Kelas kepekaan kasus; hanya `NONPRIBADI` yang dibuka pada jalur manual.
+         * @enum {string}
+         */
+        SensitivityClass: "NONPRIBADI" | "SENSITIF";
+        /**
+         * StatusNarasi
+         * @description Status siklus tinjauan sebuah kasus narasi (14 nilai); proyeksi, boleh berubah.
+         * @enum {string}
+         */
+        StatusNarasi: "SOURCE_CHECKED" | "AI_DRAFT" | "NEED_FACT" | "TEAM_REVIEW" | "TEAM_VERIFIED" | "SUBJECT_REVIEW" | "SUBJECT_CONFIRMED" | "SUBJECT_CORRECTION" | "SUBJECT_REJECTED" | "SUBJECT_UNCERTAIN" | "FINAL_TEAM_REVIEW" | "RELEASED_FACT" | "RELEASED_LIMITED" | "RETURN_FOR_CLARIFICATION";
+        /**
+         * SumberRevisiItem
+         * @description Satu kutipan sumber pada revisi; hash dicocokkan server dari sumber tersimpan.
+         */
+        SumberRevisiItem: {
+            /** Sumber Id */
+            sumber_id: string;
+            /** Source Span */
+            source_span?: string | null;
+            basis_relation: components["schemas"]["BasisRelation"];
+        };
+        /**
+         * UjiKeringItem
+         * @description Hasil gerbang untuk satu sumber; tidak memuat teks maupun nilai PII.
+         */
+        UjiKeringItem: {
+            /** Sumber Id */
+            sumber_id: string;
+            /** Jenis */
+            jenis: string;
+            /** Lolos */
+            lolos: boolean;
+            /**
+             * Alasan
+             * @description Alasan penolakan gerbang; null bila lolos.
+             */
+            alasan: string | null;
+            /**
+             * Temuan
+             * @description {kategori PII: jumlah kemunculan}.
+             */
+            temuan: {
+                [key: string]: number;
+            };
+        };
+        /**
+         * UjiKeringRead
+         * @description Rekap uji kering. Tidak ada yang disimpan; tiap panggilan menghitung ulang.
+         */
+        UjiKeringRead: {
+            /** Total */
+            total: number;
+            /** Lolos */
+            lolos: number;
+            /** Ditolak */
+            ditolak: number;
+            /**
+             * Per Alasan
+             * @description {alasan: jumlah sumber ditolak}.
+             */
+            per_alasan: {
+                [key: string]: number;
+            };
+            /**
+             * Per Kategori
+             * @description {kategori PII: jumlah sumber ditolak yang memuat kategori itu}.
+             */
+            per_kategori: {
+                [key: string]: number;
+            };
+            /** Items */
+            items: components["schemas"]["UjiKeringItem"][];
+        };
+        /**
+         * UjiKeringRequest
+         * @description Payload uji kering.
+         */
+        UjiKeringRequest: {
+            /**
+             * Sumber Ids
+             * @description Id sumber yang diuji; null = semua sumber (maksimum 500).
+             */
+            sumber_ids?: string[] | null;
         };
     };
     responses: never;
@@ -31782,6 +32303,494 @@ export interface operations {
             };
         };
     };
+    narasi_sumber_uji_kering: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UjiKeringRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UjiKeringRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan anggota grup tim-kajian. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Id tak dikenal atau lebih dari 500 sumber (uji_kering_terlalu_banyak). */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    narasi_kasus_list: {
+        parameters: {
+            query?: {
+                /** @description Filter status. */
+                status?: components["schemas"]["StatusNarasi"] | null;
+                /** @description Filter instrumen. */
+                instrument_id?: string | null;
+                /** @description Filter periode. */
+                periode?: string | null;
+                /** @description Maks item per halaman. */
+                limit?: number;
+                /** @description Jumlah item yang dilewati. */
+                offset?: number;
+            };
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Page_NarasiKasusRead_"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan anggota grup tim-kajian. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    narasi_kasus_create: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["NarasiKasusBuat"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NarasiKasusRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan anggota grup tim-kajian. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Lingkup ganda (narasi_lingkup_ganda). */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Payload tidak valid; jenis selain F1_FORMAL (narasi_jenis_belum_dibuka) atau SENSITIF (narasi_sensitif_belum_dibuka). */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    narasi_kasus_search: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SearchRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Page_NarasiKasusRead_"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan anggota grup tim-kajian. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Domain/field tidak valid. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    narasi_kasus_get: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
+            path: {
+                narasi_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NarasiKasusDetail"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan anggota grup tim-kajian. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Kasus narasi tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    narasi_kasus_riwayat: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
+            path: {
+                narasi_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NarasiRiwayatRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan anggota grup tim-kajian. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Kasus narasi tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    narasi_kasus_revisi: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
+            path: {
+                narasi_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["NarasiRevisiCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NarasiVersiRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan anggota grup tim-kajian. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Kasus narasi tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description supersedes_id basi (versi_basi). */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Teks/sumber tidak valid. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
 }
 export type JabatanRead = components["schemas"]["JabatanRead"];
 export type JenjangPendidikanRead = components["schemas"]["JenjangPendidikanRead"];
@@ -31923,3 +32932,12 @@ export type StatusQaAi = components["schemas"]["StatusQaAi"];
 export type NarasiSumberRingkas = components["schemas"]["NarasiSumberRingkas"];
 export type NarasiSumberRead = components["schemas"]["NarasiSumberRead"];
 export type NarasiSumberCreate = components["schemas"]["NarasiSumberCreate"];
+export type NarasiKasusRead = components["schemas"]["NarasiKasusRead"];
+export type NarasiKasusDetail = components["schemas"]["NarasiKasusDetail"];
+export type NarasiKasusBuat = components["schemas"]["NarasiKasusBuat"];
+export type NarasiRevisiCreate = components["schemas"]["NarasiRevisiCreate"];
+export type NarasiVersiLengkap = components["schemas"]["NarasiVersiLengkap"];
+export type NarasiVersiRead = components["schemas"]["NarasiVersiRead"];
+export type NarasiEventRead = components["schemas"]["NarasiEventRead"];
+export type NarasiRiwayatRead = components["schemas"]["NarasiRiwayatRead"];
+export type SumberRevisiItem = components["schemas"]["SumberRevisiItem"];

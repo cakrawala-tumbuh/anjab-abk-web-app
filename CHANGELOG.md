@@ -9,6 +9,10 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ### Ditambahkan
 
+- Layar Tim Kajian **Kasus Narasi** (`/narasi/kasus`, `/narasi/kasus/tambah`, `/narasi/kasus/[id]`):
+  buat kasus F1 nonpribadi, telusuri (filter status, instrumen, periode), lihat riwayat versi dan
+  event, serta tulis revisi manual bersumber. Menu **Narasi → Kasus**. Tidak meminta draf AI dan
+  tidak menyalakan AI (issue #97).
 - Layar Tim Kajian **Sumber Narasi** (`/narasi/sumber`, `/narasi/sumber/tambah`,
   `/narasi/sumber/[id]`) dan grup menu **Narasi**: simpan teks sumber, telusuri (filter jenis dan
   periode), dan baca detail beserta hash. Sumber tak dapat diubah atau dihapus; **Revisi**
