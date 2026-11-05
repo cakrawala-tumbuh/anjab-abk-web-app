@@ -18,6 +18,7 @@ detail klik tombol, mengisi formulir, dan menginput data. IK adalah pelengkap
 | [IK-10](redesain-tim.md)     | Redesain Pekerjaan  | Tim Kajian                             |
 | [IK-11](redesain-sekolah.md) | Konfirmasi Redesain | Pengisi Sekolah                        |
 | [IK-12](saklar-ai.md)        | Saklar & Run AI     | Administrator                          |
+| [IK-13](narasi-sumber.md)    | Sumber Narasi       | Tim Kajian                             |
 
 ---
 

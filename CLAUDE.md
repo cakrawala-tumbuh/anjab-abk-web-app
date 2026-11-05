@@ -84,6 +84,26 @@ src/
 
 ## Revisi Desain
 
+### [2026-11-05] Layar Sumber Narasi Tim Kajian (`/narasi/sumber`)
+
+Butir WA-1 pelacak `cakrawala-tumbuh/ypii-support#442`; konsumen `anjab-abk-backend#91`.
+
+- **Kontrak diverifikasi ke kode** backend master `9b89ae972d58c3e21b5c462c86d38731f5aeab5` (klon scratch,
+  image `Dockerfile.test`, `scripts/export_openapi.py`): `POST/GET /api/v1/narasi/sumber`,
+  `GET /api/v1/narasi/sumber/{sumber_id}`, nama field cocok dengan issue. `openapi.json` hanya bertambah;
+  blok alias di akhir `schema.ts` ditempel ulang + `NarasiSumber{Ringkas,Read,Create}`. `POST .../search` tidak dipakai.
+- **Segmen `src/app/(auth)/narasi/`**: `layout.tsx` = `WajibGrup` `tim-kajian` (tanpa banner prototipe; `admin`
+  saja ditolak); menu grup `Narasi` lewat `navForGroups` (`NARASI_TIM_ITEMS`). Rute `sumber` (daftar, filter
+  `jenis`/`periode` lewat form GET), `sumber/tambah`, `sumber/[id]`; masing-masing punya `loading.tsx` + `error.tsx`.
+- **Baca**: `data.ts` melempar `apiErrorDari(res)`; hanya 404 detail menjadi `notFound()`. Daftar membedakan
+  kosong, kosong-karena-filter, dan gagal; item daftar tanpa `teks`.
+- **Tulis**: `SumberForm` (Client Component) memakai `useIdempotencyKey().keyUntuk(body)` + `headerIdempotencyKey`;
+  sukses hanya setelah 2xx. `izin_ai` bawaan mati; tercentang tanpa `izin_catatan` tidak dikirim; 422 dipetakan ke
+  field (`galatField422`). Tak ada ubah/hapus: "Revisi" = `/narasi/sumber/tambah?menggantikan=<id>` → baris baru
+  dengan `menggantikan_id`. Logika murni di `src/lib/narasi-sumber.ts`.
+- Tidak mengubah `FEATURE_AI_NARRATIVE_DRAFT`, tidak menyalakan AI. Docs: `docs-usage/ik/narasi-sumber.md` (IK-13).
+- Detail keputusan: issue `cakrawala-tumbuh/anjab-abk-web-app#96`.
+
 ### [2026-11-05] Layar admin Saklar & Run AI (`/sistem/ai`)
 
 Butir WA-5 pelacak `cakrawala-tumbuh/ypii-support#442`; konsumen `anjab-abk-backend#88` (saklar) dan `#85` (register run).

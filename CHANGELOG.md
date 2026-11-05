@@ -9,6 +9,10 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ### Ditambahkan
 
+- Layar Tim Kajian **Sumber Narasi** (`/narasi/sumber`, `/narasi/sumber/tambah`,
+  `/narasi/sumber/[id]`) dan grup menu **Narasi**: simpan teks sumber, telusuri (filter jenis dan
+  periode), dan baca detail beserta hash. Sumber tak dapat diubah atau dihapus; **Revisi**
+  membuat baris baru. Tidak menyalakan AI (issue #96).
 - Layar admin **Saklar & Run AI** (`/sistem/ai`, `/sistem/ai/run/[run_id]`): matikan/hidupkan saklar
   layanan AI dengan alasan (min. 5 karakter) dan telusuri register run tanpa pernah menampilkan
   masukan/keluaran. Tidak ada kontrol penyala flag (issue #99).

@@ -24245,6 +24245,465 @@
         }
       }
     },
+    "/api/v1/narasi/sumber": {
+      "get": {
+        "tags": [
+          "narasi"
+        ],
+        "summary": "Daftar sumber narasi tanpa teks (tim-kajian)",
+        "description": "Daftar ringkas (tanpa `teks`), terbaru dulu; filter `jenis` dan `periode`.",
+        "operationId": "narasi_sumber_list",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "jenis",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/JenisSumberNarasi"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter jenis.",
+              "title": "Jenis"
+            },
+            "description": "Filter jenis."
+          },
+          {
+            "name": "periode",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 20
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter periode.",
+              "title": "Periode"
+            },
+            "description": "Filter periode."
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 500,
+              "minimum": 1,
+              "description": "Maks item per halaman.",
+              "default": 20,
+              "title": "Limit"
+            },
+            "description": "Maks item per halaman."
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Jumlah item yang dilewati.",
+              "default": 0,
+              "title": "Offset"
+            },
+            "description": "Jumlah item yang dilewati."
+          },
+          {
+            "name": "X-Tujuan-Akses",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN.",
+              "title": "X-Tujuan-Akses"
+            },
+            "description": "Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_NarasiSumberRingkas_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan anggota grup tim-kajian.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "narasi"
+        ],
+        "summary": "Simpan sumber narasi baru (tim-kajian)",
+        "description": "Simpan teks sumber (tak dapat diubah); `dibuat_oleh` diambil dari token.\n\nRevisi teks atau perubahan izin dibuat sebagai baris baru dengan `menggantikan_id`.",
+        "operationId": "narasi_sumber_create",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Kunci idempotency opsional.",
+              "title": "Idempotency-Key"
+            },
+            "description": "Kunci idempotency opsional."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NarasiSumberCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NarasiSumberRead"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Idempotency-Key ini sedang diproses (atau konflik state).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan anggota grup tim-kajian.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Payload tidak valid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/narasi/sumber/search": {
+      "post": {
+        "tags": [
+          "narasi"
+        ],
+        "summary": "Cari sumber narasi (domain ala Odoo) (tim-kajian)",
+        "description": "Cari dengan domain ala Odoo; field di-whitelist; hasil tanpa `teks`.",
+        "operationId": "narasi_sumber_search",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-Tujuan-Akses",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN.",
+              "title": "X-Tujuan-Akses"
+            },
+            "description": "Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_NarasiSumberRingkas_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan anggota grup tim-kajian.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Domain/field tidak valid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/narasi/sumber/{sumber_id}": {
+      "get": {
+        "tags": [
+          "narasi"
+        ],
+        "summary": "Detail sumber narasi beserta teks (tim-kajian)",
+        "description": "Ambil satu sumber lengkap dengan `teks`.",
+        "operationId": "narasi_sumber_get",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "sumber_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Sumber Id"
+            }
+          },
+          {
+            "name": "X-Tujuan-Akses",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN.",
+              "title": "X-Tujuan-Akses"
+            },
+            "description": "Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NarasiSumberRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan anggota grup tim-kajian.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sumber narasi tidak ditemukan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/redesain/bukti": {
       "get": {
         "tags": [
@@ -33078,6 +33537,15 @@
         "title": "JabatanUpdate",
         "description": "Payload pembaruan sebagian jabatan."
       },
+      "JenisSumberNarasi": {
+        "type": "string",
+        "enum": [
+          "SINTETIS",
+          "DOKUMEN_RESMI"
+        ],
+        "title": "JenisSumberNarasi",
+        "description": "Jenis sumber yang sah pada tahap T0 dan T1 (K-3); nilai lain ditolak 422."
+      },
       "JenjangPendidikanCreate": {
         "properties": {
           "kode": {
@@ -36000,6 +36468,255 @@
         "title": "MataPelajaranUpdate",
         "description": "Payload pembaruan sebagian mata pelajaran."
       },
+      "NarasiSumberCreate": {
+        "properties": {
+          "judul": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Judul",
+            "examples": [
+              "Pedoman akademik 2026"
+            ]
+          },
+          "jenis": {
+            "$ref": "#/components/schemas/JenisSumberNarasi",
+            "description": "Jenis sumber (SINTETIS atau DOKUMEN_RESMI)."
+          },
+          "versi": {
+            "type": "string",
+            "maxLength": 50,
+            "minLength": 1,
+            "title": "Versi",
+            "examples": [
+              "v1.0"
+            ]
+          },
+          "periode": {
+            "type": "string",
+            "maxLength": 20,
+            "minLength": 1,
+            "title": "Periode",
+            "examples": [
+              "2026/27"
+            ]
+          },
+          "teks": {
+            "type": "string",
+            "maxLength": 200000,
+            "minLength": 1,
+            "title": "Teks",
+            "description": "Teks sumber (tempelan)."
+          },
+          "izin_ai": {
+            "type": "boolean",
+            "title": "Izin Ai",
+            "description": "Catatan izin pemakaian AI; tidak menyalakan AI.",
+            "default": false
+          },
+          "izin_catatan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Izin Catatan",
+            "description": "Dasar izin; wajib bila izin_ai."
+          },
+          "menggantikan_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 36
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Menggantikan Id",
+            "description": "ID sumber yang digantikan baris ini."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "judul",
+          "jenis",
+          "versi",
+          "periode",
+          "teks"
+        ],
+        "title": "NarasiSumberCreate",
+        "description": "Payload sumber narasi baru. `id` (= Source_ID) dan `teks_hash` dibangkitkan sistem."
+      },
+      "NarasiSumberRead": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id",
+            "description": "Source_ID (UUID v4)."
+          },
+          "judul": {
+            "type": "string",
+            "title": "Judul"
+          },
+          "jenis": {
+            "$ref": "#/components/schemas/JenisSumberNarasi"
+          },
+          "versi": {
+            "type": "string",
+            "title": "Versi"
+          },
+          "periode": {
+            "type": "string",
+            "title": "Periode"
+          },
+          "teks_hash": {
+            "type": "string",
+            "title": "Teks Hash",
+            "description": "SHA-256 hex atas UTF-8 teks."
+          },
+          "izin_ai": {
+            "type": "boolean",
+            "title": "Izin Ai"
+          },
+          "izin_catatan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Izin Catatan"
+          },
+          "menggantikan_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Menggantikan Id"
+          },
+          "dibuat_oleh": {
+            "type": "string",
+            "title": "Dibuat Oleh"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "teks": {
+            "type": "string",
+            "title": "Teks"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "judul",
+          "jenis",
+          "versi",
+          "periode",
+          "teks_hash",
+          "izin_ai",
+          "izin_catatan",
+          "menggantikan_id",
+          "dibuat_oleh",
+          "created_at",
+          "teks"
+        ],
+        "title": "NarasiSumberRead",
+        "description": "Satu sumber narasi lengkap, termasuk `teks`."
+      },
+      "NarasiSumberRingkas": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id",
+            "description": "Source_ID (UUID v4)."
+          },
+          "judul": {
+            "type": "string",
+            "title": "Judul"
+          },
+          "jenis": {
+            "$ref": "#/components/schemas/JenisSumberNarasi"
+          },
+          "versi": {
+            "type": "string",
+            "title": "Versi"
+          },
+          "periode": {
+            "type": "string",
+            "title": "Periode"
+          },
+          "teks_hash": {
+            "type": "string",
+            "title": "Teks Hash",
+            "description": "SHA-256 hex atas UTF-8 teks."
+          },
+          "izin_ai": {
+            "type": "boolean",
+            "title": "Izin Ai"
+          },
+          "izin_catatan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Izin Catatan"
+          },
+          "menggantikan_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Menggantikan Id"
+          },
+          "dibuat_oleh": {
+            "type": "string",
+            "title": "Dibuat Oleh"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "judul",
+          "jenis",
+          "versi",
+          "periode",
+          "teks_hash",
+          "izin_ai",
+          "izin_catatan",
+          "menggantikan_id",
+          "dibuat_oleh",
+          "created_at"
+        ],
+        "title": "NarasiSumberRingkas",
+        "description": "Ringkasan sumber untuk daftar/pencarian; TIDAK memuat `teks`."
+      },
       "OpmHasilSesiRead": {
         "properties": {
           "sesi_id": {
@@ -37928,6 +38645,50 @@
           "offset"
         ],
         "title": "Page[MataPelajaranRead]"
+      },
+      "Page_NarasiSumberRingkas_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/NarasiSumberRingkas"
+            },
+            "type": "array",
+            "title": "Items",
+            "description": "Item pada halaman ini."
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total",
+            "description": "Total item tersedia.",
+            "examples": [
+              42
+            ]
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit",
+            "description": "Maksimum item per halaman.",
+            "examples": [
+              20
+            ]
+          },
+          "offset": {
+            "type": "integer",
+            "title": "Offset",
+            "description": "Jumlah item yang dilewati.",
+            "examples": [
+              0
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
+        "title": "Page[NarasiSumberRingkas]"
       },
       "Page_OpmPengecualianRead_": {
         "properties": {
