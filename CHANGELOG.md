@@ -9,6 +9,10 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ### Ditambahkan
 
+- Layar Tim Kajian **Antrean Tinjauan Narasi** (`/narasi/antrean`): daftar kasus berstatus `AI_DRAFT`,
+  `TEAM_REVIEW`, `NEED_FACT` dalam urutan server, dengan filter status, instrumen, periode lewat URL,
+  tanda **Draf AI** dan kontradiksi, tanpa kotak centang atau aksi massal. Menu **Narasi → Antrean**
+  (issue #98).
 - Layar Tim Kajian **Kasus Narasi** (`/narasi/kasus`, `/narasi/kasus/tambah`, `/narasi/kasus/[id]`):
   buat kasus F1 nonpribadi, telusuri (filter status, instrumen, periode), lihat riwayat versi dan
   event, serta tulis revisi manual bersumber. Menu **Narasi → Kasus**. Tidak meminta draf AI dan

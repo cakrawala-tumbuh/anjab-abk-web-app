@@ -84,6 +84,25 @@ src/
 
 ## Revisi Desain
 
+### [2026-11-05] Layar antrean reviewer narasi (`/narasi/antrean`)
+
+Butir WA-2 pelacak `cakrawala-tumbuh/ypii-support#442`; konsumen `anjab-abk-backend#95`.
+
+- **Kontrak diverifikasi ke kode** backend master `27d53dcbd56e715f154a0f190d3aad138cae2333` (klon scratch,
+  image `Dockerfile.test`, `scripts/export_openapi.py`): `GET /api/v1/narasi/antrean` → `Page[AntreanItemRead]`,
+  filter `status`/`instrument_id`/`periode`. `openapi.json` hanya bertambah (tiga rute, tujuh skema);
+  blok alias di akhir `schema.ts` ditempel ulang + `AntreanItemRead`. Rute detail dan tinjauan belum dikonsumsi.
+- **Segmen `src/app/(auth)/narasi/antrean/`** di bawah `layout.tsx` `tim-kajian` yang sudah ada; menu
+  `Narasi → Antrean` lewat `NARASI_TIM_ITEMS`. `loading.tsx` + `error.tsx` ada.
+- **Baca**: `data.ts` melempar `apiErrorDari(res)`; urutan baris milik backend (`updated_at` naik), klien tidak
+  mengurutkan ulang. Halaman membedakan kosong, kosong-karena-filter, dan gagal. Filter dan `hlm` lewat URL;
+  `FilterAntrean` (Client Component) hanya memanggil `router.push` dan membuang `hlm`.
+- **Tabel** (`AntreanTabel`): tanpa kotak centang atau aksi massal; `revision_origin=AI_DRAFT` bertanda "Draf AI",
+  `jumlah_kontradiksi > 0` bertanda peringatan; `label_dokumenter` bertipe bebas di kontrak sehingga ditampilkan
+  lewat `teksLabelDokumenter`. Logika murni di `src/lib/narasi-antrean.ts`.
+- Tidak mengubah `FEATURE_AI_NARRATIVE_DRAFT`, tidak menyalakan AI. Docs: `docs-usage/ik/narasi-antrean.md` (IK-15).
+- Detail keputusan: issue `cakrawala-tumbuh/anjab-abk-web-app#98`.
+
 ### [2026-11-05] Layar Kasus Narasi (`/narasi/kasus`)
 
 Konsumen kontrak kasus backend `#94`. Melengkapi `/narasi/sumber` sehingga jalur manual

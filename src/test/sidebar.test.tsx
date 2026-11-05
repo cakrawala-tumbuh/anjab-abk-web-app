@@ -111,7 +111,11 @@ describe("menu Narasi", () => {
     const grup = navForGroups(["tim-kajian"]).find((e) => e.href === "/narasi");
     expect(grup?.kind).toBe("group");
     expect(grup && "items" in grup ? grup.items : []).toEqual(NARASI_TIM_ITEMS);
-    expect(NARASI_TIM_ITEMS.map((i) => i.href)).toEqual(["/narasi/sumber", "/narasi/kasus"]);
+    expect(NARASI_TIM_ITEMS.map((i) => i.href)).toEqual([
+      "/narasi/sumber",
+      "/narasi/kasus",
+      "/narasi/antrean",
+    ]);
   });
 
   it("tidak tampil untuk admin saja, partisipan, atau sekolah-pengisi", () => {
