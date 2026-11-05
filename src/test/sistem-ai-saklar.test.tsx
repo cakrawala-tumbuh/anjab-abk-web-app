@@ -7,8 +7,15 @@ vi.mock("next/navigation", () => ({ useRouter: () => ({ refresh }) }));
 const post = vi.fn();
 vi.mock("@/lib/api/client", () => ({ withServerAuth: () => ({ POST: post }) }));
 
+const notifyGagal = vi.fn();
+vi.mock("@/lib/notify", async (orig) => ({
+  ...(await orig<typeof import("@/lib/notify")>()),
+  notifyGagal: (e: unknown) => notifyGagal(e),
+}));
+
 import { SaklarPanel } from "@/app/(auth)/sistem/ai/saklar-panel";
 import type { SaklarAiRead } from "@/lib/api/schema";
+import { PESAN_MASIH_DIPROSES } from "@/lib/konkurensi";
 
 const saklar = (o: Partial<SaklarAiRead> = {}): SaklarAiRead => ({
   layanan: "AI_NARRATIVE_DRAFT",
@@ -35,6 +42,7 @@ function gagal(status: number, code: string, message: string) {
 beforeEach(() => {
   post.mockReset();
   refresh.mockReset();
+  notifyGagal.mockReset();
 });
 
 function isi(alasan: string) {
@@ -76,13 +84,37 @@ describe("SaklarPanel", () => {
     expect(screen.getByRole("alert")).toHaveTextContent("minimal 5");
   });
 
-  it("409 aksi berulang tampil sebagai pesan dan tidak refresh", async () => {
-    post.mockResolvedValue(gagal(409, "layanan_sudah_dimatikan", "Layanan sudah dimatikan."));
+  it("409 conflict penolakan keadaan: teks backend tampil di alert dan notifyGagal", async () => {
+    post.mockResolvedValue(gagal(409, "conflict", "Layanan AI_NARRATIVE_DRAFT sudah dimatikan."));
     render(<SaklarPanel saklar={saklar({ dimatikan: true })} accessToken="tok" />);
     isi("Insiden lagi");
     fireEvent.click(screen.getByRole("button", { name: "Matikan" }));
     await waitFor(() =>
-      expect(screen.getByRole("alert")).toHaveTextContent("Layanan sudah dimatikan."),
+      expect(screen.getByRole("alert")).toHaveTextContent(
+        "Layanan AI_NARRATIVE_DRAFT sudah dimatikan.",
+      ),
+    );
+    expect(screen.getByRole("alert")).not.toHaveTextContent(PESAN_MASIH_DIPROSES);
+    expect((notifyGagal.mock.calls[0][0] as Error).message).toBe(
+      "Layanan AI_NARRATIVE_DRAFT sudah dimatikan.",
+    );
+    expect(refresh).not.toHaveBeenCalled();
+  });
+
+  it("409 conflict idempotensi: teks backend tampil apa adanya", async () => {
+    post.mockResolvedValue(
+      gagal(409, "conflict", "Permintaan dengan Idempotency-Key ini sedang diproses."),
+    );
+    render(<SaklarPanel saklar={saklar()} accessToken="tok" />);
+    isi("Insiden lagi");
+    fireEvent.click(screen.getByRole("button", { name: "Matikan" }));
+    await waitFor(() =>
+      expect(screen.getByRole("alert")).toHaveTextContent(
+        "Permintaan dengan Idempotency-Key ini sedang diproses.",
+      ),
+    );
+    expect((notifyGagal.mock.calls[0][0] as Error).message).toBe(
+      "Permintaan dengan Idempotency-Key ini sedang diproses.",
     );
     expect(refresh).not.toHaveBeenCalled();
   });

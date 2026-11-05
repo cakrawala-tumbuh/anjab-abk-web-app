@@ -34,6 +34,10 @@ function waktu(v: string | null | undefined): string {
  * penghentian saat insiden cepat. Sukses ditampilkan hanya setelah respons 2xx; setiap
  * upaya membawa `Idempotency-Key` (`keyUntuk` per isi kiriman), 409 tampil sebagai pesan.
  *
+ * Galat dipetakan dengan `petakanKonkurensi(e, false)` (hanya 412 diganti pesan tetap): 409
+ * `conflict` pada rute ini juga berarti penolakan keadaan ("Layanan X sudah dimatikan."), bukan
+ * hanya idempotensi, jadi pesan backend ditampilkan apa adanya.
+ *
  * @param props - Lihat {@link SaklarPanelProps}.
  */
 export function SaklarPanel({ saklar, accessToken }: SaklarPanelProps) {
@@ -46,6 +50,10 @@ export function SaklarPanel({ saklar, accessToken }: SaklarPanelProps) {
   const alasanBersih = alasan.trim();
   const alasanSah = alasanBersih.length >= ALASAN_MIN;
 
+  /**
+   * Kirim satu aksi saklar beralasan. Galat dipetakan `petakanKonkurensi(e, false)`: 409
+   * `conflict` (penolakan keadaan maupun idempotensi) tampil dengan pesan backend apa adanya.
+   */
   async function kirim(aksi: "matikan" | "hidupkan") {
     if (!alasanSah) {
       setGalat(`Alasan minimal ${ALASAN_MIN} karakter.`);
@@ -69,7 +77,7 @@ export function SaklarPanel({ saklar, accessToken }: SaklarPanelProps) {
       notifySukses(aksi === "matikan" ? "Layanan AI dimatikan." : "Saklar AI dihidupkan kembali.");
       router.refresh();
     } catch (e) {
-      const err = petakanKonkurensi(e, true);
+      const err = petakanKonkurensi(e, false);
       setGalat(pesanGagal(err));
       notifyGagal(err);
     } finally {

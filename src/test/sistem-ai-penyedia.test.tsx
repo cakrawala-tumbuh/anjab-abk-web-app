@@ -18,6 +18,7 @@ vi.mock("@/lib/notify", async (orig) => ({
 import { PenyediaPanel } from "@/app/(auth)/sistem/ai/penyedia/penyedia-panel";
 import type { AiPenyediaRead, SaklarAiRead } from "@/lib/api/schema";
 import { KETERANGAN_LANGGANAN, TAUTAN_LANGGANAN } from "@/lib/ai-penyedia";
+import { PESAN_MASIH_DIPROSES } from "@/lib/konkurensi";
 
 const RAHASIA = "sk-ant-RAHASIA-1234567890abcdef";
 
@@ -189,14 +190,39 @@ describe("PenyediaPanel — ganti mode", () => {
     expect(screen.getByRole("alert")).toHaveTextContent("minimal 5");
   });
 
-  it("409 tampil sebagai pesan dan tidak refresh", async () => {
-    post.mockResolvedValue(gagal(409, "tidak_ada_perubahan", "Mode sudah sama."));
+  it("409 conflict penolakan keadaan: teks backend tampil di alert dan notifyGagal", async () => {
+    post.mockResolvedValue(gagal(409, "conflict", "Mode penyedia sudah MATI."));
     tampil();
     fireEvent.change(screen.getByLabelText(/Alasan perubahan mode \(/), {
       target: { value: "Coba lagi saja" },
     });
     fireEvent.click(screen.getByRole("button", { name: "Ganti mode" }));
-    await waitFor(() => expect(screen.getByRole("alert")).toHaveTextContent("Mode sudah sama."));
+    await waitFor(() =>
+      expect(screen.getByRole("alert")).toHaveTextContent("Mode penyedia sudah MATI."),
+    );
+    expect(screen.getByRole("alert")).not.toHaveTextContent(PESAN_MASIH_DIPROSES);
+    expect(notifyGagal).toHaveBeenCalledTimes(1);
+    expect((notifyGagal.mock.calls[0][0] as Error).message).toBe("Mode penyedia sudah MATI.");
+    expect(refresh).not.toHaveBeenCalled();
+  });
+
+  it("409 conflict idempotensi: teks backend tampil apa adanya", async () => {
+    post.mockResolvedValue(
+      gagal(409, "conflict", "Permintaan dengan Idempotency-Key ini sedang diproses."),
+    );
+    tampil();
+    fireEvent.change(screen.getByLabelText(/Alasan perubahan mode \(/), {
+      target: { value: "Coba lagi saja" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Ganti mode" }));
+    await waitFor(() =>
+      expect(screen.getByRole("alert")).toHaveTextContent(
+        "Permintaan dengan Idempotency-Key ini sedang diproses.",
+      ),
+    );
+    expect((notifyGagal.mock.calls[0][0] as Error).message).toBe(
+      "Permintaan dengan Idempotency-Key ini sedang diproses.",
+    );
     expect(refresh).not.toHaveBeenCalled();
   });
 });
@@ -232,6 +258,23 @@ describe("PenyediaPanel — model dan effort", () => {
     fireEvent.click(screen.getByRole("button", { name: "Simpan model dan effort" }));
     await waitFor(() => expect(post).toHaveBeenCalledTimes(1));
     expect(post.mock.calls[0][1].body.model).toBeNull();
+  });
+
+  it("409 conflict simpan model: teks backend tampil di alert dan notifyGagal", async () => {
+    post.mockResolvedValue(gagal(409, "conflict", "Model dan effort sudah demikian."));
+    tampil();
+    fireEvent.change(screen.getByLabelText(/Alasan perubahan model/), {
+      target: { value: "Simpan tanpa ubah" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Simpan model dan effort" }));
+    await waitFor(() =>
+      expect(screen.getByRole("alert")).toHaveTextContent("Model dan effort sudah demikian."),
+    );
+    expect(screen.getByRole("alert")).not.toHaveTextContent(PESAN_MASIH_DIPROSES);
+    expect((notifyGagal.mock.calls[0][0] as Error).message).toBe(
+      "Model dan effort sudah demikian.",
+    );
+    expect(refresh).not.toHaveBeenCalled();
   });
 
   it("422 MODEL_DITOLAK tampil sebagai pesan", async () => {
@@ -279,6 +322,21 @@ describe("PenyediaPanel — kunci API", () => {
     expect(refresh).not.toHaveBeenCalled();
     expect(container.innerHTML).not.toContain(RAHASIA);
     expect(JSON.stringify(notifyGagal.mock.calls)).not.toContain(RAHASIA);
+  });
+
+  it("409 conflict hapus kunci: teks backend tampil di alert dan notifyGagal", async () => {
+    post.mockResolvedValue(gagal(409, "conflict", "Tidak ada kredensial tersimpan."));
+    tampil({ kredensial_terpasang: true, kredensial_akhiran: "9z8y", kredensial_terbaca: true });
+    fireEvent.change(screen.getByLabelText(/Alasan perubahan kunci/), {
+      target: { value: "Hapus kunci lama" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Hapus kunci" }));
+    await waitFor(() =>
+      expect(screen.getByRole("alert")).toHaveTextContent("Tidak ada kredensial tersimpan."),
+    );
+    expect(screen.getByRole("alert")).not.toHaveTextContent(PESAN_MASIH_DIPROSES);
+    expect((notifyGagal.mock.calls[0][0] as Error).message).toBe("Tidak ada kredensial tersimpan.");
+    expect(refresh).not.toHaveBeenCalled();
   });
 
   it("galat jaringan (promise ditolak) → input tetap dikosongkan", async () => {

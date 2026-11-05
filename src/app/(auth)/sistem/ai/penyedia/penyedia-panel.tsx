@@ -95,6 +95,12 @@ export function PenyediaPanel({ penyedia, saklar, accessToken }: PenyediaPanelPr
    * `isi` hanya dipakai menghitung `Idempotency-Key` lewat `keyUntuk` dan TIDAK PERNAH memuat
    * kunci API; `keyBaru` memaksa key baru per upaya (aksi kunci). `panggil` melakukan POST
    * bertipe. `selesai` dipanggil di `finally`, tempat state sensitif dikosongkan.
+   *
+   * Galat dipetakan dengan `petakanKonkurensi(e, false)`: hanya 412 yang diganti pesan tetap.
+   * 409 `conflict` pada rute ini dipakai backend untuk penolakan keadaan ("Mode penyedia sudah
+   * X.", "Model dan effort sudah demikian.", "Tidak ada kredensial tersimpan.") sekaligus untuk
+   * idempotensi ("Permintaan dengan Idempotency-Key ini sedang diproses."), sehingga pesan
+   * backend ditampilkan apa adanya dan klien tidak menebak maknanya.
    */
   async function kirim(
     aksi: Aksi,
@@ -124,7 +130,7 @@ export function PenyediaPanel({ penyedia, saklar, accessToken }: PenyediaPanelPr
       notifySukses(SUKSES[aksi]);
       router.refresh();
     } catch (e) {
-      const err = petakanKonkurensi(e, true);
+      const err = petakanKonkurensi(e, false);
       setGalat(pesanGagal(err));
       notifyGagal(err);
     } finally {

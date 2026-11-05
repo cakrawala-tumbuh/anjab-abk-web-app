@@ -100,6 +100,9 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ### Diperbaiki
 
+- Layar admin AI (Saklar dan Penyedia AI) kini menampilkan alasan penolakan 409 dari server apa
+  adanya (mis. "Mode penyedia sudah MATI."), tidak lagi diganti "Permintaan sebelumnya masih
+  diproses." (issue #105).
 - Aksi POST di halaman Tim Kajian modul redesain yang isinya berasal dari isian atau pilihan
   pengguna kini memakai `Idempotency-Key` baru bila isi kiriman berubah (mis. memilih status lain
   setelah gagal); kirim ulang dengan isi yang sama tetap memakai key yang sama, sehingga isian baru
