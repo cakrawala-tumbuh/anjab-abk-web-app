@@ -26,8 +26,8 @@ const AWAL = {
  *
  * `POST /api/v1/redesain/penilaian` (201) dengan isian wajib bernilai awal netral. Status
  * 409 (penilaian sudah dibuat pihak lain) bukan kegagalan bagi pengguna: cukup
- * `router.refresh()` tanpa toast sukses (kecuali 409 `conflict` = key masih diproses → pesan
- * baku). Kegagalan lain → toast gagal. POST membawa `Idempotency-Key` per upaya; key diganti
+ * `router.refresh()` tanpa toast sukses (kecuali 409 `conflict`: backend memakai kode itu juga untuk
+ * idempotensi, jadi pesan aslinya tampil lewat toast gagal). Kegagalan lain → toast gagal. POST membawa `Idempotency-Key` per upaya; key diganti
  * hanya setelah respons sukses.
  *
  * @param props - Lihat {@link MulaiPenilaianProps}.
@@ -55,7 +55,7 @@ export function MulaiPenilaian({ masalahId, accessToken }: MulaiPenilaianProps) 
       notifySukses("Penilaian dimulai.");
       router.refresh();
     } catch (galatMentah) {
-      notifyGagal(petakanKonkurensi(galatMentah, true));
+      notifyGagal(petakanKonkurensi(galatMentah, false));
     } finally {
       setLoading(false);
     }

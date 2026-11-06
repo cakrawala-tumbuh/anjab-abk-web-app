@@ -20,6 +20,9 @@ interface Props {
  * Form penugasan (assign) responden WCP — multi-select, satu submit untuk
  * banyak partisipan sekaligus (`POST /api/v1/wcp/responden` menerima
  * `partisipan_ids: string[]`).
+ *
+ * Galat 409 `conflict` tampil dengan pesan asli backend: kode itu juga dipakai untuk
+ * penolakan keadaan (partisipan sudah terdaftar), bukan hanya idempotensi.
  */
 export function AssignResponden({ partisipan, jabatan, accessToken }: Props) {
   const router = useRouter();
@@ -86,7 +89,7 @@ export function AssignResponden({ partisipan, jabatan, accessToken }: Props) {
       notifySukses(`${data?.created.length ?? 0} responden berhasil ditambahkan.`);
       router.refresh();
     } catch (err) {
-      const galat = petakanKonkurensi(err, true);
+      const galat = petakanKonkurensi(err, false);
       setError(pesanGagal(galat));
       notifyGagal(galat);
     } finally {

@@ -17,7 +17,8 @@ export const PESAN_KONFLIK_KODE = "Partisipan ini sudah punya kode";
  * Form "Tambah narasumber": membuat kode orang baru (`POST /api/v1/redesain/kode-orang`).
  *
  * Partisipan opsional. Respons 409 menampilkan {@link PESAN_KONFLIK_KODE} tanpa toast
- * sukses (kecuali 409 `conflict` = key masih diproses → pesan baku); galat lain ditampilkan
+ * sukses (kecuali 409 `conflict`: backend memakai kode itu juga untuk
+ * penolakan keadaan, sehingga pesan aslinya tampil apa adanya); galat lain ditampilkan
  * inline dan lewat `notifyGagal`. POST membawa `Idempotency-Key` per upaya (`keyUntuk(body)`: isi kiriman berubah → key baru); key diganti
  * hanya setelah respons sukses.
  *
@@ -62,7 +63,7 @@ export function TambahKodeOrang({
       setPartisipanId("");
       router.refresh();
     } catch (galatMentah) {
-      const err = petakanKonkurensi(galatMentah, true);
+      const err = petakanKonkurensi(galatMentah, false);
       setError(pesanGagal(err));
       notifyGagal(err);
     } finally {

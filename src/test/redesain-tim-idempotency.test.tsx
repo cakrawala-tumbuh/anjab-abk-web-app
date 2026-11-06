@@ -8,8 +8,9 @@ const patch = vi.fn();
 vi.mock("@/lib/api/client", () => ({
   withServerAuth: () => ({ GET: vi.fn(), POST: post, PATCH: patch }),
 }));
+const push = vi.fn();
 const refresh = vi.fn();
-vi.mock("next/navigation", () => ({ useRouter: () => ({ push: vi.fn(), refresh }) }));
+vi.mock("next/navigation", () => ({ useRouter: () => ({ push, refresh }) }));
 const notifyGagal = vi.fn();
 vi.mock("@/lib/notify", async (orig) => ({
   ...(await orig<typeof import("@/lib/notify")>()),
@@ -19,6 +20,7 @@ vi.mock("@/lib/notify", async (orig) => ({
 
 import { FormBukti } from "@/app/(auth)/redesain/masalah/[id]/form-bukti";
 import { FormKoreksi } from "@/app/(auth)/redesain/masalah/[id]/form-koreksi";
+import { DialogAngkat } from "@/app/(auth)/redesain/masalah/[id]/dialog-angkat";
 import { MulaiPenilaian } from "@/app/(auth)/redesain/masalah/[id]/mulai-penilaian";
 import { PilihStatus } from "@/app/(auth)/redesain/masalah/[id]/pilih-status";
 import { ToggleKonfirmasi } from "@/app/(auth)/redesain/masalah/toggle-konfirmasi";
@@ -47,6 +49,7 @@ beforeEach(() => {
   post.mockReset();
   patch.mockReset();
   refresh.mockReset();
+  push.mockReset();
   notifyGagal.mockReset();
 });
 
@@ -95,12 +98,14 @@ describe("Idempotency-Key — form-bukti (mode tambah)", () => {
 });
 
 describe("Idempotency-Key — aksi tombol redesain", () => {
-  it("MulaiPenilaian: 409 conflict → notifikasi pesan baku tanpa refresh; 409 lain → refresh", async () => {
-    post.mockResolvedValueOnce(gagal(409, "conflict", "sedang diproses"));
+  it("MulaiPenilaian: 409 conflict → notifikasi pesan backend tanpa refresh; 409 lain → refresh", async () => {
+    post.mockResolvedValueOnce(gagal(409, "conflict", "Penilaian untuk masalah ini ditolak."));
     render(<MulaiPenilaian masalahId="m1" accessToken="tok" />);
     fireEvent.click(screen.getByRole("button", { name: "Mulai penilaian" }));
     await waitFor(() => expect(notifyGagal).toHaveBeenCalled());
-    expect((notifyGagal.mock.calls[0][0] as Error).message).toBe(PESAN_MASIH_DIPROSES);
+    expect((notifyGagal.mock.calls[0][0] as Error).message).toBe(
+      "Penilaian untuk masalah ini ditolak.",
+    );
     expect(refresh).not.toHaveBeenCalled();
     post.mockResolvedValueOnce(gagal(409, "PENILAIAN_SUDAH_ADA", "sudah ada"));
     await klikSetelahAktif("Mulai penilaian");
@@ -153,17 +158,50 @@ describe("Idempotency-Key — aksi tombol redesain", () => {
     expect(keyKe(1)).toBe(keyKe(0));
   });
 
-  it("TambahKodeOrang: 409 conflict → pesan baku; 409 lain → pesan konflik kode", async () => {
-    post.mockResolvedValueOnce(gagal(409, "conflict", "sedang diproses"));
+  it("TambahKodeOrang: 409 conflict → pesan backend; 409 lain → pesan konflik kode", async () => {
+    post.mockResolvedValueOnce(gagal(409, "conflict", "Partisipan ini sudah memiliki kode orang."));
     post.mockResolvedValueOnce(gagal(409, "kode_ada", "x"));
     render(<TambahKodeOrang partisipan={[]} accessToken="tok" />);
     fireEvent.change(screen.getByLabelText(/Keterangan peran/), { target: { value: "Kepsek" } });
     fireEvent.submit(screen.getByRole("button", { name: /Tambah/ }).closest("form")!);
-    expect(await screen.findByText(PESAN_MASIH_DIPROSES)).toBeInTheDocument();
+    expect(
+      await screen.findByText("Partisipan ini sudah memiliki kode orang."),
+    ).toBeInTheDocument();
+    expect(screen.queryByText(PESAN_MASIH_DIPROSES)).toBeNull();
     await waitFor(() => expect(screen.getByRole("button", { name: /Tambah/ })).not.toBeDisabled());
     fireEvent.submit(screen.getByRole("button", { name: /Tambah/ }).closest("form")!);
     expect(await screen.findByText("Partisipan ini sudah punya kode")).toBeInTheDocument();
     expect(keyKe(1)).toBe(keyKe(0));
+  });
+
+  it("TambahKodeOrang: teks idempotensi backend tampil apa adanya", async () => {
+    const teks = "Permintaan dengan Idempotency-Key ini sedang diproses.";
+    post.mockResolvedValueOnce(gagal(409, "conflict", teks));
+    render(<TambahKodeOrang partisipan={[]} accessToken="tok" />);
+    fireEvent.change(screen.getByLabelText(/Keterangan peran/), { target: { value: "Kepsek" } });
+    fireEvent.submit(screen.getByRole("button", { name: /Tambah/ }).closest("form")!);
+    expect(await screen.findByText(teks)).toBeInTheDocument();
+    expect(screen.queryByText(PESAN_MASIH_DIPROSES)).toBeNull();
+  });
+
+  it("DialogAngkat: 409 conflict → pesan backend tampil, tidak berpindah halaman", async () => {
+    post.mockResolvedValueOnce(gagal(409, "conflict", "Masalah 'M-01' sudah ada."));
+    render(
+      <DialogAngkat
+        konfirmasi={{ id: "k1", masalah_baru: "Beban kerja" } as never}
+        konteks={[{ id: "c1", kode: "K-01", tema: "Tema" } as never]}
+        accessToken="tok"
+      />,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Angkat masalah" }));
+    fireEvent.change(screen.getByLabelText("Konteks"), { target: { value: "c1" } });
+    fireEvent.change(screen.getByLabelText("Rumusan hipotesis"), {
+      target: { value: "hipotesis" },
+    });
+    fireEvent.submit(screen.getByRole("dialog").querySelector("form")!);
+    expect(await screen.findByText("Masalah 'M-01' sudah ada.")).toBeInTheDocument();
+    expect(screen.queryByText(PESAN_MASIH_DIPROSES)).toBeNull();
+    expect(push).not.toHaveBeenCalled();
   });
 });
 

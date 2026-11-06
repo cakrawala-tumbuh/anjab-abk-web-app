@@ -7,11 +7,20 @@ vi.mock("next/navigation", () => ({
   useRouter: () => ({ refresh }),
 }));
 
+const notifySukses = vi.fn();
+const notifyGagal = vi.fn();
+vi.mock("@/lib/notify", async (orig) => ({
+  ...(await orig<typeof import("@/lib/notify")>()),
+  notifySukses: (m: string) => notifySukses(m),
+  notifyGagal: (e: unknown) => notifyGagal(e),
+}));
+
 const post = vi.fn();
 vi.mock("@/lib/api/client", () => ({
   withServerAuth: () => ({ POST: post }),
 }));
 
+import { PESAN_MASIH_DIPROSES } from "@/lib/konkurensi";
 import { AssignResponden } from "@/app/(auth)/wcp/assign-responden";
 
 function par(id: string, nama: string): PartisipanRead {
@@ -31,6 +40,8 @@ const partisipan = [par("par_a", "Agustinus"), par("par_b", "Susana"), par("par_
 beforeEach(() => {
   refresh.mockReset();
   post.mockReset();
+  notifySukses.mockReset();
+  notifyGagal.mockReset();
 });
 
 describe("AssignResponden (WCP)", () => {
@@ -152,5 +163,37 @@ describe("AssignResponden (WCP)", () => {
     const checkboxesAfter = screen.getAllByRole("checkbox");
     expect(checkboxesAfter[0]).not.toBeChecked(); // par_a: berhasil dibuat → uncheck
     expect(checkboxesAfter[1]).toBeChecked(); // par_b: di-skip → tetap tercentang
+  });
+});
+
+describe("AssignResponden (WCP) — 409 conflict", () => {
+  const pesanBackend = "Salah satu partisipan sudah terdaftar sebagai responden WCP.";
+  async function kirim409(message: string) {
+    post.mockResolvedValue({
+      data: undefined,
+      error: { error: "conflict", message },
+      response: { status: 409, headers: { get: () => "req-1" } },
+    });
+    render(<AssignResponden partisipan={partisipan} jabatan={jabatan} accessToken="tok" />);
+    fireEvent.click(screen.getByRole("button", { name: "Pilih semua" }));
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: /Tugaskan Terpilih/ }));
+    });
+  }
+
+  it("pesan penolakan backend tampil apa adanya, bukan pesan masih diproses", async () => {
+    await kirim409(pesanBackend);
+    expect(await screen.findByText(pesanBackend)).toBeInTheDocument();
+    expect(screen.queryByText(PESAN_MASIH_DIPROSES)).toBeNull();
+    expect((notifyGagal.mock.calls[0][0] as Error).message).toBe(pesanBackend);
+    expect(notifySukses).not.toHaveBeenCalled();
+  });
+
+  it("teks idempotensi backend tampil apa adanya", async () => {
+    await kirim409("Permintaan dengan Idempotency-Key ini sedang diproses.");
+    expect(
+      await screen.findByText("Permintaan dengan Idempotency-Key ini sedang diproses."),
+    ).toBeInTheDocument();
+    expect(screen.queryByText(PESAN_MASIH_DIPROSES)).toBeNull();
   });
 });

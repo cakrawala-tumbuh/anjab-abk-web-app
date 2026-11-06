@@ -28,7 +28,7 @@ export interface DialogAngkatProps {
  * `POST /api/v1/redesain/konfirmasi/{id}/angkat-masalah`; 201 → arahkan ke detail
  * masalah baru. Kegagalan (422/409) ditampilkan inline dan lewat `notifyGagal`; dialog
  * tetap terbuka. POST membawa `Idempotency-Key` per upaya (`keyUntuk(body)`: isi kiriman berubah → key baru) (key diganti hanya setelah sukses);
- * 409 `conflict` dipetakan ke pesan "masih diproses".
+ * pesan 409 `conflict` dari backend (penolakan keadaan maupun idempotensi) tampil apa adanya.
  *
  * @param props - Lihat {@link DialogAngkatProps}.
  */
@@ -63,7 +63,7 @@ export function DialogAngkat({ konfirmasi, konteks, accessToken }: DialogAngkatP
       setBuka(false);
       router.push(`/redesain/masalah/${res.data.id}`);
     } catch (galatMentah) {
-      const err = petakanKonkurensi(galatMentah, true);
+      const err = petakanKonkurensi(galatMentah, false);
       setError(pesanGagal(err));
       notifyGagal(err);
     } finally {
