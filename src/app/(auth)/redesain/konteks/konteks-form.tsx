@@ -30,13 +30,15 @@ interface KonteksFormIsiProps extends KonteksFormProps {
  * Form tambah (tanpa `awal`) atau ubah (dengan `awal`) satu konteks redesain.
  *
  * Tambah → `POST /api/v1/redesain/konteks` (kode `K-NN` wajib, hanya saat tambah); respons
- * 409 menampilkan {@link PESAN_KODE_KONTEKS_DUPLIKAT} tanpa toast sukses. Ubah →
+ * 409 berkode selain `conflict` menampilkan {@link PESAN_KODE_KONTEKS_DUPLIKAT} tanpa toast sukses. Ubah →
  * `PATCH /api/v1/redesain/konteks/{id}` (kode tidak dikirim/diubah). Galat lain tampil
  * inline dan lewat `notifyGagal`.
  *
  * POST (mode tambah) membawa `Idempotency-Key` per upaya (`keyUntuk(body)`: isi kiriman berubah → key baru); key diganti hanya setelah respons
- * sukses sehingga kirim ulang setelah gagal memakai key yang sama. 409 `conflict` dipetakan ke
- * pesan "masih diproses"; 409 guard lain tetap pesan aslinya.
+ * sukses sehingga kirim ulang setelah gagal memakai key yang sama. Pada rute ini kode `conflict`
+ * berarti idempotensi (key masih diproses) sekaligus penolakan keadaan, dan klien tidak
+ * membedakannya: pesan backend ditampilkan apa adanya lewat `pesanGagal`
+ * (`petakanKonkurensi(err, false)` hanya memetakan 412 ke `PESAN_DATA_BERUBAH`).
  *
  * @param props.awal - Konteks yang diubah; kosong = mode tambah.
  * @param props.accessToken - Token akses dari Server Component induk.
@@ -117,7 +119,7 @@ function KonteksFormIsi({ awal, accessToken, etag: etagAwal = null }: KonteksFor
       }
       router.refresh();
     } catch (err) {
-      const galat = petakanKonkurensi(err, !awal);
+      const galat = petakanKonkurensi(err, false);
       setError(pesanGagal(galat));
       notifyGagal(galat);
     } finally {

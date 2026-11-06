@@ -18,6 +18,9 @@ vi.mock("@/lib/notify", async (orig) => ({
   notifyGagal: (e: unknown) => notifyGagal(e),
 }));
 
+import { FormAlternatif } from "@/app/(auth)/redesain/masalah/[id]/form-alternatif";
+import { FormProses } from "@/app/(auth)/redesain/masalah/[id]/form-proses";
+import { FormLangkah } from "@/app/(auth)/redesain/masalah/[id]/form-langkah";
 import { FormBukti } from "@/app/(auth)/redesain/masalah/[id]/form-bukti";
 import { FormKoreksi } from "@/app/(auth)/redesain/masalah/[id]/form-koreksi";
 import { DialogAngkat } from "@/app/(auth)/redesain/masalah/[id]/dialog-angkat";
@@ -84,15 +87,72 @@ describe("Idempotency-Key — form-bukti (mode tambah)", () => {
     expect(keyKe(2)).not.toBe(keyKe(1));
   });
 
-  it("409 conflict → pesan baku; 409 kode lain tetap pesan aslinya", async () => {
-    post.mockResolvedValueOnce(gagal(409, "conflict", "sedang diproses"));
+  it("409 conflict → pesan backend apa adanya; teks idempotensi juga apa adanya; 409 kode lain tetap pesan aslinya", async () => {
+    post.mockResolvedValueOnce(gagal(409, "conflict", "Kode bukti bentrok; ulangi permintaan."));
+    post.mockResolvedValueOnce(
+      gagal(409, "conflict", "Permintaan dengan Idempotency-Key ini sedang diproses."),
+    );
     post.mockResolvedValueOnce(gagal(409, "kode_lain", "pesan asli"));
     render(<FormBukti masalahId="m1" langkah={langkah} accessToken="tok" />);
     isiWajib();
     kirim();
-    expect(await screen.findByText(PESAN_MASIH_DIPROSES)).toBeInTheDocument();
+    expect(await screen.findByText("Kode bukti bentrok; ulangi permintaan.")).toBeInTheDocument();
+    expect(screen.queryByText(PESAN_MASIH_DIPROSES)).toBeNull();
+    await klikSetelahAktif(/Tambah bukti/);
+    expect(
+      await screen.findByText("Permintaan dengan Idempotency-Key ini sedang diproses."),
+    ).toBeInTheDocument();
     await klikSetelahAktif(/Tambah bukti/);
     expect(await screen.findByText("pesan asli")).toBeInTheDocument();
+    expect(screen.queryByText(PESAN_MASIH_DIPROSES)).toBeNull();
+  });
+});
+
+describe("409 conflict mode tambah — pesan backend, bukan pesan idempotensi", () => {
+  const sekolah = [{ id: "s1", nama: "SD Contoh" }] as never;
+  const isi = (label: string | RegExp, v: string) =>
+    fireEvent.change(screen.getByLabelText(label), { target: { value: v } });
+
+  it("FormAlternatif", async () => {
+    post.mockResolvedValueOnce(
+      gagal(409, "conflict", "Kode alternatif bentrok; ulangi permintaan."),
+    );
+    render(<FormAlternatif masalahId="m1" jabatan={[]} accessToken="tok" />);
+    isi("Alur kini vs usulan", "alur");
+    fireEvent.click(screen.getByRole("button", { name: "Tambah alternatif" }));
+    expect(
+      await screen.findByText("Kode alternatif bentrok; ulangi permintaan."),
+    ).toBeInTheDocument();
+    expect(screen.queryByText(PESAN_MASIH_DIPROSES)).toBeNull();
+  });
+
+  it("FormProses", async () => {
+    post.mockResolvedValueOnce(gagal(409, "conflict", "Kode proses bentrok; ulangi permintaan."));
+    render(
+      <FormProses
+        masalahId="m1"
+        sekolahTerkunci="s1"
+        sekolah={sekolah}
+        periodeBawaan="TA"
+        accessToken="tok"
+      />,
+    );
+    isi("Nama proses", "Proses X");
+    fireEvent.click(screen.getByRole("button", { name: "Tambah proses" }));
+    expect(await screen.findByText("Kode proses bentrok; ulangi permintaan.")).toBeInTheDocument();
+    expect(screen.queryByText(PESAN_MASIH_DIPROSES)).toBeNull();
+  });
+
+  it("FormLangkah", async () => {
+    post.mockResolvedValueOnce(gagal(409, "conflict", "Kode langkah bentrok; ulangi permintaan."));
+    render(<FormLangkah prosesId="p1" accessToken="tok" />);
+    isi("Tahap", "T");
+    isi("Pemicu / masukan", "P");
+    isi("Pelaksana (jabatan/peran)", "X");
+    isi("Pekerjaan / sistem", "S");
+    isi("Keluaran & penerima", "K");
+    fireEvent.click(screen.getByRole("button", { name: "Tambah langkah" }));
+    expect(await screen.findByText("Kode langkah bentrok; ulangi permintaan.")).toBeInTheDocument();
     expect(screen.queryByText(PESAN_MASIH_DIPROSES)).toBeNull();
   });
 });

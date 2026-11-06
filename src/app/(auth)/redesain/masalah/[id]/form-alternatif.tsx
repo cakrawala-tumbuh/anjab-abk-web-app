@@ -53,8 +53,10 @@ interface FormAlternatifIsiProps extends FormAlternatifProps {
  * hanya berubah dari pilihan pengguna. Kegagalan → toast gagal + pesan inline.
  *
  * POST (mode tambah) membawa `Idempotency-Key` per upaya (`keyUntuk(body)`: isi kiriman berubah → key baru); key diganti hanya setelah respons
- * sukses sehingga kirim ulang setelah gagal memakai key yang sama. 409 `conflict` dipetakan ke
- * pesan "masih diproses"; 409 guard lain tetap pesan aslinya.
+ * sukses sehingga kirim ulang setelah gagal memakai key yang sama. Pada rute ini kode `conflict`
+ * berarti idempotensi (key masih diproses) sekaligus penolakan keadaan, dan klien tidak
+ * membedakannya: pesan backend ditampilkan apa adanya lewat `pesanGagal`
+ * (`petakanKonkurensi(err, false)` hanya memetakan 412 ke `PESAN_DATA_BERUBAH`).
  *
  * @param props - Lihat {@link FormAlternatifProps}.
  */
@@ -163,7 +165,7 @@ function FormAlternatifIsi({
       }
       router.refresh();
     } catch (err) {
-      const galat = petakanKonkurensi(err, !awal);
+      const galat = petakanKonkurensi(err, false);
       setError(pesanGagal(galat));
       notifyGagal(galat);
     } finally {

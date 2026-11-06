@@ -27,7 +27,7 @@ vi.mock("@/lib/notify", async (orig) => ({
 
 import MasalahPage from "@/app/(auth)/redesain/masalah/page";
 import KonteksPage from "@/app/(auth)/redesain/konteks/page";
-import { PESAN_DATA_BERUBAH } from "@/lib/konkurensi";
+import { PESAN_DATA_BERUBAH, PESAN_MASIH_DIPROSES } from "@/lib/konkurensi";
 import { MasalahForm } from "@/app/(auth)/redesain/masalah/masalah-form";
 import { ToggleKonfirmasi } from "@/app/(auth)/redesain/masalah/toggle-konfirmasi";
 import { KonteksForm } from "@/app/(auth)/redesain/konteks/konteks-form";
@@ -61,6 +61,12 @@ function getDetailMasalah(data: unknown, etag = '"v1"') {
     path === "/api/v1/redesain/masalah/{masalah_id}" ? respEtag(data, etag) : dasar(path, ...r),
   );
 }
+/** Respons gagal dengan kode galat dan pesan backend tertentu. */
+const gagalKode = (status: number, error: string, message: string) => ({
+  data: undefined,
+  error: { error, message },
+  response: { status, headers: { get: () => "req-1" } },
+});
 const halaman = (items: unknown[], total = items.length) =>
   resp({ items, total, limit: 500, offset: 0 });
 
@@ -277,6 +283,33 @@ describe("form masalah", () => {
     expect(push).not.toHaveBeenCalled();
   });
 
+  it("PATCH 409 conflict (mode ubah) → pesan backend apa adanya, bukan pesan masih diproses", async () => {
+    patch.mockResolvedValue(gagalKode(409, "conflict", "Masalah ditolak oleh backend."));
+    getDetailMasalah(masalah());
+    render(<MasalahForm {...props} awal={masalah()} />);
+    await screen.findByRole("button", { name: "Simpan perubahan" });
+    fireEvent.submit(screen.getByRole("button", { name: "Simpan perubahan" }).closest("form")!);
+    await waitFor(() => expect(notifyGagal).toHaveBeenCalledTimes(1));
+    expect((notifyGagal.mock.calls[0][0] as Error).message).toBe("Masalah ditolak oleh backend.");
+    expect(screen.queryByText(PESAN_MASIH_DIPROSES)).toBeNull();
+  });
+
+  it("POST 409 conflict (mode tambah) → pesan backend apa adanya, tanpa toast sukses", async () => {
+    post.mockResolvedValue(gagalKode(409, "conflict", "Kode masalah bentrok; ulangi permintaan."));
+    render(<MasalahForm {...props} />);
+    fireEvent.change(screen.getByLabelText("Konteks"), { target: { value: "k1" } });
+    fireEvent.change(screen.getByLabelText("Periode acuan"), { target: { value: "TA 2026/27" } });
+    fireEvent.change(screen.getByLabelText("Rumusan hipotesis"), { target: { value: "h" } });
+    fireEvent.change(screen.getByLabelText("Sumber awal dan keterbatasan"), {
+      target: { value: "s" },
+    });
+    fireEvent.change(screen.getByLabelText(/Keterangan sekolah/), { target: { value: "TK X" } });
+    fireEvent.click(screen.getByRole("button", { name: "Tambah masalah" }));
+    expect(await screen.findByText("Kode masalah bentrok; ulangi permintaan.")).toBeInTheDocument();
+    expect(screen.queryByText(PESAN_MASIH_DIPROSES)).toBeNull();
+    expect(notifySukses).not.toHaveBeenCalled();
+  });
+
   it("opsi 'Belum ditetapkan' mengirim sekolah_id: null", async () => {
     post.mockResolvedValue(resp(masalah({ sekolah_id: null })));
     render(<MasalahForm {...props} />);
@@ -306,6 +339,20 @@ describe("konteks", () => {
     fireEvent.change(screen.getByLabelText("Batas pemeriksaan"), { target: { value: "b" } });
     fireEvent.submit(screen.getByRole("button", { name: "Tambah konteks" }).closest("form")!);
     expect(await screen.findByRole("alert")).toHaveTextContent("Kode konteks sudah dipakai");
+    expect(notifySukses).not.toHaveBeenCalled();
+  });
+
+  it("tambah dengan 409 conflict menampilkan pesan backend, bukan pesan masih diproses", async () => {
+    post.mockResolvedValue(gagalKode(409, "conflict", "Konteks 'K' sudah ada."));
+    render(<KonteksForm accessToken="tok" />);
+    fireEvent.change(screen.getByLabelText("Kode (K-NN)"), { target: { value: "K-01" } });
+    fireEvent.change(screen.getByLabelText("Tema"), { target: { value: "t" } });
+    fireEvent.change(screen.getByLabelText("Ruang dugaan"), { target: { value: "r" } });
+    fireEvent.change(screen.getByLabelText("Sumber draf"), { target: { value: "s" } });
+    fireEvent.change(screen.getByLabelText("Batas pemeriksaan"), { target: { value: "b" } });
+    fireEvent.submit(screen.getByRole("button", { name: "Tambah konteks" }).closest("form")!);
+    expect(await screen.findByRole("alert")).toHaveTextContent("Konteks 'K' sudah ada.");
+    expect(screen.queryByText(PESAN_MASIH_DIPROSES)).toBeNull();
     expect(notifySukses).not.toHaveBeenCalled();
   });
 

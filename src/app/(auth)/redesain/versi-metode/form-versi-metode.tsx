@@ -44,13 +44,16 @@ interface FormVersiMetodeIsiProps extends FormVersiMetodeProps {
  * mengirim `If-Match` dari ETag GET yang sama): mode tambah (`POST /api/v1/redesain/versi-metode`) bila
  * `awal` tidak diberikan, mode ubah (`PATCH .../{versi_id}`) bila `awal` ada.
  *
- * Respons 409 menampilkan {@link PESAN_KONFLIK_VERSI} tanpa toast sukses; galat lain
+ * Respons 409 berkode selain `conflict` (dan setiap 409 pada mode ubah) menampilkan
+ * {@link PESAN_KONFLIK_VERSI} tanpa toast sukses; galat lain
  * (mis. 422) ditampilkan inline dan lewat `notifyGagal`. Teks bebas dilindungi
  * `PeringatanPrivasi` (pemeriksa diisi jabatan/peran, bukan nama).
  *
  * POST (mode tambah) membawa `Idempotency-Key` per upaya (`keyUntuk(body)`: isi kiriman berubah → key baru); key diganti hanya setelah respons
- * sukses sehingga kirim ulang setelah gagal memakai key yang sama. 409 `conflict` dipetakan ke
- * pesan "masih diproses"; 409 guard lain tetap pesan aslinya.
+ * sukses sehingga kirim ulang setelah gagal memakai key yang sama. Pada rute ini kode `conflict`
+ * berarti idempotensi (key masih diproses) sekaligus penolakan keadaan, dan klien tidak
+ * membedakannya: pesan backend ditampilkan apa adanya lewat `pesanGagal`
+ * (`petakanKonkurensi(err, false)` hanya memetakan 412 ke `PESAN_DATA_BERUBAH`).
  *
  * @param props.accessToken - Token akses dari Server Component induk.
  * @param props.awal - Catatan yang diubah; kosong untuk mode tambah.
@@ -131,7 +134,7 @@ function FormVersiMetodeIsi({
       router.refresh();
       onSelesai?.();
     } catch (err) {
-      const galat = petakanKonkurensi(err, !awal);
+      const galat = petakanKonkurensi(err, false);
       setError(pesanGagal(galat));
       notifyGagal(galat);
     } finally {

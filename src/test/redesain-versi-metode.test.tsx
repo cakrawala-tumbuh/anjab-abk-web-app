@@ -25,7 +25,7 @@ import {
   PESAN_KONFLIK_VERSI,
 } from "@/app/(auth)/redesain/versi-metode/form-versi-metode";
 import { ApiError } from "@/lib/api/errors";
-import { PESAN_DATA_BERUBAH } from "@/lib/konkurensi";
+import { PESAN_DATA_BERUBAH, PESAN_MASIH_DIPROSES } from "@/lib/konkurensi";
 
 const resp = (data: unknown, status = 200) => ({
   data: status < 400 ? data : undefined,
@@ -98,6 +98,25 @@ describe("form versi metode", () => {
     fireEvent.click(screen.getByRole("button", { name: "Tambah" }));
     expect(await screen.findByText(PESAN_KONFLIK_VERSI)).toBeInTheDocument();
     expect(PESAN_KONFLIK_VERSI).toBe("Versi dan bagian ini sudah tercatat");
+    expect(notifySukses).not.toHaveBeenCalled();
+  });
+
+  it("tambah 409 conflict menampilkan pesan backend, bukan pesan masih diproses", async () => {
+    post.mockResolvedValue({
+      data: undefined,
+      error: {
+        error: "conflict",
+        message: "Catatan untuk pasangan versi dan bagian itu sudah ada.",
+      },
+      response: { status: 409, headers: { get: () => "req-1" } },
+    });
+    render(<FormVersiMetode accessToken="tok" />);
+    isiForm();
+    fireEvent.click(screen.getByRole("button", { name: "Tambah" }));
+    expect(
+      await screen.findByText("Catatan untuk pasangan versi dan bagian itu sudah ada."),
+    ).toBeInTheDocument();
+    expect(screen.queryByText(PESAN_MASIH_DIPROSES)).toBeNull();
     expect(notifySukses).not.toHaveBeenCalled();
   });
 

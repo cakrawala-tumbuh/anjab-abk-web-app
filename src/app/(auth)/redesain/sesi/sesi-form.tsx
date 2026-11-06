@@ -60,12 +60,14 @@ interface SesiFormIsiProps extends SesiFormProps {
  *
  * Menit kosong dikirim `null`; menit negatif ditolak di klien. `status_izin` informatif:
  * nilai apa pun (termasuk "Tidak diotorisasi") tetap disimpan tanpa peringatan pemblokir.
- * `masalah_ids` dikirim ganti-penuh. 409 (pasangan `kode_sesi`+`kode_orang` ganda)
- * menampilkan {@link PESAN_SESI_GANDA}. Setelah sukses kembali ke `/redesain/sesi`.
+ * `masalah_ids` dikirim ganti-penuh. 409 berkode selain `conflict` (pasangan `kode_sesi`+`kode_orang`
+ * ganda), dan setiap 409 pada mode ubah, menampilkan {@link PESAN_SESI_GANDA}. Setelah sukses kembali ke `/redesain/sesi`.
  *
  * POST (mode tambah) membawa `Idempotency-Key` per upaya (`keyUntuk(body)`: isi kiriman berubah → key baru); key diganti hanya setelah respons
- * sukses sehingga kirim ulang setelah gagal memakai key yang sama. 409 `conflict` dipetakan ke
- * pesan "masih diproses"; 409 guard lain tetap pesan aslinya.
+ * sukses sehingga kirim ulang setelah gagal memakai key yang sama. Pada rute ini kode `conflict`
+ * berarti idempotensi (key masih diproses) sekaligus penolakan keadaan, dan klien tidak
+ * membedakannya: pesan backend ditampilkan apa adanya lewat `pesanGagal`
+ * (`petakanKonkurensi(err, false)` hanya memetakan 412 ke `PESAN_DATA_BERUBAH`).
  *
  * @param props - Lihat {@link SesiFormProps}.
  */
@@ -179,7 +181,7 @@ function SesiFormIsi({
       router.push("/redesain/sesi");
       router.refresh();
     } catch (err) {
-      const galat = petakanKonkurensi(err, !awal);
+      const galat = petakanKonkurensi(err, false);
       setError(pesanGagal(galat));
       notifyGagal(galat);
     } finally {

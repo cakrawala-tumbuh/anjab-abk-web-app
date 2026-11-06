@@ -29,7 +29,7 @@ import SesiPage from "@/app/(auth)/redesain/sesi/page";
 import RekapSesiPage from "@/app/(auth)/redesain/sesi/rekap/page";
 import { SesiForm } from "@/app/(auth)/redesain/sesi/sesi-form";
 import { ApiError } from "@/lib/api/errors";
-import { PESAN_DATA_BERUBAH } from "@/lib/konkurensi";
+import { PESAN_DATA_BERUBAH, PESAN_MASIH_DIPROSES } from "@/lib/konkurensi";
 import {
   bacaFilterSesi,
   domainSesi,
@@ -199,6 +199,21 @@ describe("form sesi", () => {
     );
     expect(notifySukses).not.toHaveBeenCalled();
     expect(push).not.toHaveBeenCalled();
+  });
+  it("POST 409 conflict menampilkan pesan backend, bukan pesan masih diproses", async () => {
+    post.mockResolvedValue({
+      data: undefined,
+      error: { error: "conflict", message: "Orang 'X' sudah tercatat pada sesi 'S'." },
+      response: { status: 409, headers: { get: () => "req-1" } },
+    });
+    render(<SesiForm {...props} />);
+    await isiMinimal();
+    fireEvent.submit(screen.getByRole("button", { name: "Catat sesi" }).closest("form")!);
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      "Orang 'X' sudah tercatat pada sesi 'S'.",
+    );
+    expect(screen.queryByText(PESAN_MASIH_DIPROSES)).toBeNull();
+    expect(notifySukses).not.toHaveBeenCalled();
   });
   it("status 'Tidak diotorisasi' tetap memanggil POST tanpa peringatan pemblokir", async () => {
     post.mockResolvedValue(resp(sesiRow({ status_izin: "Tidak diotorisasi" })));
