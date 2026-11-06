@@ -7,6 +7,8 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [4.19.0] - 2026-11-06
+
 ### Ditambahkan
 
 - Layar admin **Penyedia AI** (`/sistem/ai/penyedia`): pilih mode Anthropic API atau langganan
