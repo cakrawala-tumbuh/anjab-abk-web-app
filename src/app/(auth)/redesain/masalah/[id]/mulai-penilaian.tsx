@@ -24,11 +24,16 @@ const AWAL = {
 /**
  * Tombol "Mulai penilaian" saat masalah belum punya penilaian.
  *
- * `POST /api/v1/redesain/penilaian` (201) dengan isian wajib bernilai awal netral. Status
- * 409 (penilaian sudah dibuat pihak lain) bukan kegagalan bagi pengguna: cukup
- * `router.refresh()` tanpa toast sukses (kecuali 409 `conflict`: backend memakai kode itu juga untuk
- * idempotensi, jadi pesan aslinya tampil lewat toast gagal). Kegagalan lain → toast gagal. POST membawa `Idempotency-Key` per upaya; key diganti
- * hanya setelah respons sukses.
+ * `POST /api/v1/redesain/penilaian` (201) dengan isian wajib bernilai awal netral.
+ *
+ * Penanganan 409:
+ * - 409 berkode `conflict` mencakup dua sebab: masalah sudah punya penilaian, dan
+ *   `Idempotency-Key` yang masih diproses. Keduanya diperlakukan sama: toast gagal berisi
+ *   pesan backend, tanpa `router.refresh()`.
+ * - 409 berkode selain `conflict` cukup `router.refresh()` tanpa toast.
+ * - Kegagalan lain menjadi toast gagal.
+ *
+ * POST membawa `Idempotency-Key` per upaya; key diganti hanya setelah respons sukses.
  *
  * @param props - Lihat {@link MulaiPenilaianProps}.
  */
