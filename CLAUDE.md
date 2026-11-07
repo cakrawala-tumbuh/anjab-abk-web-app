@@ -84,6 +84,14 @@ src/
 
 ## Revisi Desain
 
+### [2026-11-08] E2E Playwright dinonaktifkan sementara (#110)
+
+Atas perintah user (`cakrawala-tumbuh/ypii-support#464`), sampai ia memerintahkan menyalakannya lagi.
+
+- Di `Makefile`, `e2e`, `e2e-up`, `e2e-build` hanya mencetak pesan (frasa `E2E Playwright dinonaktifkan sementara`) ke stderr dan exit 1, tanpa Docker. Resep asli dipindah ke target internal `_e2e`, `_e2e-up`, `_e2e-build`; pemulihan = hapus blok guard (komentar `E2E-NONAKTIF ypii-support#464`) lalu kembalikan nama target. Tidak ada saklar paksa.
+- `e2e-down`/`e2e-reset`/`e2e-logs` tetap berfungsi. `e2e/`, `compose.e2e.yml`, `Dockerfile.e2e`, `make test`, dan CI tidak diubah.
+- Utang test selama nonaktif dicatat per commit di `anjab-abk-web-app#109`; ditambahkan saat E2E dinyalakan ulang.
+
 ### [2026-11-05] Layar admin Penyedia AI (`/sistem/ai/penyedia`)
 
 Item #104; konsumen API backend `#110`.
@@ -1272,6 +1280,7 @@ Partisipan dengan jabatan apapun dapat di-assign ke sesi yang sama.
 
 - Sebelum lapor selesai: `make test` hijau (lint + unit) **dan** `npm run build` sukses. Branch utama: `master`.
 - Perubahan fitur/layar UI → update `docs-usage/` di sesi yang sama (`dokumentasi-penggunaan-skill`).
+- **E2E Playwright NONAKTIF sementara** (perintah user, `ypii-support#464`, issue #110): `make e2e`/`e2e-up`/`e2e-build` menolak berjalan. Jangan menjalankan, menulis, atau memperbarui spec E2E, dan jangan mencoba mem-bypass guard (cari dengan `grep E2E-NONAKTIF Makefile`). Setiap commit yang menambah/mengubah alur UI wajib menambah satu komentar di `cakrawala-tumbuh/anjab-abk-web-app#109` (format di body issue itu) sebagai utang test. Pemulihan hanya atas perintah user.
 - Commit/branch/PR/tag → skill `git-workflow`; eksekusi `gh` → skill `github-cli-skill`.
 - Gate test → skill `automated-test`; docstring (TSDoc) → skill `docstring`; README → skill `readme`.
 

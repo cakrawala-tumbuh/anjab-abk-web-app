@@ -13,7 +13,7 @@ DOCKER_RUN  = docker run --rm $(IMAGE_NAME)
 
 .DEFAULT_GOAL := test
 .PHONY: build lint unit test test-arm64 clean shell help \
-        e2e e2e-build e2e-up e2e-down e2e-reset e2e-logs \
+        e2e e2e-build e2e-up _e2e _e2e-build _e2e-up e2e-down e2e-reset e2e-logs \
         backup-config restore-config backup-list
 
 ## help: tampilkan daftar target
@@ -88,19 +88,40 @@ HOST_IP        := $(or $(HOST_IP),$(shell ip route get 1.1.1.1 2>/dev/null | awk
 HOST_IP        := $(or $(strip $(HOST_IP)),localhost)
 E2E_BASE_URL    = http://$(HOST_IP):9100
 
-## e2e-build: bangun image Playwright E2E
+# E2E-NONAKTIF ypii-support#464
+# E2E Playwright dinonaktifkan sementara atas perintah user (8 Nov 2026) sampai ia
+# memerintahkan menyalakannya kembali. Pemulihan: hapus blok guard ini lalu ganti nama
+# target internal `_e2e`, `_e2e-up`, `_e2e-build` di bawah menjadi `e2e`, `e2e-up`,
+# `e2e-build` (dan kembalikan baris `## ` bantuannya). Tanpa saklar paksa, sengaja.
+define E2E_NONAKTIF_PESAN
+E2E Playwright dinonaktifkan sementara atas perintah user (lihat cakrawala-tumbuh/ypii-support#464).
+Utang test selama nonaktif dicatat di cakrawala-tumbuh/anjab-abk-web-app#109.
+Pelacak penonaktifan: cakrawala-tumbuh/anjab-abk-web-app#110. Tidak ada Docker yang dijalankan.
+endef
+export E2E_NONAKTIF_PESAN
+
+## e2e: NONAKTIF sementara (ypii-support#464) - menolak berjalan
+e2e:
+	@echo "$$E2E_NONAKTIF_PESAN" >&2; exit 1
+
+## e2e-up: NONAKTIF sementara (ypii-support#464) - menolak berjalan
+e2e-up:
+	@echo "$$E2E_NONAKTIF_PESAN" >&2; exit 1
+
+## e2e-build: NONAKTIF sementara (ypii-support#464) - menolak berjalan
 e2e-build:
+	@echo "$$E2E_NONAKTIF_PESAN" >&2; exit 1
+
+_e2e-build:
 	docker build -f $(E2E_DOCKERFILE) -t $(E2E_IMAGE) .
 
-## e2e: jalankan full E2E — up + playwright + down (teardown selalu dijalankan)
-e2e: e2e-up e2e-build
+_e2e: _e2e-up _e2e-build
 	docker run --rm --network=host -e E2E_BASE_URL=$(E2E_BASE_URL) $(E2E_IMAGE); \
 		EXIT=$$?; \
 		$(MAKE) e2e-down; \
 		exit $$EXIT
 
-## e2e-up: generate secret otomatis + jalankan stack E2E (background)
-e2e-up:
+_e2e-up:
 	@[ -f .env.e2e ] || { \
 		printf 'POSTGRES_PASSWORD=%s\nAUTHENTIK_SECRET_KEY=%s\nAUTH_SECRET=%s\n' \
 			"$$(openssl rand -hex 16)" \
