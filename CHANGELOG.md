@@ -7,10 +7,12 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [4.19.1] - 2026-11-08
+
 ### Diubah
 
 - **Test E2E Playwright dinonaktifkan sementara** atas perintah user (8 Nov 2026,
-  `cakrawala-tumbuh/ypii-support#464`, issue #110) sampai user memerintahkan menyalakannya
+  repo dukungan klien, issue #110) sampai user memerintahkan menyalakannya
   kembali. `make e2e`, `make e2e-up`, dan `make e2e-build` kini menolak berjalan (exit tidak nol,
   tanpa memanggil Docker); `make e2e-down`, `e2e-reset`, dan `e2e-logs` tetap berfungsi. Berkas
   `e2e/`, `compose.e2e.yml`, dan `Dockerfile.e2e` tidak diubah; gerbang `make test` dan CI tidak
