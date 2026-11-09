@@ -84,6 +84,25 @@ src/
 
 ## Revisi Desain
 
+### [2026-11-09] Layar Usulan AI (`/ai-usulan`)
+
+Item #111; konsumen rute backend `/api/v1/ai/usulan` (v0.49.0). Rujukan: `cakrawala-tumbuh/ypii-support#463`.
+
+- **Kontrak diekspor dari kode backend** master `a5a8da0` (v0.49.0; klon scratch, image `Dockerfile.test`,
+  `scripts/export_openapi.py`) karena `openapi.json` di repo backend basi. `openapi/openapi.json` diganti utuh
+  (diff besar karena basi); `npm run gen:api` lalu blok alias di akhir `schema.ts` ditempel ulang + alias `AiUsulan*`,
+  `PutusanUsulan`, `TingkatKoreksi`, `SasaranUsulan`, `HasilSerapUsulan`. Tidak ada tipe usulan tulisan tangan.
+- **Rute** `src/app/(auth)/ai-usulan/` (`layout.tsx` = `WajibGrup` `tim-kajian`, `page.tsx` index, `[id]/page.tsx` detail;
+  `loading.tsx` + `error.tsx` per rute). Menu: tautan `Usulan AI` (`NAV_USULAN_AI_TIM`) hanya untuk `tim-kajian`.
+- **Index**: `POST .../ai/usulan/search`, domain hanya `fungsi` dan `sasaran_jenis` (backend tidak menerima filter
+  putusan; `SEARCHABLE_FIELDS` di `services/ai_usulan.py:28`), urut `created_at` turun. Putusan terakhir hanya kolom.
+- **Detail**: `GET .../ai/usulan/{id}`; `isi` dan `amplop` lewat satu komponen generik `IsiUsulan`
+  (`src/components/isi-usulan.tsx`, tanpa cabang per kode fungsi). Label fungsi/sasaran di `src/lib/ai-usulan.ts`,
+  kode asing tampil mentah.
+- **Putusan**: `POST .../putusan` + `useIdempotencyKey().keyUntuk(body)`; validasi klien `validasiPutusan` mencerminkan
+  backend; sukses hanya setelah 2xx lalu `router.refresh()`.
+- Docs: `docs-usage/ik/usulan-ai.md` (IK-18). Detail keputusan: issue #111 repo ini.
+
 ### [2026-11-08] E2E Playwright dinonaktifkan sementara (#110)
 
 Atas perintah user (`cakrawala-tumbuh/ypii-support#464`), sampai ia memerintahkan menyalakannya lagi.

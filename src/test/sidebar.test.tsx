@@ -143,3 +143,19 @@ describe("menu Narasi", () => {
     expect(hrefs(["sekolah-pengisi"])).not.toContain("/narasi");
   });
 });
+
+describe("menu Usulan AI", () => {
+  const href = (g: string[]) => navForGroups(g).map((e) => e.href);
+
+  it("tampil untuk tim-kajian sebagai tautan /ai-usulan", () => {
+    const e = navForGroups(["tim-kajian"]).find((x) => x.href === "/ai-usulan");
+    expect(e?.kind).toBe("link");
+    expect(e?.label).toBe("Usulan AI");
+  });
+
+  it("tidak tampil untuk sekolah-pengisi, admin, maupun partisipan", () => {
+    expect(href(["sekolah-pengisi"])).not.toContain("/ai-usulan");
+    expect(href(["admin"])).not.toContain("/ai-usulan");
+    expect(href(["partisipan"])).not.toContain("/ai-usulan");
+  });
+});
