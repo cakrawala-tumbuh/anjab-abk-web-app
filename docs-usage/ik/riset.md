@@ -47,6 +47,22 @@ Pemverifikasi harus akun Tim Kajian yang **berbeda** dari pengunggah statistik. 
 yang sama mencoba memverifikasi, server menolak dengan pesan `PEMVERIFIKASI_TIDAK_INDEPENDEN`
 dan statistik tetap Draf. Minta rekan Tim Kajian lain untuk memverifikasi.
 
+## Meminta sintesis bukti dengan AI (P08)
+
+Pada protokol **Terkunci**, di bawah bagian Statistik, ada panel **Sintesis bukti dengan AI (P08)**
+(tidak tampil pada protokol Draf).
+
+1. Pastikan protokol punya minimal satu statistik **Terverifikasi**. Bila belum, tombol
+   nonaktif dan tampil teks "Butuh minimal satu statistik terverifikasi."
+2. Buka panel, isi **Periode** (mis. `2026/27`), lalu klik **Minta sintesis bukti**.
+3. Bila diterima, muncul tautan **Buka usulan** ke layar Usulan AI. "Diterima" belum berarti
+   selesai; hasilnya berupa draf yang harus Anda tinjau dan putuskan.
+
+!!! note "Fungsi bisa belum diaktifkan"
+Bila operator belum menyalakan fungsi ini, server membalas `fungsi_belum_aktif` dan pesannya
+tampil apa adanya; ini perilaku sah, bukan kerusakan. Pesan lain yang mungkin muncul:
+`PROTOKOL_BELUM_TERKUNCI`, `STATISTIK_TERVERIFIKASI_KOSONG`, dan `SUMBER_TERLALU_BANYAK`.
+
 ## Mencatat kasus negatif
 
 Sama seperti statistik, bagian ini hanya aktif pada protokol **Terkunci**.

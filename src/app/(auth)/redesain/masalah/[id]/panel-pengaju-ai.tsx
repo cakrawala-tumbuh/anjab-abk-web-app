@@ -26,6 +26,12 @@ export interface PanelPengajuAiProps {
   pesanSukses: string;
   /** Nilai awal isian periode (`masalah.periode_acuan`). */
   periodeAwal: string;
+  /** Bila true, tombol kirim dinonaktifkan (backend tetap penentu akhir). */
+  nonaktif?: boolean;
+  /** Teks penjelas yang tampil selagi tombol nonaktif. */
+  alasanNonaktif?: string;
+  /** Catatan tetap di bawah deskripsi (mis. peringatan fungsi belum diaktifkan). */
+  catatan?: string;
   /** Isian tambahan di bawah periode (mis. dropdown usulan P06). */
   ekstra?: ReactNode;
   /**
@@ -54,6 +60,9 @@ export function PanelPengajuAi({
   pesanSukses,
   periodeAwal,
   ekstra,
+  nonaktif = false,
+  alasanNonaktif,
+  catatan,
   panggil,
 }: PanelPengajuAiProps) {
   const [periode, setPeriode] = useState(periodeAwal);
@@ -91,6 +100,7 @@ export function PanelPengajuAi({
       <summary className="cursor-pointer font-medium">{judul}</summary>
       <div className="mt-3 space-y-3 text-sm">
         <p className="text-gray-600 dark:text-gray-400">{deskripsi}</p>
+        {catatan && <p className="text-gray-600 dark:text-gray-400">{catatan}</p>}
         <label className="flex items-center gap-2">
           <span>Periode</span>
           <input
@@ -104,12 +114,13 @@ export function PanelPengajuAi({
         {ekstra}
         <button
           type="button"
-          disabled={loading}
+          disabled={loading || nonaktif}
           onClick={() => void kirim()}
           className="rounded-md bg-blue-600 px-4 py-1.5 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
         >
           {loading ? "Mengirim…" : labelTombol}
         </button>
+        {nonaktif && alasanNonaktif && <p>{alasanNonaktif}</p>}
         {galat && (
           <div role="alert" className="form-error space-y-1">
             <p>{galat}</p>

@@ -37665,6 +37665,7 @@ export type PengajuanP03 = components["schemas"]["PengajuanP03"];
 export type PengajuanP05 = components["schemas"]["PengajuanP05"];
 export type PengajuanP06 = components["schemas"]["PengajuanP06"];
 export type PengajuanP07 = components["schemas"]["PengajuanP07"];
+export type PengajuanP08 = components["schemas"]["PengajuanP08"];
 export type PengajuanP11 = components["schemas"]["PengajuanP11"];
 export type TerapkanKonteks = components["schemas"]["TerapkanKonteks"];
 export type RisetProtokolCreate = components["schemas"]["RisetProtokolCreate"];

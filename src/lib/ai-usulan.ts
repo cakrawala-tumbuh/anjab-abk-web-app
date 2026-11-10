@@ -13,6 +13,7 @@ export const LABEL_FUNGSI: Record<string, string> = {
   P05: "Hipotesis proses",
   P06: "Opsi redesain",
   P07: "Kartu keputusan",
+  P08: "Sintesis bukti riset",
   P09: "Kritik draf",
   P10: "Draf narasi",
   P11: "Pengusul Konteks",
@@ -24,6 +25,7 @@ export const JENIS_SASARAN = [
   "NARASI_SUMBER",
   "REDESAIN_KONTEKS",
   "REDESAIN_MASALAH",
+  "PROTOKOL_RISET",
   "JABATAN",
 ] as const;
 
@@ -33,6 +35,7 @@ export const LABEL_SASARAN: Record<string, string> = {
   NARASI_SUMBER: "Sumber narasi",
   REDESAIN_KONTEKS: "Katalog konteks redesain",
   REDESAIN_MASALAH: "Masalah redesain",
+  PROTOKOL_RISET: "Protokol riset",
   JABATAN: "Jabatan",
 };
 
@@ -91,13 +94,14 @@ export function labelHasilSerap(hasil: string | null | undefined): string {
  * @param id - Id objek sasaran.
  * @returns Path `/narasi/kasus/{id}` untuk `NARASI_KASUS`; `/redesain/konteks` untuk
  *   `REDESAIN_KONTEKS` (sasarannya katalog, bukan satu objek); `/redesain/masalah/{id}` untuk
- *   `REDESAIN_MASALAH`; `null` untuk lainnya
+ *   `REDESAIN_MASALAH`; `/riset/protokol/{id}` untuk `PROTOKOL_RISET`; `null` untuk lainnya
  *   (termasuk `JABATAN`: rute katalog butuh unit yang tak dimiliki usulan).
  */
 export function hrefSasaran(jenis: string, id: string): string | null {
   if (jenis === "NARASI_KASUS") return `/narasi/kasus/${encodeURIComponent(id)}`;
   if (jenis === "REDESAIN_KONTEKS") return "/redesain/konteks";
   if (jenis === "REDESAIN_MASALAH") return `/redesain/masalah/${encodeURIComponent(id)}`;
+  if (jenis === "PROTOKOL_RISET") return `/riset/protokol/${encodeURIComponent(id)}`;
   return null;
 }
 

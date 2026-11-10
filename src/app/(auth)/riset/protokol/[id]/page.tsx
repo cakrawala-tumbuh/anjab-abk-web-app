@@ -5,6 +5,7 @@ import { LABEL_STATUS_PROTOKOL, LABEL_STATUS_STATISTIK } from "@/lib/riset";
 import { fetchKasusNegatif, fetchProtokol, fetchStatistik } from "../data";
 import { KasusNegatifForm } from "./kasus-negatif-form";
 import { KunciProtokol } from "./kunci-protokol";
+import { SintesisRisetAi } from "./sintesis-riset-ai";
 import { StatistikForm } from "./statistik-form";
 import { VerifikasiTombol } from "./verifikasi-tombol";
 
@@ -146,6 +147,14 @@ export default async function DetailProtokolPage({ params }: Props) {
           </>
         )}
       </section>
+
+      {terkunci && (
+        <SintesisRisetAi
+          accessToken={token}
+          protokolId={p.id}
+          jumlahTerverifikasi={statistik.filter((s) => s.status === "TERVERIFIKASI").length}
+        />
+      )}
 
       <section aria-labelledby="h-kasus" className="space-y-3">
         <h2 id="h-kasus" className="text-base font-semibold">
