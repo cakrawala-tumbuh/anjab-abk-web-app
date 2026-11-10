@@ -7,8 +7,19 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [4.21.0] - 2026-11-10
+
 ### Ditambahkan
 
+- **Panel "Sintesis bukti dengan AI (P08)" di detail protokol riset** (#116): tampil hanya
+  pada protokol `TERKUNCI`, di bawah Statistik; memanggil
+  `POST /api/v1/riset/protokol/{protokol_id}/sintesis-ai` dan menautkan ke usulan yang dibuat.
+  Tombol nonaktif bila belum ada statistik terverifikasi. Label P08 dan sasaran Protokol riset
+  di layar Usulan AI.
+- **Tab "AI" di detail masalah redesain** (#114): `/redesain/masalah/[id]?bagian=ai` berisi
+  panel P05 (hipotesis proses), P06 (opsi redesain; syarat gerbang F4 yang belum terpenuhi
+  ditampilkan), dan P07 (kartu keputusan, dengan pilihan usulan P06 yang sudah diterima atau
+  tanpa P06). Label P05–P07 dan sasaran Masalah redesain di layar Usulan AI.
 - **Layar riset minimal** (#115): grup menu **Riset → Protokol** untuk `tim-kajian`
   (`/riset/protokol`, `/riset/protokol/tambah`, `/riset/protokol/[id]`). Protokol dapat dibuat,
   dilihat, dan dikunci; pada protokol terkunci statistik dapat dicatat dan diverifikasi (akun
