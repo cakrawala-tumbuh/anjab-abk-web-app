@@ -7,6 +7,15 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+### Ditambahkan
+
+- **Tombol P02 (Normalisasi tugas) dan P03 (Tag peran) di katalog Task Inventory per jabatan**
+  (#113): halaman `/master-data/task-inventory/[unit]/[kategori]` kini dapat dibuka grup
+  `tim-kajian` (selain admin) dan menampilkan dua panel pengaju AI yang memanggil
+  `POST /api/v1/task-inventory/jabatan/{jabatan_id}/normalisasi-ai` dan `.../tag-peran-ai`.
+  Menu "Katalog TI" untuk Tim Kajian non-admin; label P02/P03 dan sasaran Jabatan di layar
+  Usulan AI.
+
 ## [4.20.0] - 2026-11-10
 
 ### Ditambahkan

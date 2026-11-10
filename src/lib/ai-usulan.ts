@@ -7,6 +7,8 @@ import type { AiUsulanPutusanCreate, PutusanUsulan, TingkatKoreksi } from "@/lib
 /** Label fungsi AI yang dikenal klien; kode lain tampil apa adanya. */
 export const LABEL_FUNGSI: Record<string, string> = {
   P01: "Ekstraksi sumber",
+  P02: "Normalisasi tugas",
+  P03: "Tag peran",
   P04: "Pertanyaan bukti",
   P09: "Kritik draf",
   P10: "Draf narasi",
@@ -14,13 +16,19 @@ export const LABEL_FUNGSI: Record<string, string> = {
 };
 
 /** Jenis sasaran yang dikenal (urut penyajian pada filter). */
-export const JENIS_SASARAN = ["NARASI_KASUS", "NARASI_SUMBER", "REDESAIN_KONTEKS"] as const;
+export const JENIS_SASARAN = [
+  "NARASI_KASUS",
+  "NARASI_SUMBER",
+  "REDESAIN_KONTEKS",
+  "JABATAN",
+] as const;
 
 /** Label Indonesia jenis sasaran yang dikenal. */
 export const LABEL_SASARAN: Record<string, string> = {
   NARASI_KASUS: "Kasus narasi",
   NARASI_SUMBER: "Sumber narasi",
   REDESAIN_KONTEKS: "Katalog konteks redesain",
+  JABATAN: "Jabatan",
 };
 
 /** Label hasil serap yang dikenal. */
@@ -77,7 +85,8 @@ export function labelHasilSerap(hasil: string | null | undefined): string {
  * @param jenis - Jenis sasaran.
  * @param id - Id objek sasaran.
  * @returns Path `/narasi/kasus/{id}` untuk `NARASI_KASUS`; `/redesain/konteks` untuk
- *   `REDESAIN_KONTEKS` (sasarannya katalog, bukan satu objek); `null` untuk lainnya.
+ *   `REDESAIN_KONTEKS` (sasarannya katalog, bukan satu objek); `null` untuk lainnya
+ *   (termasuk `JABATAN`: rute katalog butuh unit yang tak dimiliki usulan).
  */
 export function hrefSasaran(jenis: string, id: string): string | null {
   if (jenis === "NARASI_KASUS") return `/narasi/kasus/${encodeURIComponent(id)}`;

@@ -194,6 +194,27 @@ Catalog tugas per kombinasi unit × jabatan. **Bersifat read-only** (data bawaan
 Catalog tidak dapat diedit dari aplikasi. Gunakan halaman ini untuk memastikan
 kombinasi unit × jabatan yang akan disurvei sudah memiliki task.
 
+### Akses Tim Kajian dan permintaan AI
+
+Halaman Instrumen TI dan daftar task per kombinasi juga dapat dibuka oleh **Tim Kajian**
+(tanpa peran Administrator) lewat menu **Katalog TI** di sidebar. Pengguna tanpa peran
+Administrator maupun Tim Kajian melihat halaman "tidak ditemukan". Halaman Master Data lain
+tetap khusus Administrator.
+
+Khusus Tim Kajian, di atas daftar task tampil dua panel AI. Hasilnya berupa **usulan** yang
+harus ditinjau di **Usulan AI**; katalog tidak berubah.
+
+1. **Normalisasi tugas dengan AI (P02)**: buka panel, isi **Periode** berupa kode tanpa spasi
+   (mis. `2026/27`). Kotak **Hanya unit ini** (bawaan aktif) membatasi pada unit yang sedang
+   dibuka; lepas centangnya untuk seluruh unit jabatan. Klik **Normalisasi dengan AI**.
+2. **Beri tag peran dengan AI (P03)**: pilih salah satu **Usulan P02** yang sudah Anda terima
+   (putusan APPROVE atau REVISE) untuk jabatan ini, isi **Periode**, lalu klik
+   **Beri tag peran dengan AI**. Bila belum ada usulan P02 yang diterima, tombol nonaktif.
+3. Setelah permintaan diterima tampil tautan **Buka usulan**. "Diterima" berarti permintaan
+   masuk antrean, bukan hasilnya sudah jadi.
+4. Bila server menolak (mis. fungsi AI belum aktif), pesan dari server tampil dan tidak ada
+   notifikasi berhasil.
+
 ---
 
 <!-- Screenshot: grup Master Data terbuka di sidebar dan salah satu formulir tambah data -->

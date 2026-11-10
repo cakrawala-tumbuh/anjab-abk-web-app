@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { auth, isAdmin } from "@/lib/auth/auth";
+import { auth, isAdmin, isTimKajian } from "@/lib/auth/auth";
 import { withServerAuth } from "@/lib/api/client";
 import { apiErrorDari } from "@/lib/api/errors";
 import type { TiKombinasiRead } from "@/lib/api/schema";
@@ -16,7 +16,7 @@ async function fetchKombinasi(accessToken: string | undefined): Promise<TiKombin
 
 export default async function TiMasterDataPage() {
   const session = await auth();
-  if (!isAdmin(session)) notFound();
+  if (!isAdmin(session) && !isTimKajian(session)) notFound();
 
   const kombinasi = await fetchKombinasi(session?.accessToken);
 

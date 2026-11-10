@@ -159,3 +159,15 @@ describe("menu Usulan AI", () => {
     expect(href(["partisipan"])).not.toContain("/ai-usulan");
   });
 });
+
+describe("menu Katalog TI untuk tim-kajian", () => {
+  it("tim-kajian non-admin memuat Katalog TI", () => {
+    const hrefs = navForGroups(["tim-kajian"]).map((e) => e.href);
+    expect(hrefs).toContain("/master-data/task-inventory");
+  });
+
+  it("admin + tim-kajian tidak menggandakan Katalog TI", () => {
+    const entries = navForGroups(["admin", "tim-kajian"]);
+    expect(entries.filter((e) => e.label === "Katalog TI")).toHaveLength(0);
+  });
+});

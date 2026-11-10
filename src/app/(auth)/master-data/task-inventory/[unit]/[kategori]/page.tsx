@@ -1,8 +1,11 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { auth, isAdmin } from "@/lib/auth/auth";
+import { auth, isAdmin, isTimKajian } from "@/lib/auth/auth";
 import { withServerAuth } from "@/lib/api/client";
 import { apiErrorDari } from "@/lib/api/errors";
+import { NormalisasiJabatanAi } from "./normalisasi-jabatan-ai";
+import { TagPeranJabatanAi } from "./tag-peran-jabatan-ai";
+import { fetchUsulanP02Diterima } from "./data-ai";
 import { Pagination, UKURAN_HALAMAN, offsetHalaman } from "@/components/pagination";
 import type { TiCatalogRead } from "@/lib/api/schema";
 
@@ -29,7 +32,7 @@ async function fetchCatalog(
 
 export default async function TiKombinasiDetailPage({ params, searchParams }: PageProps) {
   const session = await auth();
-  if (!isAdmin(session)) notFound();
+  if (!isAdmin(session) && !isTimKajian(session)) notFound();
 
   const { unit, kategori } = await params;
   const jabatan_id = decodeURIComponent(kategori);
@@ -43,6 +46,9 @@ export default async function TiKombinasiDetailPage({ params, searchParams }: Pa
   );
 
   if (total === 0) notFound();
+
+  const timKajian = isTimKajian(session);
+  const usulanP02 = timKajian ? await fetchUsulanP02Diterima(session?.accessToken, jabatan_id) : [];
 
   const grouped = catalog.reduce<Record<string, Record<string, TiCatalogRead[]>>>((acc, item) => {
     const dtKey = item.detil_tugas ?? "";
@@ -74,6 +80,21 @@ export default async function TiKombinasiDetailPage({ params, searchParams }: Pa
           (read-only).
         </p>
       </div>
+
+      {timKajian && (
+        <div className="space-y-3">
+          <NormalisasiJabatanAi
+            accessToken={session?.accessToken}
+            jabatanId={jabatan_id}
+            unit={unit}
+          />
+          <TagPeranJabatanAi
+            accessToken={session?.accessToken}
+            jabatanId={jabatan_id}
+            usulanP02={usulanP02}
+          />
+        </div>
+      )}
 
       <div className="space-y-2">
         {tugasPokokList.map((tugasPokok) => {

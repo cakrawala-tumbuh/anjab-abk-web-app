@@ -37660,5 +37660,7 @@ export type PutusanUsulan = components["schemas"]["PutusanUsulan"];
 export type TingkatKoreksi = components["schemas"]["TingkatKoreksi"];
 export type SasaranUsulan = components["schemas"]["SasaranUsulan"];
 export type HasilSerapUsulan = components["schemas"]["HasilSerapUsulan"];
+export type PengajuanP02 = components["schemas"]["PengajuanP02"];
+export type PengajuanP03 = components["schemas"]["PengajuanP03"];
 export type PengajuanP11 = components["schemas"]["PengajuanP11"];
 export type TerapkanKonteks = components["schemas"]["TerapkanKonteks"];

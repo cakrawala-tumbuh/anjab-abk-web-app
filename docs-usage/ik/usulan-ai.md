@@ -9,16 +9,17 @@ melihat panel "Tidak berhak mengakses halaman ini".
 !!! note "Yang perlu diketahui"
 Usulan hanyalah kandidat dari AI. Tidak ada yang berlaku sebelum diputus oleh manusia.
 Halaman ini tidak menyalakan AI dan tidak mengajukan permintaan baru. Usulan konteks (P11)
-diajukan dari halaman Konteks redesain.
+diajukan dari halaman Konteks redesain; normalisasi tugas (P02) dan tag peran (P03) diajukan
+dari halaman katalog Task Inventory per jabatan.
 
 ---
 
 ## Membaca daftar
 
 1. Daftar memuat usulan dari semua fungsi AI, yang terbaru di atas.
-2. Kolom **Fungsi** berisi kode fungsi (mis. P09) dan namanya bila dikenal; kode yang belum
+2. Kolom **Fungsi** berisi kode fungsi (mis. P09, P02 Normalisasi tugas, P03 Tag peran) dan namanya bila dikenal; kode yang belum
    dikenal tampil apa adanya. Klik untuk membuka detail.
-3. Kolom **Sasaran** menunjukkan jenis objek. Untuk kasus narasi, tautan **(buka)** membuka
+3. Kolom **Sasaran** menunjukkan jenis objek (termasuk **Jabatan** untuk P02 dan P03). Untuk kasus narasi, tautan **(buka)** membuka
    kasusnya.
 4. Kolom **Hasil serap** menyatakan apakah keluaran AI sudah diserap; **Belum diserap** berarti
    belum ada isi usulan.

@@ -207,3 +207,23 @@ export function bodyTerapkan(indeks: number, i: IsianTerapkan): TerapkanKonteks 
     batas_pemeriksaan: i.batas_pemeriksaan.trim(),
   };
 }
+
+/** Batas panjang `periode` (cermin backend). */
+export const PERIODE_AI_MAKS = 100;
+/** Pola `periode` (cermin `POLA_PERIODE_AI` backend). */
+export const POLA_PERIODE_AI = /^[A-Za-z0-9_.:/-]+$/;
+
+/**
+ * Validasi kode periode pengajuan fungsi AI (dipakai bersama P02, P03, dan fungsi berikutnya).
+ *
+ * @param periode - Teks mentah dari kotak isian.
+ * @returns Pesan galat; `null` bila sah (wajib, maksimal {@link PERIODE_AI_MAKS} karakter,
+ *   sesuai {@link POLA_PERIODE_AI}).
+ */
+export function validasiPeriodeAi(periode: string): string | null {
+  const t = periode.trim();
+  if (t === "" || t.length > PERIODE_AI_MAKS || !POLA_PERIODE_AI.test(t)) {
+    return "Periode harus kode tanpa spasi, mis. 2026/27.";
+  }
+  return null;
+}

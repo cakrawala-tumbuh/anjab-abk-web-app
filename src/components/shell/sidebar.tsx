@@ -109,6 +109,14 @@ export const NAV_USULAN_AI_TIM: NavLink = {
   icon: Sparkles,
 };
 
+/** Entri menu "Katalog TI" — untuk `tim-kajian` yang BUKAN admin (admin sudah punya Master Data). */
+export const NAV_KATALOG_TI_TIM: NavLink = {
+  kind: "link",
+  href: "/master-data/task-inventory",
+  label: "Katalog TI",
+  icon: ClipboardList,
+};
+
 /**
  * Sub-item grup menu "Konfirmasi Redesain" (khusus grup `sekolah-pengisi`): daftar masalah
  * untuk diisi dan riwayat isian milik sendiri.
@@ -156,7 +164,7 @@ export const NAV_PARTISIPAN: ReadonlyArray<NavEntry> = [
  * Pilih daftar menu sidebar sesuai grup Authentik pengguna.
  *
  * Menu dasar: `NAV_ADMIN` bila punya "admin", selain itu `NAV_PARTISIPAN`. Bila punya
- * "tim-kajian", grup menu "Redesain Pekerjaan" dan "Narasi" plus tautan "Usulan AI" ditambahkan di akhir; bila punya
+ * "tim-kajian", grup menu "Redesain Pekerjaan" dan "Narasi" plus tautan "Usulan AI" ditambahkan di akhir (dan "Katalog TI" bila bukan admin); bila punya
  * "sekolah-pengisi", grup "Konfirmasi Redesain" (Daftar Masalah, Isian Saya) ditambahkan. Grup "admin" saja
  * TIDAK memunculkan menu redesain.
  *
@@ -166,8 +174,10 @@ export const NAV_PARTISIPAN: ReadonlyArray<NavEntry> = [
 export function navForGroups(groups: ReadonlyArray<string>): ReadonlyArray<NavEntry> {
   const dasar = groups.includes("admin") ? NAV_ADMIN : NAV_PARTISIPAN;
   const tambahan: NavEntry[] = [];
-  if (groups.includes(GRUP_TIM_KAJIAN))
+  if (groups.includes(GRUP_TIM_KAJIAN)) {
     tambahan.push(NAV_REDESAIN_TIM, NAV_NARASI_TIM, NAV_USULAN_AI_TIM);
+    if (!groups.includes("admin")) tambahan.push(NAV_KATALOG_TI_TIM);
+  }
   if (groups.includes(GRUP_SEKOLAH_PENGISI)) tambahan.push(NAV_REDESAIN_SEKOLAH);
   return tambahan.length > 0 ? [...dasar, ...tambahan] : dasar;
 }
