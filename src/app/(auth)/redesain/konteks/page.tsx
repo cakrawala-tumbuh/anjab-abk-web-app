@@ -4,6 +4,7 @@ import { LABEL_BELUM_TEMUAN } from "@/lib/redesain-register";
 import { fetchKonteks } from "./data";
 import { KonteksForm } from "./konteks-form";
 import { PetunjukKonteks } from "./petunjuk-konteks";
+import { UsulkanKontekAi } from "./usulkan-konteks-ai";
 
 export const metadata = { title: "Konteks — Redesain Pekerjaan" };
 
@@ -29,6 +30,7 @@ export default async function KonteksPage() {
         </h1>
         <PetunjukKonteks />
       </div>
+      <UsulkanKontekAi accessToken={session?.accessToken} />
       <details className="rounded-lg border border-gray-200 p-4 dark:border-gray-700">
         <summary className="cursor-pointer font-medium">Tambah konteks</summary>
         <div className="mt-3">

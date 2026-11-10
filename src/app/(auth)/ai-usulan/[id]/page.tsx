@@ -3,8 +3,10 @@ import { notFound } from "next/navigation";
 import { IsiUsulan } from "@/components/isi-usulan";
 import { auth } from "@/lib/auth/auth";
 import { hrefSasaran, labelFungsi, labelHasilSerap, labelSasaran } from "@/lib/ai-usulan";
-import { fetchDetailUsulan } from "../data";
+import { kandidatDariIsi, panelTerapkanTampil, petaKandidatTerapan } from "@/lib/ai-usulan-konteks";
+import { fetchDetailUsulan, fetchKonteksTerapan } from "../data";
 import { PutusanForm } from "./putusan-form";
+import { TerapkanKandidat } from "./terapkan-kandidat";
 
 export const metadata = { title: "Detail Usulan AI" };
 
@@ -14,7 +16,8 @@ interface Props {
 
 /**
  * Detail satu usulan AI (Server Component): metadata, amplop keluaran, `isi` (render generik
- * lewat {@link IsiUsulan}, tanpa cabang per fungsi), riwayat putusan, dan form putusan.
+ * lewat {@link IsiUsulan}, tanpa cabang per fungsi), riwayat putusan, panel Terapkan kandidat
+ * (hanya P11 berputusan `APPROVE`/`REVISE`) dan form putusan.
  * 404 menjadi `notFound()`; kegagalan lain dilempar ke `error.tsx`.
  */
 export default async function DetailUsulanPage({ params }: Props) {
@@ -23,6 +26,10 @@ export default async function DetailUsulanPage({ params }: Props) {
   const u = await fetchDetailUsulan(session?.accessToken, id);
   if (!u) notFound();
   const href = hrefSasaran(u.sasaran_jenis, u.sasaran_id);
+  const tampilTerapkan = panelTerapkanTampil(u.fungsi, u.isi, u.putusan_terakhir?.putusan);
+  const terapan = tampilTerapkan
+    ? petaKandidatTerapan(await fetchKonteksTerapan(session?.accessToken, u.id))
+    : new Map<number, string>();
 
   return (
     <div className="space-y-6">
@@ -122,6 +129,15 @@ export default async function DetailUsulanPage({ params }: Props) {
           </ul>
         )}
       </section>
+
+      {tampilTerapkan && (
+        <TerapkanKandidat
+          usulanId={u.id}
+          kandidat={kandidatDariIsi(u.isi)}
+          terapan={terapan}
+          accessToken={session?.accessToken}
+        />
+      )}
 
       <PutusanForm usulanId={u.id} accessToken={session?.accessToken} />
     </div>

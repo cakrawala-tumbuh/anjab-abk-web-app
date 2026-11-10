@@ -106,6 +106,12 @@ label tetap **BELUM MENJADI TEMUAN** — isi katalog bukan temuan resmi.
 3. Untuk mengubah, klik **Ubah** pada baris konteks, sunting isinya, lalu klik
    **Simpan perubahan**. Kode tidak dapat diubah.
 4. Untuk menonaktifkan konteks, hilangkan centang **Aktif**. Konteks tidak bisa dihapus.
+5. Untuk meminta usulan dari AI, buka **Usulkan dengan AI**, atur **Sertakan masalah
+   redesain sebagai sumber** dan **Jumlah kandidat** (1-5, bawaan 3), lalu klik
+   **Usulkan dengan AI**. Permintaan hanya **diterima**; tautan **Buka usulan** membuka
+   hasilnya di **Usulan AI**. Bila fungsi AI belum aktif, tampil pesan dari server dan
+   tidak ada usulan dibuat. Tidak ada konteks tersimpan sebelum kandidat diterapkan (lihat
+   IK-18, "Menerapkan kandidat konteks").
 
 Jangan menulis nama orang atau data pribadi di isian teks; tulis jabatan atau peran.
 

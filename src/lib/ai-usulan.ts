@@ -10,15 +10,17 @@ export const LABEL_FUNGSI: Record<string, string> = {
   P04: "Pertanyaan bukti",
   P09: "Kritik draf",
   P10: "Draf narasi",
+  P11: "Pengusul Konteks",
 };
 
 /** Jenis sasaran yang dikenal (urut penyajian pada filter). */
-export const JENIS_SASARAN = ["NARASI_KASUS", "NARASI_SUMBER"] as const;
+export const JENIS_SASARAN = ["NARASI_KASUS", "NARASI_SUMBER", "REDESAIN_KONTEKS"] as const;
 
 /** Label Indonesia jenis sasaran yang dikenal. */
 export const LABEL_SASARAN: Record<string, string> = {
   NARASI_KASUS: "Kasus narasi",
   NARASI_SUMBER: "Sumber narasi",
+  REDESAIN_KONTEKS: "Katalog konteks redesain",
 };
 
 /** Label hasil serap yang dikenal. */
@@ -74,10 +76,13 @@ export function labelHasilSerap(hasil: string | null | undefined): string {
  *
  * @param jenis - Jenis sasaran.
  * @param id - Id objek sasaran.
- * @returns Path layar `/narasi/kasus/{id}` untuk `NARASI_KASUS`; `null` untuk lainnya.
+ * @returns Path `/narasi/kasus/{id}` untuk `NARASI_KASUS`; `/redesain/konteks` untuk
+ *   `REDESAIN_KONTEKS` (sasarannya katalog, bukan satu objek); `null` untuk lainnya.
  */
 export function hrefSasaran(jenis: string, id: string): string | null {
-  return jenis === "NARASI_KASUS" ? `/narasi/kasus/${encodeURIComponent(id)}` : null;
+  if (jenis === "NARASI_KASUS") return `/narasi/kasus/${encodeURIComponent(id)}`;
+  if (jenis === "REDESAIN_KONTEKS") return "/redesain/konteks";
+  return null;
 }
 
 /** Filter index usulan; `null` = tidak difilter. */

@@ -273,7 +273,7 @@ function berkasTsx(dir: string): string[] {
   });
 }
 
-describe("Idempotency-Key — jaring pengaman cakupan 16 POST tulis redesain", () => {
+describe("Idempotency-Key — jaring pengaman cakupan 17 POST tulis redesain", () => {
   it("setiap berkas redesain yang memanggil POST tulis (bukan /search) memakai header key", () => {
     const akar = join(process.cwd(), "src/app/(auth)/redesain");
     const pelanggar: string[] = [];
@@ -297,6 +297,6 @@ describe("Idempotency-Key — jaring pengaman cakupan 16 POST tulis redesain", (
       }
     }
     expect(pelanggar).toEqual([]);
-    expect(jumlahBerkas).toBe(16);
+    expect(jumlahBerkas).toBe(17);
   });
 });

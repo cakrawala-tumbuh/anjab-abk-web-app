@@ -8,7 +8,8 @@ melihat panel "Tidak berhak mengakses halaman ini".
 
 !!! note "Yang perlu diketahui"
 Usulan hanyalah kandidat dari AI. Tidak ada yang berlaku sebelum diputus oleh manusia.
-Halaman ini tidak menyalakan AI dan tidak mengajukan permintaan baru.
+Halaman ini tidak menyalakan AI dan tidak mengajukan permintaan baru. Usulan konteks (P11)
+diajukan dari halaman Konteks redesain.
 
 ---
 
@@ -45,3 +46,18 @@ Halaman ini tidak menyalakan AI dan tidak mengajukan permintaan baru.
 2. Klik **Kirim putusan**. Kombinasi yang tidak sah ditolak di layar dengan pesan.
 3. Setelah berhasil, halaman dimuat ulang dan putusan muncul di riwayat. Bila server menolak
    (mis. konflik), pesannya tampil dan isian Anda dipertahankan.
+
+## Menerapkan kandidat konteks
+
+Berlaku hanya untuk usulan **P11 Pengusul Konteks** yang putusan terakhirnya **APPROVE**
+atau **REVISE**. Panel **Terapkan kandidat** muncul di atas form putusan.
+
+1. Tiap kandidat punya bagian sendiri. Isi **Kode (K-NN)** (mis. `K-15`) dan periksa
+   **Gelombang** (terisi saran AI), **Tema**, **Ruang dugaan**, **Sumber draf**, dan
+   **Batas pemeriksaan**. Keempat isian boleh disunting dan semuanya wajib terisi.
+2. Klik **Terapkan kandidat**. Setelah berhasil tampil **Konteks K-NN dibuat** dan konteks
+   baru muncul di halaman Konteks.
+3. Kandidat yang sudah diterapkan menampilkan **Sudah diterapkan sebagai K-NN** dan tidak
+   dapat diterapkan lagi.
+4. Bila server menolak (mis. kode sudah dipakai, usulan belum diterima), pesannya tampil
+   dan isian dipertahankan.

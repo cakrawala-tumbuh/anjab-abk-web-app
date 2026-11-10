@@ -84,6 +84,21 @@ src/
 
 ## Revisi Desain
 
+### [2026-11-10] Usulan konteks AI (P11): tombol pengaju + panel Terapkan kandidat (#112)
+
+Item #112; konsumen backend `#127` (pengaju) dan `#128` (Terapkan). Rujukan: `cakrawala-tumbuh/ypii-support#463`.
+
+- **Kontrak diekspor dari kode backend** master `152e905` (klon scratch, image `Dockerfile.test`, `scripts/export_openapi.py`);
+  `openapi.json` diganti utuh, `gen:api`, blok alias ditempel ulang + `PengajuanP11`, `TerapkanKonteks`. Tanpa drift kompilasi.
+- **Pengaju**: `UsulkanKontekAi` (`redesain/konteks/usulkan-konteks-ai.tsx`, disclosure di atas "Tambah konteks"):
+  `POST /api/v1/redesain/konteks/usulan-ai`, `sertakan_masalah` + `jumlah_kandidat` 1-5, `sumber_dokumen_ids` selalu `[]`;
+  202 hanya berarti diterima (tautan ke `/ai-usulan/{id}`), galat tampil sebagai pesan.
+- **Panel Terapkan** (`ai-usulan/[id]/terapkan-kandidat.tsx`): tampil bila `panelTerapkanTampil` (P11, `isi` terisi,
+  `putusan_terakhir` APPROVE/REVISE). Satu form per kandidat, keempat isian selalu dikirim; penanda "Sudah diterapkan sebagai
+  <kode>" dari `POST /redesain/konteks/search` domain `ai_usulan_id` (`fetchKonteksTerapan`, data inti, gagal melempar).
+- Label `P11 — Pengusul Konteks`, sasaran `REDESAIN_KONTEKS` -> `/redesain/konteks`. Logika murni di `src/lib/ai-usulan-konteks.ts`.
+- Docs: `docs-usage/ik/redesain-tim.md` (Konteks) dan `docs-usage/ik/usulan-ai.md` (IK-18). Detail: issue #112 repo ini.
+
 ### [2026-11-09] Layar Usulan AI (`/ai-usulan`)
 
 Item #111; konsumen rute backend `/api/v1/ai/usulan` (v0.49.0). Rujukan: `cakrawala-tumbuh/ypii-support#463`.

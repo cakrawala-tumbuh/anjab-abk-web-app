@@ -17020,6 +17020,258 @@
         }
       }
     },
+    "/api/v1/task-inventory/jabatan/{jabatan_id}/normalisasi-ai": {
+      "post": {
+        "tags": [
+          "taskinv.normalisasi-ai"
+        ],
+        "summary": "Minta normalisasi tugas AI atas katalog satu jabatan (tim-kajian)",
+        "description": "Ajukan P02 atas katalog satu jabatan; hasilnya hanya usulan AI, bukan perubahan katalog.\n\nSeluruh pemeriksaan berada di dalam aksi idempoten, jadi ulangan dengan `Idempotency-Key`\nyang sama membalas respons tersimpan (200). Urutan: flag AI (sebelum membaca apa pun),\njabatan 404, sumber dokumen (tak ada 404, tanpa izin AI 409), baris katalog (0 -> 422\n`TANPA_URAIAN`, > 80 -> 422 `URAIAN_TERLALU_BANYAK`), kode jabatan sesuai pola parameter,\nlalu `AiUsulanService.ajukan`. Baris katalog dikirim sebagai sumber `KATALOG_TI`\n(`uraian:<id>`), dokumen dengan jenisnya sendiri; gerbang jenis dan PII gateway berlaku\nseperti fungsi lain. `parameter` hanya `jabatan_kode`, `unit`, `periode`.",
+        "operationId": "taskinv_jabatan_normalisasi_ai_ajukan",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "jabatan_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Jabatan Id"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Kunci idempotency opsional.",
+              "title": "Idempotency-Key"
+            },
+            "description": "Kunci idempotency opsional."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PengajuanP02"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AiUsulanRingkas"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "feature_disabled; izin_sumber_tidak_ada; pii_mode_belum_didukung; usulan_berjalan; fungsi_belum_aktif.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan anggota grup tim-kajian.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Jabatan atau sumber dokumen tidak ditemukan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Badan tidak sah; TANPA_URAIAN (0 baris katalog); URAIAN_TERLALU_BANYAK (> 80 baris, persempit dengan unit); kode jabatan di luar pola parameter AI.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/task-inventory/jabatan/{jabatan_id}/tag-peran-ai": {
+      "post": {
+        "tags": [
+          "taskinv.tag-peran-ai"
+        ],
+        "summary": "Minta tag peran AI berbasis mandat formal atas usulan P02 (tim-kajian)",
+        "description": "Ajukan P03 terbatas; hasilnya hanya usulan tag mandat formal, bukan penugasan.\n\nSeluruh pemeriksaan berada di dalam aksi idempoten, jadi ulangan dengan `Idempotency-Key`\nyang sama membalas respons tersimpan (200). Urutan: flag AI (sebelum membaca apa pun),\njabatan 404, usulan 404, usulan bukan P02 atau bukan milik jabatan ini 422\n`USULAN_BUKAN_P02`, usulan belum diterima 409 `USULAN_BELUM_DITERIMA`, baris mandat untuk\nuraian yang dirujuk `source_ids` usulan, lebih dari 80 sumber 422 `SUMBER_TERLALU_BANYAK`,\nkode jabatan sesuai pola parameter, lalu `AiUsulanService.ajukan` (fungsi belum terdaftar\n409). Sumber hanya `USULAN_AI` (`usulan:<id>`) dan `KATALOG_TI`\n(`uraian:<uraian_id>@<jabatan_id>`); gerbang jenis dan PII gateway berlaku seperti fungsi\nlain. `parameter` hanya `jabatan_kode` dan `periode`.",
+        "operationId": "taskinv_jabatan_tag_peran_ai_ajukan",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "jabatan_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Jabatan Id"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Kunci idempotency opsional.",
+              "title": "Idempotency-Key"
+            },
+            "description": "Kunci idempotency opsional."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PengajuanP03"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AiUsulanRingkas"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "feature_disabled; USULAN_BELUM_DITERIMA (usulan P02 tanpa putusan APPROVE/REVISE); pii_mode_belum_didukung; usulan_berjalan; fungsi_belum_aktif.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan anggota grup tim-kajian.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Jabatan atau usulan tidak ditemukan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Badan tidak sah; USULAN_BUKAN_P02 (fungsi usulan bukan P02 atau sasarannya bukan jabatan ini); SUMBER_TERLALU_BANYAK (> 80 sumber); kode jabatan di luar pola parameter AI.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/time-study/kuesioner/saya": {
       "get": {
         "tags": [
@@ -20887,6 +21139,123 @@
         }
       }
     },
+    "/api/v1/redesain/konteks/usulan-ai": {
+      "post": {
+        "tags": [
+          "redesain.konteks-usulan-ai"
+        ],
+        "summary": "Minta usulan kandidat konteks redesain dari AI (tim-kajian)",
+        "description": "Ajukan P11; hasilnya hanya kandidat konteks di `ai_usulan`, bukan konteks baru.\n\nSeluruh pemeriksaan berada di dalam aksi idempoten, jadi ulangan dengan `Idempotency-Key`\nyang sama membalas respons tersimpan (200). Urutan: flag AI (sebelum membaca apa pun),\nsumber dokumen (tak ada 404, tanpa izin AI 409 `izin_sumber_tidak_ada`), rakit sumber\nkonteks aktif (0 konteks 422 `TANPA_KONTEKS`, lebih dari 60 sumber redesain 422\n`SUMBER_TERLALU_BANYAK`), lalu `AiUsulanService.ajukan` (fungsi belum terdaftar 409\n`fungsi_belum_aktif`). Sumber redesain berjenis `REDESAIN`, dokumen dengan jenisnya sendiri;\ngerbang jenis dan PII gateway berlaku seperti fungsi lain. `parameter` hanya\n`jumlah_kandidat`, `sertakan_masalah`, dan `kode_konteks_ada`; dua yang terakhir disimpan\njuga di `ai_usulan.konteks_server` sebagai batas pemeriksaan `aturan_p11`.",
+        "operationId": "redesain_konteks_usulan_ai_ajukan",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Kunci idempotency opsional.",
+              "title": "Idempotency-Key"
+            },
+            "description": "Kunci idempotency opsional."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PengajuanP11"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AiUsulanRingkas"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "feature_disabled; izin_sumber_tidak_ada; pii_mode_belum_didukung; usulan_berjalan; fungsi_belum_aktif.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan anggota grup tim-kajian.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sumber dokumen tidak ditemukan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Badan tidak sah; TANPA_KONTEKS (0 konteks aktif); SUMBER_TERLALU_BANYAK (> 60 sumber redesain terakit); kode konteks di luar pola parameter AI.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/redesain/konteks": {
       "get": {
         "tags": [
@@ -22266,6 +22635,384 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/redesain/masalah/{masalah_id}/hipotesis-proses-ai": {
+      "post": {
+        "tags": [
+          "redesain.hipotesis-proses-ai"
+        ],
+        "summary": "Minta hipotesis proses dan masalah AI untuk satu masalah redesain (tim-kajian)",
+        "description": "Ajukan P05; hasilnya hanya usulan hipotesis, bukan akar penyebab terbukti.\n\nSeluruh pemeriksaan berada di dalam aksi idempoten, jadi ulangan dengan `Idempotency-Key`\nyang sama membalas respons tersimpan (200). Urutan: flag AI (sebelum membaca apa pun),\nmasalah 404, belum ada proses berlangkah 409 `SUMBER_PROSES_BELUM_TERHUBUNG`, rakit sumber\n(konfirmasi hanya yang terkirim), lebih dari 60 sumber 422 `SUMBER_TERLALU_BANYAK`, id\nmasalah sesuai pola parameter, lalu `AiUsulanService.ajukan` (fungsi belum terdaftar 409).\nSemua sumber berjenis `REDESAIN`; gerbang jenis dan PII gateway berlaku seperti fungsi lain.\n`parameter` hanya `masalah_id` dan `periode`.",
+        "operationId": "redesain_masalah_hipotesis_proses_ai_ajukan",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "masalah_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Masalah Id"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Kunci idempotency opsional.",
+              "title": "Idempotency-Key"
+            },
+            "description": "Kunci idempotency opsional."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PengajuanP05"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AiUsulanRingkas"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "feature_disabled; SUMBER_PROSES_BELUM_TERHUBUNG (belum ada proses dengan langkah); pii_mode_belum_didukung; usulan_berjalan; fungsi_belum_aktif.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan anggota grup tim-kajian.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Masalah tidak ditemukan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Badan tidak sah; SUMBER_TERLALU_BANYAK (> 60 sumber terakit); id masalah di luar pola parameter AI.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/redesain/masalah/{masalah_id}/opsi-ai": {
+      "post": {
+        "tags": [
+          "redesain.opsi-ai"
+        ],
+        "summary": "Minta draf opsi redesain AI untuk satu masalah yang lolos gerbang F4 (tim-kajian)",
+        "description": "Ajukan P06; hasilnya hanya draf opsi, tanpa angka FTE maupun status persetujuan.\n\nSeluruh pemeriksaan berada di dalam aksi idempoten, jadi ulangan dengan `Idempotency-Key`\nyang sama membalas respons tersimpan (200). Urutan: flag AI (sebelum membaca apa pun),\nmasalah 404, gerbang F4 409 `SYARAT_F4_BELUM_TERPENUHI` (dicek sebelum run atau usulan\ndibuat), rakit sumber redesain (konfirmasi hanya yang terkirim) ditambah alternatif, id\nmasalah sesuai pola parameter, lalu `AiUsulanService.ajukan` (fungsi belum terdaftar 409).\n`parameter` hanya `masalah_id`, `periode`, `versi_syarat_f4`, dan\n`source_verified_quantities` (selalu kosong).",
+        "operationId": "redesain_masalah_opsi_ai_ajukan",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "masalah_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Masalah Id"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Kunci idempotency opsional.",
+              "title": "Idempotency-Key"
+            },
+            "description": "Kunci idempotency opsional."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PengajuanP06"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AiUsulanRingkas"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "feature_disabled; SYARAT_F4_BELUM_TERPENUHI (details[].code: KLAIM_BELUM_TERVALIDASI, AUDIT_BUKTI_BELUM_MINIMAL, BUKTI_DIPERSELISIHKAN); pii_mode_belum_didukung; usulan_berjalan; fungsi_belum_aktif.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan anggota grup tim-kajian.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Masalah tidak ditemukan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Badan tidak sah; id masalah di luar pola parameter AI.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/redesain/masalah/{masalah_id}/kartu-keputusan-ai": {
+      "post": {
+        "tags": [
+          "redesain.kartu-keputusan-ai"
+        ],
+        "summary": "Minta kartu keputusan AI untuk satu masalah yang lolos gerbang F4 (tim-kajian)",
+        "description": "Ajukan P07; status otorisasi pada usulan selalu cuplikan server, bukan keluaran model.\n\nSeluruh pemeriksaan berada di dalam aksi idempoten, jadi ulangan dengan `Idempotency-Key`\nyang sama membalas respons tersimpan (200). Urutan: flag AI (sebelum membaca apa pun),\nmasalah 404, bila `usulan_p06_id` diisi: usulan 404 lalu bukan P06 atau bukan milik masalah\nini 422 `USULAN_BUKAN_P06`; gerbang F4 + alternatif 409 `SYARAT_F4_BELUM_TERPENUHI`\n(sebelum run atau usulan dibuat); usulan P06 belum diterima 409 `USULAN_BELUM_DITERIMA`;\nrakit sumber redesain, alternatif, `otorisasi:<masalah_id>`, dan usulan P06; id masalah\nsesuai pola parameter; lalu `AiUsulanService.ajukan` dengan\n`konteks_server={\"authorization_state\": ...}` (fungsi belum terdaftar 409).",
+        "operationId": "redesain_masalah_kartu_keputusan_ai_ajukan",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "masalah_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Masalah Id"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Kunci idempotency opsional.",
+              "title": "Idempotency-Key"
+            },
+            "description": "Kunci idempotency opsional."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PengajuanP07"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AiUsulanRingkas"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "feature_disabled; SYARAT_F4_BELUM_TERPENUHI (details[].code: KLAIM_BELUM_TERVALIDASI, AUDIT_BUKTI_BELUM_MINIMAL, BUKTI_DIPERSELISIHKAN, ALTERNATIF_BELUM_ADA); USULAN_BELUM_DITERIMA (usulan P06 tanpa putusan APPROVE/REVISE); pii_mode_belum_didukung; usulan_berjalan; fungsi_belum_aktif.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan anggota grup tim-kajian.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Masalah atau usulan tidak ditemukan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Badan tidak sah; USULAN_BUKAN_P06 (fungsi usulan bukan P06 atau sasarannya masalah lain); id masalah di luar pola parameter AI.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -25201,6 +25948,1349 @@
           },
           "422": {
             "description": "Payload atau kombinasi putusan tidak valid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/ai/usulan/{usulan_id}/terapkan-konteks": {
+      "post": {
+        "tags": [
+          "ai"
+        ],
+        "summary": "Terapkan kandidat usulan P11 menjadi konteks redesain baru (tim-kajian)",
+        "description": "Buat SATU konteks baru dari satu kandidat usulan P11 yang sudah diterima.\n\nAksi terpisah dari putusan: isian kandidat disalin (field body yang terisi menimpa),\n`kode` dan `gelombang` dari body, `aktif=true`, penanda asal `ai_usulan_id`/\n`ai_kandidat_indeks`, dan riwayat `create` dicatat. Tiap kandidat hanya bisa diterapkan\nsekali (UNIQUE). Pemeriksaan berada di dalam aksi idempoten, jadi ulangan dengan key yang\nsama membalas respons tersimpan (200). Urutan: usulan 404, bukan P11 422, belum diterima\n409, kandidat tak ada 422, isian REVISE kurang 422, kandidat sudah diterapkan 409, kode\nduplikat 409.",
+        "operationId": "ai_usulan_terapkan_konteks",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "usulan_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Usulan Id"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Kunci idempotency opsional.",
+              "title": "Idempotency-Key"
+            },
+            "description": "Kunci idempotency opsional."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TerapkanKonteks"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/KonteksRead"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "USULAN_BELUM_DITERIMA (putusan terakhir bukan APPROVE/REVISE); KANDIDAT_SUDAH_DITERAPKAN (`details[0].msg` = id konteks yang ada); `conflict` (kode konteks sudah dipakai) atau Idempotency-Key sedang diproses.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan anggota grup tim-kajian.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Usulan AI tidak ditemukan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Badan tidak sah; USULAN_BUKAN_P11 (fungsi bukan P11 atau sasaran bukan REDESAIN_KONTEKS); KANDIDAT_TAK_ADA (indeks di luar rentang atau isi kosong); ISIAN_REVISI_WAJIB (putusan REVISE tanpa keempat isian); isian gabungan tidak sah untuk konteks.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/riset/protokol": {
+      "get": {
+        "tags": [
+          "riset"
+        ],
+        "summary": "Daftar protokol riset tanpa isi (tim-kajian)",
+        "description": "Daftar ringkas (tanpa `isi`), terbaru dulu; filter `kode` dan `status`.",
+        "operationId": "riset_protokol_list",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "kode",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 40,
+                  "pattern": "^[A-Za-z0-9_.:-]+$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter kode protokol.",
+              "title": "Kode"
+            },
+            "description": "Filter kode protokol."
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/StatusProtokol"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter status.",
+              "title": "Status"
+            },
+            "description": "Filter status."
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 500,
+              "minimum": 1,
+              "description": "Maks item per halaman.",
+              "default": 20,
+              "title": "Limit"
+            },
+            "description": "Maks item per halaman."
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Jumlah item yang dilewati.",
+              "default": 0,
+              "title": "Offset"
+            },
+            "description": "Jumlah item yang dilewati."
+          },
+          {
+            "name": "X-Tujuan-Akses",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN.",
+              "title": "X-Tujuan-Akses"
+            },
+            "description": "Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_RisetProtokolRingkas_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan anggota grup tim-kajian.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "riset"
+        ],
+        "summary": "Simpan protokol riset baru berstatus DRAF (tim-kajian)",
+        "description": "Simpan protokol `DRAF`; `versi` = versi terbesar `kode` itu + 1, pembuat dari token.\n\nTidak ada sunting: perbaikan draf maupun revisi dibuat sebagai protokol baru berkode sama.",
+        "operationId": "riset_protokol_create",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Kunci idempotency opsional.",
+              "title": "Idempotency-Key"
+            },
+            "description": "Kunci idempotency opsional."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RisetProtokolCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RisetProtokolRead"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Versi bentrok dengan permintaan bersamaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan anggota grup tim-kajian.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Payload tidak valid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/riset/protokol/{protokol_id}": {
+      "get": {
+        "tags": [
+          "riset"
+        ],
+        "summary": "Detail protokol riset beserta isi (tim-kajian)",
+        "description": "Ambil satu protokol lengkap dengan `isi`.",
+        "operationId": "riset_protokol_get",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "protokol_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Protokol Id"
+            }
+          },
+          {
+            "name": "X-Tujuan-Akses",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN.",
+              "title": "X-Tujuan-Akses"
+            },
+            "description": "Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RisetProtokolRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan anggota grup tim-kajian.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Protokol riset tidak ditemukan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/riset/protokol/{protokol_id}/kunci": {
+      "post": {
+        "tags": [
+          "riset"
+        ],
+        "summary": "Kunci protokol riset secara permanen (tim-kajian)",
+        "description": "Set `TERKUNCI`, `isi_hash` = SHA-256 heksadesimal `isi`, `dikunci_oleh` dari token.\n\nSesudah terkunci tidak ada jalur API yang mengubah baris; kunci ulang dibalas 409.",
+        "operationId": "riset_protokol_kunci",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "protokol_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Protokol Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RisetProtokolRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan anggota grup tim-kajian.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Protokol riset tidak ditemukan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Protokol sudah terkunci (`PROTOKOL_TERKUNCI`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/riset/protokol/{protokol_id}/statistik": {
+      "get": {
+        "tags": [
+          "riset"
+        ],
+        "summary": "Daftar statistik satu protokol riset (tim-kajian)",
+        "description": "Daftar statistik milik protokol, terbaru dulu; filter `status` opsional.",
+        "operationId": "riset_statistik_list",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "protokol_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Protokol Id"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/StatusStatistik"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter status.",
+              "title": "Status"
+            },
+            "description": "Filter status."
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 500,
+              "minimum": 1,
+              "description": "Maks item per halaman.",
+              "default": 20,
+              "title": "Limit"
+            },
+            "description": "Maks item per halaman."
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Jumlah item yang dilewati.",
+              "default": 0,
+              "title": "Offset"
+            },
+            "description": "Jumlah item yang dilewati."
+          },
+          {
+            "name": "X-Tujuan-Akses",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN.",
+              "title": "X-Tujuan-Akses"
+            },
+            "description": "Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_RisetStatistikRead_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan anggota grup tim-kajian.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Protokol riset tidak ditemukan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "riset"
+        ],
+        "summary": "Catat statistik riset untuk protokol terkunci (tim-kajian)",
+        "description": "Simpan statistik `DRAF`; pengunggah (`dibuat_oleh`) selalu subjek token.\n\nHanya protokol `TERKUNCI` yang boleh menjadi dasar; tidak ada sunting sesudahnya.",
+        "operationId": "riset_statistik_create",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "protokol_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Protokol Id"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Kunci idempotency opsional.",
+              "title": "Idempotency-Key"
+            },
+            "description": "Kunci idempotency opsional."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RisetStatistikCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RisetStatistikRead"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Protokol masih DRAF (`PROTOKOL_BELUM_TERKUNCI`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan anggota grup tim-kajian.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Protokol riset tidak ditemukan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Payload tidak valid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/riset/statistik/{statistik_id}/verifikasi": {
+      "post": {
+        "tags": [
+          "riset"
+        ],
+        "summary": "Verifikasi statistik riset oleh subjek independen (tim-kajian)",
+        "description": "Set `TERVERIFIKASI`, `diverifikasi_oleh` (subjek token), dan `diverifikasi_pada`.\n\nPemverifikasi wajib berbeda dari `dibuat_oleh`; verifikasi tidak dapat diulang atau dibatalkan.",
+        "operationId": "riset_statistik_verifikasi",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "statistik_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Statistik Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RisetStatistikRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan anggota grup tim-kajian.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Statistik riset tidak ditemukan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Sudah terverifikasi (`STATISTIK_SUDAH_TERVERIFIKASI`) atau pemverifikasi adalah pengunggahnya (`PEMVERIFIKASI_TIDAK_INDEPENDEN`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/riset/protokol/{protokol_id}/kasus-negatif": {
+      "get": {
+        "tags": [
+          "riset"
+        ],
+        "summary": "Daftar kasus negatif satu protokol riset (tim-kajian)",
+        "description": "Daftar kasus negatif milik protokol, urut waktu pencatatan (terlama dulu).",
+        "operationId": "riset_kasus_negatif_list",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "protokol_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Protokol Id"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 500,
+              "minimum": 1,
+              "description": "Maks item per halaman.",
+              "default": 20,
+              "title": "Limit"
+            },
+            "description": "Maks item per halaman."
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Jumlah item yang dilewati.",
+              "default": 0,
+              "title": "Offset"
+            },
+            "description": "Jumlah item yang dilewati."
+          },
+          {
+            "name": "X-Tujuan-Akses",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN.",
+              "title": "X-Tujuan-Akses"
+            },
+            "description": "Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_RisetKasusNegatifRead_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan anggota grup tim-kajian.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Protokol riset tidak ditemukan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "riset"
+        ],
+        "summary": "Catat kasus negatif untuk protokol riset terkunci (tim-kajian)",
+        "description": "Simpan kasus negatif; pencatat (`dibuat_oleh`) selalu subjek token.\n\nHanya protokol `TERKUNCI` yang boleh; tidak ada sunting maupun hapus sesudahnya.",
+        "operationId": "riset_kasus_negatif_create",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "protokol_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Protokol Id"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Kunci idempotency opsional.",
+              "title": "Idempotency-Key"
+            },
+            "description": "Kunci idempotency opsional."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RisetKasusNegatifCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RisetKasusNegatifRead"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Protokol masih DRAF (`PROTOKOL_BELUM_TERKUNCI`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan anggota grup tim-kajian.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Protokol riset tidak ditemukan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Payload tidak valid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/riset/protokol/{protokol_id}/sintesis-ai": {
+      "post": {
+        "tags": [
+          "riset"
+        ],
+        "summary": "Minta sintesis bukti riset AI untuk satu protokol terkunci (tim-kajian)",
+        "description": "Ajukan P08; hasilnya draf sintesis yang tiap klaim hasilnya menunjuk statistik terverifikasi.\n\nSeluruh pemeriksaan berada di dalam aksi idempoten, jadi ulangan dengan `Idempotency-Key`\nyang sama membalas respons tersimpan (200). Urutan (semuanya sebelum run atau usulan dibuat):\nflag AI, protokol 404, fungsi belum terdaftar 409 `fungsi_belum_aktif`, protokol `DRAF` 409\n`PROTOKOL_BELUM_TERKUNCI`, nol statistik terverifikasi 409 `STATISTIK_TERVERIFIKASI_KOSONG`,\nlebih dari 60 sumber 422 `SUMBER_TERLALU_BANYAK`, lalu `AiUsulanService.ajukan`. `parameter`\nhanya `protokol_kode`, `protokol_versi`, dan `periode`.",
+        "operationId": "riset_protokol_sintesis_ai_ajukan",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "protokol_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Protokol Id"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Kunci idempotency opsional.",
+              "title": "Idempotency-Key"
+            },
+            "description": "Kunci idempotency opsional."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PengajuanP08"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AiUsulanRingkas"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "feature_disabled; fungsi_belum_aktif; PROTOKOL_BELUM_TERKUNCI; STATISTIK_TERVERIFIKASI_KOSONG; pii_mode_belum_didukung; usulan_berjalan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan anggota grup tim-kajian.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Protokol riset tidak ditemukan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Badan tidak sah; SUMBER_TERLALU_BANYAK (> 60 sumber terakit); kode protokol di luar pola parameter AI.",
             "content": {
               "application/json": {
                 "schema": {
@@ -33430,6 +35520,19 @@
             "title": "Output Hash",
             "description": "SHA-256 keluaran; null bila tanpa."
           },
+          "konteks_server": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Konteks Server",
+            "description": "Cuplikan yang diisi server saat pengajuan, bukan oleh model. P07 memuat `authorization_state`; P11 memuat `jumlah_kandidat` dan `kode_konteks_ada`; fungsi lain null."
+          },
           "putusan": {
             "items": {
               "$ref": "#/components/schemas/AiUsulanPutusanRead"
@@ -33452,7 +35555,7 @@
           "diminta_oleh"
         ],
         "title": "AiUsulanRead",
-        "description": "Satu usulan lengkap untuk Tim Kajian: ringkas ditambah rujukan run dan keluaran model.\n\n`ai_run_id`, `sumber_ids`, dan `diminta_oleh` hanya ada di sini (tidak di daftar atau\npencarian) dan wajib terisi.\n`isi` dan `amplop` adalah keluaran model (null sampai diserap) dan hanya keluar dari\nrute detail; `masukan` run tidak pernah dibuka dan `keluaran` run tidak lewat sini.\n\n`putusan_terakhir` WAJIB dideklarasikan ulang sebagai `AiUsulanPutusanTerakhir`: Pydantic\nmenyerialkan menurut tipe deklarasi dan `model_copy(update=...)` tidak memvalidasi, jadi\ntanpa deklarasi ulang ini `actor_key` hilang diam-diam dari detail."
+        "description": "Satu usulan lengkap untuk Tim Kajian: ringkas ditambah rujukan run dan keluaran model.\n\n`ai_run_id`, `sumber_ids`, dan `diminta_oleh` hanya ada di sini (tidak di daftar atau\npencarian) dan wajib terisi.\n`isi` dan `amplop` adalah keluaran model (null sampai diserap) dan hanya keluar dari\nrute detail; `masukan` run tidak pernah dibuka dan `keluaran` run tidak lewat sini.\n`konteks_server` (#125) diisi server saat pengajuan, bukan keluaran model; P07 menyimpan\n`authorization_state` di sana, P11 `jumlah_kandidat` dan `kode_konteks_ada` (batas aturan\nisinya), fungsi lain null.\n\n`putusan_terakhir` WAJIB dideklarasikan ulang sebagai `AiUsulanPutusanTerakhir`: Pydantic\nmenyerialkan menurut tipe deklarasi dan `model_copy(update=...)` tidak memvalidasi, jadi\ntanpa deklarasi ulang ini `actor_key` hilang diam-diam dari detail."
       },
       "AiUsulanRingkas": {
         "properties": {
@@ -39001,6 +41104,30 @@
             "type": "boolean",
             "title": "Aktif"
           },
+          "ai_usulan_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ai Usulan Id",
+            "description": "Usulan P11 asal konteks ini (diisi aksi Terapkan); null untuk konteks manual/seed."
+          },
+          "ai_kandidat_indeks": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ai Kandidat Indeks",
+            "description": "Indeks kandidat pada `konteks_candidates` usulan asal; null bila manual."
+          },
           "created_at": {
             "type": "string",
             "format": "date-time",
@@ -43957,6 +46084,138 @@
         ],
         "title": "Page[RingkasanYayasanRow]"
       },
+      "Page_RisetKasusNegatifRead_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/RisetKasusNegatifRead"
+            },
+            "type": "array",
+            "title": "Items",
+            "description": "Item pada halaman ini."
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total",
+            "description": "Total item tersedia.",
+            "examples": [
+              42
+            ]
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit",
+            "description": "Maksimum item per halaman.",
+            "examples": [
+              20
+            ]
+          },
+          "offset": {
+            "type": "integer",
+            "title": "Offset",
+            "description": "Jumlah item yang dilewati.",
+            "examples": [
+              0
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
+        "title": "Page[RisetKasusNegatifRead]"
+      },
+      "Page_RisetProtokolRingkas_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/RisetProtokolRingkas"
+            },
+            "type": "array",
+            "title": "Items",
+            "description": "Item pada halaman ini."
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total",
+            "description": "Total item tersedia.",
+            "examples": [
+              42
+            ]
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit",
+            "description": "Maksimum item per halaman.",
+            "examples": [
+              20
+            ]
+          },
+          "offset": {
+            "type": "integer",
+            "title": "Offset",
+            "description": "Jumlah item yang dilewati.",
+            "examples": [
+              0
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
+        "title": "Page[RisetProtokolRingkas]"
+      },
+      "Page_RisetStatistikRead_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/RisetStatistikRead"
+            },
+            "type": "array",
+            "title": "Items",
+            "description": "Item pada halaman ini."
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total",
+            "description": "Total item tersedia.",
+            "examples": [
+              42
+            ]
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit",
+            "description": "Maksimum item per halaman.",
+            "examples": [
+              20
+            ]
+          },
+          "offset": {
+            "type": "integer",
+            "title": "Offset",
+            "description": "Jumlah item yang dilewati.",
+            "examples": [
+              0
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
+        "title": "Page[RisetStatistikRead]"
+      },
       "Page_RiwayatRead_": {
         "properties": {
           "items": {
@@ -44955,6 +47214,223 @@
         "type": "object",
         "title": "PartisipanUpdate",
         "description": "Payload pembaruan sebagian partisipan."
+      },
+      "PengajuanP02": {
+        "properties": {
+          "unit": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 20,
+                "pattern": "^[A-Za-z0-9_.:-]+$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unit",
+            "description": "Kode unit katalog; null = seluruh unit jabatan.",
+            "examples": [
+              "SD"
+            ]
+          },
+          "periode": {
+            "type": "string",
+            "maxLength": 100,
+            "pattern": "^[A-Za-z0-9_.:/-]+$",
+            "title": "Periode",
+            "description": "Kode periode konteks.",
+            "examples": [
+              "2026/27"
+            ]
+          },
+          "sumber_dokumen_ids": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "maxItems": 5,
+            "title": "Sumber Dokumen Ids",
+            "description": "Id `narasi_sumber` pendukung (maks. 5)."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "periode"
+        ],
+        "title": "PengajuanP02",
+        "description": "Badan `POST /task-inventory/jabatan/{jabatan_id}/normalisasi-ai` (P02).\n\nTanpa teks bebas: `unit` dan `periode` berupa kode, dokumen pendukung dirujuk lewat id.\n\nAttributes:\n    unit: Kode unit katalog untuk mempersempit baris; `null` berarti seluruh unit jabatan.\n    periode: Kode periode konteks; pola `POLA_PERIODE_AI` (garis miring sah, spasi tidak).\n    sumber_dokumen_ids: Id `narasi_sumber` pendukung (maks. 5), dikirim dengan jenisnya\n        sendiri; duplikat diabaikan."
+      },
+      "PengajuanP03": {
+        "properties": {
+          "usulan_p02_id": {
+            "type": "string",
+            "maxLength": 36,
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+            "title": "Usulan P02 Id",
+            "description": "Id usulan P02 (UUID) yang sudah diterima reviewer.",
+            "examples": [
+              "3f2b8c1e-5d4a-4e6f-9a7b-1c2d3e4f5a6b"
+            ]
+          },
+          "periode": {
+            "type": "string",
+            "maxLength": 100,
+            "pattern": "^[A-Za-z0-9_.:/-]+$",
+            "title": "Periode",
+            "description": "Kode periode konteks.",
+            "examples": [
+              "2026/27"
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "usulan_p02_id",
+          "periode"
+        ],
+        "title": "PengajuanP03",
+        "description": "Badan `POST /task-inventory/jabatan/{jabatan_id}/tag-peran-ai` (P03 versi terbatas).\n\nTanpa teks bebas dan tanpa sumber penugasan: hanya rujukan usulan P02 dan kode periode.\n\nAttributes:\n    usulan_p02_id: Id `ai_usulan` P02 bersasaran jabatan yang sama, yang sudah diterima\n        reviewer (putusan terakhir `APPROVE` atau `REVISE`).\n    periode: Kode periode konteks; pola `POLA_PERIODE_AI`."
+      },
+      "PengajuanP05": {
+        "properties": {
+          "periode": {
+            "type": "string",
+            "maxLength": 100,
+            "pattern": "^[A-Za-z0-9_.:/-]+$",
+            "title": "Periode",
+            "description": "Kode periode konteks.",
+            "examples": [
+              "2026/27"
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "periode"
+        ],
+        "title": "PengajuanP05",
+        "description": "Badan `POST /redesain/masalah/{masalah_id}/hipotesis-proses-ai` (P05).\n\nTanpa teks bebas: sumber dirakit server dari data redesain masalah itu, badan hanya membawa\nkode periode.\n\nAttributes:\n    periode: Kode periode konteks; pola `POLA_PERIODE_AI`."
+      },
+      "PengajuanP06": {
+        "properties": {
+          "periode": {
+            "type": "string",
+            "maxLength": 100,
+            "pattern": "^[A-Za-z0-9_.:/-]+$",
+            "title": "Periode",
+            "description": "Kode periode konteks.",
+            "examples": [
+              "2026/27"
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "periode"
+        ],
+        "title": "PengajuanP06",
+        "description": "Badan `POST /redesain/masalah/{masalah_id}/opsi-ai` (P06).\n\nTanpa teks bebas maupun angka: sumber dirakit server dari data redesain dan alternatif masalah\nitu, badan hanya membawa kode periode.\n\nAttributes:\n    periode: Kode periode konteks; pola `POLA_PERIODE_AI`."
+      },
+      "PengajuanP07": {
+        "properties": {
+          "periode": {
+            "type": "string",
+            "maxLength": 100,
+            "pattern": "^[A-Za-z0-9_.:/-]+$",
+            "title": "Periode",
+            "description": "Kode periode konteks.",
+            "examples": [
+              "2026/27"
+            ]
+          },
+          "usulan_p06_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 36,
+                "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Usulan P06 Id",
+            "description": "Id usulan P06 (UUID) yang sudah diterima reviewer; opsional.",
+            "examples": [
+              "3f2b8c1e-5d4a-4e6f-9a7b-1c2d3e4f5a6b"
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "periode"
+        ],
+        "title": "PengajuanP07",
+        "description": "Badan `POST /redesain/masalah/{masalah_id}/kartu-keputusan-ai` (P07).\n\nTanpa teks bebas maupun status otorisasi: sumber dan `authorization_state` dirakit server\ndari data redesain masalah itu. Badan hanya membawa kode periode dan, opsional, id usulan\nP06 yang ikut dirangkai sebagai sumber.\n\nAttributes:\n    periode: Kode periode konteks; pola `POLA_PERIODE_AI`.\n    usulan_p06_id: Id `ai_usulan` P06 bersasaran masalah yang sama dan sudah diterima\n        reviewer (putusan terakhir `APPROVE` atau `REVISE`), atau `None`."
+      },
+      "PengajuanP08": {
+        "properties": {
+          "periode": {
+            "type": "string",
+            "maxLength": 100,
+            "pattern": "^[A-Za-z0-9_.:/-]+$",
+            "title": "Periode",
+            "description": "Kode periode konteks.",
+            "examples": [
+              "2026/27"
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "periode"
+        ],
+        "title": "PengajuanP08",
+        "description": "Badan `POST /riset/protokol/{protokol_id}/sintesis-ai` (P08).\n\nTanpa teks bebas maupun angka: sumber dirakit server dari protokol terkunci, statistik\nterverifikasi, kasus negatif, dan log versi metode; badan hanya membawa kode periode.\n\nAttributes:\n    periode: Kode periode konteks; pola `POLA_PERIODE_AI`."
+      },
+      "PengajuanP11": {
+        "properties": {
+          "sertakan_masalah": {
+            "type": "boolean",
+            "title": "Sertakan Masalah",
+            "description": "Sertakan masalah redesain sebagai sumber.",
+            "default": true,
+            "examples": [
+              true
+            ]
+          },
+          "jumlah_kandidat": {
+            "type": "integer",
+            "maximum": 5.0,
+            "minimum": 1.0,
+            "title": "Jumlah Kandidat",
+            "description": "Jumlah kandidat konteks maksimum (1-5).",
+            "default": 3,
+            "examples": [
+              3
+            ]
+          },
+          "sumber_dokumen_ids": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "maxItems": 5,
+            "title": "Sumber Dokumen Ids",
+            "description": "Id `narasi_sumber` pendukung (maks. 5)."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "PengajuanP11",
+        "description": "Badan `POST /redesain/konteks/usulan-ai` (P11 Pengusul Konteks).\n\nTanpa teks bebas: sumber dirakit server dari katalog konteks aktif (dan masalahnya), dokumen\npendukung dirujuk lewat id.\n\nAttributes:\n    sertakan_masalah: Sertakan daftar masalah redesain (konteks aktif) sebagai sumber.\n    jumlah_kandidat: Jumlah kandidat konteks maksimum yang diminta (1-5).\n    sumber_dokumen_ids: Id `narasi_sumber` pendukung (maks. 5), dikirim dengan jenisnya\n        sendiri; duplikat diabaikan."
       },
       "PenilaianCreate": {
         "properties": {
@@ -46500,6 +48976,456 @@
         "title": "RingkasanYayasanRow",
         "description": "Satu baris ringkasan yayasan per masalah, dihitung langsung dari masalah + penilaian.\n\nTidak memuat isi konfirmasi per orang maupun nama orang; `pemutus` hanya kode orang\ndan jabatan. Seluruh field penilaian bernilai `null` bila masalah belum dinilai\n(tidak pernah diubah jadi `0`/`\"Tidak\"`/`\"Rendah\"`)."
       },
+      "RisetKasusNegatifCreate": {
+        "properties": {
+          "ringkasan": {
+            "type": "string",
+            "maxLength": 5000,
+            "minLength": 1,
+            "title": "Ringkasan",
+            "description": "Deskripsi kasus tersamar, tanpa data pribadi (1-5.000 karakter).",
+            "examples": [
+              "Satu sekolah dengan beban administrasi tinggi justru skor DCS rendah."
+            ]
+          },
+          "alasan_negatif": {
+            "type": "string",
+            "maxLength": 5000,
+            "minLength": 1,
+            "title": "Alasan Negatif",
+            "description": "Mengapa kasus ini tidak sesuai harapan hipotesis (1-5.000 karakter).",
+            "examples": [
+              "Hipotesis memperkirakan beban tinggi menaikkan tuntutan kerja."
+            ]
+          },
+          "sumber_ref": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sumber Ref",
+            "description": "Rujukan sumber kasus (opsional, maks. 500 karakter).",
+            "examples": [
+              "statistik:3f2a9c1e"
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "ringkasan",
+          "alasan_negatif"
+        ],
+        "title": "RisetKasusNegatifCreate",
+        "description": "Payload kasus negatif baru. Protokol, pembuat, dan waktu ditentukan sistem.\n\nField asing ditolak (`extra=\"forbid\"`), kecuali `dibuat_oleh` yang dibuang diam-diam:\npencatat selalu subjek token, sehingga nilai dari body tidak pernah tersimpan."
+      },
+      "RisetKasusNegatifRead": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id",
+            "description": "ID kasus negatif (UUID v4)."
+          },
+          "protokol_id": {
+            "type": "string",
+            "title": "Protokol Id",
+            "description": "ID protokol riset `TERKUNCI` tempat kasus dicatat."
+          },
+          "ringkasan": {
+            "type": "string",
+            "title": "Ringkasan"
+          },
+          "alasan_negatif": {
+            "type": "string",
+            "title": "Alasan Negatif"
+          },
+          "sumber_ref": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sumber Ref"
+          },
+          "dibuat_oleh": {
+            "type": "string",
+            "title": "Dibuat Oleh",
+            "description": "Subjek token pencatat; tidak pernah dari body."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "protokol_id",
+          "ringkasan",
+          "alasan_negatif",
+          "sumber_ref",
+          "dibuat_oleh",
+          "created_at"
+        ],
+        "title": "RisetKasusNegatifRead",
+        "description": "Satu kasus negatif riset lengkap."
+      },
+      "RisetProtokolCreate": {
+        "properties": {
+          "kode": {
+            "type": "string",
+            "maxLength": 40,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_.:-]+$",
+            "title": "Kode",
+            "description": "Kode protokol (tanpa spasi); versi dihitung per kode.",
+            "examples": [
+              "P08-SINTESIS"
+            ]
+          },
+          "judul": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Judul",
+            "examples": [
+              "Protokol sintesis bukti F5"
+            ]
+          },
+          "isi": {
+            "type": "string",
+            "maxLength": 100000,
+            "minLength": 1,
+            "title": "Isi",
+            "description": "Isi protokol (teks lengkap)."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "kode",
+          "judul",
+          "isi"
+        ],
+        "title": "RisetProtokolCreate",
+        "description": "Payload protokol baru. `versi`, `status`, dan pembuat ditentukan sistem."
+      },
+      "RisetProtokolRead": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id",
+            "description": "ID protokol (UUID v4)."
+          },
+          "kode": {
+            "type": "string",
+            "title": "Kode"
+          },
+          "versi": {
+            "type": "integer",
+            "title": "Versi",
+            "description": "Versi per `kode`, mulai 1."
+          },
+          "judul": {
+            "type": "string",
+            "title": "Judul"
+          },
+          "status": {
+            "$ref": "#/components/schemas/StatusProtokol"
+          },
+          "isi_hash": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Isi Hash",
+            "description": "SHA-256 heksadesimal atas UTF-8 `isi`; terisi saat dikunci."
+          },
+          "dibuat_oleh": {
+            "type": "string",
+            "title": "Dibuat Oleh",
+            "description": "Subjek token pembuat."
+          },
+          "dikunci_oleh": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Dikunci Oleh",
+            "description": "Subjek token pengunci."
+          },
+          "dikunci_pada": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Dikunci Pada"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          },
+          "isi": {
+            "type": "string",
+            "title": "Isi"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "kode",
+          "versi",
+          "judul",
+          "status",
+          "isi_hash",
+          "dibuat_oleh",
+          "dikunci_oleh",
+          "dikunci_pada",
+          "created_at",
+          "updated_at",
+          "isi"
+        ],
+        "title": "RisetProtokolRead",
+        "description": "Satu protokol riset lengkap, termasuk `isi`."
+      },
+      "RisetProtokolRingkas": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id",
+            "description": "ID protokol (UUID v4)."
+          },
+          "kode": {
+            "type": "string",
+            "title": "Kode"
+          },
+          "versi": {
+            "type": "integer",
+            "title": "Versi",
+            "description": "Versi per `kode`, mulai 1."
+          },
+          "judul": {
+            "type": "string",
+            "title": "Judul"
+          },
+          "status": {
+            "$ref": "#/components/schemas/StatusProtokol"
+          },
+          "isi_hash": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Isi Hash",
+            "description": "SHA-256 heksadesimal atas UTF-8 `isi`; terisi saat dikunci."
+          },
+          "dibuat_oleh": {
+            "type": "string",
+            "title": "Dibuat Oleh",
+            "description": "Subjek token pembuat."
+          },
+          "dikunci_oleh": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Dikunci Oleh",
+            "description": "Subjek token pengunci."
+          },
+          "dikunci_pada": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Dikunci Pada"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "kode",
+          "versi",
+          "judul",
+          "status",
+          "isi_hash",
+          "dibuat_oleh",
+          "dikunci_oleh",
+          "dikunci_pada",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "RisetProtokolRingkas",
+        "description": "Ringkasan protokol untuk daftar; TIDAK memuat `isi`."
+      },
+      "RisetStatistikCreate": {
+        "properties": {
+          "nama_analisis": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Nama Analisis",
+            "description": "Nama analisis yang menghasilkan keluaran.",
+            "examples": [
+              "Reliabilitas Cronbach alpha DCS"
+            ]
+          },
+          "keluaran": {
+            "type": "string",
+            "maxLength": 200000,
+            "minLength": 1,
+            "title": "Keluaran",
+            "description": "Keluaran kode analisis apa adanya (1-200.000 karakter)."
+          },
+          "kode_sumber_ref": {
+            "type": "string",
+            "maxLength": 500,
+            "minLength": 1,
+            "title": "Kode Sumber Ref",
+            "description": "Rujukan skrip + commit penghasil keluaran; wajib tak kosong.",
+            "examples": [
+              "analisis/dcs_alpha.py@3f2a9c1"
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "nama_analisis",
+          "keluaran",
+          "kode_sumber_ref"
+        ],
+        "title": "RisetStatistikCreate",
+        "description": "Payload statistik baru. Protokol, status, pembuat, dan verifikasi ditentukan sistem."
+      },
+      "RisetStatistikRead": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id",
+            "description": "ID statistik (UUID v4)."
+          },
+          "protokol_id": {
+            "type": "string",
+            "title": "Protokol Id",
+            "description": "ID protokol riset `TERKUNCI` yang menjadi dasar."
+          },
+          "nama_analisis": {
+            "type": "string",
+            "title": "Nama Analisis"
+          },
+          "keluaran": {
+            "type": "string",
+            "title": "Keluaran"
+          },
+          "kode_sumber_ref": {
+            "type": "string",
+            "title": "Kode Sumber Ref"
+          },
+          "status": {
+            "$ref": "#/components/schemas/StatusStatistik"
+          },
+          "dibuat_oleh": {
+            "type": "string",
+            "title": "Dibuat Oleh",
+            "description": "Subjek token pengunggah."
+          },
+          "diverifikasi_oleh": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Diverifikasi Oleh",
+            "description": "Subjek token pemverifikasi; selalu berbeda dari `dibuat_oleh`."
+          },
+          "diverifikasi_pada": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Diverifikasi Pada"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "protokol_id",
+          "nama_analisis",
+          "keluaran",
+          "kode_sumber_ref",
+          "status",
+          "dibuat_oleh",
+          "diverifikasi_oleh",
+          "diverifikasi_pada",
+          "created_at"
+        ],
+        "title": "RisetStatistikRead",
+        "description": "Satu statistik riset lengkap, termasuk `keluaran` dan jejak verifikasi."
+      },
       "RiwayatRead": {
         "properties": {
           "id": {
@@ -46813,10 +49739,14 @@
         "type": "string",
         "enum": [
           "NARASI_KASUS",
-          "NARASI_SUMBER"
+          "NARASI_SUMBER",
+          "JABATAN",
+          "REDESAIN_MASALAH",
+          "PROTOKOL_RISET",
+          "REDESAIN_KONTEKS"
         ],
         "title": "SasaranUsulan",
-        "description": "Jenis objek sasaran sebuah usulan AI (`ai_usulan.sasaran_jenis`)."
+        "description": "Jenis objek sasaran sebuah usulan AI (`ai_usulan.sasaran_jenis`).\n\nDikunci CHECK `ck_ai_usulan_sasaran_jenis`. `JABATAN` dipakai P02 (sasaran `jabatan.id`);\n`REDESAIN_MASALAH` dan `PROTOKOL_RISET` disiapkan untuk fungsi berikutnya di batch yang sama\nagar tidak ada migrasi enum per fungsi. `REDESAIN_KONTEKS` (P11 Pengusul Konteks) menyasar\nkatalog konteks redesain; ditambah lewat revisi `b7d3e5a91c48`."
       },
       "SearchRequest": {
         "properties": {
@@ -47947,6 +50877,15 @@
         "title": "StatusNarasi",
         "description": "Status siklus tinjauan sebuah kasus narasi (14 nilai); proyeksi, boleh berubah."
       },
+      "StatusProtokol": {
+        "type": "string",
+        "enum": [
+          "DRAF",
+          "TERKUNCI"
+        ],
+        "title": "StatusProtokol",
+        "description": "Status protokol riset; nilai lain ditolak CHECK `ck_riset_protokol_status`."
+      },
       "StatusQaAi": {
         "type": "string",
         "enum": [
@@ -47959,6 +50898,15 @@
         ],
         "title": "StatusQaAi",
         "description": "Status teknis sebuah run AI (bukan status narasi P-20)."
+      },
+      "StatusStatistik": {
+        "type": "string",
+        "enum": [
+          "DRAF",
+          "TERVERIFIKASI"
+        ],
+        "title": "StatusStatistik",
+        "description": "Status statistik riset; nilai lain ditolak CHECK `ck_riset_statistik_status`."
       },
       "SumberRevisiItem": {
         "properties": {
@@ -48027,6 +50975,102 @@
         ],
         "title": "TanyaBuktiAiCreate",
         "description": "Badan `POST /narasi/kasus/{id}/tanya-bukti-ai`.\n\n`klaim` dan `keputusan_terkait` adalah teks bebas; server mengirimnya ke model sebagai\nsumber (bukan `parameter`) agar ikut gerbang PII. Spasi tepi dipangkas sebelum panjang\ndiperiksa. `sumber_ids` wajib berisi minimal satu id."
+      },
+      "TerapkanKonteks": {
+        "properties": {
+          "indeks_kandidat": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Indeks Kandidat",
+            "description": "Indeks kandidat pada `isi.konteks_candidates` (mulai 0).",
+            "examples": [
+              0
+            ]
+          },
+          "kode": {
+            "type": "string",
+            "pattern": "^K-\\d{2}$",
+            "title": "Kode",
+            "description": "Kode konteks baru (unik).",
+            "examples": [
+              "K-15"
+            ]
+          },
+          "gelombang": {
+            "type": "string",
+            "enum": [
+              "G1",
+              "G2",
+              "G3",
+              "G3 - klarifikasi",
+              "Belum dijadwalkan"
+            ],
+            "title": "Gelombang",
+            "description": "Gelombang validasi konteks baru."
+          },
+          "tema": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tema",
+            "description": "Penimpa tema kandidat."
+          },
+          "ruang_dugaan": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ruang Dugaan",
+            "description": "Penimpa ruang dugaan kandidat."
+          },
+          "sumber_draft": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sumber Draft",
+            "description": "Penimpa sumber draf kandidat."
+          },
+          "batas_pemeriksaan": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Batas Pemeriksaan",
+            "description": "Penimpa batas pemeriksaan kandidat."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "indeks_kandidat",
+          "kode",
+          "gelombang"
+        ],
+        "title": "TerapkanKonteks",
+        "description": "Body aksi Terapkan: membuat SATU konteks baru dari satu kandidat usulan P11.\n\n`kode` dan `gelombang` selalu dikirim Tim (kandidat hanya menyarankan gelombang). Keempat\nisian teks diambil dari kandidat `indeks_kandidat`; field yang dikirim menimpa nilai\nkandidat. Bila putusan terakhir usulan `REVISE`, keempat isian WAJIB dikirim karena koreksi\nreviewer berupa teks bebas yang tidak dapat dipetakan otomatis."
       },
       "TiCatalogPurgeCounts": {
         "properties": {
