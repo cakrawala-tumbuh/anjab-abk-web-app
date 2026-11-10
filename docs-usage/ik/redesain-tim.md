@@ -291,6 +291,27 @@ memindahkan tugas**.
    dibuat sistem dan tidak dapat diubah. Alternatif tidak dapat dihapus.
 6. Bila penyimpanan ditolak, muncul pemberitahuan gagal dan formulir tetap terbuka.
 
+### Meminta bantuan AI (tab AI)
+
+Buka tab **AI** pada detail masalah. Ada tiga panel; klik judul panel untuk membukanya.
+Hasil AI hanya berupa **usulan**: tidak ada tabel redesain yang terisi otomatis. Tinjau dan
+putuskan usulannya di layar **Usulan AI**.
+
+1. **Hipotesis proses (P05)**: AI menyusun hipotesis proses dan masalah dari data masalah ini.
+2. **Opsi redesain (P06)** dan **Kartu keputusan (P07)**: hanya berjalan bila masalah
+   memenuhi syarat **F4**, dan P07 juga menuntut minimal satu alternatif. Bila belum, pesan
+   dari server tampil beserta daftar syarat yang kurang: **Klaim belum tervalidasi**,
+   **Audit bukti belum mencapai minimum**, **Ada bukti yang diperselisihkan**, atau
+   **Belum ada alternatif redesain**. Perbaiki syaratnya di tab terkait, lalu ajukan lagi.
+3. Isian **Periode** terisi dari periode acuan masalah dan boleh disunting. Isi dengan kode
+   tanpa spasi (mis. `2026/27`); bila tidak, muncul pesan merah dan permintaan tidak dikirim.
+4. Pada P07 Anda dapat memilih **Usulan P06** (hanya usulan P06 masalah ini yang sudah
+   diputus **APPROVE** atau **REVISE**), atau biarkan **Tanpa usulan P06**.
+5. Klik tombol kirim. Pesan **Permintaan diterima** hanya berarti permintaan masuk antrean,
+   bukan hasilnya sudah jadi; klik **Buka usulan** untuk melihatnya di layar Usulan AI.
+6. Bila AI belum diaktifkan atau permintaan ditolak, pesan dari server tampil di panel tanpa
+   pemberitahuan berhasil.
+
 ### Eskalasi
 
 Bila konfirmasi sekolah menyatakan **Ada indikasi** risiko serius, masalahnya otomatis
