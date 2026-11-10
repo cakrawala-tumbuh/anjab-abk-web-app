@@ -7,6 +7,24 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [4.20.0] - 2026-11-10
+
+### Ditambahkan
+
+- **Tombol "Usulkan dengan AI" di halaman Konteks redesain dan panel "Terapkan kandidat"**
+  (#112): halaman `/redesain/konteks` mengajukan fungsi P11 (sertakan masalah, jumlah
+  kandidat 1–5) lewat `POST /api/v1/redesain/konteks/usulan-ai`. Detail usulan P11 di
+  `/ai-usulan/[id]` mendapat panel "Terapkan kandidat" untuk usulan berputusan
+  APPROVE/REVISE; tiap kandidat diterapkan menjadi konteks baru lewat
+  `POST /api/v1/ai/usulan/{id}/terapkan-konteks`, dan kandidat yang sudah diterapkan tampil
+  sebagai penanda. Label P11 dan sasaran `REDESAIN_KONTEKS` ditambahkan; kontrak openapi
+  diekspor ulang dari backend master `152e905` (isi API = backend v0.50.0).
+- **Layar Usulan AI untuk Tim Kajian** (#111): rute `/ai-usulan` (index, filter fungsi dan
+  sasaran lewat `POST /ai/usulan/search`) dan `/ai-usulan/[id]` (detail isi fungsi apa pun
+  lewat komponen generik, amplop, riwayat putusan, dan form putusan APPROVE/REVISE/REJECT
+  ber-`Idempotency-Key`), beserta menu "Usulan AI" khusus grup `tim-kajian`. Docs IK-18
+  ditambahkan.
+
 ## [4.19.1] - 2026-11-08
 
 ### Diubah
