@@ -171,3 +171,22 @@ describe("menu Katalog TI untuk tim-kajian", () => {
     expect(entries.filter((e) => e.label === "Katalog TI")).toHaveLength(0);
   });
 });
+
+describe("menu Riset", () => {
+  const hrefs = (g: string[]) => navForGroups(g).map((e) => e.href);
+
+  it("hanya tampil untuk tim-kajian, dengan sub-item Protokol", () => {
+    const grup = navForGroups(["tim-kajian"]).find((e) => e.href === "/riset");
+    expect(grup?.kind).toBe("group");
+    expect(grup && "items" in grup ? grup.items : []).toEqual([
+      { href: "/riset/protokol", label: "Protokol" },
+    ]);
+  });
+
+  it("tidak tampil untuk admin saja, partisipan, atau sekolah-pengisi", () => {
+    expect(hrefs(["admin"])).not.toContain("/riset");
+    expect(hrefs(["partisipan"])).not.toContain("/riset");
+    expect(hrefs(["sekolah-pengisi"])).not.toContain("/riset");
+    expect(hrefs([])).not.toContain("/riset");
+  });
+});

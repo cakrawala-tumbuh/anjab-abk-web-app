@@ -21,6 +21,7 @@ detail klik tombol, mengisi formulir, dan menginput data. IK adalah pelengkap
 | [IK-13](narasi-sumber.md)    | Sumber Narasi       | Tim Kajian                             |
 | [IK-14](narasi-kasus.md)     | Kasus Narasi        | Tim Kajian                             |
 | [IK-17](penyedia-ai.md)      | Penyedia AI         | Administrator                          |
+| [IK-19](riset.md)            | Riset               | Tim Kajian                             |
 
 ---
 

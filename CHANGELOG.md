@@ -9,6 +9,11 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ### Ditambahkan
 
+- **Layar riset minimal** (#115): grup menu **Riset → Protokol** untuk `tim-kajian`
+  (`/riset/protokol`, `/riset/protokol/tambah`, `/riset/protokol/[id]`). Protokol dapat dibuat,
+  dilihat, dan dikunci; pada protokol terkunci statistik dapat dicatat dan diverifikasi (akun
+  pemverifikasi harus berbeda dari pengunggah) dan kasus negatif dapat dicatat. Prasyarat
+  penyiapan fungsi AI P08 kini bisa dipenuhi dari web. Panduan: IK-19.
 - **Tombol P02 (Normalisasi tugas) dan P03 (Tag peran) di katalog Task Inventory per jabatan**
   (#113): halaman `/master-data/task-inventory/[unit]/[kategori]` kini dapat dibuka grup
   `tim-kajian` (selain admin) dan menampilkan dua panel pengaju AI yang memanggil

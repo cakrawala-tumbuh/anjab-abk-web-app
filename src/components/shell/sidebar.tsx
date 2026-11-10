@@ -13,6 +13,7 @@ import {
   Database,
   DatabaseBackup,
   FileText,
+  FlaskConical,
   Gauge,
   KeyRound,
   LayoutDashboard,
@@ -101,6 +102,20 @@ const NAV_NARASI_TIM: NavGroup = {
   items: NARASI_TIM_ITEMS,
 };
 
+/** Sub-item grup menu "Riset" (khusus grup `tim-kajian`): protokol beserta statistik dan kasus negatifnya. */
+export const RISET_TIM_ITEMS: ReadonlyArray<{ href: string; label: string }> = [
+  { href: "/riset/protokol", label: "Protokol" },
+];
+
+/** Entri menu "Riset" — hanya ditambahkan untuk pengguna grup `tim-kajian`. */
+const NAV_RISET_TIM: NavGroup = {
+  kind: "group",
+  href: "/riset",
+  label: "Riset",
+  icon: FlaskConical,
+  items: RISET_TIM_ITEMS,
+};
+
 /** Entri menu "Usulan AI" — hanya ditambahkan untuk pengguna grup `tim-kajian`. */
 export const NAV_USULAN_AI_TIM: NavLink = {
   kind: "link",
@@ -164,7 +179,7 @@ export const NAV_PARTISIPAN: ReadonlyArray<NavEntry> = [
  * Pilih daftar menu sidebar sesuai grup Authentik pengguna.
  *
  * Menu dasar: `NAV_ADMIN` bila punya "admin", selain itu `NAV_PARTISIPAN`. Bila punya
- * "tim-kajian", grup menu "Redesain Pekerjaan" dan "Narasi" plus tautan "Usulan AI" ditambahkan di akhir (dan "Katalog TI" bila bukan admin); bila punya
+ * "tim-kajian", grup menu "Redesain Pekerjaan", "Narasi", dan "Riset" plus tautan "Usulan AI" ditambahkan di akhir (dan "Katalog TI" bila bukan admin); bila punya
  * "sekolah-pengisi", grup "Konfirmasi Redesain" (Daftar Masalah, Isian Saya) ditambahkan. Grup "admin" saja
  * TIDAK memunculkan menu redesain.
  *
@@ -175,7 +190,7 @@ export function navForGroups(groups: ReadonlyArray<string>): ReadonlyArray<NavEn
   const dasar = groups.includes("admin") ? NAV_ADMIN : NAV_PARTISIPAN;
   const tambahan: NavEntry[] = [];
   if (groups.includes(GRUP_TIM_KAJIAN)) {
-    tambahan.push(NAV_REDESAIN_TIM, NAV_NARASI_TIM, NAV_USULAN_AI_TIM);
+    tambahan.push(NAV_REDESAIN_TIM, NAV_NARASI_TIM, NAV_RISET_TIM, NAV_USULAN_AI_TIM);
     if (!groups.includes("admin")) tambahan.push(NAV_KATALOG_TI_TIM);
   }
   if (groups.includes(GRUP_SEKOLAH_PENGISI)) tambahan.push(NAV_REDESAIN_SEKOLAH);
