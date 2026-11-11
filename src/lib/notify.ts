@@ -11,14 +11,27 @@
  * lewat helper di berkas ini.
  */
 import { toast } from "sonner";
-import { ApiError } from "@/lib/api/errors";
+import { ApiError, fieldKurang } from "@/lib/api/errors";
 
 export function notifySukses(pesan: string): void {
   toast.success(pesan);
 }
 
-/** Pesan siap-tampil dari error apa pun. Dipakai juga untuk mengisi error inline. */
+/**
+ * Pesan siap-tampil dari error apa pun. Dipakai juga untuk mengisi error inline.
+ *
+ * Galat 422 `validation_error` yang `details`-nya menyebut kolom menjadi
+ * `Isian tidak sah pada kolom: <f1>, <f2>.` (nama field mentah); selain itu memakai
+ * `message` galat apa adanya.
+ *
+ * @param err - Error apa pun yang ditangkap `catch`.
+ * @returns Pesan Bahasa Indonesia siap tampil.
+ */
 export function pesanGagal(err: unknown): string {
+  if (err instanceof ApiError && err.status === 422 && err.code === "validation_error") {
+    const f = fieldKurang(err);
+    if (f.length > 0) return `Isian tidak sah pada kolom: ${f.join(", ")}.`;
+  }
   if (err instanceof Error) return err.message;
   return "Terjadi kesalahan.";
 }

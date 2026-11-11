@@ -13,7 +13,9 @@ import { useIdempotencyKey } from "@/lib/use-idempotency-key";
 import { PESAN_KODE_ORANG_WAJIB } from "@/lib/redesain-kode-orang";
 import { OPSI_INDIKASI, OPSI_KESESUAIAN, OPSI_SKALA } from "@/lib/redesain-konfirmasi";
 import {
+  KOLOM_WAJIB_LURING,
   isianLuringKosong,
+  kolomWajibLuringKosong,
   payloadLuring,
   pesanGagalLuring,
   type IsianLuring,
@@ -36,7 +38,9 @@ export interface FormLuringProps {
  * Mengirim `POST /api/v1/redesain/konfirmasi/luring` dengan `masalah_id` terisi dan
  * `kode_orang` hasil `PilihKodeOrang`. Bila `kode_orang` kosong, tidak ada POST dan pesan
  * aplikasi `PESAN_KODE_ORANG_WAJIB` tampil di dekat field (`aria-invalid` + `aria-describedby`);
- * pesan hilang begitu kode dipilih. Kelengkapan field wajib lain diputuskan backend:
+ * pesan hilang begitu kode dipilih. Lima kolom wajib (`KOLOM_WAJIB_LURING`) bertanda `*` +
+ * `aria-required`; bila ada yang kosong saat simpan, tidak ada POST dan pesan inline
+ * `Belum lengkap: <label…>.` tampil. Bila backend tetap menolak:
  * 422 menyebut field yang kurang (inline + toast) dan dialog TIDAK ditutup. Sukses →
  * tutup dan `router.refresh()`. POST membawa `Idempotency-Key` per upaya (`keyUntuk(body)`: isi kiriman berubah → key baru) (key diganti hanya setelah sukses); 409 `conflict` dipetakan ke pesan "masih diproses".
  *
@@ -61,8 +65,10 @@ export function FormLuring({ masalah, sekolah, accessToken }: FormLuringProps) {
   async function simpan(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
-    if (isian.kode_orang === "") {
-      setGalatKode(true);
+    const kosong = kolomWajibLuringKosong(isian);
+    if (kosong.length > 0) {
+      if (isian.kode_orang === "") setGalatKode(true);
+      setError(`Belum lengkap: ${kosong.join(", ")}.`);
       return;
     }
     setLoading(true);
@@ -88,11 +94,24 @@ export function FormLuring({ masalah, sekolah, accessToken }: FormLuringProps) {
     }
   }
 
+  const wajibK = (k: keyof IsianLuring) => (KOLOM_WAJIB_LURING as readonly string[]).includes(k);
+  const tanda = (k: keyof IsianLuring) =>
+    wajibK(k) ? (
+      <span aria-hidden="true" className="text-red-600">
+        {" "}
+        *
+      </span>
+    ) : null;
+
   const teks = (k: keyof IsianLuring, label: string) => (
     <label className="block text-sm">
-      <span className="block text-gray-600 dark:text-gray-400">{label}</span>
+      <span className="block text-gray-600 dark:text-gray-400">
+        {label}
+        {tanda(k)}
+      </span>
       <textarea
         aria-label={label}
+        aria-required={wajibK(k) || undefined}
         rows={2}
         value={isian[k]}
         onChange={(e) => ubah(k, e.target.value)}
@@ -102,9 +121,13 @@ export function FormLuring({ masalah, sekolah, accessToken }: FormLuringProps) {
   );
   const pilih = (k: keyof IsianLuring, label: string, opsi: ReadonlyArray<string>) => (
     <label className="block text-sm">
-      <span className="block text-gray-600 dark:text-gray-400">{label}</span>
+      <span className="block text-gray-600 dark:text-gray-400">
+        {label}
+        {tanda(k)}
+      </span>
       <select
         aria-label={label}
+        aria-required={wajibK(k) || undefined}
         value={isian[k]}
         onChange={(e) => ubah(k, e.target.value)}
         className={INPUT}
@@ -138,9 +161,10 @@ export function FormLuring({ masalah, sekolah, accessToken }: FormLuringProps) {
           >
             <h3 className="mb-3 text-base font-semibold">Catat isian luring</h3>
             <form onSubmit={simpan} className="space-y-3">
+              <p className="text-xs text-gray-600 dark:text-gray-400">* wajib diisi</p>
               <div className="text-sm">
                 <span className="block text-gray-600 dark:text-gray-400">
-                  Kode orang pemberi keterangan
+                  Kode orang pemberi keterangan{tanda("kode_orang")}
                 </span>
                 <PilihKodeOrang
                   name="kode_orang"
@@ -158,9 +182,12 @@ export function FormLuring({ masalah, sekolah, accessToken }: FormLuringProps) {
                 )}
               </div>
               <label className="block text-sm">
-                <span className="block text-gray-600 dark:text-gray-400">Sekolah</span>
+                <span className="block text-gray-600 dark:text-gray-400">
+                  Sekolah{tanda("sekolah_id")}
+                </span>
                 <select
                   aria-label="Sekolah"
+                  aria-required="true"
                   value={isian.sekolah_id}
                   onChange={(e) => ubah("sekolah_id", e.target.value)}
                   className={INPUT}
@@ -184,9 +211,12 @@ export function FormLuring({ masalah, sekolah, accessToken }: FormLuringProps) {
                 />
               </label>
               <label className="block text-sm">
-                <span className="block text-gray-600 dark:text-gray-400">Jabatan/peran</span>
+                <span className="block text-gray-600 dark:text-gray-400">
+                  Jabatan/peran{tanda("peran")}
+                </span>
                 <input
                   aria-label="Jabatan/peran"
+                  aria-required="true"
                   value={isian.peran}
                   onChange={(e) => ubah("peran", e.target.value)}
                   className={INPUT}

@@ -175,8 +175,28 @@ describe("koreksi langkah", () => {
     });
   });
 
-  it("422 isi kosong → toast gagal dan pesan inline", async () => {
+  it("isi kosong atau hanya spasi → tombol Kirim koreksi nonaktif, tanpa POST", async () => {
     await bukaKoreksi();
+    const tombol = screen.getByRole("button", { name: "Kirim koreksi" });
+    const sebelum = post.mock.calls.length;
+    expect(tombol).toBeDisabled();
+    fireEvent.change(screen.getByLabelText("Koreksi untuk langkah ini"), {
+      target: { value: "   " },
+    });
+    expect(tombol).toBeDisabled();
+    fireEvent.click(tombol);
+    expect(post.mock.calls.length).toBe(sebelum);
+    fireEvent.change(screen.getByLabelText("Koreksi untuk langkah ini"), {
+      target: { value: "ada isi" },
+    });
+    expect(tombol).not.toBeDisabled();
+  });
+
+  it("422 dari backend → toast gagal dan pesan inline", async () => {
+    await bukaKoreksi();
+    fireEvent.change(screen.getByLabelText("Koreksi untuk langkah ini"), {
+      target: { value: "isi" },
+    });
     post.mockResolvedValue(gagal(422, "VALIDATION_ERROR", "isi tidak boleh kosong"));
     fireEvent.click(screen.getByRole("button", { name: "Kirim koreksi" }));
     await waitFor(() => expect(notifyGagal).toHaveBeenCalled());

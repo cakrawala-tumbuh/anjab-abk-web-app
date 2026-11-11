@@ -328,13 +328,15 @@ pemberitahuan email atau Telegram):
 Bila pemberi keterangan mengisi lembar kertas, Tim mencatatnya atas nama mereka.
 
 1. Pada tab **Konfirmasi**, klik **Catat isian luring**.
-2. Pilih **Kode orang pemberi keterangan** dan **Sekolah**, isi **Tanggal isian** (kosong =
+2. Kolom bertanda **\*** wajib diisi: **Kode orang pemberi keterangan**, **Sekolah**,
+   **Jabatan/peran**, **Kesesuaian dugaan**, dan **Indikasi risiko**. Pilih kode orang dan
+   sekolah, isi **Tanggal isian** (kosong =
    hari ini) dan **Jabatan/peran**. Jangan menulis nama orang di isian teks.
 3. Isi **Kesesuaian dugaan**, **K1** sampai **K4**, **Indikasi risiko**, serta kolom lain
    sesuai lembar kertas.
 4. Klik **Simpan isian luring**. Konfirmasi tercatat dengan sumber **luring** dan langsung
-   berstatus terkirim. Bila ada isian wajib yang kurang, pesan menyebut nama fieldnya dan
-   formulir tetap terbuka. Pasangan masalah dan kode orang yang sudah punya konfirmasi
+   berstatus terkirim. Bila ada kolom wajib yang masih kosong, tidak ada yang dikirim dan
+   muncul pesan _Belum lengkap: ..._ yang menyebut kolomnya; formulir tetap terbuka. Pasangan masalah dan kode orang yang sudah punya konfirmasi
    ditolak.
 
 ## Sesi partisipasi & rekap

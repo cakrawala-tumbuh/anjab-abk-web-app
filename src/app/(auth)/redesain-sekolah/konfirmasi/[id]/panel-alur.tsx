@@ -28,7 +28,8 @@ export function urutkanLangkah(langkah: ReadonlyArray<LangkahAlurRead>): Langkah
  * Mengirim `POST /api/v1/redesain/langkah/{id}/koreksi` `{isi, konfirmasi_id}`. Koreksi
  * append-only dan TIDAK mengubah tampilan langkah; setelah 201 hanya toast sukses dan
  * formulir ditutup. POST membawa `Idempotency-Key` per upaya (diganti hanya setelah sukses,
- * sehingga kirim ulang setelah gagal memakai key yang sama). Kegagalan (mis. 422 isi kosong) ditampilkan inline dan lewat toast.
+ * sehingga kirim ulang setelah gagal memakai key yang sama). Tombol "Kirim koreksi" nonaktif selama
+ * `isi` kosong/hanya spasi (cermin validator backend) atau sedang mengirim. Kegagalan ditampilkan inline dan lewat toast.
  *
  * @param props.langkahId - ID langkah yang dikoreksi.
  * @param props.konfirmasiId - ID konfirmasi pengisi (wajib bagi sekolah-pengisi).
@@ -110,7 +111,7 @@ export function KoreksiLangkah({
         <button
           type="button"
           onClick={kirim}
-          disabled={loading}
+          disabled={loading || isi.trim() === ""}
           className="rounded-md bg-blue-600 px-3 py-1 text-sm text-white disabled:opacity-50"
         >
           Kirim koreksi

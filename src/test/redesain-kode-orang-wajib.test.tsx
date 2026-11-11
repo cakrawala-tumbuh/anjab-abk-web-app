@@ -87,9 +87,15 @@ describe("PilihKodeOrang wajib: tanpa validasi bawaan browser", () => {
 });
 
 describe("FormLuring: kode orang wajib", () => {
-  const masalah = { id: "m1", sekolah_id: null } as unknown as MasalahRead;
+  const masalah = { id: "m1", sekolah_id: "s1" } as unknown as MasalahRead;
   async function buka() {
-    render(<FormLuring masalah={masalah} sekolah={[]} accessToken="t" />);
+    render(
+      <FormLuring
+        masalah={masalah}
+        sekolah={[{ id: "s1", nama: "SD A" } as never]}
+        accessToken="t"
+      />,
+    );
     fireEvent.click(screen.getByRole("button", { name: "Catat isian luring" }));
     return siapSelect();
   }
@@ -108,6 +114,11 @@ describe("FormLuring: kode orang wajib", () => {
     fireEvent.change(sel, { target: { value: "O-0001" } });
     expect(screen.queryByText(PESAN_KODE_ORANG_WAJIB)).toBeNull();
     expect(sel).not.toHaveAttribute("aria-invalid");
+    fireEvent.change(screen.getByLabelText("Jabatan/peran"), { target: { value: "Guru" } });
+    fireEvent.change(screen.getByLabelText("Kesesuaian dugaan"), { target: { value: "Ya" } });
+    fireEvent.change(screen.getByLabelText("Indikasi risiko"), {
+      target: { value: "Tidak terlihat" },
+    });
     fireEvent.click(screen.getByRole("button", { name: "Simpan isian luring" }));
     await waitFor(() => expect(post).toHaveBeenCalled());
     expect(post.mock.calls[0][1].body.kode_orang).toBe("O-0001");

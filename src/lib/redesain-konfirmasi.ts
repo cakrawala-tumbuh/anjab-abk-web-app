@@ -4,7 +4,7 @@
  * Seluruh kosakata pilihan dan pemetaan pesan 409/422 backend dikumpulkan di sini supaya
  * dapat diuji langsung tanpa merender komponen.
  */
-import { ApiError } from "@/lib/api/errors";
+import { ApiError, fieldKurang } from "@/lib/api/errors";
 
 /** Pilihan `kesesuaian` (langkah 2). */
 export const OPSI_KESESUAIAN = ["Ya", "Sebagian", "Tidak", "Belum bisa memastikan"] as const;
@@ -123,17 +123,8 @@ export function pesanKode409(err: unknown): string | null {
   }
 }
 
-/** Ambil nama field dari `details` 422 (`loc` terakhir), tanpa duplikat. */
-export function fieldKurang(err: ApiError): string[] {
-  const hasil: string[] = [];
-  for (const d of err.details) {
-    const loc = (d as { loc?: unknown }).loc;
-    if (!Array.isArray(loc) || loc.length === 0) continue;
-    const f = String(loc[loc.length - 1]);
-    if (f !== "body" && !hasil.includes(f)) hasil.push(f);
-  }
-  return hasil;
-}
+/** Diekspor ulang dari `@/lib/api/errors` agar pemanggil lama tak berubah. */
+export { fieldKurang };
 
 /**
  * Pesan siap-tampil untuk kegagalan mutasi wizard.

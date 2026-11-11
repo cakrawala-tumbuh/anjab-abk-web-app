@@ -225,6 +225,10 @@ describe("bagian konfirmasi", () => {
     const dlg = within(screen.getByRole("dialog"));
     fireEvent.change(dlg.getByLabelText("Kode orang"), { target: { value: "O-0007" } });
     fireEvent.change(dlg.getByLabelText("Jabatan/peran"), { target: { value: "Guru" } });
+    fireEvent.change(dlg.getByLabelText("Kesesuaian dugaan"), { target: { value: "Ya" } });
+    fireEvent.change(dlg.getByLabelText("Indikasi risiko"), {
+      target: { value: "Tidak terlihat" },
+    });
     post.mockResolvedValueOnce(resp({ id: "n1" }, 201));
     fireEvent.click(dlg.getByRole("button", { name: "Simpan isian luring" }));
     await waitFor(() => expect(refresh).toHaveBeenCalled());
@@ -240,6 +244,11 @@ describe("bagian konfirmasi", () => {
     await renderBagian();
     fireEvent.click(screen.getByRole("button", { name: "Catat isian luring" }));
     fireEvent.change(screen.getByLabelText("Kode orang"), { target: { value: "O-0007" } });
+    fireEvent.change(screen.getByLabelText("Jabatan/peran"), { target: { value: "Guru" } });
+    fireEvent.change(screen.getByLabelText("Kesesuaian dugaan"), { target: { value: "Ya" } });
+    fireEvent.change(screen.getByLabelText("Indikasi risiko"), {
+      target: { value: "Tidak terlihat" },
+    });
     post.mockResolvedValueOnce(
       resp(null, 422, {
         error: "VALIDATION_ERROR",
@@ -266,6 +275,40 @@ describe("form luring: kode orang wajib dipilih", () => {
     expect(await screen.findByText("Kode orang wajib dipilih.")).toBeInTheDocument();
     expect(post.mock.calls.length).toBe(sebelum);
     expect(post.mock.calls.some((c) => c[0] === "/api/v1/redesain/konfirmasi/luring")).toBe(false);
+  });
+});
+
+describe("form luring: kolom wajib terlihat dan dicek sebelum POST", () => {
+  it("lima kolom wajib bertanda * dan aria-required", async () => {
+    pasangPost([]);
+    await renderBagian();
+    fireEvent.click(screen.getByRole("button", { name: "Catat isian luring" }));
+    const dlg = within(screen.getByRole("dialog"));
+    expect(dlg.getByText("* wajib diisi")).toBeInTheDocument();
+    // Kode orang memakai PilihKodeOrang (di-mock di sini; aria-required-nya diuji di komponennya).
+    for (const l of ["Sekolah", "Jabatan/peran", "Kesesuaian dugaan", "Indikasi risiko"]) {
+      expect([l, dlg.getByLabelText(l).getAttribute("aria-required")]).toEqual([l, "true"]);
+    }
+    expect(dlg.getByLabelText("K1")).not.toHaveAttribute("aria-required");
+    expect(dlg.getAllByText("*").length).toBe(5);
+  });
+
+  it("peran dan kesesuaian kosong → tanpa POST, pesan menyebut labelnya", async () => {
+    pasangPost([]);
+    await renderBagian();
+    fireEvent.click(screen.getByRole("button", { name: "Catat isian luring" }));
+    const dlg = within(screen.getByRole("dialog"));
+    fireEvent.change(dlg.getByLabelText("Kode orang"), { target: { value: "O-0007" } });
+    fireEvent.change(dlg.getByLabelText("Indikasi risiko"), {
+      target: { value: "Tidak terlihat" },
+    });
+    const sebelum = post.mock.calls.length;
+    fireEvent.click(dlg.getByRole("button", { name: "Simpan isian luring" }));
+    expect(
+      await screen.findByText("Belum lengkap: Jabatan/peran, Kesesuaian dugaan."),
+    ).toBeInTheDocument();
+    expect(post.mock.calls.length).toBe(sebelum);
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
   });
 });
 

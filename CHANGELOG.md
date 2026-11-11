@@ -7,6 +7,13 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+### Diperbaiki
+
+- **Tiga temuan UAT** (#118): tombol "Kirim koreksi" di alur kerja sekolah nonaktif selama koreksi
+  kosong; galat 422 `validation_error` di seluruh layar kini menyebut kolom yang salah
+  (`Isian tidak sah pada kolom: ...`); formulir "Catat isian luring" menandai lima kolom wajib
+  dengan `*` dan tidak mengirim bila ada yang kosong (`Belum lengkap: ...`).
+
 ### Ditambahkan
 
 - **Pengaju AI P01, P04, P09 di layar narasi** (#117): "Ekstraksi dengan AI" di detail Sumber,

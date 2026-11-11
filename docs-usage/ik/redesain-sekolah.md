@@ -58,7 +58,8 @@ pelaksana, pekerjaan sistem, keluaran penerima, pemeriksa/pemutus, hambatan, sta
 
 1. Periksa apakah tiap langkah sesuai dengan kenyataan di sekolah Anda.
 2. Bila ada yang keliru, klik **Tambah koreksi** pada langkah itu, tulis koreksi (tanpa nama
-   orang, identitas murid, atau isi konseling), lalu klik **Kirim koreksi**.
+   orang, identitas murid, atau isi konseling), lalu klik **Kirim koreksi**. Tombol ini baru aktif setelah koreksi diisi (kolom
+   kosong atau hanya spasi tidak bisa dikirim).
 3. Muncul pesan _Koreksi tercatat; Tim akan merekonsiliasi_. Tampilan langkah **tidak berubah**:
    koreksi hanya dicatat, Tim Kajian yang merekonsiliasi.
 

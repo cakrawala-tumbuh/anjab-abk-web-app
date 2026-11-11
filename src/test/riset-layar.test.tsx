@@ -88,7 +88,7 @@ describe("ProtokolForm", () => {
     expect(notifySukses).toHaveBeenCalled();
   });
 
-  it("422 → pesan backend tampil dan tidak ada push", async () => {
+  it("422 → kolom bermasalah tampil dan tidak ada push", async () => {
     post.mockResolvedValue(
       gagal(422, "validation_error", "Kode tidak valid dari server", [
         { loc: ["body", "kode"], msg: "Kode salah format" },
@@ -98,7 +98,7 @@ describe("ProtokolForm", () => {
     isi();
     fireEvent.click(screen.getByRole("button", { name: "Simpan protokol" }));
     expect(await screen.findByText("Kode salah format")).toBeInTheDocument();
-    expect(screen.getByText("Kode tidak valid dari server")).toBeInTheDocument();
+    expect(screen.getByText("Isian tidak sah pada kolom: kode.")).toBeInTheDocument();
     expect(push).not.toHaveBeenCalled();
     expect(notifySukses).not.toHaveBeenCalled();
   });

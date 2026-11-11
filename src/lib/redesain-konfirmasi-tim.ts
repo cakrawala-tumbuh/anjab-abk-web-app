@@ -145,8 +145,27 @@ export function payloadLuring(masalahId: string, i: IsianLuring): KonfirmasiLuri
   };
 }
 
+/** Kolom wajib formulir isian luring (field non-opsional `KonfirmasiLuringCreate`). */
+export const KOLOM_WAJIB_LURING = [
+  "kode_orang",
+  "sekolah_id",
+  "peran",
+  "kesesuaian",
+  "indikasi_risiko",
+] as const;
+
+/**
+ * Label kolom wajib luring yang masih kosong, berurutan menurut {@link KOLOM_WAJIB_LURING}.
+ *
+ * @param i - Isian form.
+ * @returns Daftar label (kosong bila lengkap).
+ */
+export function kolomWajibLuringKosong(i: IsianLuring): string[] {
+  return KOLOM_WAJIB_LURING.filter((k) => i[k].trim() === "").map((k) => LABEL_LURING[k] ?? k);
+}
+
 /** Label field luring tambahan di luar {@link LABEL_FIELD}. */
-const LABEL_LURING: Readonly<Record<string, string>> = {
+export const LABEL_LURING: Readonly<Record<string, string>> = {
   ...LABEL_FIELD,
   kode_orang: "Kode orang pemberi keterangan",
   sekolah_id: "Sekolah",

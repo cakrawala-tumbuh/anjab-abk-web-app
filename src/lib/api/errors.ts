@@ -28,6 +28,23 @@ export class ApiError extends Error {
   }
 }
 
+/**
+ * Ambil nama field dari `details` galat 422 (`loc` terakhir), tanpa duplikat dan tanpa `"body"`.
+ *
+ * @param err - Galat API yang membawa `details` gaya validasi (`[{loc: [...]}]`).
+ * @returns Nama field mentah menurut urutan kemunculan; kosong bila tak ada `loc` yang terbaca.
+ */
+export function fieldKurang(err: ApiError): string[] {
+  const hasil: string[] = [];
+  for (const d of err.details) {
+    const loc = (d as { loc?: unknown }).loc;
+    if (!Array.isArray(loc) || loc.length === 0) continue;
+    const f = String(loc[loc.length - 1]);
+    if (f !== "body" && !hasil.includes(f)) hasil.push(f);
+  }
+  return hasil;
+}
+
 // Backend mengirim: { "error": "code_string", "message": "...", "details": [...] }
 function isErrorEnvelope(
   value: unknown,

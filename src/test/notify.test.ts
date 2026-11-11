@@ -28,6 +28,35 @@ describe("pesanGagal", () => {
     expect(pesanGagal(err)).toBe("Nama sudah dipakai.");
   });
 
+  it("422 validation_error dua field → menyebut kedua kolom tanpa duplikat dan tanpa body", () => {
+    const err = new ApiError(
+      {
+        code: "validation_error",
+        message: "Payload tidak valid.",
+        details: [
+          { loc: ["body", "isi"] },
+          { loc: ["body", "konfirmasi_id"] },
+          { loc: ["body", "isi"] },
+        ],
+      },
+      "r",
+      422,
+    );
+    expect(pesanGagal(err)).toBe("Isian tidak sah pada kolom: isi, konfirmasi_id.");
+  });
+
+  it("422 tanpa details, 409, dan Error biasa → message apa adanya", () => {
+    const mk = (status: number, details: unknown[]) =>
+      new ApiError(
+        { code: "validation_error", message: "Payload tidak valid.", details },
+        "r",
+        status,
+      );
+    expect(pesanGagal(mk(422, []))).toBe("Payload tidak valid.");
+    expect(pesanGagal(mk(409, [{ loc: ["body", "isi"] }]))).toBe("Payload tidak valid.");
+    expect(pesanGagal(new Error("boom"))).toBe("boom");
+  });
+
   it("fallback untuk nilai yang bukan Error", () => {
     expect(pesanGagal("bukan error")).toBe("Terjadi kesalahan.");
     expect(pesanGagal(null)).toBe("Terjadi kesalahan.");
