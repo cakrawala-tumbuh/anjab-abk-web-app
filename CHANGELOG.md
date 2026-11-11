@@ -7,6 +7,8 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [4.22.0] - 2026-11-11
+
 ### Diperbaiki
 
 - **Tiga temuan UAT** (#118): tombol "Kirim koreksi" di alur kerja sekolah nonaktif selama koreksi
