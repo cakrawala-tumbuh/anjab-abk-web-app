@@ -6,6 +6,7 @@ import { fetchKasus, fetchRiwayat, fetchSemuaPermintaanAi, fetchSemuaSumber } fr
 import { PermintaanDrafAi } from "./permintaan-draf-ai";
 import { RevisiManualForm } from "../revisi-manual-form";
 import { RiwayatKasus } from "../riwayat-kasus";
+import { TanyaBuktiAi } from "./tanya-bukti-ai";
 
 export const metadata = { title: "Detail Kasus Narasi" };
 
@@ -86,6 +87,13 @@ export default async function DetailKasusPage({ params }: Props) {
           permintaan={permintaan}
           accessToken={token}
         />
+      </section>
+
+      <section aria-labelledby="bukti-ai-kasus" className="space-y-2">
+        <h2 id="bukti-ai-kasus" className="text-base font-semibold">
+          Tanya bukti dengan AI
+        </h2>
+        <TanyaBuktiAi accessToken={token} kasusId={kasus.id} sumberOpsi={sumber} />
       </section>
 
       <section aria-labelledby="revisi-kasus" className="space-y-2">

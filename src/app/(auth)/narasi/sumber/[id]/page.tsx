@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { auth } from "@/lib/auth/auth";
 import { LABEL_JENIS } from "@/lib/narasi-sumber";
 import { fetchSumber } from "../data";
+import { EkstraksiSumberAi } from "./ekstraksi-sumber-ai";
 
 export const metadata = { title: "Detail Sumber Narasi" };
 
@@ -84,6 +85,11 @@ export default async function DetailSumberPage({ params }: Props) {
           </div>
         ))}
       </dl>
+      <EkstraksiSumberAi
+        accessToken={session?.accessToken}
+        sumberId={s.id}
+        periodeAwal={s.periode}
+      />
       <section aria-labelledby="teks-sumber" className="space-y-2">
         <h2 id="teks-sumber" className="text-base font-semibold">
           Teks sumber

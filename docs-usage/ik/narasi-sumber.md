@@ -35,3 +35,11 @@ AI** hanyalah catatan izin.
 1. Klik judul sumber. Detail menampilkan metadata, **Hash teks (SHA-256)**, dan teks lengkap.
 2. Klik **Revisi** untuk membuka formulir dengan isi lama sebagai nilai awal. Ubah yang perlu
    lalu **Simpan revisi**: hasilnya baris baru yang menaut ke sumber yang digantikan.
+
+## Meminta ekstraksi dengan AI (P01)
+
+1. Di detail sumber, buka **Ekstraksi dengan AI (P01)**.
+2. Isi **Peran** (kode tanpa spasi) dan periksa **Periode** (terisi dari sumber, boleh diubah).
+3. Klik **Ekstrak dengan AI**. "Permintaan diterima" hanya berarti diterima, bukan selesai.
+   Klik **Buka usulan** untuk meninjau hasilnya di layar Usulan AI. Narasi tidak berubah.
+4. Isian yang tidak sah tidak dikirim; penolakan server (mis. usulan masih berjalan) tampil apa adanya.

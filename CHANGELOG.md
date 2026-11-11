@@ -7,6 +7,12 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+### Ditambahkan
+
+- **Pengaju AI P01, P04, P09 di layar narasi** (#117): "Ekstraksi dengan AI" di detail Sumber,
+  "Tanya bukti dengan AI" di detail Kasus, dan "Minta kritik AI" di tinjauan versi bertulis teks.
+  Hasilnya usulan yang dibuka di `/ai-usulan/[id]`.
+
 ## [4.21.0] - 2026-11-10
 
 ### Ditambahkan

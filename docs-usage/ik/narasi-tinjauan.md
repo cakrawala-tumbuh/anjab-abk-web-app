@@ -39,3 +39,10 @@ Klik **Muat ulang versi terbaru**, baca versi yang baru, lalu kirim ulang.
 
 Bila kasus ternyata tidak lagi berada dalam antrean, halaman menampilkan keterangan dan tautan
 **Kembali ke antrean**.
+
+## Minta kritik AI atas draf (P09)
+
+Pada versi yang bertulis teks, bagian **Kritik AI atas draf** menyediakan tombol **Minta kritik AI**.
+Hasilnya usulan yang membantu Anda menemukan kelemahan draf; ia tidak menggantikan tinjauan Anda.
+Klik **Buka usulan** setelah "Permintaan diterima" untuk membacanya. Versi tanpa teks tidak
+menampilkan tombol ini.

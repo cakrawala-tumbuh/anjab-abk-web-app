@@ -5,6 +5,7 @@ import { labelStatusAntrean } from "@/lib/narasi-antrean";
 import { fetchSemuaSumber } from "../../kasus/data";
 import { AksiTinjauan } from "./aksi-tinjauan";
 import { fetchDetailAntrean } from "./data";
+import { KritikVersiAi } from "./kritik-versi-ai";
 import { PanelDraf } from "./panel-draf";
 import { PanelKetidakpastian } from "./panel-ketidakpastian";
 import { PanelSumber } from "./panel-sumber";
@@ -78,6 +79,12 @@ export default async function TinjauanNarasiPage({ params }: Props) {
         <PanelSumber sumber={detail.sumber} />
       </div>
       <PanelKetidakpastian detail={detail} />
+      <KritikVersiAi
+        accessToken={token}
+        narasiId={detail.narasi_id}
+        versiId={detail.versi_id}
+        adaTeks={detail.teks !== null}
+      />
       <AksiTinjauan
         narasiId={detail.narasi_id}
         versiId={detail.versi_id}

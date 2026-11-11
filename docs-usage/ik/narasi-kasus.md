@@ -65,3 +65,10 @@ kapan pun.
 5. Pesan penolakan yang mungkin muncul: AI belum dinyalakan (lanjutkan manual), status kasus tidak
    sah, masih ada permintaan yang belum diserap, ada sumber tanpa izin AI, fungsi belum aktif,
    atau sumber tidak dikenal.
+
+## Tanya bukti dengan AI (P04)
+
+1. Di detail kasus, bagian **Tanya bukti dengan AI**: isi **Klaim** (5-2000 karakter),
+   **Keputusan terkait** (5-500 karakter), dan centang minimal satu **Sumber bukti**.
+2. Klik **Tanya bukti dengan AI**. Hasilnya hanya saran; tidak ada yang terkirim ke siapa pun.
+3. "Permintaan diterima" bukan berarti selesai. Klik **Buka usulan** untuk meninjau hasilnya.
