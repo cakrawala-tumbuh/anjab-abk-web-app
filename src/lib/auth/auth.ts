@@ -18,6 +18,7 @@
 import NextAuth, { type DefaultSession } from "next-auth";
 import Authentik from "next-auth/providers/authentik";
 import { config } from "@/lib/config";
+import { GALAT_REFRESH, perbaruiTokenBilaPerlu, sesiDiizinkan } from "./token-refresh";
 
 // ── Augmentasi tipe Auth.js ──────────────────────────────────────────────────
 
@@ -25,6 +26,8 @@ declare module "next-auth" {
   interface Session {
     accessToken?: string;
     idToken?: string;
+    /** Terisi bila token akses tak bisa diperbarui; middleware mengalihkan ke login. */
+    error?: "RefreshTokenError";
     user: {
       id: string;
       groups: string[];
@@ -37,6 +40,10 @@ declare module "@auth/core/jwt" {
     accessToken?: string;
     idToken?: string;
     groups?: string[];
+    refreshToken?: string;
+    /** Detik epoch kedaluwarsa token akses. */
+    expiresAt?: number;
+    error?: "RefreshTokenError";
   }
 }
 
@@ -50,7 +57,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       clientId: config.auth.clientId ?? "",
       // Tidak ada clientSecret — public client + PKCE
       authorization: {
-        params: { scope: "openid profile email" },
+        params: { scope: "openid profile email offline_access" },
       },
     }),
   ],
@@ -58,6 +65,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async jwt({ token, account, profile }) {
       if (account?.access_token) {
         token.accessToken = account.access_token;
+        token.refreshToken = account.refresh_token;
+        token.expiresAt = account.expires_at;
+        token.error = undefined;
       }
       if (account?.id_token) {
         token.idToken = account.id_token;
@@ -66,18 +76,26 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (profile && Array.isArray((profile as Record<string, unknown>).groups)) {
         token.groups = (profile as Record<string, unknown>).groups as string[];
       }
-      return token;
+      // Perbarui token akses bila hampir/sudah kedaluwarsa; gagal → token.error.
+      return (await perbaruiTokenBilaPerlu(token, {
+        now: Math.floor(Date.now() / 1000),
+        fetchFn: fetch,
+        issuer: config.auth.issuer ?? "",
+        clientId: config.auth.clientId ?? "",
+      })) as typeof token;
     },
     async session({ session, token }) {
       session.accessToken = token.accessToken;
+      session.error = token.error === GALAT_REFRESH ? GALAT_REFRESH : undefined;
       session.idToken = token.idToken;
       session.user.id = token.sub ?? "";
       session.user.groups = token.groups ?? [];
       return session;
     },
     authorized({ auth: session }) {
-      // Semua route yang diproteksi middleware butuh sesi valid
-      return !!session;
+      // Semua route yang diproteksi middleware butuh sesi valid dan tanpa
+      // kegagalan pembaruan token (false → dialihkan ke /login).
+      return sesiDiizinkan(session);
     },
   },
   pages: {

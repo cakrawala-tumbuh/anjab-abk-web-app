@@ -7,6 +7,12 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+### Diperbaiki
+
+- **Token akses Authentik diperbarui otomatis** (#120): callback `jwt` memakai refresh token
+  (scope `offline_access`) bila token akses hampir kedaluwarsa; bila tak bisa diperbarui,
+  pengguna dialihkan ke login alih-alih melihat halaman "An error occurred in the Server Components render".
+
 ## [4.22.0] - 2026-11-11
 
 ### Diperbaiki
