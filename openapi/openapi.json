@@ -27723,6 +27723,330 @@
         }
       }
     },
+    "/api/v1/riset/protokol/{protokol_id}/sign-off": {
+      "post": {
+        "tags": [
+          "riset"
+        ],
+        "summary": "Catat bukti sign-off PI/etik protokol terkunci (tim-kajian)",
+        "description": "Catat sign-off satu kali; PDF disimpan di PostgreSQL beserta SHA-256-nya.\n\nUrutan cek: 404, 409 `PROTOKOL_BELUM_TERKUNCI`, 409 `SIGNOFF_SUDAH_ADA`, 422\n`LAMPIRAN_BUKAN_PDF` (content-type dan byte awal `%PDF-`), 422 `LAMPIRAN_TERLALU_BESAR`,\n422 tanggal di masa depan. Berkas dibaca paling banyak batas + 1 byte.",
+        "operationId": "riset_protokol_signoff_create",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "protokol_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Protokol Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_riset_protokol_signoff_create"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SignoffRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan anggota grup tim-kajian.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Protokol riset tidak ditemukan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "`PROTOKOL_BELUM_TERKUNCI` atau `SIGNOFF_SUDAH_ADA`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Body melebihi batas rute sign-off.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "`LAMPIRAN_BUKAN_PDF`, `LAMPIRAN_TERLALU_BESAR`, atau validasi form/tanggal.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "riset"
+        ],
+        "summary": "Metadata sign-off PI/etik protokol (tim-kajian)",
+        "description": "Metadata sign-off tanpa byte berkas; 404 `SIGNOFF_TAK_ADA` bila belum dicatat.",
+        "operationId": "riset_protokol_signoff_get",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "protokol_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Protokol Id"
+            }
+          },
+          {
+            "name": "X-Tujuan-Akses",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN.",
+              "title": "X-Tujuan-Akses"
+            },
+            "description": "Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SignoffRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan anggota grup tim-kajian.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Protokol tak ada, atau (GET) belum ada sign-off (`SIGNOFF_TAK_ADA`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/riset/protokol/{protokol_id}/sign-off/lampiran": {
+      "get": {
+        "tags": [
+          "riset"
+        ],
+        "summary": "Unduh PDF sign-off PI/etik (tim-kajian)",
+        "description": "Kembalikan PDF sebagai `attachment`; header `ETag` = SHA-256 berkas.",
+        "operationId": "riset_protokol_signoff_lampiran",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "protokol_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Protokol Id"
+            }
+          },
+          {
+            "name": "X-Tujuan-Akses",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN.",
+              "title": "X-Tujuan-Akses"
+            },
+            "description": "Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Byte PDF apa adanya.",
+            "content": {
+              "application/pdf": {}
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan anggota grup tim-kajian.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Protokol tak ada, atau (GET) belum ada sign-off (`SIGNOFF_TAK_ADA`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/riset/protokol/{protokol_id}/statistik": {
       "get": {
         "tags": [
@@ -28359,7 +28683,7 @@
           "riset"
         ],
         "summary": "Minta sintesis bukti riset AI untuk satu protokol terkunci (tim-kajian)",
-        "description": "Ajukan P08; hasilnya draf sintesis yang tiap klaim hasilnya menunjuk statistik terverifikasi.\n\nSeluruh pemeriksaan berada di dalam aksi idempoten, jadi ulangan dengan `Idempotency-Key`\nyang sama membalas respons tersimpan (200). Urutan (semuanya sebelum run atau usulan dibuat):\nflag AI, protokol 404, fungsi belum terdaftar 409 `fungsi_belum_aktif`, protokol `DRAF` 409\n`PROTOKOL_BELUM_TERKUNCI`, nol statistik terverifikasi 409 `STATISTIK_TERVERIFIKASI_KOSONG`,\nlebih dari 60 sumber 422 `SUMBER_TERLALU_BANYAK`, lalu `AiUsulanService.ajukan`. `parameter`\nhanya `protokol_kode`, `protokol_versi`, dan `periode`.",
+        "description": "Ajukan P08; hasilnya draf sintesis yang tiap klaim hasilnya menunjuk statistik terverifikasi.\n\nSeluruh pemeriksaan berada di dalam aksi idempoten, jadi ulangan dengan `Idempotency-Key`\nyang sama membalas respons tersimpan (200). Urutan (semuanya sebelum run atau usulan dibuat):\nflag AI, protokol 404, fungsi belum terdaftar 409 `fungsi_belum_aktif`, protokol `DRAF` 409\n`PROTOKOL_BELUM_TERKUNCI`, tanpa sign-off PI/etik 409\n`SIGNOFF_PI_ETIK_TAK_ADA`, nol statistik terverifikasi 409 `STATISTIK_TERVERIFIKASI_KOSONG`,\nlebih dari 60 sumber 422 `SUMBER_TERLALU_BANYAK`, lalu `AiUsulanService.ajukan`. `parameter`\nhanya `protokol_kode`, `protokol_versi`, dan `periode`.",
         "operationId": "riset_protokol_sintesis_ai_ajukan",
         "security": [
           {
@@ -28417,7 +28741,7 @@
             }
           },
           "409": {
-            "description": "feature_disabled; fungsi_belum_aktif; PROTOKOL_BELUM_TERKUNCI; STATISTIK_TERVERIFIKASI_KOSONG; pii_mode_belum_didukung; usulan_berjalan.",
+            "description": "feature_disabled; fungsi_belum_aktif; PROTOKOL_BELUM_TERKUNCI; SIGNOFF_PI_ETIK_TAK_ADA; STATISTIK_TERVERIFIKASI_KOSONG; pii_mode_belum_didukung; usulan_berjalan.",
             "content": {
               "application/json": {
                 "schema": {
@@ -38987,6 +39311,49 @@
         ],
         "title": "BatalkanKlarifikasi",
         "description": "Payload pembatalan pertanyaan yang masih `TERBUKA`."
+      },
+      "Body_riset_protokol_signoff_create": {
+        "properties": {
+          "pi_nama": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Pi Nama",
+            "description": "Nama PI penandatangan."
+          },
+          "tanggal_persetujuan_etik": {
+            "type": "string",
+            "format": "date",
+            "title": "Tanggal Persetujuan Etik",
+            "description": "Tanggal persetujuan etik (YYYY-MM-DD, tidak di masa depan)."
+          },
+          "lampiran": {
+            "type": "string",
+            "contentMediaType": "application/octet-stream",
+            "title": "Lampiran",
+            "description": "PDF persetujuan etik."
+          },
+          "nomor_persetujuan_etik": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 100
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nomor Persetujuan Etik",
+            "description": "Nomor surat persetujuan."
+          }
+        },
+        "type": "object",
+        "required": [
+          "pi_nama",
+          "tanggal_persetujuan_etik",
+          "lampiran"
+        ],
+        "title": "Body_riset_protokol_signoff_create"
       },
       "Body_system_restore": {
         "properties": {
@@ -52985,6 +53352,12 @@
           "isi": {
             "type": "string",
             "title": "Isi"
+          },
+          "signoff_ada": {
+            "type": "boolean",
+            "title": "Signoff Ada",
+            "description": "True bila bukti sign-off PI/etik sudah dicatat.",
+            "default": false
           }
         },
         "type": "object",
@@ -53003,7 +53376,7 @@
           "isi"
         ],
         "title": "RisetProtokolRead",
-        "description": "Satu protokol riset lengkap, termasuk `isi`."
+        "description": "Satu protokol riset lengkap, termasuk `isi` dan penanda sign-off PI/etik."
       },
       "RisetProtokolRingkas": {
         "properties": {
@@ -54553,6 +54926,83 @@
         "type": "object",
         "title": "SesiUpdate",
         "description": "Payload ubah parsial sesi.\n\nField nullable boleh dikosongkan dengan `null`; field wajib yang dikirim `null`\ndiabaikan. `masalah_ids` bila dikirim mengganti seluruh tautan (ganti-penuh)."
+      },
+      "SignoffRead": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id",
+            "description": "ID sign-off (UUID v4)."
+          },
+          "protokol_id": {
+            "type": "string",
+            "title": "Protokol Id",
+            "description": "ID protokol riset `TERKUNCI` yang disahkan."
+          },
+          "pi_nama": {
+            "type": "string",
+            "title": "Pi Nama",
+            "description": "Nama PI sebagaimana dinyatakan pencatat."
+          },
+          "tanggal_persetujuan_etik": {
+            "type": "string",
+            "format": "date",
+            "title": "Tanggal Persetujuan Etik",
+            "description": "Tanggal persetujuan etik (<= hari ini)."
+          },
+          "nomor_persetujuan_etik": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nomor Persetujuan Etik",
+            "description": "Nomor surat persetujuan etik."
+          },
+          "lampiran_nama": {
+            "type": "string",
+            "title": "Lampiran Nama",
+            "description": "Nama berkas PDF yang diunggah."
+          },
+          "lampiran_ukuran": {
+            "type": "integer",
+            "title": "Lampiran Ukuran",
+            "description": "Ukuran PDF dalam byte."
+          },
+          "lampiran_sha256": {
+            "type": "string",
+            "title": "Lampiran Sha256",
+            "description": "SHA-256 heksadesimal atas byte PDF."
+          },
+          "dicatat_oleh": {
+            "type": "string",
+            "title": "Dicatat Oleh",
+            "description": "Subjek token pencatat."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "protokol_id",
+          "pi_nama",
+          "tanggal_persetujuan_etik",
+          "nomor_persetujuan_etik",
+          "lampiran_nama",
+          "lampiran_ukuran",
+          "lampiran_sha256",
+          "dicatat_oleh",
+          "created_at"
+        ],
+        "title": "SignoffRead",
+        "description": "Metadata sign-off PI/etik; TIDAK memuat byte lampiran."
       },
       "SkemaDbRead": {
         "properties": {

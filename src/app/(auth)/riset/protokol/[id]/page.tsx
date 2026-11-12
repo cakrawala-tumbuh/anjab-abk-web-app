@@ -2,7 +2,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { auth } from "@/lib/auth/auth";
 import { LABEL_STATUS_PROTOKOL, LABEL_STATUS_STATISTIK } from "@/lib/riset";
-import { fetchKasusNegatif, fetchProtokol, fetchStatistik } from "../data";
+import { fetchKasusNegatif, fetchProtokol, fetchSignoff, fetchStatistik } from "../data";
+import { BagianSignoff } from "./bagian-signoff";
 import { KasusNegatifForm } from "./kasus-negatif-form";
 import { KunciProtokol } from "./kunci-protokol";
 import { SintesisRisetAi } from "./sintesis-riset-ai";
@@ -19,10 +20,12 @@ const waktu = (v: string | null) => (v ? new Date(v).toLocaleString("id-ID") : "
 
 /**
  * Halaman detail protokol riset (Server Component): identitas, `isi_hash`, `isi`, tombol
- * kunci (hanya `DRAF`), dan, hanya bila `TERKUNCI`, bagian Statistik serta Kasus negatif.
+ * kunci (hanya `DRAF`), bagian Sign-off PI/etik, dan, hanya bila `TERKUNCI`, bagian Statistik
+ * serta Kasus negatif.
  *
- * Daftar statistik dan kasus negatif adalah data inti: kegagalan dilempar ke `error.tsx`,
- * tidak pernah menjadi daftar kosong. 404 protokol → halaman tidak ditemukan.
+ * Daftar statistik, kasus negatif, dan (bila `signoff_ada`) metadata sign-off adalah data inti:
+ * kegagalan dilempar ke `error.tsx`, tidak pernah menjadi daftar kosong. 404 protokol →
+ * halaman tidak ditemukan.
  */
 export default async function DetailProtokolPage({ params }: Props) {
   const { id } = await params;
@@ -32,9 +35,13 @@ export default async function DetailProtokolPage({ params }: Props) {
   if (!p) notFound();
 
   const terkunci = p.status === "TERKUNCI";
-  const [statistik, kasus] = terkunci
-    ? await Promise.all([fetchStatistik(token, id), fetchKasusNegatif(token, id)])
-    : [[], []];
+  const [statistik, kasus, signoff] = terkunci
+    ? await Promise.all([
+        fetchStatistik(token, id),
+        fetchKasusNegatif(token, id),
+        p.signoff_ada ? fetchSignoff(token, id) : Promise.resolve(null),
+      ])
+    : [[], [], null];
 
   const baris: Array<[string, React.ReactNode]> = [
     [
@@ -89,6 +96,8 @@ export default async function DetailProtokolPage({ params }: Props) {
           {p.isi}
         </pre>
       </section>
+
+      <BagianSignoff protokolId={p.id} status={p.status} signoff={signoff} />
 
       <section aria-labelledby="h-statistik" className="space-y-3">
         <h2 id="h-statistik" className="text-base font-semibold">
@@ -152,6 +161,7 @@ export default async function DetailProtokolPage({ params }: Props) {
         <SintesisRisetAi
           accessToken={token}
           protokolId={p.id}
+          signoffAda={p.signoff_ada}
           jumlahTerverifikasi={statistik.filter((s) => s.status === "TERVERIFIKASI").length}
         />
       )}

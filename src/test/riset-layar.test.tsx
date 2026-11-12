@@ -46,6 +46,7 @@ const protokol = (o: Partial<RisetProtokolRead> = {}): RisetProtokolRead => ({
   created_at: "2026-11-10T00:00:00Z",
   updated_at: "2026-11-10T00:00:00Z",
   isi: "ISI PROTOKOL",
+  signoff_ada: false,
   ...o,
 });
 const ok = (data: unknown, status = 200) => ({
@@ -151,7 +152,9 @@ describe("halaman detail", () => {
     get.mockResolvedValue(ok(protokol()));
     render(await DetailProtokolPage({ params: Promise.resolve({ id: "p-1" }) }));
     expect(screen.getByRole("button", { name: "Kunci protokol" })).toBeInTheDocument();
-    expect(screen.getAllByText(/Kunci protokol dulu/)).toHaveLength(2);
+    // statistik, sign-off PI/etik, dan kasus negatif sama-sama menunggu protokol dikunci
+    expect(screen.getAllByText(/Kunci protokol dulu/)).toHaveLength(3);
+    expect(screen.queryByRole("form", { name: "Catat sign-off PI/etik" })).toBeNull();
     expect(screen.queryByRole("form", { name: "Tambah statistik" })).toBeNull();
     expect(get).toHaveBeenCalledTimes(1);
   });

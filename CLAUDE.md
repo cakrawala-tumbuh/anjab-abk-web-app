@@ -84,6 +84,17 @@ src/
 
 ## Revisi Desain
 
+### [2026-11-13] Sign-off PI/etik pada detail protokol riset (#125)
+
+Item #125; konsumen backend `#139` (sign-off + gerbang P08, master `aa34d66`). Bergantung pada #124. Rujukan: `cakrawala-tumbuh/ypii-support#463`.
+
+- **Kontrak diekspor dari kode backend** master `aa34d66` (klon scratch, image `Dockerfile.test`, `scripts/export_openapi.py` ke `/dev/stdout`, log JSON disaring dengan `raw_decode`); `openapi.json` diganti utuh, `gen:api`, blok alias ditempel ulang + `SignoffRead`. `RisetProtokolRead.signoff_ada` kini wajib (fixture tes). Drift lain hanya deskripsi P08/protokol; tanpa perubahan kompilasi lain.
+- **Bagian "Sign-off PI/etik"** (`riset/protokol/[id]/bagian-signoff.tsx`, Server Component; `signoff-form.tsx` Client): `DRAF` -> teks "Kunci protokol dulu"; `TERKUNCI` + `signoff_ada=false` -> form; `signoff_ada=true` -> `<dl>` metadata + tautan unduh. `fetchSignoff` (`protokol/data.ts`) dipanggil HANYA bila `signoff_ada=true` dan semua kegagalannya melempar (data inti).
+- **Unggah** lewat Route Handler `src/app/api/riset/protokol/[id]/sign-off/route.ts` (pola `api/backup/pulihkan`): multipart diteruskan dengan Bearer dari `auth()`, tanpa sesi 401 tanpa memanggil backend, status + envelope galat backend (409/413/422) dan `X-Request-ID` diteruskan apa adanya. **Unduh** lewat `.../sign-off/lampiran/route.ts` memakai `proxyUnduhan` (pola `api/redesain/ekspor`). Tidak ada `Idempotency-Key`: backend tidak menuntutnya dan sign-off hanya bisa dicatat sekali (409 `SIGNOFF_SUDAH_ADA`).
+- **Validasi klien** (`src/lib/riset-signoff.ts`, murni): nama PI wajib, tanggal wajib/sah/tidak di masa depan (tanggal lokal), nomor opsional, berkas PDF (MIME, atau ekstensi bila MIME kosong) > 0 dan <= 5 MiB; gagal -> tanpa request. `confirm()` sebelum kirim. Kode galat `SIGNOFF_SUDAH_ADA`, `PROTOKOL_BELUM_TERKUNCI`, `LAMPIRAN_BUKAN_PDF`, `LAMPIRAN_TERLALU_BESAR`, dan status 413 dipetakan ke pesan Indonesia; 422 validasi per field. Sukses hanya setelah 2xx lalu `router.refresh()`.
+- **Gerbang P08**: `SintesisRisetAi` menerima `signoffAda`; tombol nonaktif dengan "Butuh sign-off PI/etik" (`alasanNonaktifP08`); 409 `SIGNOFF_PI_ETIK_TAK_ADA` tetap tampil sebagai pesan backend.
+- Ketua tim kajian tidak diverifikasi (tanpa grup baru): sistem hanya merekam `dicatat_oleh` + `pi_nama` yang dinyatakan pencatat. Tanpa pratinjau PDF, ganti, atau cabut. Docs: `docs-usage/ik/riset.md` (IK-19). E2E nonaktif: utang di #109.
+
 ### [2026-11-12] Menit aktif tinjauan narasi + panel metrik UX-13 (#124)
 
 Item #124; konsumen backend `#138` (`POST .../menit-aktif`, `GET /narasi/metrik`, master `17f1d11`). Bergantung pada #123. Rujukan: `cakrawala-tumbuh/ypii-support#463`.

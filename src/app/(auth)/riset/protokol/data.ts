@@ -12,6 +12,7 @@ import type {
   RisetProtokolRead,
   RisetProtokolRingkas,
   RisetStatistikRead,
+  SignoffRead,
   StatusProtokol,
 } from "@/lib/api/schema";
 
@@ -95,4 +96,25 @@ export async function fetchKasusNegatif(
     if (!res.data) throw apiErrorDari(res);
     return { items: res.data.items, total: res.data.total };
   });
+}
+
+/**
+ * Ambil metadata sign-off PI/etik satu protokol. Dipanggil HANYA bila `signoff_ada=true`;
+ * pada keadaan itu metadata adalah data inti, jadi SEMUA kegagalan (termasuk 404) melempar.
+ *
+ * @param accessToken - Token akses sesi.
+ * @param protokolId - ID protokol.
+ * @returns Metadata sign-off (tanpa byte berkas).
+ * @throws ApiError bila backend menolak atau gagal.
+ */
+export async function fetchSignoff(
+  accessToken: string | undefined,
+  protokolId: string,
+): Promise<SignoffRead> {
+  const res = await withServerAuth(accessToken).GET(
+    "/api/v1/riset/protokol/{protokol_id}/sign-off",
+    { params: { path: { protokol_id: protokolId } } },
+  );
+  if (!res.data) throw apiErrorDari(res);
+  return res.data;
 }

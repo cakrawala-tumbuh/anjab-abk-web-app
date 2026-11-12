@@ -33,6 +33,27 @@ sintesis AI.
 2. Baca konfirmasi "Protokol yang dikunci tidak bisa diubah", lalu setujui.
 3. Status berubah menjadi **Terkunci** dan **Hash isi (SHA-256)** tampil. Tombol kunci hilang.
 
+## Mencatat bukti sign-off PI/etik
+
+Bagian **Sign-off PI/etik** ada di detail protokol, di bawah isi protokol. Pada protokol
+**Draf** tampil teks "Kunci protokol dulu untuk mencatat sign-off PI/etik". Sign-off
+diperlukan sebelum sintesis AI (P08) dapat diminta.
+
+1. Buka detail protokol berstatus **Terkunci** yang belum punya sign-off.
+2. Isi **Nama PI** (Principal Investigator; sistem merekam akun Anda sebagai pencatat dan
+   menyimpan nama PI yang Anda tulis), **Tanggal persetujuan etik** (tidak boleh di masa
+   depan), dan, bila ada, **Nomor persetujuan etik**.
+3. Pilih **Berkas PDF persetujuan etik** (hanya PDF, maksimal 5 MiB). Berkas bukan PDF atau
+   terlalu besar langsung ditolak di layar tanpa dikirim.
+4. Klik **Simpan sign-off**, baca konfirmasi "tidak dapat diubah atau diganti", lalu setujui.
+5. Setelah berhasil, bagian ini menampilkan nama PI, tanggal dan nomor persetujuan, nama dan
+   ukuran berkas, SHA-256 berkas, pencatat, serta waktu pencatatan. Klik **Unduh PDF
+   persetujuan etik** untuk mengunduh berkasnya.
+
+!!! warning "Sign-off hanya sekali"
+Bila protokol sudah punya sign-off, server menolak unggahan baru dengan pesan "sudah punya
+sign-off PI/etik". Salah unggah tidak bisa diperbaiki dari layar ini; hubungi operator.
+
 ## Mencatat dan memverifikasi statistik
 
 Bagian **Statistik** hanya aktif pada protokol **Terkunci**; pada protokol Draf tampil teks
@@ -52,8 +73,9 @@ dan statistik tetap Draf. Minta rekan Tim Kajian lain untuk memverifikasi.
 Pada protokol **Terkunci**, di bawah bagian Statistik, ada panel **Sintesis bukti dengan AI (P08)**
 (tidak tampil pada protokol Draf).
 
-1. Pastikan protokol punya minimal satu statistik **Terverifikasi**. Bila belum, tombol
-   nonaktif dan tampil teks "Butuh minimal satu statistik terverifikasi."
+1. Pastikan protokol punya **sign-off PI/etik** dan minimal satu statistik **Terverifikasi**.
+   Bila sign-off belum ada, tombol nonaktif dengan keterangan "Butuh sign-off PI/etik"; bila
+   statistik terverifikasi belum ada, tampil "Butuh minimal satu statistik terverifikasi."
 2. Buka panel, isi **Periode** (mis. `2026/27`), lalu klik **Minta sintesis bukti**.
 3. Bila diterima, muncul tautan **Buka usulan** ke layar Usulan AI. "Diterima" belum berarti
    selesai; hasilnya berupa draf yang harus Anda tinjau dan putuskan.
@@ -61,7 +83,8 @@ Pada protokol **Terkunci**, di bawah bagian Statistik, ada panel **Sintesis bukt
 !!! note "Fungsi bisa belum diaktifkan"
 Bila operator belum menyalakan fungsi ini, server membalas `fungsi_belum_aktif` dan pesannya
 tampil apa adanya; ini perilaku sah, bukan kerusakan. Pesan lain yang mungkin muncul:
-`PROTOKOL_BELUM_TERKUNCI`, `STATISTIK_TERVERIFIKASI_KOSONG`, dan `SUMBER_TERLALU_BANYAK`.
+`PROTOKOL_BELUM_TERKUNCI`, `SIGNOFF_PI_ETIK_TAK_ADA`, `STATISTIK_TERVERIFIKASI_KOSONG`, dan
+`SUMBER_TERLALU_BANYAK`.
 
 ## Mencatat kasus negatif
 
@@ -74,5 +97,5 @@ Sama seperti statistik, bagian ini hanya aktif pada protokol **Terkunci**.
 ## Bila muncul pesan galat
 
 Pesan dari server ditampilkan apa adanya, misalnya `PROTOKOL_TERKUNCI`,
-`PROTOKOL_BELUM_TERKUNCI`, atau `STATISTIK_SUDAH_TERVERIFIKASI`. Sebut kode pesan itu saat
+`PROTOKOL_BELUM_TERKUNCI`, `SIGNOFF_SUDAH_ADA`, atau `STATISTIK_SUDAH_TERVERIFIKASI`. Sebut kode pesan itu saat
 melapor masalah.

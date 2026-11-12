@@ -20,8 +20,15 @@ const galat409 = (error: string, message: string) => ({
   response: new Response(null, { status: 409 }),
 });
 
-function render_(n = 1) {
-  render(<SintesisRisetAi accessToken="t" protokolId="p1" jumlahTerverifikasi={n} />);
+function render_(n = 1, signoffAda = true) {
+  render(
+    <SintesisRisetAi
+      accessToken="t"
+      protokolId="p1"
+      signoffAda={signoffAda}
+      jumlahTerverifikasi={n}
+    />,
+  );
   fireEvent.click(screen.getByText("Sintesis bukti dengan AI (P08)"));
 }
 
@@ -59,6 +66,34 @@ describe("SintesisRisetAi (P08)", () => {
       (screen.getByRole("button", { name: "Minta sintesis bukti" }) as HTMLButtonElement).disabled,
     ).toBe(true);
     expect(screen.getByText("Butuh minimal satu statistik terverifikasi.")).toBeTruthy();
+  });
+
+  it("tanpa sign-off PI/etik -> tombol disabled + keterangan, API tidak dipanggil", () => {
+    render_(2, false);
+    const tombol = screen.getByRole("button", {
+      name: "Minta sintesis bukti",
+    }) as HTMLButtonElement;
+    expect(tombol.disabled).toBe(true);
+    expect(screen.getByText(/Butuh sign-off PI\/etik/)).toBeTruthy();
+    expect(screen.queryByText(/Butuh minimal satu statistik/)).toBeNull();
+    fireEvent.click(tombol);
+    expect(post).not.toHaveBeenCalled();
+  });
+
+  it("tanpa sign-off dan tanpa statistik -> kedua keterangan tampil", () => {
+    render_(0, false);
+    expect(screen.getByText(/Butuh sign-off PI\/etik/)).toBeTruthy();
+    expect(screen.getByText(/Butuh minimal satu statistik terverifikasi/)).toBeTruthy();
+  });
+
+  it("409 SIGNOFF_PI_ETIK_TAK_ADA dari backend -> pesan di alert, tanpa notifySukses", async () => {
+    post.mockResolvedValue(galat409("SIGNOFF_PI_ETIK_TAK_ADA", "Belum ada sign-off PI/etik."));
+    render_();
+    fireEvent.change(screen.getByPlaceholderText("2026/27"), { target: { value: "2026/27" } });
+    fireEvent.click(screen.getByRole("button", { name: "Minta sintesis bukti" }));
+    const alert = await screen.findByRole("alert");
+    expect(alert.textContent).toContain("Belum ada sign-off PI/etik.");
+    expect(notifySukses).not.toHaveBeenCalled();
   });
 
   it.each([

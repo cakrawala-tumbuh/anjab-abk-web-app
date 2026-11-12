@@ -3618,6 +3618,54 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/riset/protokol/{protokol_id}/sign-off": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Metadata sign-off PI/etik protokol (tim-kajian)
+         * @description Metadata sign-off tanpa byte berkas; 404 `SIGNOFF_TAK_ADA` bila belum dicatat.
+         */
+        get: operations["riset_protokol_signoff_get"];
+        put?: never;
+        /**
+         * Catat bukti sign-off PI/etik protokol terkunci (tim-kajian)
+         * @description Catat sign-off satu kali; PDF disimpan di PostgreSQL beserta SHA-256-nya.
+         *
+         *     Urutan cek: 404, 409 `PROTOKOL_BELUM_TERKUNCI`, 409 `SIGNOFF_SUDAH_ADA`, 422
+         *     `LAMPIRAN_BUKAN_PDF` (content-type dan byte awal `%PDF-`), 422 `LAMPIRAN_TERLALU_BESAR`,
+         *     422 tanggal di masa depan. Berkas dibaca paling banyak batas + 1 byte.
+         */
+        post: operations["riset_protokol_signoff_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/riset/protokol/{protokol_id}/sign-off/lampiran": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Unduh PDF sign-off PI/etik (tim-kajian)
+         * @description Kembalikan PDF sebagai `attachment`; header `ETag` = SHA-256 berkas.
+         */
+        get: operations["riset_protokol_signoff_lampiran"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/riset/protokol/{protokol_id}/statistik": {
         parameters: {
             query?: never;
@@ -3708,7 +3756,8 @@ export interface paths {
          *     Seluruh pemeriksaan berada di dalam aksi idempoten, jadi ulangan dengan `Idempotency-Key`
          *     yang sama membalas respons tersimpan (200). Urutan (semuanya sebelum run atau usulan dibuat):
          *     flag AI, protokol 404, fungsi belum terdaftar 409 `fungsi_belum_aktif`, protokol `DRAF` 409
-         *     `PROTOKOL_BELUM_TERKUNCI`, nol statistik terverifikasi 409 `STATISTIK_TERVERIFIKASI_KOSONG`,
+         *     `PROTOKOL_BELUM_TERKUNCI`, tanpa sign-off PI/etik 409
+         *     `SIGNOFF_PI_ETIK_TAK_ADA`, nol statistik terverifikasi 409 `STATISTIK_TERVERIFIKASI_KOSONG`,
          *     lebih dari 60 sumber 422 `SUMBER_TERLALU_BANYAK`, lalu `AiUsulanService.ajukan`. `parameter`
          *     hanya `protokol_kode`, `protokol_versi`, dan `periode`.
          */
@@ -5990,6 +6039,30 @@ export interface components {
              * @description Alasan pembatalan.
              */
             catatan: string;
+        };
+        /** Body_riset_protokol_signoff_create */
+        Body_riset_protokol_signoff_create: {
+            /**
+             * Pi Nama
+             * @description Nama PI penandatangan.
+             */
+            pi_nama: string;
+            /**
+             * Tanggal Persetujuan Etik
+             * Format: date
+             * @description Tanggal persetujuan etik (YYYY-MM-DD, tidak di masa depan).
+             */
+            tanggal_persetujuan_etik: string;
+            /**
+             * Lampiran
+             * @description PDF persetujuan etik.
+             */
+            lampiran: string;
+            /**
+             * Nomor Persetujuan Etik
+             * @description Nomor surat persetujuan.
+             */
+            nomor_persetujuan_etik?: string | null;
         };
         /** Body_system_restore */
         Body_system_restore: {
@@ -12678,7 +12751,7 @@ export interface components {
         };
         /**
          * RisetProtokolRead
-         * @description Satu protokol riset lengkap, termasuk `isi`.
+         * @description Satu protokol riset lengkap, termasuk `isi` dan penanda sign-off PI/etik.
          */
         RisetProtokolRead: {
             /**
@@ -12725,6 +12798,12 @@ export interface components {
             updated_at: string;
             /** Isi */
             isi: string;
+            /**
+             * Signoff Ada
+             * @description True bila bukti sign-off PI/etik sudah dicatat.
+             * @default false
+             */
+            signoff_ada: boolean;
         };
         /**
          * RisetProtokolRingkas
@@ -13436,6 +13515,63 @@ export interface components {
             tindak_lanjut?: string | null;
             /** Masalah Ids */
             masalah_ids?: string[] | null;
+        };
+        /**
+         * SignoffRead
+         * @description Metadata sign-off PI/etik; TIDAK memuat byte lampiran.
+         */
+        SignoffRead: {
+            /**
+             * Id
+             * @description ID sign-off (UUID v4).
+             */
+            id: string;
+            /**
+             * Protokol Id
+             * @description ID protokol riset `TERKUNCI` yang disahkan.
+             */
+            protokol_id: string;
+            /**
+             * Pi Nama
+             * @description Nama PI sebagaimana dinyatakan pencatat.
+             */
+            pi_nama: string;
+            /**
+             * Tanggal Persetujuan Etik
+             * Format: date
+             * @description Tanggal persetujuan etik (<= hari ini).
+             */
+            tanggal_persetujuan_etik: string;
+            /**
+             * Nomor Persetujuan Etik
+             * @description Nomor surat persetujuan etik.
+             */
+            nomor_persetujuan_etik: string | null;
+            /**
+             * Lampiran Nama
+             * @description Nama berkas PDF yang diunggah.
+             */
+            lampiran_nama: string;
+            /**
+             * Lampiran Ukuran
+             * @description Ukuran PDF dalam byte.
+             */
+            lampiran_ukuran: number;
+            /**
+             * Lampiran Sha256
+             * @description SHA-256 heksadesimal atas byte PDF.
+             */
+            lampiran_sha256: string;
+            /**
+             * Dicatat Oleh
+             * @description Subjek token pencatat.
+             */
+            dicatat_oleh: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
         };
         /**
          * SkemaDbRead
@@ -34196,6 +34332,235 @@ export interface operations {
             };
         };
     };
+    riset_protokol_signoff_get: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
+            path: {
+                protokol_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SignoffRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan anggota grup tim-kajian. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Protokol tak ada, atau (GET) belum ada sign-off (`SIGNOFF_TAK_ADA`). */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    riset_protokol_signoff_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                protokol_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["Body_riset_protokol_signoff_create"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SignoffRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan anggota grup tim-kajian. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Protokol riset tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description `PROTOKOL_BELUM_TERKUNCI` atau `SIGNOFF_SUDAH_ADA`. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Body melebihi batas rute sign-off. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description `LAMPIRAN_BUKAN_PDF`, `LAMPIRAN_TERLALU_BESAR`, atau validasi form/tanggal. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    riset_protokol_signoff_lampiran: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
+            path: {
+                protokol_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Byte PDF apa adanya. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/pdf": unknown;
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan anggota grup tim-kajian. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Protokol tak ada, atau (GET) belum ada sign-off (`SIGNOFF_TAK_ADA`). */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
     riset_statistik_list: {
         parameters: {
             query?: {
@@ -34644,7 +35009,7 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
-            /** @description feature_disabled; fungsi_belum_aktif; PROTOKOL_BELUM_TERKUNCI; STATISTIK_TERVERIFIKASI_KOSONG; pii_mode_belum_didukung; usulan_berjalan. */
+            /** @description feature_disabled; fungsi_belum_aktif; PROTOKOL_BELUM_TERKUNCI; SIGNOFF_PI_ETIK_TAK_ADA; STATISTIK_TERVERIFIKASI_KOSONG; pii_mode_belum_didukung; usulan_berjalan. */
             409: {
                 headers: {
                     [name: string]: unknown;
@@ -40232,3 +40597,4 @@ export type KlarifikasiEventRead = components["schemas"]["KlarifikasiEventRead"]
 export type MetrikNarasiRead = components["schemas"]["MetrikNarasiRead"];
 export type MetrikDitahan = components["schemas"]["MetrikDitahan"];
 export type NarrativeKind = components["schemas"]["NarrativeKind"];
+export type SignoffRead = components["schemas"]["SignoffRead"];

@@ -9,6 +9,14 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ### Ditambahkan
 
+- **Unggah dan unduh bukti sign-off PI/etik pada protokol riset** (#125): detail protokol punya
+  bagian "Sign-off PI/etik". Protokol Draf menampilkan "Kunci protokol dulu"; protokol Terkunci
+  tanpa sign-off menampilkan form (nama PI, tanggal persetujuan etik tidak di masa depan, nomor
+  opsional, PDF maksimal 5 MiB; berkas non-PDF atau terlalu besar ditolak di layar tanpa request,
+  konfirmasi sebelum kirim karena tidak dapat diubah); yang sudah punya sign-off menampilkan
+  metadata dan tautan unduh PDF. Unggah dan unduh lewat Route Handler berBearer sesi server. Tombol
+  sintesis AI (P08) nonaktif dengan keterangan "Butuh sign-off PI/etik" bila sign-off belum ada.
+
 - **Menit aktif tinjauan narasi dan panel metrik** (#124): layar Tinjauan Narasi mengirim satu
   detak per menit ke backend hanya selama reviewer aktif (tab terlihat dan ada interaksi dalam 60
   detik terakhir; kegagalan detak tidak mengganggu tinjauan dan hanya dicatat di konsol). Menu baru
