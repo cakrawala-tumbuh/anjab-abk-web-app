@@ -3940,6 +3940,137 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/narasi/klarifikasi": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Daftar klarifikasi (tim-kajian)
+         * @description Daftar klarifikasi terbaru dulu; filter opsional `narasi_id` dan `disposition`.
+         */
+        get: operations["narasi_klarifikasi_list"];
+        put?: never;
+        /**
+         * Susun pertanyaan klarifikasi (tim-kajian)
+         * @description Simpan pertanyaan `MENUNGGU`/`TERBUKA`; pembuat selalu subjek token.
+         */
+        post: operations["narasi_klarifikasi_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/narasi/klarifikasi/dari-usulan/{ai_usulan_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Terapkan usulan P04 yang diterima menjadi klarifikasi (tim-kajian)
+         * @description Buat SATU baris register dari usulan P04 yang sudah diterima reviewer.
+         *
+         *     Pemetaan field tetap; pembuat adalah subjek token. Urutan cek: usulan 404, bukan P04 422,
+         *     belum diterima 409, tidak material 422, sudah diterapkan 409, periode/isian kurang 422,
+         *     klaim sudah punya klarifikasi terbuka 409. Pemeriksaan berada di dalam aksi idempoten.
+         */
+        post: operations["narasi_klarifikasi_dari_usulan"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/narasi/klarifikasi/{klarifikasi_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Detail klarifikasi beserta riwayat (tim-kajian)
+         * @description Satu klarifikasi: 13 metadata, `question_text`, status, dan `riwayat[]` terlama dulu.
+         */
+        get: operations["narasi_klarifikasi_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/narasi/klarifikasi/{klarifikasi_id}/persetujuan": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Setujui atau tolak pertanyaan klarifikasi (reviewer lain)
+         * @description Putuskan persetujuan; subjek token tidak boleh sama dengan pembuat pertanyaan.
+         *
+         *     `TOLAK` menutup baris (`disposition=DITOLAK`) sehingga klaim yang sama bebas diberi
+         *     klarifikasi baru; baris `DITOLAK` tak dapat disetujui, dijawab, atau dibatalkan lagi.
+         */
+        post: operations["narasi_klarifikasi_persetujuan"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/narasi/klarifikasi/{klarifikasi_id}/jawaban": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Catat jawaban mentah klarifikasi (tim-kajian)
+         * @description Catat `response_ref` dan `jawaban_mentah`; disposisi menjadi `TERJAWAB`.
+         */
+        post: operations["narasi_klarifikasi_jawaban"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/narasi/klarifikasi/{klarifikasi_id}/batalkan": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Batalkan pertanyaan klarifikasi terbuka (tim-kajian)
+         * @description Batalkan pertanyaan yang masih `TERBUKA`; boleh dibuat ulang untuk klaim yang sama.
+         */
+        post: operations["narasi_klarifikasi_batalkan"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/narasi/kasus/{narasi_id}/draf-ai": {
         parameters: {
             query?: never;
@@ -5430,6 +5561,12 @@ export interface components {
             putusan_terakhir?: components["schemas"]["AiUsulanPutusanRingkas"] | null;
         };
         /**
+         * AksiKlarifikasi
+         * @description Jenis aksi pada tabel riwayat `narasi_klarifikasi_event`.
+         * @enum {string}
+         */
+        AksiKlarifikasi: "DIBUAT" | "DISETUJUI" | "DITOLAK" | "JAWABAN_DICATAT" | "DIBATALKAN";
+        /**
          * AksiTinjauan
          * @description Aksi reviewer; label tombol: Terima, Koreksi, Tolak, Butuh sumber.
          * @enum {string}
@@ -5803,6 +5940,17 @@ export interface components {
          * @enum {string}
          */
         BasisRelation: "DIRECT" | "CONTEXT" | "CONTRADICTS" | "UNKNOWN";
+        /**
+         * BatalkanKlarifikasi
+         * @description Payload pembatalan pertanyaan yang masih `TERBUKA`.
+         */
+        BatalkanKlarifikasi: {
+            /**
+             * Catatan
+             * @description Alasan pembatalan.
+             */
+            catatan: string;
+        };
         /** Body_system_restore */
         Body_system_restore: {
             /**
@@ -6933,6 +7081,15 @@ export interface components {
             jabatan_ids?: string[] | null;
         };
         /**
+         * Disposition
+         * @description Nasib sebuah pertanyaan klarifikasi.
+         *
+         *     `DITOLAK` menutup baris saat reviewer menolak (`TOLAK`); klaim yang sama lalu bebas
+         *     diberi klarifikasi baru, dan riwayat penolakan tetap ada di `narasi_klarifikasi_event`.
+         * @enum {string}
+         */
+        Disposition: "TERBUKA" | "TERJAWAB" | "DIBATALKAN" | "DITOLAK";
+        /**
          * DugaanRead
          * @description Respons `tampilkan-dugaan`: rumusan hipotesis Tim + waktu pertama kali ditampilkan.
          */
@@ -7024,6 +7181,12 @@ export interface components {
          * @enum {string}
          */
         EventKind: "TEAM_APPROVE" | "TEAM_REVISE" | "TEAM_REJECT" | "NEED_SOURCE" | "SUBJECT_CONFIRM" | "SUBJECT_CORRECT" | "SUBJECT_REJECT" | "SUBJECT_UNSURE" | "FINAL_TEAM_APPROVE" | "RELEASE_LIMITED" | "RETURN_CLARIFICATION";
+        /**
+         * ExposureKlarifikasi
+         * @description Nilai `exposure`: himpunan `paparan` antrean tinjauan narasi.
+         * @enum {string}
+         */
+        ExposureKlarifikasi: "TIDAK_BERLAKU" | "BELUM_TERPAPAR" | "LOCKED_PRE_EXPOSURE" | "EXPOSED" | "TIDAK_DIKETAHUI";
         /**
          * ExposureState
          * @description Status paparan responden, diturunkan dari paparan pertamanya.
@@ -7287,6 +7450,22 @@ export interface components {
             aktif?: boolean | null;
         };
         /**
+         * JawabanKlarifikasi
+         * @description Payload pencatatan jawaban mentah; keduanya wajib.
+         */
+        JawabanKlarifikasi: {
+            /**
+             * Response Ref
+             * @description ResponseRef.
+             */
+            response_ref: string;
+            /**
+             * Jawaban Mentah
+             * @description Jawaban apa adanya dari responden.
+             */
+            jawaban_mentah: string;
+        };
+        /**
          * JenisPaparan
          * @description Jenis materi yang diperlihatkan kepada responden; nilai lain ditolak CHECK.
          * @enum {string}
@@ -7455,6 +7634,12 @@ export interface components {
             created_at: string;
         };
         /**
+         * KeputusanReviewer
+         * @description Keputusan reviewer pada `POST /{id}/persetujuan`.
+         * @enum {string}
+         */
+        KeputusanReviewer: "SETUJU" | "TOLAK";
+        /**
          * KesiapanBaris
          * @description Satu baris matriks: penerima beserta penilaian TERAKHIR pada periode yang diminta.
          */
@@ -7571,6 +7756,220 @@ export interface components {
              * Format: date-time
              */
             created_at: string;
+        };
+        /**
+         * KlarifikasiCreate
+         * @description Payload pertanyaan klarifikasi baru (13 metadata + `question_text`).
+         *
+         *     Status awal (`MENUNGGU`/`TERBUKA`), pembuat, dan waktu ditentukan sistem.
+         */
+        KlarifikasiCreate: {
+            /**
+             * Narasi Id
+             * @description ID kasus narasi.
+             */
+            narasi_id: string;
+            /**
+             * Claim Id
+             * @description Claim_ID yang ditanyakan.
+             */
+            claim_id: string;
+            /**
+             * Source Ids Checked
+             * @description Source_IDs_checked: sumber yang sudah dicek (minimal satu).
+             */
+            source_ids_checked: string[];
+            /**
+             * Materiality Reason
+             * @description Mengapa pertanyaan ini material.
+             */
+            materiality_reason: string;
+            /**
+             * Alternative Hypothesis
+             * @description Hipotesis alternatif.
+             */
+            alternative_hypothesis: string;
+            /**
+             * Intended Decision
+             * @description Keputusan yang hendak dibantu.
+             */
+            intended_decision: string;
+            /**
+             * Recipient Role
+             * @description RecipientRole.
+             */
+            recipient_role: string;
+            /**
+             * Periode
+             * @description Period.
+             */
+            periode: string;
+            /** @description Exposure (himpunan `paparan` antrean). */
+            exposure: components["schemas"]["ExposureKlarifikasi"];
+            /**
+             * Due Trigger
+             * @description DueTrigger: kapan jawaban dibutuhkan.
+             */
+            due_trigger: string;
+            /**
+             * Question Text
+             * @description Teks pertanyaan; paling banyak satu tanda tanya.
+             */
+            question_text: string;
+        };
+        /**
+         * KlarifikasiDariUsulan
+         * @description Body `POST /dari-usulan/{ai_usulan_id}`: isian yang tidak berasal dari usulan P04.
+         *
+         *     Field lain register diturunkan dari usulan dengan pemetaan tetap (lihat
+         *     `SqlKlarifikasiService.dari_usulan`).
+         */
+        KlarifikasiDariUsulan: {
+            /**
+             * Claim Id
+             * @description Claim_ID yang ditanyakan.
+             */
+            claim_id: string;
+            /**
+             * Due Trigger
+             * @description DueTrigger: kapan jawaban dibutuhkan.
+             */
+            due_trigger: string;
+            /** @description Exposure (himpunan `paparan` antrean). */
+            exposure: components["schemas"]["ExposureKlarifikasi"];
+            /**
+             * Intended Decision
+             * @description Keputusan yang hendak dibantu; bila kosong dipakai `why_ask` dari usulan.
+             */
+            intended_decision?: string | null;
+        };
+        /**
+         * KlarifikasiDetail
+         * @description `KlarifikasiRead` plus riwayat aksi (terlama dulu).
+         */
+        KlarifikasiDetail: {
+            /**
+             * Id
+             * @description Question_ID (UUID v4).
+             */
+            id: string;
+            /** Narasi Id */
+            narasi_id: string;
+            /** Claim Id */
+            claim_id: string;
+            /** Source Ids Checked */
+            source_ids_checked: string[];
+            /** Materiality Reason */
+            materiality_reason: string;
+            /** Alternative Hypothesis */
+            alternative_hypothesis: string;
+            /** Intended Decision */
+            intended_decision: string;
+            /** Recipient Role */
+            recipient_role: string;
+            /** Periode */
+            periode: string;
+            /** Exposure */
+            exposure: string;
+            /** Due Trigger */
+            due_trigger: string;
+            /** Question Text */
+            question_text: string;
+            reviewer_approval: components["schemas"]["ReviewerApproval"];
+            /** Response Ref */
+            response_ref: string | null;
+            /** Jawaban Mentah */
+            jawaban_mentah: string | null;
+            disposition: components["schemas"]["Disposition"];
+            /** Ai Usulan Id */
+            ai_usulan_id: string | null;
+            /** Dibuat Oleh */
+            dibuat_oleh: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+            /** Riwayat */
+            riwayat: components["schemas"]["KlarifikasiEventRead"][];
+        };
+        /**
+         * KlarifikasiEventRead
+         * @description Satu baris riwayat append-only sebuah pertanyaan.
+         */
+        KlarifikasiEventRead: {
+            /** Id */
+            id: string;
+            /** Klarifikasi Id */
+            klarifikasi_id: string;
+            aksi: components["schemas"]["AksiKlarifikasi"];
+            /** Actor Key */
+            actor_key: string;
+            /** Catatan */
+            catatan: string | null;
+            /**
+             * Terjadi Pada
+             * Format: date-time
+             */
+            terjadi_pada: string;
+        };
+        /**
+         * KlarifikasiRead
+         * @description Satu pertanyaan klarifikasi: 13 metadata + `question_text` + status.
+         */
+        KlarifikasiRead: {
+            /**
+             * Id
+             * @description Question_ID (UUID v4).
+             */
+            id: string;
+            /** Narasi Id */
+            narasi_id: string;
+            /** Claim Id */
+            claim_id: string;
+            /** Source Ids Checked */
+            source_ids_checked: string[];
+            /** Materiality Reason */
+            materiality_reason: string;
+            /** Alternative Hypothesis */
+            alternative_hypothesis: string;
+            /** Intended Decision */
+            intended_decision: string;
+            /** Recipient Role */
+            recipient_role: string;
+            /** Periode */
+            periode: string;
+            /** Exposure */
+            exposure: string;
+            /** Due Trigger */
+            due_trigger: string;
+            /** Question Text */
+            question_text: string;
+            reviewer_approval: components["schemas"]["ReviewerApproval"];
+            /** Response Ref */
+            response_ref: string | null;
+            /** Jawaban Mentah */
+            jawaban_mentah: string | null;
+            disposition: components["schemas"]["Disposition"];
+            /** Ai Usulan Id */
+            ai_usulan_id: string | null;
+            /** Dibuat Oleh */
+            dibuat_oleh: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
         };
         /**
          * KodeOrangCreate
@@ -9996,6 +10395,32 @@ export interface components {
              */
             offset: number;
         };
+        /** Page[KlarifikasiRead] */
+        Page_KlarifikasiRead_: {
+            /**
+             * Items
+             * @description Item pada halaman ini.
+             */
+            items: components["schemas"]["KlarifikasiRead"][];
+            /**
+             * Total
+             * @description Total item tersedia.
+             * @example 42
+             */
+            total: number;
+            /**
+             * Limit
+             * @description Maksimum item per halaman.
+             * @example 20
+             */
+            limit: number;
+            /**
+             * Offset
+             * @description Jumlah item yang dilewati.
+             * @example 0
+             */
+            offset: number;
+        };
         /** Page[KodeOrangRead] */
         Page_KodeOrangRead_: {
             /**
@@ -11706,6 +12131,20 @@ export interface components {
             kode_serap: string[] | null;
         };
         /**
+         * PersetujuanKlarifikasi
+         * @description Payload keputusan reviewer atas pertanyaan klarifikasi.
+         *
+         *     `TOLAK` sekaligus menutup baris (`disposition` menjadi `DITOLAK`).
+         */
+        PersetujuanKlarifikasi: {
+            keputusan: components["schemas"]["KeputusanReviewer"];
+            /**
+             * Catatan
+             * @description Wajib (>= 5 karakter) bila TOLAK.
+             */
+            catatan?: string | null;
+        };
+        /**
          * PrabankRead
          * @description Ringkasan status pra-bank satu responden.
          */
@@ -11912,6 +12351,12 @@ export interface components {
              */
             peringatan?: string[];
         };
+        /**
+         * ReviewerApproval
+         * @description Status persetujuan reviewer atas sebuah pertanyaan klarifikasi.
+         * @enum {string}
+         */
+        ReviewerApproval: "MENUNGGU" | "DISETUJUI" | "DITOLAK";
         /**
          * RevisionOrigin
          * @description Asal sebuah versi narasi.
@@ -34973,6 +35418,557 @@ export interface operations {
             };
         };
     };
+    narasi_klarifikasi_list: {
+        parameters: {
+            query?: {
+                /** @description Saring per kasus narasi. */
+                narasi_id?: string | null;
+                /** @description Saring per disposisi. */
+                disposition?: components["schemas"]["Disposition"] | null;
+                /** @description Maks item per halaman. */
+                limit?: number;
+                /** @description Jumlah item yang dilewati. */
+                offset?: number;
+            };
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Page_KlarifikasiRead_"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan anggota grup tim-kajian. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    narasi_klarifikasi_create: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["KlarifikasiCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["KlarifikasiDetail"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan anggota grup tim-kajian. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Kasus narasi tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Sudah ada klarifikasi terbuka untuk klaim itu (`KLARIFIKASI_GANDA`) atau Idempotency-Key sedang diproses. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Payload tidak valid. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    narasi_klarifikasi_dari_usulan: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
+            path: {
+                ai_usulan_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["KlarifikasiDariUsulan"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["KlarifikasiDetail"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan anggota grup tim-kajian. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Usulan atau kasus sasarannya tak ada. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description `USULAN_BELUM_DITERIMA`, `USULAN_SUDAH_DITERAPKAN` (`details[0].msg` = id klarifikasi), `KLARIFIKASI_GANDA`, atau Idempotency-Key sedang diproses. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Badan tidak sah; `USULAN_BUKAN_P04`; `USULAN_TIDAK_MATERIAL`; `PERIODE_TAK_ADA`; `ISIAN_USULAN_KURANG`. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    narasi_klarifikasi_get: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
+            path: {
+                klarifikasi_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["KlarifikasiDetail"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan anggota grup tim-kajian. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Klarifikasi tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    narasi_klarifikasi_persetujuan: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
+            path: {
+                klarifikasi_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PersetujuanKlarifikasi"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["KlarifikasiDetail"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan anggota grup tim-kajian. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Klarifikasi tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description `REVIEWER_TIDAK_INDEPENDEN`, `PERSETUJUAN_SUDAH_ADA`, atau `KLARIFIKASI_TIDAK_TERBUKA`. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Payload tidak valid. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    narasi_klarifikasi_jawaban: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
+            path: {
+                klarifikasi_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["JawabanKlarifikasi"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["KlarifikasiDetail"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan anggota grup tim-kajian. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Klarifikasi tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description `KLARIFIKASI_BELUM_DISETUJUI` atau `KLARIFIKASI_TIDAK_TERBUKA`. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Payload tidak valid. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    narasi_klarifikasi_batalkan: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
+            path: {
+                klarifikasi_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BatalkanKlarifikasi"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["KlarifikasiDetail"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan anggota grup tim-kajian. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Klarifikasi tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description `KLARIFIKASI_TIDAK_TERBUKA`. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Payload tidak valid. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
     narasi_kasus_draf_ai_ajukan: {
         parameters: {
             query?: never;
@@ -38998,3 +39994,8 @@ export type KeputusanPerubahanCreate = components["schemas"]["KeputusanPerubahan
 export type KeputusanPerubahanRead = components["schemas"]["KeputusanPerubahanRead"];
 export type StatusKesiapan = components["schemas"]["StatusKesiapan"];
 export type EstimasiDelta = components["schemas"]["EstimasiDelta"];
+export type KlarifikasiRead = components["schemas"]["KlarifikasiRead"];
+export type KlarifikasiDetail = components["schemas"]["KlarifikasiDetail"];
+export type KlarifikasiCreate = components["schemas"]["KlarifikasiCreate"];
+export type KlarifikasiDariUsulan = components["schemas"]["KlarifikasiDariUsulan"];
+export type KlarifikasiEventRead = components["schemas"]["KlarifikasiEventRead"];

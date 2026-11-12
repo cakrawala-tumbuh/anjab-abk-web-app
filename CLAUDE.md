@@ -84,6 +84,17 @@ src/
 
 ## Revisi Desain
 
+### [2026-11-12] Antrean klarifikasi narasi + panel Terapkan P04 (#123)
+
+Item #123; konsumen backend `#136` (register) dan `#137` (`dari-usulan`, commit `77a1cfe`). Rujukan: `cakrawala-tumbuh/ypii-support#463`.
+
+- **Kontrak diekspor dari kode backend** master `77a1cfe` (klon scratch, image `Dockerfile.test`, `scripts/export_openapi.py` ke `/dev/stdout`, log JSON disaring); `openapi.json` diganti utuh, `gen:api`, blok alias ditempel ulang + `Klarifikasi{Read,Detail,Create,DariUsulan,EventRead}`. Hanya penambahan di `schema.ts` (tanpa drift lain).
+- **Rute** `src/app/(auth)/narasi/klarifikasi/` (guard `tim-kajian` dari `narasi/layout.tsx`; `loading.tsx` + `error.tsx` per rute; menu `Narasi -> Klarifikasi` di `NARASI_TIM_ITEMS`): indeks (`disposition` bawaan `TERBUKA`, `SEMUA` = tanpa saringan; `narasi_id`; data inti, gagal melempar), `[id]` (13 metadata di `<dl>` berlabel Indonesia + nama HO dalam kurung, riwayat, aksi), `tambah?narasi_id=` (form). Logika murni di `src/lib/narasi-klarifikasi.ts` (`aksiTersedia`, validasi, `petakanGalatKlarifikasi`, `panelTerapkanP04Tampil`).
+- **Aksi** (`aksi-klarifikasi.tsx`): `MENUNGGU` -> Setujui/Tolak; `DISETUJUI`+`TERBUKA` -> Salin pertanyaan + Catat jawaban; `TERBUKA` -> Batalkan. Tolak/Batalkan wajib catatan >= 5; semua POST `Idempotency-Key`; sukses hanya setelah 2xx lalu `router.refresh()`. 409 `REVIEWER_TIDAK_INDEPENDEN`, `KLARIFIKASI_GANDA`, `KLARIFIKASI_BELUM_DISETUJUI` (dan kode terkait) dipetakan ke pesan Indonesia spesifik. TIDAK ada aksi kirim pesan (menunggu OD-12).
+- **`exposure` baca-saja**: diturunkan dari `paparan` detail antrean kasus (`exposureDariPaparan`); kasus di luar antrean menjadi `TIDAK_DIKETAHUI`, tidak pernah isian pengguna. Tautan "Ajukan klarifikasi" ada di detail kasus narasi.
+- **Panel P04** (`ai-usulan/[id]/terapkan-klarifikasi.tsx`): tampil bila fungsi P04, `isi.material=true`, putusan terakhir APPROVE/REVISE; klaim + pemicu wajib, keputusan opsional (kosong = `why_ask`); sukses -> tautan ke detail; 409 `USULAN_SUDAH_DITERAPKAN` -> tautan ke klarifikasi yang ada (`details[0].msg`).
+- Docs: `docs-usage/ik/narasi-klarifikasi.md` (IK-20), bagian baru di `usulan-ai.md`. E2E nonaktif: utang di #109.
+
 ### [2026-11-12] Matriks kesiapan penerima + keputusan perubahan (#122)
 
 Item #122; konsumen backend `#133` (penerima, kesiapan, matriks) dan `#134` (ChangeDecision). Bergantung pada #121. Rujukan: `cakrawala-tumbuh/ypii-support#463`.

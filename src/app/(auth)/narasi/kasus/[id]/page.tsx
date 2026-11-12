@@ -69,6 +69,18 @@ export default async function DetailKasusPage({ params }: Props) {
         ))}
       </dl>
 
+      <p className="text-sm">
+        <Link
+          href={`/narasi/klarifikasi/tambah?narasi_id=${encodeURIComponent(kasus.id)}`}
+          className="text-blue-600 dark:text-blue-400"
+        >
+          Ajukan klarifikasi
+        </Link>{" "}
+        <span className="text-gray-500 dark:text-gray-400">
+          (satu pertanyaan klarifikasi material untuk kasus ini)
+        </span>
+      </p>
+
       <section aria-labelledby="riwayat-kasus" className="space-y-2">
         <h2 id="riwayat-kasus" className="text-base font-semibold">
           Riwayat

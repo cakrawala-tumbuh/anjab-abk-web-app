@@ -4,24 +4,25 @@
 detail klik tombol, mengisi formulir, dan menginput data. IK adalah pelengkap
 [SOP](../sop/index.md): SOP menjelaskan alur & keputusan, IK menjelaskan penginputan.
 
-| Kode                         | Instruksi Kerja     | Untuk                                  |
-| ---------------------------- | ------------------- | -------------------------------------- |
-| [IK-01](login-navigasi.md)   | Login & Navigasi    | Semua pengguna                         |
-| [IK-02](master-data.md)      | Master Data         | Administrator                          |
-| [IK-03](partisipan.md)       | Partisipan          | Administrator                          |
-| [IK-04](task-inventory.md)   | Task Inventory (TI) | Administrator, Koordinator, Partisipan |
-| [IK-05](time-study.md)       | Time Study (TS)     | Administrator, Partisipan              |
-| [IK-06](dcs.md)              | DCS                 | Administrator, Partisipan              |
-| [IK-07](wcp.md)              | WCP                 | Administrator, Partisipan              |
-| [IK-08](opm.md)              | OPM (Rating Tugas)  | Administrator, Partisipan              |
-| [IK-09](backup-restore.md)   | Backup & Restore    | Administrator                          |
-| [IK-10](redesain-tim.md)     | Redesain Pekerjaan  | Tim Kajian                             |
-| [IK-11](redesain-sekolah.md) | Konfirmasi Redesain | Pengisi Sekolah                        |
-| [IK-12](saklar-ai.md)        | Saklar & Run AI     | Administrator                          |
-| [IK-13](narasi-sumber.md)    | Sumber Narasi       | Tim Kajian                             |
-| [IK-14](narasi-kasus.md)     | Kasus Narasi        | Tim Kajian                             |
-| [IK-17](penyedia-ai.md)      | Penyedia AI         | Administrator                          |
-| [IK-19](riset.md)            | Riset               | Tim Kajian                             |
+| Kode                           | Instruksi Kerja     | Untuk                                  |
+| ------------------------------ | ------------------- | -------------------------------------- |
+| [IK-01](login-navigasi.md)     | Login & Navigasi    | Semua pengguna                         |
+| [IK-02](master-data.md)        | Master Data         | Administrator                          |
+| [IK-03](partisipan.md)         | Partisipan          | Administrator                          |
+| [IK-04](task-inventory.md)     | Task Inventory (TI) | Administrator, Koordinator, Partisipan |
+| [IK-05](time-study.md)         | Time Study (TS)     | Administrator, Partisipan              |
+| [IK-06](dcs.md)                | DCS                 | Administrator, Partisipan              |
+| [IK-07](wcp.md)                | WCP                 | Administrator, Partisipan              |
+| [IK-08](opm.md)                | OPM (Rating Tugas)  | Administrator, Partisipan              |
+| [IK-09](backup-restore.md)     | Backup & Restore    | Administrator                          |
+| [IK-10](redesain-tim.md)       | Redesain Pekerjaan  | Tim Kajian                             |
+| [IK-11](redesain-sekolah.md)   | Konfirmasi Redesain | Pengisi Sekolah                        |
+| [IK-12](saklar-ai.md)          | Saklar & Run AI     | Administrator                          |
+| [IK-13](narasi-sumber.md)      | Sumber Narasi       | Tim Kajian                             |
+| [IK-14](narasi-kasus.md)       | Kasus Narasi        | Tim Kajian                             |
+| [IK-17](penyedia-ai.md)        | Penyedia AI         | Administrator                          |
+| [IK-19](riset.md)              | Riset               | Tim Kajian                             |
+| [IK-20](narasi-klarifikasi.md) | Klarifikasi Narasi  | Tim Kajian                             |
 
 ---
 

@@ -64,3 +64,18 @@ atau **REVISE**. Panel **Terapkan kandidat** muncul di atas form putusan.
    dapat diterapkan lagi.
 4. Bila server menolak (mis. kode sudah dipakai, usulan belum diterima), pesannya tampil
    dan isian dipertahankan.
+
+## Menerapkan usulan P04 ke register klarifikasi
+
+Berlaku hanya untuk usulan **P04** yang menyatakan perlu bertanya (_material_) dan putusan
+terakhirnya **APPROVE** atau **REVISE**. Panel **Terapkan ke register klarifikasi** muncul di
+atas form putusan.
+
+1. Isi **Klaim yang ditanyakan (Claim_ID)** dan **Pemicu batas waktu (DueTrigger)**. **Keputusan
+   yang dibantu** boleh dikosongkan; bila kosong dipakai alasan bertanya dari usulan.
+2. Klik **Terapkan ke register**. Setelah berhasil muncul tautan **Buka klarifikasi**; pertanyaan
+   menunggu persetujuan reviewer lain. Langkah selanjutnya ada di
+   [IK-20 Klarifikasi Narasi](narasi-klarifikasi.md).
+3. Aplikasi tidak mengirim pertanyaan; pengiriman dilakukan fasilitator di luar aplikasi.
+4. Bila usulan sudah pernah diterapkan, pesannya tampil beserta tautan **Buka klarifikasi yang
+   ada**.

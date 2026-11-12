@@ -133,6 +133,7 @@ describe("menu Narasi", () => {
       "/narasi/sumber",
       "/narasi/kasus",
       "/narasi/antrean",
+      "/narasi/klarifikasi",
     ]);
   });
 

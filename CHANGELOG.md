@@ -9,6 +9,14 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ### Ditambahkan
 
+- **Antrean klarifikasi narasi dan penerapan usulan P04** (#123): grup Narasi punya menu
+  "Klarifikasi" (`/narasi/klarifikasi`, Tim Kajian) berisi indeks (bawaan disposisi Terbuka),
+  detail dengan 13 metadata, teks pertanyaan, dan riwayat, serta aksi menurut state: Setujui /
+  Tolak, Salin pertanyaan, Catat jawaban (ResponseRef + jawaban mentah), dan Batalkan. Form
+  "Ajukan klarifikasi" dibuka dari detail kasus narasi. Detail usulan AI P04 yang material dan
+  sudah diterima mendapat panel "Terapkan ke register klarifikasi". Pengiriman pertanyaan tetap
+  dilakukan fasilitator di luar aplikasi (tidak ada aksi kirim).
+
 - **Matriks kesiapan penerima dan keputusan perubahan** (#122): tab Alternatif pada detail
   masalah redesain kini punya pemilih periode (`YYYY/YY`), pengelolaan penerima jamak per
   alternatif, form kesiapan per periode (status wajib, syarat/alasan hold bersyarat, delta

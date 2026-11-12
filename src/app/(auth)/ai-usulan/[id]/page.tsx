@@ -4,9 +4,12 @@ import { IsiUsulan } from "@/components/isi-usulan";
 import { auth } from "@/lib/auth/auth";
 import { hrefSasaran, labelFungsi, labelHasilSerap, labelSasaran } from "@/lib/ai-usulan";
 import { kandidatDariIsi, panelTerapkanTampil, petaKandidatTerapan } from "@/lib/ai-usulan-konteks";
+import { exposureDariPaparan, panelTerapkanP04Tampil } from "@/lib/narasi-klarifikasi";
+import { fetchDetailAntrean } from "../../narasi/antrean/[narasi_id]/data";
 import { fetchDetailUsulan, fetchKonteksTerapan } from "../data";
 import { PutusanForm } from "./putusan-form";
 import { TerapkanKandidat } from "./terapkan-kandidat";
+import { TerapkanKlarifikasi } from "./terapkan-klarifikasi";
 
 export const metadata = { title: "Detail Usulan AI" };
 
@@ -30,6 +33,13 @@ export default async function DetailUsulanPage({ params }: Props) {
   const terapan = tampilTerapkan
     ? petaKandidatTerapan(await fetchKonteksTerapan(session?.accessToken, u.id))
     : new Map<number, string>();
+
+  const tampilP04 = panelTerapkanP04Tampil(u.fungsi, u.isi, u.putusan_terakhir?.putusan);
+  let exposureP04 = exposureDariPaparan(null);
+  if (tampilP04 && u.sasaran_jenis === "NARASI_KASUS") {
+    const antrean = await fetchDetailAntrean(session?.accessToken, u.sasaran_id);
+    exposureP04 = exposureDariPaparan(antrean.jenis === "ada" ? antrean.detail.paparan : null);
+  }
 
   return (
     <div className="space-y-6">
@@ -135,6 +145,14 @@ export default async function DetailUsulanPage({ params }: Props) {
           usulanId={u.id}
           kandidat={kandidatDariIsi(u.isi)}
           terapan={terapan}
+          accessToken={session?.accessToken}
+        />
+      )}
+
+      {tampilP04 && (
+        <TerapkanKlarifikasi
+          usulanId={u.id}
+          exposure={exposureP04}
           accessToken={session?.accessToken}
         />
       )}

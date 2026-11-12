@@ -91,6 +91,7 @@ export const NARASI_TIM_ITEMS: ReadonlyArray<{ href: string; label: string }> = 
   { href: "/narasi/sumber", label: "Sumber Narasi" },
   { href: "/narasi/kasus", label: "Kasus" },
   { href: "/narasi/antrean", label: "Antrean" },
+  { href: "/narasi/klarifikasi", label: "Klarifikasi" },
 ];
 
 /** Entri menu "Narasi" — hanya ditambahkan untuk pengguna grup `tim-kajian`. */
