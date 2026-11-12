@@ -6,6 +6,7 @@ import { withServerAuth } from "@/lib/api/client";
 import { toApiError } from "@/lib/api/errors";
 import { hapusBerEtag, PESAN_DATA_SUDAH_HILANG } from "@/lib/hapus-ber-etag";
 import { bacaEtag, headerIfMatch, petakanKonkurensi } from "@/lib/konkurensi";
+import { petakanPaparanBelumTercatat } from "@/lib/ti-prabank";
 import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
 import type { TiCatalogRead, TiUsulanRead } from "@/lib/api/schema";
 
@@ -303,7 +304,7 @@ export function SeleksiForm({
       setSaveMessage("Draft tersimpan.");
       notifySukses("Draft tersimpan.");
     } catch (rawErr) {
-      const err = petakanKonkurensi(rawErr);
+      const err = petakanPaparanBelumTercatat(petakanKonkurensi(rawErr));
       setError(err instanceof Error ? err.message : "Terjadi kesalahan saat menyimpan draft.");
       notifyGagal(err);
     } finally {
@@ -345,7 +346,7 @@ export function SeleksiForm({
       router.push("/kuesioner");
       router.refresh();
     } catch (rawErr) {
-      const err = petakanKonkurensi(rawErr);
+      const err = petakanPaparanBelumTercatat(petakanKonkurensi(rawErr));
       setError(pesanGagal(err));
       notifyGagal(err);
       setSubmitting(false);

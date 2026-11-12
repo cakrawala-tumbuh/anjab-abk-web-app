@@ -199,6 +199,27 @@ function keLevel3ViaKeuangan() {
   fireEvent.click(screen.getByRole("button", { name: "Lanjut ke Uraian Tugas" }));
 }
 
+describe("SeleksiForm — paparan pra-bank (issue #121)", () => {
+  it("409 PAPARAN_BELUM_TERCATAT dari simpan seleksi tampil sebagai pesan muat ulang", async () => {
+    put.mockResolvedValue({
+      data: undefined,
+      error: { error: "PAPARAN_BELUM_TERCATAT", message: "Paparan belum tercatat." },
+      response: { headers: { get: () => "req-409" } },
+    });
+    renderForm();
+    fireEvent.click(screen.getByRole("checkbox", { name: "Pengelolaan SDM" }));
+    fireEvent.click(screen.getByRole("button", { name: "Lanjut ke Detil Tugas" }));
+    fireEvent.click(screen.getByRole("checkbox", { name: "Evaluasi Kinerja" }));
+    fireEvent.click(screen.getByRole("button", { name: "Lanjut ke Uraian Tugas" }));
+    fireEvent.click(screen.getByRole("checkbox", { name: "Menyusun evaluasi karyawan" }));
+    await act(async () => {
+      fireEvent.click(screen.getAllByRole("button", { name: "Simpan" })[0]);
+    });
+    expect(await screen.findByRole("alert")).toHaveTextContent(/Muat ulang halaman/);
+    expect(push).not.toHaveBeenCalled();
+  });
+});
+
 describe("SeleksiForm — usulan tugas tambahan di langkah Uraian Tugas (issue #45)", () => {
   it("mengirim POST usulan dengan tugas_pokok_id & detil_tugas_id grup asal", async () => {
     renderForm();

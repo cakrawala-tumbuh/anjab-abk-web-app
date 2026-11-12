@@ -4,6 +4,7 @@ import { auth, isAdmin } from "@/lib/auth/auth";
 import { ApiError, isTidakBerhak } from "@/lib/api/errors";
 import { GagalMuat, TidakBerhak } from "@/components/gagal-muat";
 import { fetchTahap1Data, type Tahap1PageData } from "./data";
+import { CeritaBebas } from "./cerita-bebas";
 import { SeleksiForm } from "./seleksi-form";
 import { PetunjukTahap1 } from "./petunjuk-tahap1";
 import { labelResponden } from "@/lib/format/label-responden";
@@ -34,7 +35,7 @@ export default async function Tahap1Page({ params }: Props) {
     throw err;
   }
 
-  const { responden, sesi, catalog, terpilih, usulan, seleksiEtag } = data;
+  const { responden, sesi, catalog, modeCerita, prabank, terpilih, usulan, seleksiEtag } = data;
   const admin = isAdmin(session);
 
   return (
@@ -55,7 +56,10 @@ export default async function Tahap1Page({ params }: Props) {
         <div>
           <h1 className="page-heading">{JUDUL}</h1>
           <p className="page-subtext">
-            {labelResponden(responden)} · pilih task yang relevan untuk jabatan Anda.
+            {labelResponden(responden)} ·{" "}
+            {modeCerita
+              ? "ceritakan dulu pekerjaan Anda sebelum melihat daftar tugas."
+              : "pilih task yang relevan untuk jabatan Anda."}
           </p>
         </div>
         <PetunjukTahap1 defaultOpen={!responden.tahap1_submit && sesi.status === "TAHAP1"} />
@@ -69,16 +73,33 @@ export default async function Tahap1Page({ params }: Props) {
         <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
           Analisis jabatan ini tidak sedang dalam Tahap 1 (status: {sesi.status}).
         </div>
-      ) : (
-        <SeleksiForm
+      ) : modeCerita ? (
+        <CeritaBebas
           respondenId={responden_id}
-          catalog={catalog}
-          terpilihAwal={terpilih}
-          usulanAwal={usulan}
-          tahap1Submit={responden.tahap1_submit}
-          seleksiEtag={seleksiEtag}
+          cerita={prabank?.cerita ?? null}
           accessToken={session?.accessToken}
         />
+      ) : (
+        <>
+          {prabank?.cerita?.frozen_at && (
+            <section
+              aria-label="Cerita bebas yang sudah dibekukan"
+              className="rounded-lg border border-gray-200 bg-gray-50 p-4 text-sm"
+            >
+              <h2 className="font-medium text-gray-900">Cerita bebas Anda (dibekukan)</h2>
+              <p className="mt-2 whitespace-pre-wrap text-gray-700">{prabank.cerita.teks}</p>
+            </section>
+          )}
+          <SeleksiForm
+            respondenId={responden_id}
+            catalog={catalog}
+            terpilihAwal={terpilih}
+            usulanAwal={usulan}
+            tahap1Submit={responden.tahap1_submit}
+            seleksiEtag={seleksiEtag}
+            accessToken={session?.accessToken}
+          />
+        </>
       )}
     </div>
   );

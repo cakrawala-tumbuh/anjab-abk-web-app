@@ -2050,6 +2050,86 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/task-inventory/sesi/responden/{responden_id}/cerita-prabank": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Simpan cerita bebas pra-bank satu responden (ditolak bila sudah beku)
+         * @description Simpan cerita; 409 `CERITA_SUDAH_DIKUNCI` bila sudah beku.
+         */
+        put: operations["taskinv_prabank_cerita_simpan"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/task-inventory/sesi/responden/{responden_id}/cerita-prabank/bekukan": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Bekukan cerita pra-bank (idempoten; 422 CERITA_KOSONG bila belum ada teks)
+         * @description Bekukan cerita; panggilan ulang mengembalikan waktu beku yang sama.
+         */
+        post: operations["taskinv_prabank_cerita_bekukan"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/task-inventory/sesi/responden/{responden_id}/paparan": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Catat paparan bank/contoh tugas ke responden (timestamp dari server)
+         * @description Catat satu paparan; status diturunkan server dari `frozen_at` cerita.
+         */
+        post: operations["taskinv_prabank_paparan_catat"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/task-inventory/sesi/responden/{responden_id}/prabank": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Status cerita pra-bank dan paparan satu responden
+         * @description Kembalikan cerita, `frozen_at`, `first_exposed_at`, dan `exposure_state`.
+         */
+        get: operations["taskinv_prabank_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/task-inventory/sesi/responden/{responden_id}/seleksi": {
         parameters: {
             query?: never;
@@ -6031,6 +6111,39 @@ export interface components {
             pic_kode_orang?: string | null;
         };
         /**
+         * CeritaPrabankRead
+         * @description Cerita pra-bank satu responden; `frozen_at` terisi setelah dibekukan.
+         */
+        CeritaPrabankRead: {
+            /**
+             * Id
+             * @description ID cerita (UUID v4).
+             */
+            id: string;
+            /**
+             * Teks
+             * @description Teks cerita.
+             */
+            teks: string;
+            /**
+             * Frozen At
+             * @description Waktu server saat cerita dibekukan; null bila masih draf.
+             */
+            frozen_at?: string | null;
+        };
+        /**
+         * CeritaPrabankUpsert
+         * @description Payload `PUT .../cerita-prabank`: teks cerita bebas (1-20.000 karakter).
+         */
+        CeritaPrabankUpsert: {
+            /**
+             * Teks
+             * @description Cerita bebas responden tentang pekerjaannya, sebelum melihat bank tugas.
+             * @example Setiap hari saya menyiapkan perangkat ajar lalu mengajar kelas X.
+             */
+            teks: string;
+        };
+        /**
          * DcsHasilRawRead
          * @description Hasil DCS mode `RAW_ONLY`: raw per item + statistik deskriptif raw, tanpa skor.
          */
@@ -6813,14 +6926,20 @@ export interface components {
          */
         EventKind: "TEAM_APPROVE" | "TEAM_REVISE" | "TEAM_REJECT" | "NEED_SOURCE" | "SUBJECT_CONFIRM" | "SUBJECT_CORRECT" | "SUBJECT_REJECT" | "SUBJECT_UNSURE" | "FINAL_TEAM_APPROVE" | "RELEASE_LIMITED" | "RETURN_CLARIFICATION";
         /**
+         * ExposureState
+         * @description Status paparan responden, diturunkan dari paparan pertamanya.
+         * @enum {string}
+         */
+        ExposureState: "BELUM_TERPAPAR" | "LOCKED_PRE_EXPOSURE" | "EXPOSED";
+        /**
          * FiturKode
-         * @description Kode lima fungsi yang dapat dimatikan secara independen (feature flag).
+         * @description Kode enam fungsi yang dapat dimatikan secara independen (feature flag).
          *
          *     Nilai literal mengikuti paket kajian; urutan anggota = urutan di respons
          *     `GET /api/v1/system/fitur`.
          * @enum {string}
          */
-        FiturKode: "AI_NARRATIVE_DRAFT" | "PARTICIPANT_VALIDATION" | "WCP_DCS_SCORING" | "RESEARCH_EXPORT" | "CHANGE_AUTHORIZATION";
+        FiturKode: "AI_NARRATIVE_DRAFT" | "PARTICIPANT_VALIDATION" | "WCP_DCS_SCORING" | "RESEARCH_EXPORT" | "CHANGE_AUTHORIZATION" | "PREBANK_FREEZE";
         /** FiturListRead */
         FiturListRead: {
             /**
@@ -7068,6 +7187,12 @@ export interface components {
              */
             aktif?: boolean | null;
         };
+        /**
+         * JenisPaparan
+         * @description Jenis materi yang diperlihatkan kepada responden; nilai lain ditolak CHECK.
+         * @enum {string}
+         */
+        JenisPaparan: "BANK_TUGAS" | "CONTOH_TUGAS";
         /**
          * JenisSumberNarasi
          * @description Jenis sumber yang sah pada tahap T0 dan T1 (K-3); nilai lain ditolak 422.
@@ -10553,6 +10678,35 @@ export interface components {
             offset: number;
         };
         /**
+         * PaparanCreate
+         * @description Payload `POST .../paparan`. Waktu paparan SELALU dari server (`extra=forbid`).
+         */
+        PaparanCreate: {
+            /** @description Jenis materi yang diperlihatkan. */
+            jenis: components["schemas"]["JenisPaparan"];
+        };
+        /**
+         * PaparanRead
+         * @description Satu baris log paparan (append-only).
+         */
+        PaparanRead: {
+            /**
+             * Id
+             * @description ID paparan (UUID v4).
+             */
+            id: string;
+            /** @description Jenis materi yang diperlihatkan. */
+            jenis: components["schemas"]["JenisPaparan"];
+            /**
+             * Terjadi Pada
+             * Format: date-time
+             * @description Waktu server saat paparan dicatat.
+             */
+            terjadi_pada: string;
+            /** @description LOCKED_PRE_EXPOSURE bila cerita sudah beku, selain itu EXPOSED. */
+            status_saat_paparan: components["schemas"]["StatusPaparan"];
+        };
+        /**
          * PartisipanCreate
          * @description Payload pembuatan partisipan.
          */
@@ -11226,6 +11380,26 @@ export interface components {
             hasil_serap: string | null;
             /** Kode Serap */
             kode_serap: string[] | null;
+        };
+        /**
+         * PrabankRead
+         * @description Ringkasan status pra-bank satu responden.
+         */
+        PrabankRead: {
+            /** @description Cerita responden; null bila belum ada. */
+            cerita: components["schemas"]["CeritaPrabankRead"] | null;
+            /**
+             * Frozen At
+             * @description Waktu cerita dibekukan; null bila belum.
+             */
+            frozen_at: string | null;
+            /**
+             * First Exposed At
+             * @description Waktu paparan pertama; null bila belum pernah terpapar.
+             */
+            first_exposed_at: string | null;
+            /** @description Status paparan dari paparan pertama. */
+            exposure_state: components["schemas"]["ExposureState"];
         };
         /**
          * Principal
@@ -12459,6 +12633,12 @@ export interface components {
          * @enum {string}
          */
         StatusNarasi: "SOURCE_CHECKED" | "AI_DRAFT" | "NEED_FACT" | "TEAM_REVIEW" | "TEAM_VERIFIED" | "SUBJECT_REVIEW" | "SUBJECT_CONFIRMED" | "SUBJECT_CORRECTION" | "SUBJECT_REJECTED" | "SUBJECT_UNCERTAIN" | "FINAL_TEAM_REVIEW" | "RELEASED_FACT" | "RELEASED_LIMITED" | "RETURN_FOR_CLARIFICATION";
+        /**
+         * StatusPaparan
+         * @description Status cerita saat sebuah paparan terjadi (disimpan pada tiap baris log).
+         * @enum {string}
+         */
+        StatusPaparan: "LOCKED_PRE_EXPOSURE" | "EXPOSED";
         /**
          * StatusProtokol
          * @description Status protokol riset; nilai lain ditolak CHECK `ck_riset_protokol_status`.
@@ -25095,6 +25275,325 @@ export interface operations {
             };
         };
     };
+    taskinv_prabank_cerita_simpan: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID responden Task Inventory. */
+                responden_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CeritaPrabankUpsert"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CeritaPrabankRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin atau bukan pemilik responden. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Responden tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Saklar PREBANK_FREEZE mati (`feature_disabled`) atau konflik status. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Teks tidak valid. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    taskinv_prabank_cerita_bekukan: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID responden Task Inventory. */
+                responden_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CeritaPrabankRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin atau bukan pemilik responden. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Responden tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Saklar PREBANK_FREEZE mati (`feature_disabled`) atau konflik status. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description `CERITA_KOSONG`: belum ada cerita. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    taskinv_prabank_paparan_catat: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID responden Task Inventory. */
+                responden_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PaparanCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaparanRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin atau bukan pemilik responden. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Responden tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Saklar PREBANK_FREEZE mati (`feature_disabled`) atau konflik status. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Body tidak valid. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    taskinv_prabank_get: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
+            path: {
+                /** @description ID responden Task Inventory. */
+                responden_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PrabankRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan admin atau bukan pemilik responden. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Responden tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Saklar PREBANK_FREEZE mati (`feature_disabled`) atau konflik status. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
     taskinv_seleksi_get: {
         parameters: {
             query?: never;
@@ -25218,6 +25717,15 @@ export interface operations {
             };
             /** @description Responden tidak ditemukan. */
             404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description `PAPARAN_BELUM_TERCATAT`: saklar PREBANK_FREEZE hidup, paparan belum ada. */
+            409: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -37677,3 +38185,11 @@ export type RisetKasusNegatifCreate = components["schemas"]["RisetKasusNegatifCr
 export type RisetKasusNegatifRead = components["schemas"]["RisetKasusNegatifRead"];
 export type StatusProtokol = components["schemas"]["StatusProtokol"];
 export type StatusStatistik = components["schemas"]["StatusStatistik"];
+export type CeritaPrabankRead = components["schemas"]["CeritaPrabankRead"];
+export type CeritaPrabankUpsert = components["schemas"]["CeritaPrabankUpsert"];
+export type PrabankRead = components["schemas"]["PrabankRead"];
+export type PaparanCreate = components["schemas"]["PaparanCreate"];
+export type PaparanRead = components["schemas"]["PaparanRead"];
+export type JenisPaparan = components["schemas"]["JenisPaparan"];
+export type ExposureState = components["schemas"]["ExposureState"];
+export type StatusPaparan = components["schemas"]["StatusPaparan"];

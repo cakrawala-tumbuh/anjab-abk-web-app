@@ -176,6 +176,28 @@ Partisipan yang bukan anggota panel akan mendapat halaman 404.
      uraian tugas terpilih — keputusannya ditentukan koordinator di Tahap 2 (lihat bagian D).
 4. Klik **Kirim Seleksi**.
 
+### Langkah Cerita bebas (bila fitur pra-bank dihidupkan)
+
+Bila administrator sistem menghidupkan fitur **pembekuan cerita pra-bank** dan Anda belum
+pernah melihat daftar tugas, halaman Tahap 1 **lebih dulu** menampilkan langkah **Cerita
+bebas** — tanpa satu pun teks daftar tugas — sebelum langkah 1–4 di atas:
+
+- Tulis cerita pekerjaan Anda sehari-hari di kotak teks (maksimal 20.000 karakter), lalu
+  klik **Simpan cerita**. Selama belum dibekukan, cerita dapat diubah dan disimpan ulang.
+- Klik **Bekukan & lanjut ke daftar tugas** (aktif setelah cerita tersimpan). Cerita
+  dibekukan dan tidak dapat diubah lagi; sistem mencatat bahwa Anda telah melihat daftar
+  tugas, lalu daftar tugas ditampilkan.
+- Atau klik **Lewati cerita**. Sistem meminta konfirmasi: cerita Anda **tidak akan
+  tercatat** sebagai pra-paparan dan daftar tugas langsung ditampilkan. Pilihan ini tidak
+  dapat diulang.
+- Bila pembekuan berhasil tetapi pencatatan gagal (muncul pesan galat), klik **Lanjut ke
+  daftar tugas** untuk mengulang pencatatan saja.
+
+Pada kunjungan berikutnya, cerita yang sudah dibekukan tampil **baca-saja** di atas
+formulir seleksi. Bila fitur ini tidak dihidupkan, halaman langsung menampilkan seleksi
+seperti biasa. Bila saat menyimpan seleksi muncul pesan agar **memuat ulang halaman**, muat
+ulang lalu ulangi penyimpanan.
+
 !!! danger "Tidak dapat diubah"
 Setelah dikirim, seleksi Tahap 1 terkunci — begitu juga kontrol tambah/hapus usulan tugas
 tambahan, yang ikut disembunyikan. Status responden menjadi **✓ Selesai**.

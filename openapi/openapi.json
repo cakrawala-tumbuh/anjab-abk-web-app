@@ -12,7 +12,7 @@
       "name": "MIT",
       "identifier": "MIT"
     },
-    "version": "0.49.0"
+    "version": "0.50.0"
   },
   "paths": {
     "/api/v1/health": {
@@ -15193,6 +15193,444 @@
         }
       }
     },
+    "/api/v1/task-inventory/sesi/responden/{responden_id}/cerita-prabank": {
+      "put": {
+        "tags": [
+          "taskinv.prabank"
+        ],
+        "summary": "Simpan cerita bebas pra-bank satu responden (ditolak bila sudah beku)",
+        "description": "Simpan cerita; 409 `CERITA_SUDAH_DIKUNCI` bila sudah beku.",
+        "operationId": "taskinv_prabank_cerita_simpan",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "responden_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID responden Task Inventory.",
+              "title": "Responden Id"
+            },
+            "description": "ID responden Task Inventory."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CeritaPrabankUpsert"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CeritaPrabankRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan admin atau bukan pemilik responden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Responden tidak ditemukan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Saklar PREBANK_FREEZE mati (`feature_disabled`) atau konflik status.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Teks tidak valid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/task-inventory/sesi/responden/{responden_id}/cerita-prabank/bekukan": {
+      "post": {
+        "tags": [
+          "taskinv.prabank"
+        ],
+        "summary": "Bekukan cerita pra-bank (idempoten; 422 CERITA_KOSONG bila belum ada teks)",
+        "description": "Bekukan cerita; panggilan ulang mengembalikan waktu beku yang sama.",
+        "operationId": "taskinv_prabank_cerita_bekukan",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "responden_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID responden Task Inventory.",
+              "title": "Responden Id"
+            },
+            "description": "ID responden Task Inventory."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CeritaPrabankRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan admin atau bukan pemilik responden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Responden tidak ditemukan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Saklar PREBANK_FREEZE mati (`feature_disabled`) atau konflik status.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "`CERITA_KOSONG`: belum ada cerita.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/task-inventory/sesi/responden/{responden_id}/paparan": {
+      "post": {
+        "tags": [
+          "taskinv.prabank"
+        ],
+        "summary": "Catat paparan bank/contoh tugas ke responden (timestamp dari server)",
+        "description": "Catat satu paparan; status diturunkan server dari `frozen_at` cerita.",
+        "operationId": "taskinv_prabank_paparan_catat",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "responden_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID responden Task Inventory.",
+              "title": "Responden Id"
+            },
+            "description": "ID responden Task Inventory."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PaparanCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaparanRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan admin atau bukan pemilik responden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Responden tidak ditemukan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Saklar PREBANK_FREEZE mati (`feature_disabled`) atau konflik status.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Body tidak valid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/task-inventory/sesi/responden/{responden_id}/prabank": {
+      "get": {
+        "tags": [
+          "taskinv.prabank"
+        ],
+        "summary": "Status cerita pra-bank dan paparan satu responden",
+        "description": "Kembalikan cerita, `frozen_at`, `first_exposed_at`, dan `exposure_state`.",
+        "operationId": "taskinv_prabank_get",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "responden_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID responden Task Inventory.",
+              "title": "Responden Id"
+            },
+            "description": "ID responden Task Inventory."
+          },
+          {
+            "name": "X-Tujuan-Akses",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN.",
+              "title": "X-Tujuan-Akses"
+            },
+            "description": "Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PrabankRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan admin atau bukan pemilik responden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Responden tidak ditemukan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Saklar PREBANK_FREEZE mati (`feature_disabled`) atau konflik status.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/task-inventory/sesi/responden/{responden_id}/seleksi": {
       "put": {
         "tags": [
@@ -15317,6 +15755,16 @@
           },
           "428": {
             "description": "If-Match wajib (REQUIRE_IF_MATCH=true).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "`PAPARAN_BELUM_TERCATAT`: saklar PREBANK_FREEZE hidup, paparan belum ada.",
             "content": {
               "application/json": {
                 "schema": {
@@ -37744,6 +38192,61 @@
         "title": "CakupanJabatanUpdate",
         "description": "Payload ubah parsial. `role_kode` dan `cabang` tidak dapat diubah.\n\nField nullable (`jabatan_id`, `gap_variasi`, `pic_kode_orang`) boleh dikosongkan dengan\n`null`; field wajib yang dikirim `null` diabaikan."
       },
+      "CeritaPrabankRead": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id",
+            "description": "ID cerita (UUID v4)."
+          },
+          "teks": {
+            "type": "string",
+            "title": "Teks",
+            "description": "Teks cerita."
+          },
+          "frozen_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Frozen At",
+            "description": "Waktu server saat cerita dibekukan; null bila masih draf."
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "teks"
+        ],
+        "title": "CeritaPrabankRead",
+        "description": "Cerita pra-bank satu responden; `frozen_at` terisi setelah dibekukan."
+      },
+      "CeritaPrabankUpsert": {
+        "properties": {
+          "teks": {
+            "type": "string",
+            "maxLength": 20000,
+            "minLength": 1,
+            "title": "Teks",
+            "description": "Cerita bebas responden tentang pekerjaannya, sebelum melihat bank tugas.",
+            "examples": [
+              "Setiap hari saya menyiapkan perangkat ajar lalu mengajar kelas X."
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "teks"
+        ],
+        "title": "CeritaPrabankUpsert",
+        "description": "Payload `PUT .../cerita-prabank`: teks cerita bebas (1-20.000 karakter)."
+      },
       "DcsHasilRawRead": {
         "properties": {
           "mode": {
@@ -39089,6 +39592,16 @@
         "title": "EventKind",
         "description": "Jenis tindakan manusia pada tabel `narasi_event` (11 nilai paket)."
       },
+      "ExposureState": {
+        "type": "string",
+        "enum": [
+          "BELUM_TERPAPAR",
+          "LOCKED_PRE_EXPOSURE",
+          "EXPOSED"
+        ],
+        "title": "ExposureState",
+        "description": "Status paparan responden, diturunkan dari paparan pertamanya."
+      },
       "FiturKode": {
         "type": "string",
         "enum": [
@@ -39096,10 +39609,11 @@
           "PARTICIPANT_VALIDATION",
           "WCP_DCS_SCORING",
           "RESEARCH_EXPORT",
-          "CHANGE_AUTHORIZATION"
+          "CHANGE_AUTHORIZATION",
+          "PREBANK_FREEZE"
         ],
         "title": "FiturKode",
-        "description": "Kode lima fungsi yang dapat dimatikan secara independen (feature flag).\n\nNilai literal mengikuti paket kajian; urutan anggota = urutan di respons\n`GET /api/v1/system/fitur`."
+        "description": "Kode enam fungsi yang dapat dimatikan secara independen (feature flag).\n\nNilai literal mengikuti paket kajian; urutan anggota = urutan di respons\n`GET /api/v1/system/fitur`."
       },
       "FiturListRead": {
         "properties": {
@@ -39553,6 +40067,15 @@
         "type": "object",
         "title": "JabatanUpdate",
         "description": "Payload pembaruan sebagian jabatan."
+      },
+      "JenisPaparan": {
+        "type": "string",
+        "enum": [
+          "BANK_TUGAS",
+          "CONTOH_TUGAS"
+        ],
+        "title": "JenisPaparan",
+        "description": "Jenis materi yang diperlihatkan kepada responden; nilai lain ditolak CHECK."
       },
       "JenisSumberNarasi": {
         "type": "string",
@@ -46876,6 +47399,53 @@
         ],
         "title": "Page[WcpRespondenRead]"
       },
+      "PaparanCreate": {
+        "properties": {
+          "jenis": {
+            "$ref": "#/components/schemas/JenisPaparan",
+            "description": "Jenis materi yang diperlihatkan."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "jenis"
+        ],
+        "title": "PaparanCreate",
+        "description": "Payload `POST .../paparan`. Waktu paparan SELALU dari server (`extra=forbid`)."
+      },
+      "PaparanRead": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id",
+            "description": "ID paparan (UUID v4)."
+          },
+          "jenis": {
+            "$ref": "#/components/schemas/JenisPaparan",
+            "description": "Jenis materi yang diperlihatkan."
+          },
+          "terjadi_pada": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Terjadi Pada",
+            "description": "Waktu server saat paparan dicatat."
+          },
+          "status_saat_paparan": {
+            "$ref": "#/components/schemas/StatusPaparan",
+            "description": "LOCKED_PRE_EXPOSURE bila cerita sudah beku, selain itu EXPOSED."
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "jenis",
+          "terjadi_pada",
+          "status_saat_paparan"
+        ],
+        "title": "PaparanRead",
+        "description": "Satu baris log paparan (append-only)."
+      },
       "PartisipanCreate": {
         "properties": {
           "nama": {
@@ -48326,6 +48896,60 @@
         ],
         "title": "PermintaanAiRead",
         "description": "Satu permintaan draf AI beserta status job-nya; tanpa `masukan` dan `keluaran`."
+      },
+      "PrabankRead": {
+        "properties": {
+          "cerita": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CeritaPrabankRead"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Cerita responden; null bila belum ada."
+          },
+          "frozen_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Frozen At",
+            "description": "Waktu cerita dibekukan; null bila belum."
+          },
+          "first_exposed_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "First Exposed At",
+            "description": "Waktu paparan pertama; null bila belum pernah terpapar."
+          },
+          "exposure_state": {
+            "$ref": "#/components/schemas/ExposureState",
+            "description": "Status paparan dari paparan pertama."
+          }
+        },
+        "type": "object",
+        "required": [
+          "cerita",
+          "frozen_at",
+          "first_exposed_at",
+          "exposure_state"
+        ],
+        "title": "PrabankRead",
+        "description": "Ringkasan status pra-bank satu responden."
       },
       "Principal": {
         "properties": {
@@ -50876,6 +51500,15 @@
         ],
         "title": "StatusNarasi",
         "description": "Status siklus tinjauan sebuah kasus narasi (14 nilai); proyeksi, boleh berubah."
+      },
+      "StatusPaparan": {
+        "type": "string",
+        "enum": [
+          "LOCKED_PRE_EXPOSURE",
+          "EXPOSED"
+        ],
+        "title": "StatusPaparan",
+        "description": "Status cerita saat sebuah paparan terjadi (disimpan pada tiap baris log)."
       },
       "StatusProtokol": {
         "type": "string",

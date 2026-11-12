@@ -10,8 +10,11 @@
  */
 import { withServerAuth } from "@/lib/api/client";
 import { apiErrorDari } from "@/lib/api/errors";
+import { fiturAktif } from "@/lib/fitur";
 import { bacaEtag } from "@/lib/konkurensi";
+import { perluCeritaBebas } from "@/lib/ti-prabank";
 import type {
+  PrabankRead,
   TiCatalogRead,
   TiRespondenRead,
   TiSeleksiRead,
@@ -22,13 +25,31 @@ import type {
 export interface Tahap1PageData {
   responden: TiRespondenRead;
   sesi: TiSesiRead;
+  /** Kosong bila {@link Tahap1PageData.modeCerita} (bank tugas sengaja tidak diambil). */
   catalog: TiCatalogRead[];
+  /** `true` bila saklar `PREBANK_FREEZE` hidup dan responden belum terpapar bank tugas. */
+  modeCerita: boolean;
+  /** Status cerita/paparan; `null` bila saklar `PREBANK_FREEZE` mati (panggilan tidak dilakukan). */
+  prabank: PrabankRead | null;
   terpilih: string[];
   usulan: TiUsulanRead[];
   /** Header `ETag` dari `GET .../seleksi`; `null` bila belum pernah menyimpan seleksi (404). */
   seleksiEtag: string | null;
 }
 
+/**
+ * Ambil seluruh data halaman Tahap 1.
+ *
+ * Bila saklar `PREBANK_FREEZE` hidup, `GET .../prabank` dipanggil LEBIH DULU dan katalog
+ * hanya diambil jika responden sudah terpapar; selama `BELUM_TERPAPAR` tidak ada satu pun
+ * request katalog (bank tugas tidak boleh sampai ke browser sebelum cerita dibekukan).
+ * Saklar mati: perilaku identik dengan sebelumnya (tanpa panggilan `prabank`).
+ *
+ * @param accessToken - Token akses sesi untuk Bearer.
+ * @param respondenId - ID responden Task Inventory.
+ * @returns Data halaman, termasuk `modeCerita` dan `prabank`.
+ * @throws ApiError bila request inti gagal (termasuk `system/fitur` dan `prabank`).
+ */
 export async function fetchTahap1Data(
   accessToken: string | undefined,
   respondenId: string,
@@ -47,13 +68,28 @@ export async function fetchTahap1Data(
   if (!sesiRes.data) throw apiErrorDari(sesiRes);
   const sesi = sesiRes.data as TiSesiRead;
 
+  // Gerbang pra-bank (UX-01): saklar dibaca sebagai data inti (gagal -> lempar).
+  let prabank: PrabankRead | null = null;
+  let modeCerita = false;
+  if (await fiturAktif(client, "PREBANK_FREEZE")) {
+    const pbRes = await client.GET("/api/v1/task-inventory/sesi/responden/{responden_id}/prabank", {
+      params: { path: { responden_id: respondenId } },
+    });
+    if (!pbRes.data) throw apiErrorDari(pbRes);
+    prabank = pbRes.data;
+    modeCerita = perluCeritaBebas(true, prabank.exposure_state);
+  }
+
   // Kuesioner Tahap 1 butuh SELURUH task katalog jabatan; endpoint kini `Page[T]`
   // dengan default limit 20, jadi limit tinggi eksplisit wajib agar tak terpotong.
-  const catalogRes = await client.GET("/api/v1/task-inventory/catalog", {
-    params: { query: { jabatan_id: sesi.jabatan_id, limit: 500 } },
-  });
-  if (!catalogRes.data) throw apiErrorDari(catalogRes);
-  const catalog = (catalogRes.data.items ?? []) as TiCatalogRead[];
+  let catalog: TiCatalogRead[] = [];
+  if (!modeCerita) {
+    const catalogRes = await client.GET("/api/v1/task-inventory/catalog", {
+      params: { query: { jabatan_id: sesi.jabatan_id, limit: 500 } },
+    });
+    if (!catalogRes.data) throw apiErrorDari(catalogRes);
+    catalog = (catalogRes.data.items ?? []) as TiCatalogRead[];
+  }
 
   // PENGECUALIAN yang disengaja: backend melempar 404 ("Responden belum submit
   // seleksi Tahap 1") bila responden belum pernah menyimpan pilihan apa pun —
@@ -76,14 +112,17 @@ export async function fetchTahap1Data(
   // bukan objek tunggal, jadi tidak ada kondisi "belum ada" yang perlu ditoleransi
   // seperti seleksi 404 di atas: koleksi kosong pada kunjungan pertama sudah sah
   // sebagai `[]` dari backend sendiri.
-  const usulanRes = await client.GET(
-    "/api/v1/task-inventory/sesi/responden/{responden_id}/usulan",
-    {
-      params: { path: { responden_id: respondenId } },
-    },
-  );
-  if (!usulanRes.data) throw apiErrorDari(usulanRes);
-  const usulan = usulanRes.data as TiUsulanRead[];
+  let usulan: TiUsulanRead[] = [];
+  if (!modeCerita) {
+    const usulanRes = await client.GET(
+      "/api/v1/task-inventory/sesi/responden/{responden_id}/usulan",
+      {
+        params: { path: { responden_id: respondenId } },
+      },
+    );
+    if (!usulanRes.data) throw apiErrorDari(usulanRes);
+    usulan = usulanRes.data as TiUsulanRead[];
+  }
 
-  return { responden, sesi, catalog, terpilih, usulan, seleksiEtag };
+  return { responden, sesi, catalog, modeCerita, prabank, terpilih, usulan, seleksiEtag };
 }

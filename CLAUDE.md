@@ -84,6 +84,16 @@ src/
 
 ## Revisi Desain
 
+### [2026-11-12] Langkah cerita bebas sebelum bank tugas di Tahap 1 (#121)
+
+Item #121; konsumen backend `#131` (saklar `PREBANK_FREEZE`, cerita/paparan). Rujukan: `cakrawala-tumbuh/ypii-support#463`.
+
+- **Kontrak diekspor dari kode backend** master `18a925d` (klon scratch, image `Dockerfile.test`, `scripts/export_openapi.py`; stdout memuat log JSON yang disaring); `openapi.json` diganti utuh, `gen:api`, blok alias ditempel ulang + `CeritaPrabank*`, `PrabankRead`, `Paparan*`, `ExposureState`.
+- **`data.ts`**: saklar dibaca `fiturAktif(client, "PREBANK_FREEZE")` (data inti, gagal melempar). Saklar hidup -> `GET .../prabank` DULU; `BELUM_TERPAPAR` => `modeCerita=true`, katalog dan usulan TIDAK diambil (bank tidak pernah sampai ke browser). Saklar mati: tanpa panggilan `prabank`, perilaku lama.
+- **`cerita-bebas.tsx`** (Client Component): Simpan (`PUT cerita-prabank`), "Bekukan & lanjut" (`bekukan` lalu `paparan {BANK_TUGAS}`; nonaktif bila teks belum tersimpan), "Lewati cerita" (konfirmasi, hanya `paparan`). Gagal salah satu -> pesan galat tanpa refresh; bekukan sukses + paparan gagal -> ulang hanya `paparan`. Sukses hanya setelah 2xx lalu `router.refresh()`. Cerita beku pada kunjungan berikutnya tampil baca-saja di atas `SeleksiForm`; paparan tidak dikirim ulang.
+- Galat 409 `PAPARAN_BELUM_TERCATAT` dari simpan/kirim seleksi dipetakan ke pesan muat ulang (`petakanPaparanBelumTercatat`, `src/lib/ti-prabank.ts`).
+- Docs: `docs-usage/ik/task-inventory.md` bagian E. Tidak menampilkan status paparan di layar reviewer narasi. Detail: issue #121 repo ini.
+
 ### [2026-11-10] Usulan konteks AI (P11): tombol pengaju + panel Terapkan kandidat (#112)
 
 Item #112; konsumen backend `#127` (pengaju) dan `#128` (Terapkan). Rujukan: `cakrawala-tumbuh/ypii-support#463`.

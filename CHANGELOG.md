@@ -7,6 +7,13 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+### Ditambahkan
+
+- **Langkah "Cerita bebas" sebelum bank tugas di Tahap 1** (#121): bila saklar `PREBANK_FREEZE`
+  hidup dan responden belum terpapar, halaman Tahap 1 menampilkan cerita bebas tanpa teks
+  bank tugas (katalog tidak diambil); cerita dapat disimpan, dibekukan, atau dilewati, lalu
+  paparan dicatat dan daftar tugas dimuat. Saklar mati: tidak ada perubahan.
+
 ### Diperbaiki
 
 - **Token akses Authentik diperbarui otomatis** (#120): callback `jwt` memakai refresh token
