@@ -103,5 +103,6 @@ nav:
       - "IK-18 Usulan AI": ik/usulan-ai.md
       - "IK-19 Riset": ik/riset.md
       - "IK-20 Klarifikasi Narasi": ik/narasi-klarifikasi.md
+      - "IK-21 Metrik Alur Narasi": ik/narasi-metrik.md
   - Referensi:
       - FAQ: referensi/faq.md

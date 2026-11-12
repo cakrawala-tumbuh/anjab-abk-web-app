@@ -134,6 +134,7 @@ describe("menu Narasi", () => {
       "/narasi/kasus",
       "/narasi/antrean",
       "/narasi/klarifikasi",
+      "/narasi/metrik",
     ]);
   });
 

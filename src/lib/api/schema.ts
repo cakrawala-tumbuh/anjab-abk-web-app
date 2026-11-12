@@ -4071,6 +4071,46 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/narasi/kasus/{narasi_id}/menit-aktif": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Catat detak menit aktif tinjauan (tim-kajian)
+         * @description Klien memanggil ini sekali per menit hanya saat layar tinjauan aktif. Server memotong waktu ke menit sendiri dan tidak menerima timestamp klien; detak ganda dalam menit yang sama dari orang yang sama menghasilkan satu baris.
+         */
+        post: operations["narasi_menit_aktif_catat"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/narasi/metrik": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Metrik alur narasi (tim-kajian)
+         * @description Definisi operasional (rentang tanggal inklusif, hari UTC). `jumlah_keputusan` = event TEAM_APPROVE + TEAM_REVISE + TEAM_REJECT + NEED_SOURCE pada `event_at` dalam rentang. `correction_rate` = TEAM_REVISE / jumlah_keputusan; `rejection_rate` = TEAM_REJECT / jumlah_keputusan; null bila penyebut 0. `source_coverage` = proporsi versi narasi yang dibuat dalam rentang dan punya minimal satu tautan sumber; null bila tak ada versi. `menit_aktif_total` = jumlah detak menit aktif (satu baris = satu menit) dalam rentang; `menit_aktif_median_per_kasus` = median menit aktif per kasus atas kasus ber-menit > 0; null bila tak ada. Waktu = menit aktif, bukan selisih timestamp buka-kirim. Rasio desimal 0-1 dibulatkan 4 angka. False negative tidak dihitung (menunggu OD-13).
+         */
+        get: operations["narasi_metrik_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/narasi/kasus/{narasi_id}/draf-ai": {
         parameters: {
             query?: never;
@@ -9041,6 +9081,65 @@ export interface components {
              * @description Status aktif baru.
              */
             aktif?: boolean | null;
+        };
+        /**
+         * MetrikDitahan
+         * @description Metrik yang sengaja belum dihitung beserta alasannya.
+         */
+        MetrikDitahan: {
+            /**
+             * Kode
+             * @description Kode metrik yang ditahan.
+             * @example false_negative
+             */
+            kode: string;
+            /**
+             * Alasan
+             * @description Alasan penahanan.
+             * @example menunggu OD-13
+             */
+            alasan: string;
+        };
+        /**
+         * MetrikNarasiRead
+         * @description Metrik agregat alur narasi pada satu rentang tanggal.
+         */
+        MetrikNarasiRead: {
+            /**
+             * Jumlah Keputusan
+             * @description Jumlah keputusan Tim dalam rentang.
+             */
+            jumlah_keputusan: number;
+            /**
+             * Correction Rate
+             * @description TEAM_REVISE / jumlah_keputusan; null bila penyebut 0.
+             */
+            correction_rate?: number | null;
+            /**
+             * Rejection Rate
+             * @description TEAM_REJECT / jumlah_keputusan; null bila penyebut 0.
+             */
+            rejection_rate?: number | null;
+            /**
+             * Source Coverage
+             * @description Proporsi versi bertautan sumber; null bila tak ada versi.
+             */
+            source_coverage?: number | null;
+            /**
+             * Menit Aktif Total
+             * @description Total menit aktif dalam rentang.
+             */
+            menit_aktif_total: number;
+            /**
+             * Menit Aktif Median Per Kasus
+             * @description Median menit aktif per kasus (kasus ber-menit > 0).
+             */
+            menit_aktif_median_per_kasus?: number | null;
+            /**
+             * Metrik Ditahan
+             * @description Metrik yang belum dihitung (false negative menunggu OD-13).
+             */
+            metrik_ditahan?: components["schemas"]["MetrikDitahan"][];
         };
         /**
          * NarasiEventRead
@@ -35969,6 +36068,137 @@ export interface operations {
             };
         };
     };
+    narasi_menit_aktif_catat: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                narasi_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan anggota grup tim-kajian. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Kasus narasi tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    narasi_metrik_get: {
+        parameters: {
+            query: {
+                /** @description Tanggal awal inklusif (YYYY-MM-DD, UTC). */
+                dari: string;
+                /** @description Tanggal akhir inklusif (YYYY-MM-DD, UTC). */
+                sampai: string;
+                /** @description Saring per jenis narasi kasus. */
+                narrative_kind?: components["schemas"]["NarrativeKind"] | null;
+            };
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MetrikNarasiRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan anggota grup tim-kajian. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Tanggal salah, `dari` > `sampai`, atau rentang > 366 hari. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
     narasi_kasus_draf_ai_ajukan: {
         parameters: {
             query?: never;
@@ -39999,3 +40229,6 @@ export type KlarifikasiDetail = components["schemas"]["KlarifikasiDetail"];
 export type KlarifikasiCreate = components["schemas"]["KlarifikasiCreate"];
 export type KlarifikasiDariUsulan = components["schemas"]["KlarifikasiDariUsulan"];
 export type KlarifikasiEventRead = components["schemas"]["KlarifikasiEventRead"];
+export type MetrikNarasiRead = components["schemas"]["MetrikNarasiRead"];
+export type MetrikDitahan = components["schemas"]["MetrikDitahan"];
+export type NarrativeKind = components["schemas"]["NarrativeKind"];

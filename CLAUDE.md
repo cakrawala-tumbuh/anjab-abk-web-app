@@ -84,6 +84,16 @@ src/
 
 ## Revisi Desain
 
+### [2026-11-12] Menit aktif tinjauan narasi + panel metrik UX-13 (#124)
+
+Item #124; konsumen backend `#138` (`POST .../menit-aktif`, `GET /narasi/metrik`, master `17f1d11`). Bergantung pada #123. Rujukan: `cakrawala-tumbuh/ypii-support#463`.
+
+- **Kontrak diekspor dari kode backend** master `17f1d11` (klon scratch, image `Dockerfile.test`, `scripts/export_openapi.py` ke `/dev/stdout`, log JSON di depan dilewati dengan `raw_decode`); `openapi.json` diganti utuh, `gen:api`, blok alias ditempel ulang + `MetrikNarasiRead`, `MetrikDitahan`, `NarrativeKind`. Hanya penambahan di `schema.ts` (tanpa drift lain).
+- **Hook `useMenitAktif(narasiId, accessToken)`** (`src/lib/use-menit-aktif.ts`, dipasang lewat `PencatatMenitAktif` di `narasi/antrean/[narasi_id]/page.tsx`, hanya saat kasus ada dalam antrean): `setInterval` 60 detik; detak dikirim bila `document.visibilityState === "visible"` DAN ada interaksi (`pointerdown`/`click`/`keydown`/`input`/`scroll`, di-capture di `document`) dalam 60 detik terakhir. Membuka halaman BUKAN interaksi. Tanpa `Idempotency-Key` (backend idempoten per menit dan tidak menerima timestamp klien). Kegagalan (galat jaringan, 4xx/5xx termasuk 429) tidak melempar, tidak toast; hanya `console.warn`: ini bukan jalur baca.
+- **Rute** `src/app/(auth)/narasi/metrik/` (guard `tim-kajian` dari `narasi/layout.tsx`; `loading.tsx` + `error.tsx`; menu `Narasi -> Metrik` di `NARASI_TIM_ITEMS`): `page.tsx` (Server Component dari `searchParams`: `dari`, `sampai`, `narrative_kind`), `data.ts` (gagal melempar), `filter-metrik.tsx` (validasi rentang di klien sebelum `router.push`), `panel-metrik.tsx` (kartu + kotak `metrik_ditahan`). Rentang tak sah dari URL ditampilkan sebagai galat TANPA memanggil backend. Logika murni di `src/lib/narasi-metrik.ts` (`validasiRentang`: inklusif, > 366 hari atau `dari` > `sampai` ditolak, cermin `periksa_rentang` backend; `formatPersen`: `null` = "Belum ada data", 0 = "0,0%").
+- Kotak informasi menyebut `metrik_ditahan` (false negative, menunggu OD-13) dan melarang angka dipakai sebagai klaim penghematan waktu.
+- Docs: `docs-usage/ik/narasi-metrik.md` (IK-21), bagian menit aktif di `narasi-tinjauan.md` (IK-16). E2E nonaktif: utang di #109.
+
 ### [2026-11-12] Antrean klarifikasi narasi + panel Terapkan P04 (#123)
 
 Item #123; konsumen backend `#136` (register) dan `#137` (`dari-usulan`, commit `77a1cfe`). Rujukan: `cakrawala-tumbuh/ypii-support#463`.

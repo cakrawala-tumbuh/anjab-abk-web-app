@@ -9,6 +9,15 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ### Ditambahkan
 
+- **Menit aktif tinjauan narasi dan panel metrik** (#124): layar Tinjauan Narasi mengirim satu
+  detak per menit ke backend hanya selama reviewer aktif (tab terlihat dan ada interaksi dalam 60
+  detik terakhir; kegagalan detak tidak mengganggu tinjauan dan hanya dicatat di konsol). Menu baru
+  Narasi → Metrik (`/narasi/metrik`, Tim Kajian) menampilkan jumlah keputusan, tingkat koreksi dan
+  penolakan, cakupan sumber, serta menit aktif total dan median per kasus untuk rentang tanggal
+  (bawaan 30 hari, paling panjang 366 hari) dengan saringan jenis narasi. Metrik tanpa penyebut
+  tampil "Belum ada data", bukan 0%; false negative ditahan (menunggu OD-13) dan angka tidak boleh
+  dipakai sebagai klaim penghematan waktu.
+
 - **Antrean klarifikasi narasi dan penerapan usulan P04** (#123): grup Narasi punya menu
   "Klarifikasi" (`/narasi/klarifikasi`, Tim Kajian) berisi indeks (bawaan disposisi Terbuka),
   detail dengan 13 metadata, teks pertanyaan, dan riwayat, serta aksi menurut state: Setujui /

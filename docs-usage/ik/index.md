@@ -23,6 +23,7 @@ detail klik tombol, mengisi formulir, dan menginput data. IK adalah pelengkap
 | [IK-17](penyedia-ai.md)        | Penyedia AI         | Administrator                          |
 | [IK-19](riset.md)              | Riset               | Tim Kajian                             |
 | [IK-20](narasi-klarifikasi.md) | Klarifikasi Narasi  | Tim Kajian                             |
+| [IK-21](narasi-metrik.md)      | Metrik Alur Narasi  | Tim Kajian                             |
 
 ---
 

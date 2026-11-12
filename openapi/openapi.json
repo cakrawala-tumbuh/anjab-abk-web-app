@@ -30726,6 +30726,216 @@
         }
       }
     },
+    "/api/v1/narasi/kasus/{narasi_id}/menit-aktif": {
+      "post": {
+        "tags": [
+          "narasi"
+        ],
+        "summary": "Catat detak menit aktif tinjauan (tim-kajian)",
+        "description": "Klien memanggil ini sekali per menit hanya saat layar tinjauan aktif. Server memotong waktu ke menit sendiri dan tidak menerima timestamp klien; detak ganda dalam menit yang sama dari orang yang sama menghasilkan satu baris.",
+        "operationId": "narasi_menit_aktif_catat",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "narasi_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Narasi Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan anggota grup tim-kajian.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Kasus narasi tidak ditemukan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/narasi/metrik": {
+      "get": {
+        "tags": [
+          "narasi"
+        ],
+        "summary": "Metrik alur narasi (tim-kajian)",
+        "description": "Definisi operasional (rentang tanggal inklusif, hari UTC). `jumlah_keputusan` = event TEAM_APPROVE + TEAM_REVISE + TEAM_REJECT + NEED_SOURCE pada `event_at` dalam rentang. `correction_rate` = TEAM_REVISE / jumlah_keputusan; `rejection_rate` = TEAM_REJECT / jumlah_keputusan; null bila penyebut 0. `source_coverage` = proporsi versi narasi yang dibuat dalam rentang dan punya minimal satu tautan sumber; null bila tak ada versi. `menit_aktif_total` = jumlah detak menit aktif (satu baris = satu menit) dalam rentang; `menit_aktif_median_per_kasus` = median menit aktif per kasus atas kasus ber-menit > 0; null bila tak ada. Waktu = menit aktif, bukan selisih timestamp buka-kirim. Rasio desimal 0-1 dibulatkan 4 angka. False negative tidak dihitung (menunggu OD-13).",
+        "operationId": "narasi_metrik_get",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "dari",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "description": "Tanggal awal inklusif (YYYY-MM-DD, UTC).",
+              "title": "Dari"
+            },
+            "description": "Tanggal awal inklusif (YYYY-MM-DD, UTC)."
+          },
+          {
+            "name": "sampai",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "description": "Tanggal akhir inklusif (YYYY-MM-DD, UTC).",
+              "title": "Sampai"
+            },
+            "description": "Tanggal akhir inklusif (YYYY-MM-DD, UTC)."
+          },
+          {
+            "name": "narrative_kind",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/NarrativeKind"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Saring per jenis narasi kasus.",
+              "title": "Narrative Kind"
+            },
+            "description": "Saring per jenis narasi kasus."
+          },
+          {
+            "name": "X-Tujuan-Akses",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN.",
+              "title": "X-Tujuan-Akses"
+            },
+            "description": "Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MetrikNarasiRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan anggota grup tim-kajian.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Tanggal salah, `dari` > `sampai`, atau rentang > 366 hari.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/narasi/kasus/{narasi_id}/draf-ai": {
       "post": {
         "tags": [
@@ -45735,6 +45945,112 @@
         "type": "object",
         "title": "MataPelajaranUpdate",
         "description": "Payload pembaruan sebagian mata pelajaran."
+      },
+      "MetrikDitahan": {
+        "properties": {
+          "kode": {
+            "type": "string",
+            "title": "Kode",
+            "description": "Kode metrik yang ditahan.",
+            "examples": [
+              "false_negative"
+            ]
+          },
+          "alasan": {
+            "type": "string",
+            "title": "Alasan",
+            "description": "Alasan penahanan.",
+            "examples": [
+              "menunggu OD-13"
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "kode",
+          "alasan"
+        ],
+        "title": "MetrikDitahan",
+        "description": "Metrik yang sengaja belum dihitung beserta alasannya."
+      },
+      "MetrikNarasiRead": {
+        "properties": {
+          "jumlah_keputusan": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Jumlah Keputusan",
+            "description": "Jumlah keputusan Tim dalam rentang."
+          },
+          "correction_rate": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Correction Rate",
+            "description": "TEAM_REVISE / jumlah_keputusan; null bila penyebut 0."
+          },
+          "rejection_rate": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rejection Rate",
+            "description": "TEAM_REJECT / jumlah_keputusan; null bila penyebut 0."
+          },
+          "source_coverage": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Coverage",
+            "description": "Proporsi versi bertautan sumber; null bila tak ada versi."
+          },
+          "menit_aktif_total": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Menit Aktif Total",
+            "description": "Total menit aktif dalam rentang."
+          },
+          "menit_aktif_median_per_kasus": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Menit Aktif Median Per Kasus",
+            "description": "Median menit aktif per kasus (kasus ber-menit > 0)."
+          },
+          "metrik_ditahan": {
+            "items": {
+              "$ref": "#/components/schemas/MetrikDitahan"
+            },
+            "type": "array",
+            "title": "Metrik Ditahan",
+            "description": "Metrik yang belum dihitung (false negative menunggu OD-13)."
+          }
+        },
+        "type": "object",
+        "required": [
+          "jumlah_keputusan",
+          "menit_aktif_total"
+        ],
+        "title": "MetrikNarasiRead",
+        "description": "Metrik agregat alur narasi pada satu rentang tanggal."
       },
       "NarasiEventRead": {
         "properties": {

@@ -6,6 +6,7 @@ import { fetchSemuaSumber } from "../../kasus/data";
 import { AksiTinjauan } from "./aksi-tinjauan";
 import { fetchDetailAntrean } from "./data";
 import { KritikVersiAi } from "./kritik-versi-ai";
+import { PencatatMenitAktif } from "./pencatat-menit-aktif";
 import { PanelDraf } from "./panel-draf";
 import { PanelKetidakpastian } from "./panel-ketidakpastian";
 import { PanelSumber } from "./panel-sumber";
@@ -21,7 +22,8 @@ interface Props {
  * layar lebar (bertumpuk di layar sempit), panel ketidakpastian, dan empat aksi.
  *
  * Kegagalan backend dilempar ke `error.tsx` (termasuk 403); 404 menjadi `notFound()`;
- * 409 `narasi_tidak_dalam_antrean` menjadi panel keterangan dengan tautan kembali.
+ * 409 `narasi_tidak_dalam_antrean` menjadi panel keterangan dengan tautan kembali. Selama
+ * reviewer aktif, `PencatatMenitAktif` mengirim detak menit aktif (UX-13).
  */
 export default async function TinjauanNarasiPage({ params }: Props) {
   const { narasi_id } = await params;
@@ -63,6 +65,7 @@ export default async function TinjauanNarasiPage({ params }: Props) {
 
   return (
     <div className="space-y-6">
+      <PencatatMenitAktif narasiId={detail.narasi_id} accessToken={token} />
       <nav aria-label="Breadcrumb" className="text-sm text-gray-500 dark:text-gray-400">
         {kembali} / <span>{detail.instrument_id}</span>
       </nav>

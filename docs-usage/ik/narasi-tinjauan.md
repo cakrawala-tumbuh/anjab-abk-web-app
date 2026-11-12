@@ -46,3 +46,11 @@ Pada versi yang bertulis teks, bagian **Kritik AI atas draf** menyediakan tombol
 Hasilnya usulan yang membantu Anda menemukan kelemahan draf; ia tidak menggantikan tinjauan Anda.
 Klik **Buka usulan** setelah "Permintaan diterima" untuk membacanya. Versi tanpa teks tidak
 menampilkan tombol ini.
+
+## Pencatatan menit aktif
+
+Selama Anda meninjau, aplikasi mencatat **menit aktif** di latar belakang: satu detak per menit,
+hanya bila tab terlihat dan ada interaksi (ketik, klik, gulir, tombol) dalam 60 detik terakhir.
+Waktu saat tab tersembunyi atau layar dibiarkan tanpa interaksi tidak dihitung. Tidak ada tombol atau
+pesan untuk ini, dan kegagalan pencatatan tidak mengganggu tinjauan. Hasilnya dibaca di
+[IK-21 Metrik Alur Narasi](narasi-metrik.md).
