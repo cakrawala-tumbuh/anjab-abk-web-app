@@ -291,6 +291,51 @@ memindahkan tugas**.
    dibuat sistem dan tidak dapat diubah. Alternatif tidak dapat dihapus.
 6. Bila penyimpanan ditolak, muncul pemberitahuan gagal dan formulir tetap terbuka.
 
+#### Kesiapan penerima per periode
+
+Di bawah daftar alternatif terdapat bagian **Kesiapan penerima per periode**. Satu alternatif
+dapat punya **lebih dari satu penerima**, dan kesiapan tiap penerima dinilai **per periode**
+(tahun ajaran, format `YYYY/YY`, mis. `2026/27`).
+
+1. Isi **Periode (tahun ajaran)** lalu klik **Terapkan periode**. Bawaannya tahun ajaran
+   berjalan. Format selain `YYYY/YY` ditolak dengan pesan merah. Matriks dan riwayat keputusan
+   di bawahnya selalu mengikuti periode yang dipilih.
+2. Pada panel tiap alternatif, buka **Penerima … — kelola**, pilih **Jabatan penerima**,
+   centang **Penerima material** bila perlu (bawaannya tercentang), isi **Catatan** bila ada,
+   lalu klik **Tambah penerima**. Penerima adalah jabatan, bukan orang.
+3. Klik **+ Catat kesiapan penerima**, pilih **Penerima** dan **Status kesiapan**
+   (**READY**, **CONDITIONAL**, atau **HOLD**; tidak ada pilihan bawaan).
+   - **CONDITIONAL** menuntut **Syarat**; **HOLD** menuntut **Alasan hold**.
+   - Untuk tiap delta beban kerja (pihak asal, penerima, organisasi) pilih **Angka (jam)**
+     lalu isi jam kerja efektif per periode (positif = beban bertambah), atau pilih
+     **Tidak dapat diestimasi** bila memang tidak bisa dihitung. **Tidak dapat diestimasi
+     bukan nol**: kolom itu tidak boleh diisi angka.
+   - Klik **Catat kesiapan**. Pesan merah muncul bila ada yang kurang dan data tidak dikirim.
+     Penilaian bersifat tambahan; untuk mengoreksi, catat penilaian baru.
+4. **Matriks kesiapan** menampilkan satu baris per penerima (nama jabatan): status, tiga delta,
+   syarat atau alasan hold, dan tanggal dinilai. Baris yang belum dinilai pada periode itu
+   ditandai **Belum dinilai**; delta yang tidak dapat diestimasi tampil sebagai
+   **Tidak dapat diestimasi**, sedangkan angka nol tampil **0 jam**. Di atas tabel ada
+   **Status opsi**: **HOLD** bila ada penerima material yang HOLD atau belum dinilai (atau
+   alternatif belum punya penerima).
+5. Bila matriks gagal dimuat, halaman menampilkan halaman galat, bukan tabel kosong.
+
+#### Keputusan perubahan (ChangeDecision)
+
+Panel **Keputusan perubahan (ChangeDecision)** berada di bawah matriks dan **terpisah dari
+Keputusan prioritas** di tab Penilaian: memutuskan prioritas tidak mengubah keputusan
+perubahan, begitu pula sebaliknya.
+
+1. Riwayat keputusan pada periode terpilih tampil di panel (keputusan, status opsi saat itu,
+   kode pemutus, tanggal, alasan, stop rule).
+2. Formulir hanya muncul bila saklar **CHANGE_AUTHORIZATION** hidup. Bila mati, formulir
+   disembunyikan tetapi riwayat tetap terbaca.
+3. Pilih **Keputusan**: **APPROVE** (hanya aktif bila status opsi **READY**), **CONDITIONAL**
+   (tidak aktif bila status opsi **HOLD**), **HOLD**, atau **REJECT**. Isi **Alasan** (minimal
+   5 karakter) dan, untuk CONDITIONAL, **Stop rule**. Klik **Catat keputusan perubahan**.
+4. Penolakan dari server (mis. kesiapan belum READY) tampil apa adanya dan tidak ada yang
+   tersimpan.
+
 ### Meminta bantuan AI (tab AI)
 
 Buka tab **AI** pada detail masalah. Ada tiga panel; klik judul panel untuk membukanya.

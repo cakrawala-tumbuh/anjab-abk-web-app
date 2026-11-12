@@ -4,7 +4,14 @@
 import { withServerAuth } from "@/lib/api/client";
 import { apiErrorDari } from "@/lib/api/errors";
 import { ambilSemuaHalaman } from "@/lib/api/paginasi";
-import type { AlternatifRead, JabatanRead } from "@/lib/api/schema";
+import { fiturAktif } from "@/lib/fitur";
+import type {
+  AlternatifRead,
+  JabatanRead,
+  KeputusanPerubahanRead,
+  KesiapanMatriksRead,
+  PenerimaRead,
+} from "@/lib/api/schema";
 
 /**
  * Ambil seluruh alternatif sebuah masalah (`POST /api/v1/redesain/alternatif/search`).
@@ -41,4 +48,75 @@ export function fetchJabatanAlternatif(accessToken: string | undefined): Promise
     if (!res.data) throw apiErrorDari(res);
     return { items: res.data.items as JabatanRead[], total: res.data.total };
   });
+}
+
+/**
+ * Ambil daftar penerima sebuah alternatif (`GET .../alternatif/{id}/penerima`).
+ *
+ * @param accessToken - Token akses sesi.
+ * @param alternatifId - ID alternatif.
+ * @throws ApiError bila gagal (data inti: tidak pernah menjadi daftar kosong).
+ */
+export async function fetchPenerima(
+  accessToken: string | undefined,
+  alternatifId: string,
+): Promise<PenerimaRead[]> {
+  const res = await withServerAuth(accessToken).GET(
+    "/api/v1/redesain/alternatif/{alternatif_id}/penerima",
+    { params: { path: { alternatif_id: alternatifId } } },
+  );
+  if (!res.data) throw apiErrorDari(res);
+  return res.data;
+}
+
+/**
+ * Ambil matriks kesiapan Option×Penerima pada satu periode
+ * (`GET .../alternatif/{id}/kesiapan?periode=`).
+ *
+ * @param accessToken - Token akses sesi.
+ * @param alternatifId - ID alternatif.
+ * @param periode - Periode `YYYY/YY`.
+ * @throws ApiError bila gagal (data inti: gagal melempar, bukan tabel kosong).
+ */
+export async function fetchMatriksKesiapan(
+  accessToken: string | undefined,
+  alternatifId: string,
+  periode: string,
+): Promise<KesiapanMatriksRead> {
+  const res = await withServerAuth(accessToken).GET(
+    "/api/v1/redesain/alternatif/{alternatif_id}/kesiapan",
+    { params: { path: { alternatif_id: alternatifId }, query: { periode } } },
+  );
+  if (!res.data) throw apiErrorDari(res);
+  return res.data;
+}
+
+/**
+ * Ambil riwayat keputusan perubahan sebuah alternatif pada satu periode.
+ *
+ * @param accessToken - Token akses sesi.
+ * @param alternatifId - ID alternatif.
+ * @param periode - Periode `YYYY/YY`.
+ * @throws ApiError bila gagal.
+ */
+export async function fetchKeputusanPerubahan(
+  accessToken: string | undefined,
+  alternatifId: string,
+  periode: string,
+): Promise<KeputusanPerubahanRead[]> {
+  const res = await withServerAuth(accessToken).GET(
+    "/api/v1/redesain/alternatif/{alternatif_id}/keputusan-perubahan",
+    { params: { path: { alternatif_id: alternatifId }, query: { periode } } },
+  );
+  if (!res.data) throw apiErrorDari(res);
+  return res.data;
+}
+
+/**
+ * Apakah saklar `CHANGE_AUTHORIZATION` hidup (kegagalan membaca saklar dilempar).
+ *
+ * @param accessToken - Token akses sesi.
+ */
+export function fetchSaklarPerubahan(accessToken: string | undefined): Promise<boolean> {
+  return fiturAktif(withServerAuth(accessToken), "CHANGE_AUTHORIZATION");
 }

@@ -27,6 +27,7 @@ const item = (o: Partial<AntreanItemRead> = {}): AntreanItemRead => ({
   revision_no: 1,
   revision_origin: "REVIEWER_EDIT",
   label_dokumenter: null,
+  paparan: "TIDAK_BERLAKU",
   jumlah_sumber: 2,
   jumlah_kontradiksi: 0,
   updated_at: "2026-11-05T00:00:00Z",

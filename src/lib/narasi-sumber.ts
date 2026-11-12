@@ -7,8 +7,8 @@ import { ApiError } from "@/lib/api/errors";
 /** Batas karakter `teks` pada satu sumber narasi (cermin `BATAS_TEKS` backend). */
 export const BATAS_TEKS = 200_000;
 
-/** Jenis sumber yang sah pada tahap ini (K-3); nilai lain ditolak backend dengan 422. */
-export const JENIS_SUMBER = ["SINTETIS", "DOKUMEN_RESMI"] as const;
+/** Jenis sumber yang sah pada tahap T0–T2 (K-3); nilai lain ditolak backend dengan 422. */
+export const JENIS_SUMBER = ["SINTETIS", "DOKUMEN_RESMI", "KETERANGAN_ORANG"] as const;
 
 /** Tipe nilai `jenis` sumber narasi. */
 export type JenisSumber = (typeof JENIS_SUMBER)[number];
@@ -17,6 +17,7 @@ export type JenisSumber = (typeof JENIS_SUMBER)[number];
 export const LABEL_JENIS: Record<JenisSumber, string> = {
   SINTETIS: "Sintetis",
   DOKUMEN_RESMI: "Dokumen resmi",
+  KETERANGAN_ORANG: "Keterangan orang",
 };
 
 /** Keterangan tetap di bawah kotak centang `izin_ai`: hanya catatan, tidak menyalakan AI. */

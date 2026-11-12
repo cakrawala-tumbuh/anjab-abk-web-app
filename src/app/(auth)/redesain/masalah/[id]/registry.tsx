@@ -12,6 +12,8 @@ export interface KonteksBagianMasalah {
   masalah: MasalahRead;
   sekolah: SekolahRead[];
   accessToken: string | undefined;
+  /** Nilai `?periode=` (format `YYYY/YY`); hanya dibaca bagian alternatif. */
+  periode?: string;
 }
 
 /** Satu bagian pada halaman detail masalah. */

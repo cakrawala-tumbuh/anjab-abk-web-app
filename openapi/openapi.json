@@ -24040,6 +24040,735 @@
         }
       }
     },
+    "/api/v1/redesain/alternatif/{alternatif_id}/penerima": {
+      "get": {
+        "tags": [
+          "redesain"
+        ],
+        "summary": "Daftar penerima alternatif redesain (tim-kajian)",
+        "description": "Daftar penerima (jabatan) alternatif, urut waktu penambahan.",
+        "operationId": "redesain_alternatif_penerima_list",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "alternatif_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Alternatif Id"
+            }
+          },
+          {
+            "name": "X-Tujuan-Akses",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN.",
+              "title": "X-Tujuan-Akses"
+            },
+            "description": "Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PenerimaRead"
+                  },
+                  "title": "Response Redesain Alternatif Penerima List"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan anggota grup tim-kajian.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Alternatif tidak ditemukan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "redesain"
+        ],
+        "summary": "Tambah penerima alternatif redesain (tim-kajian)",
+        "description": "Tambah satu jabatan penerima; kolom lama `pihak_penerima_jabatan_id` tidak disentuh.",
+        "operationId": "redesain_alternatif_penerima_create",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "alternatif_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Alternatif Id"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Kunci idempotency opsional.",
+              "title": "Idempotency-Key"
+            },
+            "description": "Kunci idempotency opsional."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PenerimaCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PenerimaRead"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Jabatan sudah menjadi penerima (`PENERIMA_GANDA`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan anggota grup tim-kajian.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Alternatif tidak ditemukan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Payload/jabatan tidak valid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/redesain/alternatif/{alternatif_id}/kesiapan": {
+      "post": {
+        "tags": [
+          "redesain"
+        ],
+        "summary": "Catat penilaian kesiapan penerima per periode (tim-kajian)",
+        "description": "Catat penilaian kesiapan (append-only); koreksi = penilaian baru, matriks memakai terakhir.\n\n`NOT_ESTIMABLE` menyimpan nilai null (bukan 0).",
+        "operationId": "redesain_alternatif_kesiapan_create",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "alternatif_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Alternatif Id"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Kunci idempotency opsional.",
+              "title": "Idempotency-Key"
+            },
+            "description": "Kunci idempotency opsional."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/KesiapanCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/KesiapanRead"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Idempotency-Key ini sedang diproses (atau konflik state).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan anggota grup tim-kajian.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Alternatif tidak ditemukan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Aturan wajib-isi dilanggar atau `PENERIMA_BUKAN_MILIK_ALTERNATIF`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "redesain"
+        ],
+        "summary": "Matriks kesiapan alternatif per periode beserta status opsi (tim-kajian)",
+        "description": "Matriks kesiapan pada periode: penilaian terakhir per penerima dan `status_opsi`.",
+        "operationId": "redesain_alternatif_kesiapan_matriks",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "alternatif_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Alternatif Id"
+            }
+          },
+          {
+            "name": "periode",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^\\d{4}/\\d{2}$",
+              "description": "Periode, mis. 2026/27.",
+              "title": "Periode"
+            },
+            "description": "Periode, mis. 2026/27."
+          },
+          {
+            "name": "X-Tujuan-Akses",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN.",
+              "title": "X-Tujuan-Akses"
+            },
+            "description": "Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/KesiapanMatriksRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan anggota grup tim-kajian.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Alternatif tidak ditemukan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "`periode` hilang atau salah pola.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/redesain/alternatif/{alternatif_id}/keputusan-perubahan": {
+      "post": {
+        "tags": [
+          "redesain"
+        ],
+        "summary": "Catat keputusan perubahan alternatif per periode (tim-kajian)",
+        "description": "Catat keputusan perubahan (append-only), ditegakkan terhadap status opsi periode itu.\n\nTidak pernah tercipta dari keputusan prioritas (`POST /redesain/penilaian/{id}/putuskan`).",
+        "operationId": "redesain_alternatif_keputusan_perubahan_create",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "alternatif_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Alternatif Id"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Kunci idempotency opsional.",
+              "title": "Idempotency-Key"
+            },
+            "description": "Kunci idempotency opsional."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/KeputusanPerubahanCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/KeputusanPerubahanRead"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Saklar `CHANGE_AUTHORIZATION` mati (`feature_disabled`), APPROVE saat opsi belum READY (`KESIAPAN_BELUM_READY`), atau CONDITIONAL saat opsi HOLD (`KESIAPAN_HOLD`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan anggota grup tim-kajian.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Alternatif tidak ditemukan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Payload tidak valid (mis. `stop_rule` kosong pada CONDITIONAL).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "redesain"
+        ],
+        "summary": "Riwayat keputusan perubahan alternatif (tim-kajian)",
+        "description": "Riwayat urut `created_at` naik; keputusan berlaku = baris terakhir per periode.\n\nTidak digerbang saklar: riwayat tetap terbaca saat `CHANGE_AUTHORIZATION` mati.",
+        "operationId": "redesain_alternatif_keputusan_perubahan_list",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "alternatif_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Alternatif Id"
+            }
+          },
+          {
+            "name": "periode",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^\\d{4}/\\d{2}$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Saring per periode, mis. 2026/27.",
+              "title": "Periode"
+            },
+            "description": "Saring per periode, mis. 2026/27."
+          },
+          {
+            "name": "X-Tujuan-Akses",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN.",
+              "title": "X-Tujuan-Akses"
+            },
+            "description": "Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/KeputusanPerubahanRead"
+                  },
+                  "title": "Response Redesain Alternatif Keputusan Perubahan List"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token tidak ada/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Terlalu banyak permintaan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bukan anggota grup tim-kajian.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Alternatif tidak ditemukan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "`periode` salah pola.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/redesain/cakupan-jabatan": {
       "get": {
         "tags": [
@@ -29639,7 +30368,7 @@
           "narasi"
         ],
         "summary": "Antrean tinjauan Tim (tanpa teks)",
-        "description": "Kasus `AI_DRAFT`, `TEAM_REVIEW`, `NEED_FACT`; urut `updated_at` naik.",
+        "description": "Kasus `AI_DRAFT`, `TEAM_REVIEW`, `NEED_FACT`; urut `updated_at` naik.\n\n`paparan` tiap baris dihitung dari satu kueri batch atas `assignment_ref` kasus F2 di halaman.",
         "operationId": "narasi_antrean_list",
         "security": [
           {
@@ -29809,7 +30538,7 @@
           "narasi"
         ],
         "summary": "Detail antrean: draf berdampingan dengan teks sumber",
-        "description": "Versi terbaru, sumber lengkap, dan metadata AI terpilih.\n\n`paparan` bernilai tetap `TIDAK_BERLAKU` (F1); `AiRunRead` dan keluaran mentah tidak dibuka.",
+        "description": "Versi terbaru, sumber lengkap, dan metadata AI terpilih.\n\n`paparan` dihitung saat baca (F1: `TIDAK_BERLAKU`; F2: status responden pasangan atau\n`TIDAK_DIKETAHUI`); `AiRunRead` dan keluaran mentah tidak dibuka.",
         "operationId": "narasi_antrean_get",
         "security": [
           {
@@ -36878,6 +37607,7 @@
           "paparan": {
             "type": "string",
             "title": "Paparan",
+            "description": "Status paparan bank tugas, dihitung saat baca. F1_FORMAL dan jenis lain: TIDAK_BERLAKU. F2_ACTUAL berpasangan responden TI (assignment_ref = id responden): BELUM_TERPAPAR, LOCKED_PRE_EXPOSURE (cerita beku sebelum paparan), atau EXPOSED. F2_ACTUAL tanpa pasangan responden: TIDAK_DIKETAHUI.",
             "default": "TIDAK_BERLAKU"
           }
         },
@@ -36966,6 +37696,24 @@
             "type": "string",
             "format": "date-time",
             "title": "Updated At"
+          },
+          "assignment_ref": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Assignment Ref",
+            "description": "Rujukan penugasan kasus; kunci pasangan responden F2."
+          },
+          "paparan": {
+            "type": "string",
+            "title": "Paparan",
+            "description": "Status paparan bank tugas, dihitung saat baca. F1_FORMAL dan jenis lain: TIDAK_BERLAKU. F2_ACTUAL berpasangan responden TI (assignment_ref = id responden): BELUM_TERPAPAR, LOCKED_PRE_EXPOSURE (cerita beku sebelum paparan), atau EXPOSED. F2_ACTUAL tanpa pasangan responden: TIDAK_DIKETAHUI.",
+            "default": "TIDAK_BERLAKU"
           }
         },
         "type": "object",
@@ -39574,6 +40322,15 @@
         ],
         "title": "ErrorResponse"
       },
+      "EstimasiDelta": {
+        "type": "string",
+        "enum": [
+          "ESTIMATED",
+          "NOT_ESTIMABLE"
+        ],
+        "title": "EstimasiDelta",
+        "description": "Apakah delta beban dapat diperkirakan; `NOT_ESTIMABLE` bukan nol."
+      },
       "EventKind": {
         "type": "string",
         "enum": [
@@ -40081,10 +40838,11 @@
         "type": "string",
         "enum": [
           "SINTETIS",
-          "DOKUMEN_RESMI"
+          "DOKUMEN_RESMI",
+          "KETERANGAN_ORANG"
         ],
         "title": "JenisSumberNarasi",
-        "description": "Jenis sumber yang sah pada tahap T0 dan T1 (K-3); nilai lain ditolak 422."
+        "description": "Jenis sumber narasi yang sah pada tahap T0, T1, dan T2 (K-3); nilai lain ditolak 422.\n\n``SINTETIS`` (T0) dan ``DOKUMEN_RESMI`` (T1) adalah jenis awal; ``KETERANGAN_ORANG``\n(T2) memuat cerita, wawancara, dan keterangan orang yang dikumpulkan dalam kajian.\nJenis apa pun tetap harus diizinkan lewat ``AI_JENIS_SUMBER_DIIZINKAN`` sebelum\ndikirim ke model; mendaftarkan sumber tidak menyalakan AI."
       },
       "JenjangPendidikanCreate": {
         "properties": {
@@ -40245,6 +41003,517 @@
         "type": "object",
         "title": "JenjangPendidikanUpdate",
         "description": "Payload pembaruan sebagian jenjang pendidikan."
+      },
+      "KeputusanPerubahan": {
+        "type": "string",
+        "enum": [
+          "APPROVE",
+          "CONDITIONAL",
+          "HOLD",
+          "REJECT"
+        ],
+        "title": "KeputusanPerubahan",
+        "description": "Keputusan perubahan (ChangeDecision), terpisah dari keputusan prioritas."
+      },
+      "KeputusanPerubahanCreate": {
+        "properties": {
+          "periode": {
+            "type": "string",
+            "maxLength": 20,
+            "pattern": "^\\d{4}/\\d{2}$",
+            "title": "Periode",
+            "examples": [
+              "2026/27"
+            ]
+          },
+          "keputusan": {
+            "$ref": "#/components/schemas/KeputusanPerubahan"
+          },
+          "alasan": {
+            "type": "string",
+            "minLength": 5,
+            "title": "Alasan",
+            "description": "Alasan keputusan, minimal 5 karakter."
+          },
+          "stop_rule": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Stop Rule",
+            "description": "Wajib bila CONDITIONAL."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "periode",
+          "keputusan",
+          "alasan"
+        ],
+        "title": "KeputusanPerubahanCreate",
+        "description": "Payload keputusan perubahan per alternatif per periode (append-only).\n\n`stop_rule` wajib berisi bila `keputusan` CONDITIONAL; pilot bersyarat harus reversibel."
+      },
+      "KeputusanPerubahanRead": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "alternatif_id": {
+            "type": "string",
+            "title": "Alternatif Id"
+          },
+          "periode": {
+            "type": "string",
+            "title": "Periode"
+          },
+          "keputusan": {
+            "$ref": "#/components/schemas/KeputusanPerubahan"
+          },
+          "alasan": {
+            "type": "string",
+            "title": "Alasan"
+          },
+          "stop_rule": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Stop Rule"
+          },
+          "status_opsi_saat_putus": {
+            "$ref": "#/components/schemas/StatusKesiapan",
+            "description": "Salinan `status_opsi` matriks kesiapan saat keputusan dicatat."
+          },
+          "pemutus_kode_orang": {
+            "type": "string",
+            "title": "Pemutus Kode Orang",
+            "description": "Kode orang pemutus."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "alternatif_id",
+          "periode",
+          "keputusan",
+          "alasan",
+          "stop_rule",
+          "status_opsi_saat_putus",
+          "pemutus_kode_orang",
+          "created_at"
+        ],
+        "title": "KeputusanPerubahanRead",
+        "description": "Satu keputusan perubahan tersimpan."
+      },
+      "KesiapanBaris": {
+        "properties": {
+          "penerima_id": {
+            "type": "string",
+            "title": "Penerima Id"
+          },
+          "penerima_jabatan_id": {
+            "type": "string",
+            "title": "Penerima Jabatan Id"
+          },
+          "material": {
+            "type": "boolean",
+            "title": "Material"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/StatusKesiapan"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Null bila belum dinilai pada periode ini."
+          },
+          "delta_asal_jam": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Delta Asal Jam"
+          },
+          "delta_asal_estimasi": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/EstimasiDelta"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "delta_penerima_jam": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Delta Penerima Jam"
+          },
+          "delta_penerima_estimasi": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/EstimasiDelta"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "delta_organisasi_jam": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Delta Organisasi Jam"
+          },
+          "delta_organisasi_estimasi": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/EstimasiDelta"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "syarat": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Syarat"
+          },
+          "alasan_hold": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Alasan Hold"
+          },
+          "dinilai_pada": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Dinilai Pada"
+          }
+        },
+        "type": "object",
+        "required": [
+          "penerima_id",
+          "penerima_jabatan_id",
+          "material",
+          "status",
+          "delta_asal_jam",
+          "delta_asal_estimasi",
+          "delta_penerima_jam",
+          "delta_penerima_estimasi",
+          "delta_organisasi_jam",
+          "delta_organisasi_estimasi",
+          "syarat",
+          "alasan_hold",
+          "dinilai_pada"
+        ],
+        "title": "KesiapanBaris",
+        "description": "Satu baris matriks: penerima beserta penilaian TERAKHIR pada periode yang diminta."
+      },
+      "KesiapanCreate": {
+        "properties": {
+          "penerima_id": {
+            "type": "string",
+            "maxLength": 36,
+            "minLength": 1,
+            "title": "Penerima Id"
+          },
+          "periode": {
+            "type": "string",
+            "maxLength": 20,
+            "pattern": "^\\d{4}/\\d{2}$",
+            "title": "Periode",
+            "examples": [
+              "2026/27"
+            ]
+          },
+          "status": {
+            "$ref": "#/components/schemas/StatusKesiapan"
+          },
+          "delta_asal_jam": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Delta Asal Jam"
+          },
+          "delta_asal_estimasi": {
+            "$ref": "#/components/schemas/EstimasiDelta",
+            "default": "ESTIMATED"
+          },
+          "delta_penerima_jam": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Delta Penerima Jam"
+          },
+          "delta_penerima_estimasi": {
+            "$ref": "#/components/schemas/EstimasiDelta",
+            "default": "ESTIMATED"
+          },
+          "delta_organisasi_jam": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Delta Organisasi Jam"
+          },
+          "delta_organisasi_estimasi": {
+            "$ref": "#/components/schemas/EstimasiDelta",
+            "default": "ESTIMATED"
+          },
+          "syarat": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Syarat",
+            "description": "Wajib bila status CONDITIONAL."
+          },
+          "alasan_hold": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Alasan Hold",
+            "description": "Wajib bila status HOLD."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "penerima_id",
+          "periode",
+          "status"
+        ],
+        "title": "KesiapanCreate",
+        "description": "Payload penilaian kesiapan (append-only; koreksi = penilaian baru).\n\nSatuan delta: jam kerja efektif per periode, positif = beban bertambah. Untuk tiap sisi,\n`NOT_ESTIMABLE` mewajibkan nilai `null`, dan `ESTIMATED` mewajibkan nilai berisi."
+      },
+      "KesiapanMatriksRead": {
+        "properties": {
+          "alternatif_id": {
+            "type": "string",
+            "title": "Alternatif Id"
+          },
+          "periode": {
+            "type": "string",
+            "title": "Periode"
+          },
+          "status_opsi": {
+            "$ref": "#/components/schemas/StatusKesiapan",
+            "description": "HOLD bila ada penerima material HOLD/belum dinilai atau tanpa penerima."
+          },
+          "baris": {
+            "items": {
+              "$ref": "#/components/schemas/KesiapanBaris"
+            },
+            "type": "array",
+            "title": "Baris"
+          }
+        },
+        "type": "object",
+        "required": [
+          "alternatif_id",
+          "periode",
+          "status_opsi",
+          "baris"
+        ],
+        "title": "KesiapanMatriksRead",
+        "description": "Matriks kesiapan satu alternatif pada satu periode beserta status opsinya."
+      },
+      "KesiapanRead": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "penerima_id": {
+            "type": "string",
+            "title": "Penerima Id"
+          },
+          "periode": {
+            "type": "string",
+            "title": "Periode"
+          },
+          "status": {
+            "$ref": "#/components/schemas/StatusKesiapan"
+          },
+          "delta_asal_jam": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Delta Asal Jam"
+          },
+          "delta_asal_estimasi": {
+            "$ref": "#/components/schemas/EstimasiDelta"
+          },
+          "delta_penerima_jam": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Delta Penerima Jam"
+          },
+          "delta_penerima_estimasi": {
+            "$ref": "#/components/schemas/EstimasiDelta"
+          },
+          "delta_organisasi_jam": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Delta Organisasi Jam"
+          },
+          "delta_organisasi_estimasi": {
+            "$ref": "#/components/schemas/EstimasiDelta"
+          },
+          "syarat": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Syarat"
+          },
+          "alasan_hold": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Alasan Hold"
+          },
+          "dinilai_oleh": {
+            "type": "string",
+            "title": "Dinilai Oleh",
+            "description": "Kode orang pemberi penilaian."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "penerima_id",
+          "periode",
+          "status",
+          "delta_asal_jam",
+          "delta_asal_estimasi",
+          "delta_penerima_jam",
+          "delta_penerima_estimasi",
+          "delta_organisasi_jam",
+          "delta_organisasi_estimasi",
+          "syarat",
+          "alasan_hold",
+          "dinilai_oleh",
+          "created_at"
+        ],
+        "title": "KesiapanRead",
+        "description": "Satu penilaian kesiapan tersimpan."
       },
       "KodeOrangCreate": {
         "properties": {
@@ -43561,7 +44830,7 @@
           },
           "jenis": {
             "$ref": "#/components/schemas/JenisSumberNarasi",
-            "description": "Jenis sumber (SINTETIS atau DOKUMEN_RESMI)."
+            "description": "Jenis sumber (SINTETIS, DOKUMEN_RESMI, atau KETERANGAN_ORANG)."
           },
           "versi": {
             "type": "string",
@@ -47785,6 +49054,89 @@
         "title": "PartisipanUpdate",
         "description": "Payload pembaruan sebagian partisipan."
       },
+      "PenerimaCreate": {
+        "properties": {
+          "penerima_jabatan_id": {
+            "type": "string",
+            "maxLength": 40,
+            "minLength": 1,
+            "title": "Penerima Jabatan Id",
+            "description": "ID jabatan penerima (bukan orang)."
+          },
+          "material": {
+            "type": "boolean",
+            "title": "Material",
+            "description": "Penerima material: belum siap menahan seluruh opsi (HOLD).",
+            "default": true
+          },
+          "catatan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Catatan"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "penerima_jabatan_id"
+        ],
+        "title": "PenerimaCreate",
+        "description": "Payload penambahan penerima pada alternatif (RecipientAssignment)."
+      },
+      "PenerimaRead": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id",
+            "description": "ID penerima alternatif (RecipientAssignment_ID, UUID v4)."
+          },
+          "alternatif_id": {
+            "type": "string",
+            "title": "Alternatif Id"
+          },
+          "penerima_jabatan_id": {
+            "type": "string",
+            "title": "Penerima Jabatan Id"
+          },
+          "material": {
+            "type": "boolean",
+            "title": "Material"
+          },
+          "catatan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Catatan"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "alternatif_id",
+          "penerima_jabatan_id",
+          "material",
+          "catatan",
+          "created_at"
+        ],
+        "title": "PenerimaRead",
+        "description": "Satu penerima alternatif."
+      },
       "PengajuanP02": {
         "properties": {
           "unit": {
@@ -51479,6 +52831,16 @@
         ],
         "title": "StatusJob",
         "description": "Status siklus hidup job asinkron.\n\nUntuk fitur `AI_*`, `PENDING` adalah padanan `AI_PENDING` pada paket kajian."
+      },
+      "StatusKesiapan": {
+        "type": "string",
+        "enum": [
+          "READY",
+          "CONDITIONAL",
+          "HOLD"
+        ],
+        "title": "StatusKesiapan",
+        "description": "Status kesiapan satu penerima pada satu periode."
       },
       "StatusNarasi": {
         "type": "string",

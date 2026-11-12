@@ -42,7 +42,12 @@ export default async function DetailMasalahPage({ params, searchParams }: Props)
   const petaKonteks = new Map(konteks.map((k) => [k.id, k]));
   const petaSekolah = new Map(sekolah.map((s) => [s.id, s]));
   const bagian = pilihBagian(sp.bagian);
-  const isiBagian = await bagian.render({ masalah, sekolah, accessToken: token });
+  const isiBagian = await bagian.render({
+    masalah,
+    sekolah,
+    accessToken: token,
+    periode: typeof sp.periode === "string" ? sp.periode : undefined,
+  });
 
   return (
     <div className="space-y-4">

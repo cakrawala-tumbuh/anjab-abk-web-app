@@ -84,6 +84,17 @@ src/
 
 ## Revisi Desain
 
+### [2026-11-12] Matriks kesiapan penerima + keputusan perubahan (#122)
+
+Item #122; konsumen backend `#133` (penerima, kesiapan, matriks) dan `#134` (ChangeDecision). Bergantung pada #121. Rujukan: `cakrawala-tumbuh/ypii-support#463`.
+
+- **Kontrak diekspor dari kode backend** master `8c1f55a` (klon scratch, image `Dockerfile.test`, `python scripts/export_openapi.py /dev/stdout`; keluaran memuat log JSON di depan dan teks "OpenAPI ditulis…" di belakang dokumen, ambil dengan `raw_decode`); `openapi.json` diganti utuh, `gen:api`, blok alias ditempel ulang + `Penerima*`, `Kesiapan*`, `KeputusanPerubahan*`, `StatusKesiapan`, `EstimasiDelta`. Regenerasi ikut membawa drift kontrak lain: jenis sumber narasi `KETERANGAN_ORANG` (`JENIS_SUMBER`/`LABEL_JENIS`) dan `AntreanItemRead.paparan` wajib (fixture tes).
+- **Periode** `?periode=YYYY/YY` (bawaan tahun ajaran berjalan, mulai Juli; `periodeBerjalan`) dibaca `page.tsx` dan diteruskan lewat `KonteksBagianMasalah.periode`. `PemilihPeriode` menavigasi ulang; format salah ditolak di klien dan tidak dikirim.
+- **`PanelKesiapan`** (dipanggil sebagai fungsi dari `BagianAlternatif` agar ikut ditunggu): penerima (`GET .../penerima`), matriks (`GET .../kesiapan?periode=`), riwayat (`GET .../keputusan-perubahan?periode=`) semuanya data inti, gagal melempar. Label baris = nama jabatan. `BELUM_DINILAI` = `status: null`; delta `NOT_ESTIMABLE` tampil "Tidak dapat diestimasi" (`formatDelta`), 0 tetap "0 jam".
+- **Form kesiapan**: status tanpa bawaan; `syarat` wajib bila CONDITIONAL, `alasan_hold` bila HOLD; delta per sisi angka atau NOT_ESTIMABLE (jam dikirim `null`). Semua POST memakai `useIdempotencyKey().keyUntuk(body)`; sukses hanya setelah 2xx lalu `router.refresh()`.
+- **Keputusan perubahan**: panel terpisah dari `panel-keputusan.tsx`/`dialog-putuskan.tsx` (tidak disentuh). Form hanya bila `fiturAktif(CHANGE_AUTHORIZATION)`; mati → form hilang, riwayat tetap. `opsiKeputusanAktif`: APPROVE hanya bila `status_opsi=READY`, CONDITIONAL tidak bila HOLD; galat 409 backend tampil apa adanya. Logika murni di `src/lib/redesain-alternatif.ts`.
+- Docs: `docs-usage/ik/redesain-tim.md` (Alternatif redesain). Detail: issue #122 repo ini.
+
 ### [2026-11-12] Langkah cerita bebas sebelum bank tugas di Tahap 1 (#121)
 
 Item #121; konsumen backend `#131` (saklar `PREBANK_FREEZE`, cerita/paparan). Rujukan: `cakrawala-tumbuh/ypii-support#463`.

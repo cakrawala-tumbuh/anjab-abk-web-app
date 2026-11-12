@@ -1,33 +1,65 @@
 import { DetailsMuatMalas } from "@/components/details-muat-malas";
 import type { MasalahRead, SekolahRead } from "@/lib/api/schema";
-import { JUDUL_ALTERNATIF } from "@/lib/redesain-alternatif";
-import { fetchAlternatifMasalah, fetchJabatanAlternatif } from "./data-alternatif";
+import { JUDUL_ALTERNATIF, periodeBerjalan, periodeValid } from "@/lib/redesain-alternatif";
+import {
+  fetchAlternatifMasalah,
+  fetchJabatanAlternatif,
+  fetchSaklarPerubahan,
+} from "./data-alternatif";
 import { FormAlternatif } from "./form-alternatif";
+import { PanelKesiapan } from "./panel-kesiapan";
+import { PemilihPeriode } from "./pemilih-periode";
 
 /** Properti {@link BagianAlternatif}. */
 export interface BagianAlternatifProps {
   masalah: MasalahRead;
   sekolah: SekolahRead[];
   accessToken: string | undefined;
+  /** Nilai `?periode=` (`YYYY/YY`); kosong → tahun ajaran berjalan. */
+  periode?: string;
 }
 
 /**
  * Bagian "Alternatif" pada detail masalah (Server Component async).
  *
  * Tabel: kode, opsi, pihak asal → penerima (nama jabatan, bukan id), gap penerima, dan
- * status telaah. Tersedia form tambah dan ubah; tidak ada hapus. Kegagalan backend
- * dilempar ke `error.tsx`.
+ * status telaah. Tersedia form tambah dan ubah; tidak ada hapus. Di bawahnya, pemilih
+ * periode dan panel kesiapan per alternatif (penerima jamak, matriks, keputusan perubahan).
+ * Kegagalan backend dilempar ke `error.tsx`.
  *
  * @param props - Lihat {@link BagianAlternatifProps}.
  */
-export async function BagianAlternatif({ masalah, accessToken }: BagianAlternatifProps) {
-  const [alternatif, jabatan] = await Promise.all([
+export async function BagianAlternatif({
+  masalah,
+  accessToken,
+  periode: periodeQuery,
+}: BagianAlternatifProps) {
+  const periode = periodeQuery?.trim() || periodeBerjalan();
+  const periodeSah = periodeValid(periode);
+  const [alternatif, jabatan, keputusanPerubahanAktif] = await Promise.all([
     fetchAlternatifMasalah(accessToken, masalah.id),
     fetchJabatanAlternatif(accessToken),
+    fetchSaklarPerubahan(accessToken),
   ]);
   const petaJabatan = new Map(jabatan.map((j) => [j.id, j.nama]));
   const nama = (id: string | null) => (id ? (petaJabatan.get(id) ?? "—") : "—");
   const pilihan = jabatan.map((j) => ({ id: j.id, label: j.nama }));
+
+  // Dipanggil sebagai fungsi (bukan elemen) agar pengambilan datanya ikut ditunggu di sini,
+  // seperti `BagianAlternatif` sendiri yang dipanggil registry; kegagalan melempar ke error.tsx.
+  const panelKesiapan = periodeSah
+    ? await Promise.all(
+        alternatif.map((a) =>
+          PanelKesiapan({
+            alternatif: a,
+            periode,
+            jabatan: pilihan,
+            keputusanPerubahanAktif,
+            accessToken,
+          }),
+        ),
+      )
+    : [];
 
   return (
     <section aria-label="Alternatif" className="space-y-4">
@@ -81,6 +113,22 @@ export async function BagianAlternatif({ masalah, accessToken }: BagianAlternati
           </div>
         </DetailsMuatMalas>
       ))}
+
+      <section aria-label="Kesiapan penerima per periode" className="space-y-3">
+        <h2 className="text-sm font-semibold">Kesiapan penerima per periode</h2>
+        <PemilihPeriode masalahId={masalah.id} periode={periode} />
+        {!periodeSah ? (
+          <p role="alert" className="form-error">
+            Format periode harus YYYY/YY, mis. 2026/27.
+          </p>
+        ) : alternatif.length === 0 ? (
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            Tambahkan alternatif lebih dulu untuk mengelola kesiapan penerima.
+          </p>
+        ) : (
+          panelKesiapan
+        )}
+      </section>
 
       <details className="rounded-lg border border-dashed border-gray-300 p-4 dark:border-gray-600">
         <summary className="cursor-pointer text-sm font-medium text-blue-600 dark:text-blue-400">

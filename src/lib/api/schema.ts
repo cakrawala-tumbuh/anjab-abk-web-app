@@ -3135,6 +3135,84 @@ export interface paths {
         patch: operations["redesain_alternatif_update"];
         trace?: never;
     };
+    "/api/v1/redesain/alternatif/{alternatif_id}/penerima": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Daftar penerima alternatif redesain (tim-kajian)
+         * @description Daftar penerima (jabatan) alternatif, urut waktu penambahan.
+         */
+        get: operations["redesain_alternatif_penerima_list"];
+        put?: never;
+        /**
+         * Tambah penerima alternatif redesain (tim-kajian)
+         * @description Tambah satu jabatan penerima; kolom lama `pihak_penerima_jabatan_id` tidak disentuh.
+         */
+        post: operations["redesain_alternatif_penerima_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/redesain/alternatif/{alternatif_id}/kesiapan": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Matriks kesiapan alternatif per periode beserta status opsi (tim-kajian)
+         * @description Matriks kesiapan pada periode: penilaian terakhir per penerima dan `status_opsi`.
+         */
+        get: operations["redesain_alternatif_kesiapan_matriks"];
+        put?: never;
+        /**
+         * Catat penilaian kesiapan penerima per periode (tim-kajian)
+         * @description Catat penilaian kesiapan (append-only); koreksi = penilaian baru, matriks memakai terakhir.
+         *
+         *     `NOT_ESTIMABLE` menyimpan nilai null (bukan 0).
+         */
+        post: operations["redesain_alternatif_kesiapan_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/redesain/alternatif/{alternatif_id}/keputusan-perubahan": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Riwayat keputusan perubahan alternatif (tim-kajian)
+         * @description Riwayat urut `created_at` naik; keputusan berlaku = baris terakhir per periode.
+         *
+         *     Tidak digerbang saklar: riwayat tetap terbaca saat `CHANGE_AUTHORIZATION` mati.
+         */
+        get: operations["redesain_alternatif_keputusan_perubahan_list"];
+        put?: never;
+        /**
+         * Catat keputusan perubahan alternatif per periode (tim-kajian)
+         * @description Catat keputusan perubahan (append-only), ditegakkan terhadap status opsi periode itu.
+         *
+         *     Tidak pernah tercipta dari keputusan prioritas (`POST /redesain/penilaian/{id}/putuskan`).
+         */
+        post: operations["redesain_alternatif_keputusan_perubahan_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/redesain/cakupan-jabatan": {
         parameters: {
             query?: never;
@@ -3972,6 +4050,8 @@ export interface paths {
         /**
          * Antrean tinjauan Tim (tanpa teks)
          * @description Kasus `AI_DRAFT`, `TEAM_REVIEW`, `NEED_FACT`; urut `updated_at` naik.
+         *
+         *     `paparan` tiap baris dihitung dari satu kueri batch atas `assignment_ref` kasus F2 di halaman.
          */
         get: operations["narasi_antrean_list"];
         put?: never;
@@ -3993,7 +4073,8 @@ export interface paths {
          * Detail antrean: draf berdampingan dengan teks sumber
          * @description Versi terbaru, sumber lengkap, dan metadata AI terpilih.
          *
-         *     `paparan` bernilai tetap `TIDAK_BERLAKU` (F1); `AiRunRead` dan keluaran mentah tidak dibuka.
+         *     `paparan` dihitung saat baca (F1: `TIDAK_BERLAKU`; F2: status responden pasangan atau
+         *     `TIDAK_DIKETAHUI`); `AiRunRead` dan keluaran mentah tidak dibuka.
          */
         get: operations["narasi_antrean_get"];
         put?: never;
@@ -5596,6 +5677,7 @@ export interface components {
             recommended_review_scope: unknown | null;
             /**
              * Paparan
+             * @description Status paparan bank tugas, dihitung saat baca. F1_FORMAL dan jenis lain: TIDAK_BERLAKU. F2_ACTUAL berpasangan responden TI (assignment_ref = id responden): BELUM_TERPAPAR, LOCKED_PRE_EXPOSURE (cerita beku sebelum paparan), atau EXPOSED. F2_ACTUAL tanpa pasangan responden: TIDAK_DIKETAHUI.
              * @default TIDAK_BERLAKU
              */
             paparan: string;
@@ -5636,6 +5718,17 @@ export interface components {
              * Format: date-time
              */
             updated_at: string;
+            /**
+             * Assignment Ref
+             * @description Rujukan penugasan kasus; kunci pasangan responden F2.
+             */
+            assignment_ref?: string | null;
+            /**
+             * Paparan
+             * @description Status paparan bank tugas, dihitung saat baca. F1_FORMAL dan jenis lain: TIDAK_BERLAKU. F2_ACTUAL berpasangan responden TI (assignment_ref = id responden): BELUM_TERPAPAR, LOCKED_PRE_EXPOSURE (cerita beku sebelum paparan), atau EXPOSED. F2_ACTUAL tanpa pasangan responden: TIDAK_DIKETAHUI.
+             * @default TIDAK_BERLAKU
+             */
+            paparan: string;
         };
         /**
          * AntreanSumberRead
@@ -6920,6 +7013,12 @@ export interface components {
             details?: components["schemas"]["ErrorDetail"][] | null;
         };
         /**
+         * EstimasiDelta
+         * @description Apakah delta beban dapat diperkirakan; `NOT_ESTIMABLE` bukan nol.
+         * @enum {string}
+         */
+        EstimasiDelta: "ESTIMATED" | "NOT_ESTIMABLE";
+        /**
          * EventKind
          * @description Jenis tindakan manusia pada tabel `narasi_event` (11 nilai paket).
          * @enum {string}
@@ -7195,10 +7294,15 @@ export interface components {
         JenisPaparan: "BANK_TUGAS" | "CONTOH_TUGAS";
         /**
          * JenisSumberNarasi
-         * @description Jenis sumber yang sah pada tahap T0 dan T1 (K-3); nilai lain ditolak 422.
+         * @description Jenis sumber narasi yang sah pada tahap T0, T1, dan T2 (K-3); nilai lain ditolak 422.
+         *
+         *     ``SINTETIS`` (T0) dan ``DOKUMEN_RESMI`` (T1) adalah jenis awal; ``KETERANGAN_ORANG``
+         *     (T2) memuat cerita, wawancara, dan keterangan orang yang dikumpulkan dalam kajian.
+         *     Jenis apa pun tetap harus diizinkan lewat ``AI_JENIS_SUMBER_DIIZINKAN`` sebelum
+         *     dikirim ke model; mendaftarkan sumber tidak menyalakan AI.
          * @enum {string}
          */
-        JenisSumberNarasi: "SINTETIS" | "DOKUMEN_RESMI";
+        JenisSumberNarasi: "SINTETIS" | "DOKUMEN_RESMI" | "KETERANGAN_ORANG";
         /**
          * JenjangPendidikanCreate
          * @description Payload pembuatan jenjang pendidikan.
@@ -7290,6 +7394,183 @@ export interface components {
              * @description Status aktif baru.
              */
             aktif?: boolean | null;
+        };
+        /**
+         * KeputusanPerubahan
+         * @description Keputusan perubahan (ChangeDecision), terpisah dari keputusan prioritas.
+         * @enum {string}
+         */
+        KeputusanPerubahan: "APPROVE" | "CONDITIONAL" | "HOLD" | "REJECT";
+        /**
+         * KeputusanPerubahanCreate
+         * @description Payload keputusan perubahan per alternatif per periode (append-only).
+         *
+         *     `stop_rule` wajib berisi bila `keputusan` CONDITIONAL; pilot bersyarat harus reversibel.
+         */
+        KeputusanPerubahanCreate: {
+            /**
+             * Periode
+             * @example 2026/27
+             */
+            periode: string;
+            keputusan: components["schemas"]["KeputusanPerubahan"];
+            /**
+             * Alasan
+             * @description Alasan keputusan, minimal 5 karakter.
+             */
+            alasan: string;
+            /**
+             * Stop Rule
+             * @description Wajib bila CONDITIONAL.
+             */
+            stop_rule?: string | null;
+        };
+        /**
+         * KeputusanPerubahanRead
+         * @description Satu keputusan perubahan tersimpan.
+         */
+        KeputusanPerubahanRead: {
+            /** Id */
+            id: string;
+            /** Alternatif Id */
+            alternatif_id: string;
+            /** Periode */
+            periode: string;
+            keputusan: components["schemas"]["KeputusanPerubahan"];
+            /** Alasan */
+            alasan: string;
+            /** Stop Rule */
+            stop_rule: string | null;
+            /** @description Salinan `status_opsi` matriks kesiapan saat keputusan dicatat. */
+            status_opsi_saat_putus: components["schemas"]["StatusKesiapan"];
+            /**
+             * Pemutus Kode Orang
+             * @description Kode orang pemutus.
+             */
+            pemutus_kode_orang: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+        };
+        /**
+         * KesiapanBaris
+         * @description Satu baris matriks: penerima beserta penilaian TERAKHIR pada periode yang diminta.
+         */
+        KesiapanBaris: {
+            /** Penerima Id */
+            penerima_id: string;
+            /** Penerima Jabatan Id */
+            penerima_jabatan_id: string;
+            /** Material */
+            material: boolean;
+            /** @description Null bila belum dinilai pada periode ini. */
+            status: components["schemas"]["StatusKesiapan"] | null;
+            /** Delta Asal Jam */
+            delta_asal_jam: string | null;
+            delta_asal_estimasi: components["schemas"]["EstimasiDelta"] | null;
+            /** Delta Penerima Jam */
+            delta_penerima_jam: string | null;
+            delta_penerima_estimasi: components["schemas"]["EstimasiDelta"] | null;
+            /** Delta Organisasi Jam */
+            delta_organisasi_jam: string | null;
+            delta_organisasi_estimasi: components["schemas"]["EstimasiDelta"] | null;
+            /** Syarat */
+            syarat: string | null;
+            /** Alasan Hold */
+            alasan_hold: string | null;
+            /** Dinilai Pada */
+            dinilai_pada: string | null;
+        };
+        /**
+         * KesiapanCreate
+         * @description Payload penilaian kesiapan (append-only; koreksi = penilaian baru).
+         *
+         *     Satuan delta: jam kerja efektif per periode, positif = beban bertambah. Untuk tiap sisi,
+         *     `NOT_ESTIMABLE` mewajibkan nilai `null`, dan `ESTIMATED` mewajibkan nilai berisi.
+         */
+        KesiapanCreate: {
+            /** Penerima Id */
+            penerima_id: string;
+            /**
+             * Periode
+             * @example 2026/27
+             */
+            periode: string;
+            status: components["schemas"]["StatusKesiapan"];
+            /** Delta Asal Jam */
+            delta_asal_jam?: number | string | null;
+            /** @default ESTIMATED */
+            delta_asal_estimasi: components["schemas"]["EstimasiDelta"];
+            /** Delta Penerima Jam */
+            delta_penerima_jam?: number | string | null;
+            /** @default ESTIMATED */
+            delta_penerima_estimasi: components["schemas"]["EstimasiDelta"];
+            /** Delta Organisasi Jam */
+            delta_organisasi_jam?: number | string | null;
+            /** @default ESTIMATED */
+            delta_organisasi_estimasi: components["schemas"]["EstimasiDelta"];
+            /**
+             * Syarat
+             * @description Wajib bila status CONDITIONAL.
+             */
+            syarat?: string | null;
+            /**
+             * Alasan Hold
+             * @description Wajib bila status HOLD.
+             */
+            alasan_hold?: string | null;
+        };
+        /**
+         * KesiapanMatriksRead
+         * @description Matriks kesiapan satu alternatif pada satu periode beserta status opsinya.
+         */
+        KesiapanMatriksRead: {
+            /** Alternatif Id */
+            alternatif_id: string;
+            /** Periode */
+            periode: string;
+            /** @description HOLD bila ada penerima material HOLD/belum dinilai atau tanpa penerima. */
+            status_opsi: components["schemas"]["StatusKesiapan"];
+            /** Baris */
+            baris: components["schemas"]["KesiapanBaris"][];
+        };
+        /**
+         * KesiapanRead
+         * @description Satu penilaian kesiapan tersimpan.
+         */
+        KesiapanRead: {
+            /** Id */
+            id: string;
+            /** Penerima Id */
+            penerima_id: string;
+            /** Periode */
+            periode: string;
+            status: components["schemas"]["StatusKesiapan"];
+            /** Delta Asal Jam */
+            delta_asal_jam: string | null;
+            delta_asal_estimasi: components["schemas"]["EstimasiDelta"];
+            /** Delta Penerima Jam */
+            delta_penerima_jam: string | null;
+            delta_penerima_estimasi: components["schemas"]["EstimasiDelta"];
+            /** Delta Organisasi Jam */
+            delta_organisasi_jam: string | null;
+            delta_organisasi_estimasi: components["schemas"]["EstimasiDelta"];
+            /** Syarat */
+            syarat: string | null;
+            /** Alasan Hold */
+            alasan_hold: string | null;
+            /**
+             * Dinilai Oleh
+             * @description Kode orang pemberi penilaian.
+             */
+            dinilai_oleh: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
         };
         /**
          * KodeOrangCreate
@@ -8544,7 +8825,7 @@ export interface components {
              * @example Pedoman akademik 2026
              */
             judul: string;
-            /** @description Jenis sumber (SINTETIS atau DOKUMEN_RESMI). */
+            /** @description Jenis sumber (SINTETIS, DOKUMEN_RESMI, atau KETERANGAN_ORANG). */
             jenis: components["schemas"]["JenisSumberNarasi"];
             /**
              * Versi
@@ -10893,6 +11174,49 @@ export interface components {
             aktif?: boolean | null;
         };
         /**
+         * PenerimaCreate
+         * @description Payload penambahan penerima pada alternatif (RecipientAssignment).
+         */
+        PenerimaCreate: {
+            /**
+             * Penerima Jabatan Id
+             * @description ID jabatan penerima (bukan orang).
+             */
+            penerima_jabatan_id: string;
+            /**
+             * Material
+             * @description Penerima material: belum siap menahan seluruh opsi (HOLD).
+             * @default true
+             */
+            material: boolean;
+            /** Catatan */
+            catatan?: string | null;
+        };
+        /**
+         * PenerimaRead
+         * @description Satu penerima alternatif.
+         */
+        PenerimaRead: {
+            /**
+             * Id
+             * @description ID penerima alternatif (RecipientAssignment_ID, UUID v4).
+             */
+            id: string;
+            /** Alternatif Id */
+            alternatif_id: string;
+            /** Penerima Jabatan Id */
+            penerima_jabatan_id: string;
+            /** Material */
+            material: boolean;
+            /** Catatan */
+            catatan: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+        };
+        /**
          * PengajuanP02
          * @description Badan `POST /task-inventory/jabatan/{jabatan_id}/normalisasi-ai` (P02).
          *
@@ -12627,6 +12951,12 @@ export interface components {
          * @enum {string}
          */
         StatusJob: "PENDING" | "RUNNING" | "SUCCEEDED" | "FAILED" | "MANUAL_REVIEW";
+        /**
+         * StatusKesiapan
+         * @description Status kesiapan satu penerima pada satu periode.
+         * @enum {string}
+         */
+        StatusKesiapan: "READY" | "CONDITIONAL" | "HOLD";
         /**
          * StatusNarasi
          * @description Status siklus tinjauan sebuah kasus narasi (14 nilai); proyeksi, boleh berubah.
@@ -31023,6 +31353,471 @@ export interface operations {
             };
         };
     };
+    redesain_alternatif_penerima_list: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
+            path: {
+                alternatif_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PenerimaRead"][];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan anggota grup tim-kajian. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Alternatif tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    redesain_alternatif_penerima_create: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
+            path: {
+                alternatif_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PenerimaCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PenerimaRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan anggota grup tim-kajian. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Alternatif tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Jabatan sudah menjadi penerima (`PENERIMA_GANDA`). */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Payload/jabatan tidak valid. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    redesain_alternatif_kesiapan_matriks: {
+        parameters: {
+            query: {
+                /** @description Periode, mis. 2026/27. */
+                periode: string;
+            };
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
+            path: {
+                alternatif_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["KesiapanMatriksRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan anggota grup tim-kajian. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Alternatif tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description `periode` hilang atau salah pola. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    redesain_alternatif_kesiapan_create: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
+            path: {
+                alternatif_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["KesiapanCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["KesiapanRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan anggota grup tim-kajian. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Alternatif tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Idempotency-Key ini sedang diproses (atau konflik state). */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Aturan wajib-isi dilanggar atau `PENERIMA_BUKAN_MILIK_ALTERNATIF`. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    redesain_alternatif_keputusan_perubahan_list: {
+        parameters: {
+            query?: {
+                /** @description Saring per periode, mis. 2026/27. */
+                periode?: string | null;
+            };
+            header?: {
+                /** @description Tujuan akses yang dinyatakan klien (opsional, maks. 200 karakter). Dicatat di log audit pembacaan data terlindung; absen -> TIDAK_DINYATAKAN. */
+                "X-Tujuan-Akses"?: string | null;
+            };
+            path: {
+                alternatif_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["KeputusanPerubahanRead"][];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan anggota grup tim-kajian. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Alternatif tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description `periode` salah pola. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    redesain_alternatif_keputusan_perubahan_create: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Kunci idempotency opsional. */
+                "Idempotency-Key"?: string | null;
+            };
+            path: {
+                alternatif_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["KeputusanPerubahanCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["KeputusanPerubahanRead"];
+                };
+            };
+            /** @description Token tidak ada/invalid. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bukan anggota grup tim-kajian. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Alternatif tidak ditemukan. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Saklar `CHANGE_AUTHORIZATION` mati (`feature_disabled`), APPROVE saat opsi belum READY (`KESIAPAN_BELUM_READY`), atau CONDITIONAL saat opsi HOLD (`KESIAPAN_HOLD`). */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Payload tidak valid (mis. `stop_rule` kosong pada CONDITIONAL). */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Terlalu banyak permintaan. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
     redesain_cakupan_jabatan_list: {
         parameters: {
             query?: {
@@ -38193,3 +38988,13 @@ export type PaparanRead = components["schemas"]["PaparanRead"];
 export type JenisPaparan = components["schemas"]["JenisPaparan"];
 export type ExposureState = components["schemas"]["ExposureState"];
 export type StatusPaparan = components["schemas"]["StatusPaparan"];
+export type PenerimaRead = components["schemas"]["PenerimaRead"];
+export type PenerimaCreate = components["schemas"]["PenerimaCreate"];
+export type KesiapanCreate = components["schemas"]["KesiapanCreate"];
+export type KesiapanRead = components["schemas"]["KesiapanRead"];
+export type KesiapanBaris = components["schemas"]["KesiapanBaris"];
+export type KesiapanMatriksRead = components["schemas"]["KesiapanMatriksRead"];
+export type KeputusanPerubahanCreate = components["schemas"]["KeputusanPerubahanCreate"];
+export type KeputusanPerubahanRead = components["schemas"]["KeputusanPerubahanRead"];
+export type StatusKesiapan = components["schemas"]["StatusKesiapan"];
+export type EstimasiDelta = components["schemas"]["EstimasiDelta"];

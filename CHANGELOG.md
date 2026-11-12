@@ -9,6 +9,14 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ### Ditambahkan
 
+- **Matriks kesiapan penerima dan keputusan perubahan** (#122): tab Alternatif pada detail
+  masalah redesain kini punya pemilih periode (`YYYY/YY`), pengelolaan penerima jamak per
+  alternatif, form kesiapan per periode (status wajib, syarat/alasan hold bersyarat, delta
+  angka atau "Tidak dapat diestimasi"), tabel matriks Option×Penerima dengan status opsi, dan
+  panel "Keputusan perubahan (ChangeDecision)" terpisah dari keputusan prioritas (form
+  mengikuti saklar `CHANGE_AUTHORIZATION`; riwayat selalu tampil). Jenis sumber narasi
+  `KETERANGAN_ORANG` kini dikenali mengikuti kontrak backend terbaru.
+
 - **Langkah "Cerita bebas" sebelum bank tugas di Tahap 1** (#121): bila saklar `PREBANK_FREEZE`
   hidup dan responden belum terpapar, halaman Tahap 1 menampilkan cerita bebas tanpa teks
   bank tugas (katalog tidak diambil); cerita dapat disimpan, dibekukan, atau dilewati, lalu
