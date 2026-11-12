@@ -7,6 +7,8 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [4.23.0] - 2026-11-13
+
 ### Ditambahkan
 
 - **Unggah dan unduh bukti sign-off PI/etik pada protokol riset** (#125): detail protokol punya
