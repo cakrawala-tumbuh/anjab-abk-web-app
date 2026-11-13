@@ -9,6 +9,13 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ### Keamanan
 
+- **Naikkan `vitest` 2.1.9 → 4.1.12 (`@vitest/mocker` 2.1.9 → 4.1.12) dan `vite` 5.4.21 → 7.3.8** (#128):
+  menutup 8 alert Dependabot medium pada toolchain test (dev-only, tidak masuk image runtime).
+  `vite` dipin lewat `devDependencies` + `overrides` ke `^7.3.8` agar `@vitejs/plugin-react` 4.7 (peer
+  vite ≤ 7) tetap kompatibel dan vitest tidak menarik vite 8/rolldown. Satu penyesuaian test:
+  `opm-form.test.tsx` mereset spy `window.confirm` per test (Vitest 4 tidak lagi mereset hitungan pada
+  `spyOn` ulang). 146 berkas / 1256 test lulus, tanpa test di-skip.
+
 - **Migrasi `zod` 3.25.76 → 4.6.7 dan `@hookform/resolvers` 3.10.0 → 5.9.2** (#127): menutup
   alert Dependabot high (`zod` kehabisan memori pada koleksi besar; tidak ada perbaikan di garis 3.x).
   Seluruh skema formulir (20 berkas) dimigrasikan: `invalid_type_error`/`required_error`/`errorMap` →

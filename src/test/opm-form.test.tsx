@@ -106,7 +106,9 @@ beforeEach(() => {
   toastError.mockReset();
   put.mockResolvedValue({ error: null, data: [], response: okResponse });
   post.mockResolvedValue({ error: null, response: okResponse });
-  vi.spyOn(window, "confirm");
+  // Vitest 4: spyOn pada metode yang sudah di-spy mengembalikan spy yang sama TANPA
+  // mereset hitungan panggilan, sehingga dibersihkan eksplisit di tiap test.
+  vi.spyOn(window, "confirm").mockReset();
 });
 
 /** Isi textarea catatan satu task. */
