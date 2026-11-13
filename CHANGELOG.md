@@ -7,6 +7,8 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [4.23.1] - 2026-11-13
+
 ### Keamanan
 
 - **Naikkan `vitest` 2.1.9 → 4.1.12 (`@vitest/mocker` 2.1.9 → 4.1.12) dan `vite` 5.4.21 → 7.3.8** (#128):
