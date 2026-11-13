@@ -7,6 +7,20 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+### Keamanan
+
+- **Tambal dependency runtime tanpa major bump** (#126): `next` 15.5.19 → 15.5.29 (garis 15.5.x,
+  menutup alert critical termasuk Image Optimization API) dan `eslint-config-next` → 15.5.29;
+  `next-auth` 5.0.0-beta.31 → 5.0.0-beta.32 (membawa `@auth/core` 0.41.2 → 0.41.3); `sharp`
+  0.34.5 → 0.35.5 (kini dependency langsung); blok `overrides` `postcss` `^8.5.23` mengangkat
+  salinan yang di-pin `next` (8.4.31 → 8.5.32, sekaligus `nanoid` dan `source-map-js`);
+  `npm audit fix` tanpa `--force` untuk transitif dev (mis. `brace-expansion`). Tanpa perubahan
+  kode aplikasi. `npm audit --omit=dev` hanya menyisakan `zod` (high), yang butuh major bump zod
+  3 → 4 (item 3b). Alert dev yang tersisa (`vitest`, `vite`, `esbuild`, `tinypool`,
+  `@vitest/mocker`, `vite-node`) butuh vitest 2 → 4 / vite ≥ 6.4.4 (item 3c); rantai
+  `@typescript-eslint`/`minimatch` dev (moderate) masih dilaporkan `npm audit` dan dibiarkan
+  karena `npm audit fix` tanpa `--force` tidak menutupnya.
+
 ## [4.23.0] - 2026-11-13
 
 ### Ditambahkan
