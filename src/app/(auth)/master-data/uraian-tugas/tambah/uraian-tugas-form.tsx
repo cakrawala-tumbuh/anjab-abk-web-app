@@ -19,7 +19,7 @@ const schema = z.object({
   uraian: z.string().min(1, "Uraian wajib diisi").max(500, "Uraian terlalu panjang"),
   unit: z.string().min(1, "Unit wajib diisi").max(20, "Unit terlalu panjang"),
   urutan: z
-    .number({ invalid_type_error: "Isi angka urutan" })
+    .number({ error: "Isi angka urutan" })
     .int("Urutan harus bilangan bulat")
     .min(1, "Urutan minimal 1"),
   tugas_pokok_id: z.string().min(1, "Tugas pokok wajib dipilih"),
@@ -119,7 +119,7 @@ function FormUraianTugas({
     watch,
     setValue,
     formState: { errors, isSubmitting },
-  } = useForm<FormValues>({
+  } = useForm<z.input<typeof schema>, unknown, FormValues>({
     resolver: zodResolver(schema),
     defaultValues: {
       kode: "",

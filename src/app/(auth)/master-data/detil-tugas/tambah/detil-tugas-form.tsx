@@ -88,7 +88,7 @@ function FormDetilTugas({
     watch,
     setValue,
     formState: { errors, isSubmitting },
-  } = useForm<FormValues>({
+  } = useForm<z.input<typeof schema>, unknown, FormValues>({
     resolver: zodResolver(schema),
     defaultValues: { nama: "", tugas_pokok_id: "", jabatan_ids: [], ...defaultValues },
   });

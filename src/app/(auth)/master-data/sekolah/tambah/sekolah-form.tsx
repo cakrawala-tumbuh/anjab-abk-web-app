@@ -48,7 +48,7 @@ export function TambahSekolahForm({ jenjang, accessToken }: Props) {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<FormValues>({
+  } = useForm<z.input<typeof schema>, unknown, FormValues>({
     resolver: zodResolver(schema),
     defaultValues: { aktif: true },
   });

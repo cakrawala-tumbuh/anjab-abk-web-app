@@ -13,14 +13,15 @@ import type { JabatanRead, MataPelajaranRead, SekolahRead } from "@/lib/api/sche
 
 // ── Skema validasi Zod ───────────────────────────────────────────────────────
 
-const schema = z.object({
+/** Skema zod 4 formulir tambah partisipan (email via `z.email`, pesan galat Indonesia lewat parameter `error`). */
+export const schema = z.object({
   nama: z.string().min(1, "Nama wajib diisi").max(200, "Nama terlalu panjang"),
-  email: z.string().email("Format email tidak valid"),
+  email: z.email("Format email tidak valid"),
   sekolah_id: z.string().min(1, "Sekolah wajib dipilih"),
   jabatan_utama_id: z.string().min(1, "Jabatan utama wajib dipilih"),
   jabatan_tambahan_ids: z.array(z.string()).default([]),
-  masa_kerja_tahun: z.number({ invalid_type_error: "Isi angka tahun" }).min(0).max(50),
-  masa_kerja_bulan: z.number({ invalid_type_error: "Isi angka bulan" }).min(0).max(11).default(0),
+  masa_kerja_tahun: z.number({ error: "Isi angka tahun" }).min(0).max(50),
+  masa_kerja_bulan: z.number({ error: "Isi angka bulan" }).min(0).max(11).default(0),
   mata_pelajaran_utama_id: z.string().optional(),
 });
 
@@ -47,7 +48,7 @@ export function TambahPartisipanForm({ sekolah, jabatan, mataPelajaran, accessTo
     formState: { errors, isSubmitting },
     setValue,
     watch,
-  } = useForm<FormValues>({
+  } = useForm<z.input<typeof schema>, unknown, FormValues>({
     resolver: zodResolver(schema),
     defaultValues: {
       jabatan_tambahan_ids: [],

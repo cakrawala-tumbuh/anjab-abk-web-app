@@ -37,7 +37,7 @@ export function TsPenugasanForm({ partisipan, jabatan, accessToken }: Props) {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<FormValues>({
+  } = useForm<z.input<typeof schema>, unknown, FormValues>({
     resolver: zodResolver(schema),
   });
 

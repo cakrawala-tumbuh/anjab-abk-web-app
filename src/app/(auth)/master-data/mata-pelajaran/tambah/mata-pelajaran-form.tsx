@@ -16,14 +16,14 @@ const KELOMPOK_OPTIONS = [
   { value: "kejuruan", label: "Kejuruan" },
 ] as const;
 
-const schema = z.object({
+/** Skema zod 4 formulir mata pelajaran; `kelompok` kosong diubah menjadi `undefined` lalu ditolak dengan pesan "Kelompok wajib dipilih". */
+export const schema = z.object({
   kode: z.string().min(1, "Kode wajib diisi").max(20, "Kode terlalu panjang"),
   nama: z.string().min(1, "Nama wajib diisi").max(150, "Nama terlalu panjang"),
   kelompok: z.preprocess(
     (val) => (val === "" ? undefined : val),
     z.enum(["umum", "peminatan", "muatan_lokal", "kejuruan"], {
-      required_error: "Kelompok wajib dipilih",
-      invalid_type_error: "Kelompok wajib dipilih",
+      error: "Kelompok wajib dipilih",
     }),
   ),
   deskripsi: z.string().max(500, "Deskripsi terlalu panjang").optional().or(z.literal("")),
@@ -44,7 +44,7 @@ export function TambahMataPelajaranForm({ accessToken }: Props) {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<FormValues>({
+  } = useForm<z.input<typeof schema>, unknown, FormValues>({
     resolver: zodResolver(schema),
     defaultValues: { aktif: true },
   });

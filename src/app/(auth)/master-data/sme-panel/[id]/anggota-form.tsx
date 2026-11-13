@@ -32,7 +32,7 @@ function TambahForm({ panelId, partisipanBelumAnggota, accessToken }: TambahProp
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
-  } = useForm<FormValues>({ resolver: zodResolver(schema) });
+  } = useForm<z.input<typeof schema>, unknown, FormValues>({ resolver: zodResolver(schema) });
 
   async function onSubmit(values: FormValues) {
     setServerError(null);

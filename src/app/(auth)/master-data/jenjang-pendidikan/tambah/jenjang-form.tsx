@@ -12,7 +12,7 @@ import { notifyGagal, notifySukses, pesanGagal } from "@/lib/notify";
 const schema = z.object({
   kode: z.string().min(1, "Kode wajib diisi").max(20, "Kode terlalu panjang"),
   nama: z.string().min(1, "Nama wajib diisi").max(100, "Nama terlalu panjang"),
-  urutan: z.number({ invalid_type_error: "Isi angka urutan" }).min(0).default(0),
+  urutan: z.number({ error: "Isi angka urutan" }).min(0).default(0),
   aktif: z.boolean().default(true),
 });
 
@@ -30,7 +30,7 @@ export function TambahJenjangForm({ accessToken }: Props) {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<FormValues>({
+  } = useForm<z.input<typeof schema>, unknown, FormValues>({
     resolver: zodResolver(schema),
     defaultValues: { urutan: 0, aktif: true },
   });

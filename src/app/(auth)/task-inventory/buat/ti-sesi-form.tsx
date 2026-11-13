@@ -14,7 +14,7 @@ import type { TiKombinasiRead } from "@/lib/api/schema";
 export const schema = z.object({
   jabatan_id: z.string().min(1, "Jabatan wajib dipilih"),
   cabang: z.enum(["Bandung", "Semarang"], {
-    errorMap: () => ({ message: "Cabang wajib dipilih" }),
+    error: "Cabang wajib dipilih",
   }),
   catatan: z.string().max(500).optional(),
 });
@@ -45,7 +45,7 @@ export function TiSesiForm({ kombinasi, accessToken }: Props) {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<FormValues>({
+  } = useForm<z.input<typeof schema>, unknown, FormValues>({
     resolver: zodResolver(schema),
     defaultValues: { jabatan_id: "" },
   });

@@ -16,11 +16,13 @@ const JENIS_OPTIONS = [
   { value: "teknisi", label: "Teknisi" },
 ] as const;
 
-const schema = z.object({
+/** Skema zod 4 formulir jabatan; pesan "Jenis wajib dipilih" hanya untuk nilai `undefined`. */
+export const schema = z.object({
   kode: z.string().min(1, "Kode wajib diisi").max(30, "Kode terlalu panjang"),
   nama: z.string().min(1, "Nama wajib diisi").max(200, "Nama terlalu panjang"),
   jenis: z.enum(["struktural", "fungsional", "teknisi"], {
-    required_error: "Jenis wajib dipilih",
+    // Pesan kustom hanya untuk nilai kosong (undefined); nilai tak dikenal tetap memakai pesan bawaan zod.
+    error: (iss) => (iss.input === undefined ? "Jenis wajib dipilih" : undefined),
   }),
   unit_kerja_id: z.string().optional().or(z.literal("")),
   deskripsi: z.string().max(1000, "Deskripsi terlalu panjang").optional().or(z.literal("")),
@@ -42,7 +44,7 @@ export function TambahJabatanForm({ sekolah, accessToken }: Props) {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<FormValues>({
+  } = useForm<z.input<typeof schema>, unknown, FormValues>({
     resolver: zodResolver(schema),
     defaultValues: { aktif: true },
   });

@@ -12,7 +12,7 @@ import { headerIfMatch, petakanKonkurensi } from "@/lib/konkurensi";
 import type { DcsInstrumenRead } from "@/lib/api/schema";
 
 export const schema = z.object({
-  min_responden: z.number({ invalid_type_error: "Isi angka" }).int().min(1, "Minimal 1"),
+  min_responden: z.number({ error: "Isi angka" }).int().min(1, "Minimal 1"),
   catatan: z.string().max(500).optional(),
 });
 
@@ -35,7 +35,7 @@ export function EditInstrumen({ instrumen, accessToken, etag = null }: Props) {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<FormValues>({
+  } = useForm<z.input<typeof schema>, unknown, FormValues>({
     resolver: zodResolver(schema),
     defaultValues: {
       min_responden: instrumen.min_responden,

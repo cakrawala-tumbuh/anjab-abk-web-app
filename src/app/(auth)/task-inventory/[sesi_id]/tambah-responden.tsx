@@ -33,7 +33,7 @@ export function TambahResponden({ sesiId, partisipan, accessToken }: Props) {
     reset,
     setValue,
     formState: { isSubmitting },
-  } = useForm<FormValues>({
+  } = useForm<z.input<typeof schema>, unknown, FormValues>({
     resolver: zodResolver(schema),
     defaultValues: { partisipan_id: "", nama: "" },
   });

@@ -9,6 +9,13 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ### Keamanan
 
+- **Migrasi `zod` 3.25.76 → 4.6.7 dan `@hookform/resolvers` 3.10.0 → 5.9.2** (#127): menutup
+  alert Dependabot high (`zod` kehabisan memori pada koleksi besar; tidak ada perbaikan di garis 3.x).
+  Seluruh skema formulir (20 berkas) dimigrasikan: `invalid_type_error`/`required_error`/`errorMap` →
+  parameter `error`, `z.string().email()` → `z.email()`, `.strict()` → `z.strictObject()`,
+  `useForm<z.input<typeof schema>, unknown, FormValues>` agar selaras dengan tipe input/output
+  resolver v5. Teks pesan galat Indonesia dipertahankan (dijaga `src/test/zod4-pesan-galat.test.ts`).
+
 - **Tambal dependency runtime tanpa major bump** (#126): `next` 15.5.19 → 15.5.29 (garis 15.5.x,
   menutup alert critical termasuk Image Optimization API) dan `eslint-config-next` → 15.5.29;
   `next-auth` 5.0.0-beta.31 → 5.0.0-beta.32 (membawa `@auth/core` 0.41.2 → 0.41.3); `sharp`

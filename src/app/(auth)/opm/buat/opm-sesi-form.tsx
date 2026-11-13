@@ -14,7 +14,7 @@ import { SmePanelInfo } from "@/components/sme-panel-info";
 import type { JabatanRead, TiSesiRead } from "@/lib/api/schema";
 
 export const schema = z
-  .object({
+  .strictObject({
     jabatan_id: z.string().min(1, "Jabatan wajib dipilih"),
     ti_sesi_id: z.string().min(1, "Analisis Jabatan Task Inventory wajib dipilih"),
     periode: z
@@ -22,21 +22,12 @@ export const schema = z
       .regex(/^\d{4}-\d{2}$/, "Format periode: YYYY-MM (cth. 2026-06)")
       .min(7)
       .max(7),
-    min_responden: z
-      .number({ invalid_type_error: "Isi angka" })
-      .int()
-      .min(1, "Minimal 1")
-      .default(3),
-    max_responden: z
-      .number({ invalid_type_error: "Isi angka" })
-      .int()
-      .min(1, "Minimal 1")
-      .default(10),
+    min_responden: z.number({ error: "Isi angka" }).int().min(1, "Minimal 1").default(3),
+    max_responden: z.number({ error: "Isi angka" }).int().min(1, "Minimal 1").default(10),
     catatan: z.string().max(500).optional(),
   })
-  .strict()
   .refine((d) => d.max_responden >= d.min_responden, {
-    message: "Maksimum harus ≥ minimum",
+    error: "Maksimum harus ≥ minimum",
     path: ["max_responden"],
   });
 
@@ -60,7 +51,7 @@ export function OpmSesiForm({ jabatan, tiSesi, petaAnggota, accessToken }: Props
     setValue,
     watch,
     formState: { errors, isSubmitting },
-  } = useForm<FormValues>({
+  } = useForm<z.input<typeof schema>, unknown, FormValues>({
     resolver: zodResolver(schema),
     defaultValues: { jabatan_id: "", ti_sesi_id: "", min_responden: 3, max_responden: 10 },
   });
